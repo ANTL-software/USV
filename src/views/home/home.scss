@@ -101,4 +101,76 @@
     background-clip: text;
     -webkit-text-fill-color: transparent;
   }
+
+  .bookingSection {
+    a {
+      display: block;
+      text-decoration: none;
+      @include mixins.card(16px, light);
+
+      & {
+        overflow: hidden;
+        transition: all vars.$transitionMedium;
+      }
+
+      &:hover {
+        transform: translateY(-0.25em);
+        box-shadow: 0 0.5em 1.875em rgba(0, 0, 0, 0.12);
+
+        figure img {
+          transform: scale(1.05);
+        }
+
+        @media (min-width: vars.$tabletWidth) {
+          transform: translateY(-0.5em);
+          box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.15);
+        }
+      }
+    }
+
+    figure {
+      margin: 0;
+      overflow: hidden;
+
+      img {
+        & {
+          width: 100%;
+          height: 12.5em;
+          object-fit: cover;
+          transition: transform vars.$transitionMedium;
+        }
+
+        @media (min-width: vars.$tabletWidth) {
+          height: 15.625em;
+        }
+
+        @media (min-width: vars.$desktopWidth) {
+          height: 18.75em;
+        }
+      }
+    }
+
+    h2 {
+      & {
+        padding: 1.5em;
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: center;
+        background: vars.$utilsGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.7rem;
+        padding: 2em;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        font-size: 1.8rem;
+      }
+    }
+  }
 }

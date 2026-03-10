@@ -1,4 +1,4 @@
-// Service Worker registration et gestion pour Liryna PWA
+// Service Worker registration et gestion pour ANTL PWA
 
 const SW_URL = '/sw.js';
 const isProduction = (() => {
@@ -276,7 +276,7 @@ export const showInstallPrompt = (): Promise<boolean> => {
       // Montrer un bouton d'installation personnalisé
       const shouldInstall = await showPWAUpdatePrompt({
         title: 'Installation PWA',
-        message: 'Voulez-vous installer Liryna sur votre appareil pour une meilleure expérience ?',
+        message: 'Voulez-vous installer ANTL sur votre appareil pour une meilleure expérience ?',
         confirmText: 'Installer',
         cancelText: 'Non merci'
       });

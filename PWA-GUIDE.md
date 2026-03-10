@@ -1,8 +1,8 @@
-# Guide PWA - Liryna
+# Guide PWA - ANTL
 
 ## 🚀 Fonctionnalités PWA Implémentées
 
-Votre application **Liryna** est maintenant une Progressive Web App (PWA) complète avec :
+Votre application **ANTL** est maintenant une Progressive Web App (PWA) complète avec :
 
 ### ✅ Fonctionnalités principales
 - **Installation native** : L'app peut être installée sur smartphone et desktop comme une app native

@@ -4,6 +4,7 @@ import App from "./App.tsx";
 // context
 import { UserProvider } from "./context/user/UserProvider.tsx";
 import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
+import { BookingProvider } from "./context/booking/BookingProvider.tsx";
 import LoaderProvider from "./context/loader/LoaderProvider.tsx";
 import { AlertProvider } from "./context/alert/AlertProvider.tsx";
 
@@ -32,7 +33,9 @@ createRoot(document.getElementById("root")!).render(
     <CourrierProvider>
       <LoaderProvider>
         <AlertProvider>
-          <App />
+          <BookingProvider>
+            <App />
+          </BookingProvider>
         </AlertProvider>
       </LoaderProvider>
     </CourrierProvider>

@@ -65,16 +65,16 @@
   & {
     font-size: 1.6em !important;
     font-weight: 700;
-    text-transform: uppercase;
+    text-transform: lowercase;
     position: relative;
     margin: 0;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     position: relative;
     background-image: linear-gradient(-650deg,
-      #1ba69b 0%,
-      #4dd0e1 29%,
-      #26d0ce 67%,
+      #5b21b6 0%,
+      #a78bfa 29%,
+      #7c3aed 67%,
       #1a75bb 100%);
     background-clip: border-box;
     background-size: 200% auto;

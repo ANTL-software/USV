@@ -1,9 +1,11 @@
+// styles
+import "../authForm/authForm.scss";
+
 // hooks | library
 import {
   ChangeEvent,
   FormEvent,
   ReactElement,
-  useContext,
   useEffect,
   useState,
 } from "react";
@@ -11,15 +13,15 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 
 // custom types
 interface ISignInFormProps {
-  email: string;
+  identifiant: string;
   password: string;
-  setEmail: (value: string) => void;
+  setIdentifiant: (value: string) => void;
   setPassword: (value: string) => void;
 }
 
 // context
-import { UserContext } from "../../context/user/UserContext.tsx";
-import { IUserCredentials } from "../../utils/types/user.types.ts";
+import { useUserContext } from "../../hooks/useUserContext.ts";
+import type { LoginCredentials } from "../../utils/types/user.types.ts";
 
 // utils
 import { handleAuthError } from "../../utils/scripts/authErrorHandling.ts";
@@ -28,26 +30,25 @@ import { handleAuthError } from "../../utils/scripts/authErrorHandling.ts";
 import Button from "../button/Button.tsx";
 
 export default function SignInForm({
-  email,
+  identifiant,
   password,
-  setEmail,
+  setIdentifiant,
   setPassword,
 }: Readonly<ISignInFormProps>): ReactElement {
   const navigate: NavigateFunction = useNavigate();
-  const { login, user, isLoading } = useContext(UserContext);
+  const { login, user, isLoading } = useUserContext();
   const [error, setError] = useState<string>("");
 
   const handleSubmit = async (): Promise<void> => {
     setError("");
-    const credentials: IUserCredentials = {
-      email,
+    const credentials: LoginCredentials = {
+      identifiant,
       password,
     };
-    
+
     try {
       await login(credentials);
     } catch (error: unknown) {
-      console.error("Login error:", error);
       const errorMessage = handleAuthError(error);
       setError(errorMessage);
     }
@@ -55,7 +56,6 @@ export default function SignInForm({
 
   useEffect((): void => {
     if (user) {
-      console.log("user =>", user);
       navigate("/home");
     }
   }, [user]);
@@ -70,14 +70,14 @@ export default function SignInForm({
     >
       <h2>Se connecter</h2>
       <div className={"inputContainer"}>
-        <label htmlFor={"email"}>Identifiant</label>
+        <label htmlFor={"identifiant"}>Identifiant</label>
         <input
-          id={"email"}
-          type={"email"}
-          value={email}
-          autoComplete={"on"}
+          id={"identifiant"}
+          type={"text"}
+          value={identifiant}
+          autoComplete={"username"}
           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-            setEmail(e.target.value)
+            setIdentifiant(e.target.value)
           }
         />
       </div>
@@ -87,16 +87,14 @@ export default function SignInForm({
           id={"password"}
           type={"password"}
           value={password}
-          autoComplete={"on"}
+          autoComplete={"current-password"}
           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
             setPassword(e.target.value)
           }
         />
       </div>
       {error && (
-        <div
-          className="errorMessage"
-        >
+        <div className="errorMessage">
           {error}
         </div>
       )}

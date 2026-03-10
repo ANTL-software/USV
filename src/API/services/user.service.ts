@@ -1,55 +1,38 @@
-import { getRequest, patchRequest, deleteRequest } from "../APICalls.ts";
-import { AxiosResponse } from "axios";
-import { IUser, IApiResponse } from "../../utils/types/user.types.ts";
-import { userModel } from "../models/user.model.ts";
+import { getRequest, patchRequest, deleteRequest } from '../APICalls.ts';
+import { AxiosResponse } from 'axios';
+import { UserModel } from '../models/user.model.ts';
+import type { Employe, ApiResponse } from '../../utils/types/user.types.ts';
 
-export const getCurrentUserService = async (): Promise<IUser> => {
-  const response: AxiosResponse<IApiResponse<IUser>> = await getRequest("/users/profile");
-  
+export const getAllEmployesService = async (): Promise<UserModel[]> => {
+  const response: AxiosResponse<ApiResponse<Employe[]>> = await getRequest('/employes');
   if (response.data.success && response.data.data) {
-    return userModel(response.data.data);
+    return response.data.data.map(e => UserModel.fromJSON(e));
   }
-  
-  throw new Error(response.data.message || "Failed to get user profile");
+  throw new Error(response.data.message || 'Impossible de récupérer les employés');
 };
 
-export const getAllUsersService = async (): Promise<IUser[]> => {
-  const response: AxiosResponse<IApiResponse<IUser[]>> = await getRequest("/users");
-  
+export const getEmployeByIdService = async (id: number): Promise<UserModel> => {
+  const response: AxiosResponse<ApiResponse<Employe>> = await getRequest(`/employes/${id}`);
   if (response.data.success && response.data.data) {
-    return response.data.data.map(user => userModel(user));
+    return UserModel.fromJSON(response.data.data);
   }
-  
-  throw new Error(response.data.message || "Failed to get users");
+  throw new Error(response.data.message || 'Impossible de récupérer l\'employé');
 };
 
-export const getUserByIdService = async (id: number): Promise<IUser> => {
-  const response: AxiosResponse<IApiResponse<IUser>> = await getRequest(`/users/${id}`);
-  
-  if (response.data.success && response.data.data) {
-    return userModel(response.data.data);
-  }
-  
-  throw new Error(response.data.message || "Failed to get user");
-};
-
-export const updateUserService = async (
+export const updateEmployeService = async (
   id: number,
-  userData: Partial<Pick<IUser, 'email' | 'firstName' | 'lastName' | 'password'>>
-): Promise<IUser> => {
-  const response: AxiosResponse<IApiResponse<IUser>> = await patchRequest(`/users/${id}`, userData);
-  
+  data: Partial<Pick<Employe, 'email' | 'nom' | 'prenom' | 'telephone'>>
+): Promise<UserModel> => {
+  const response: AxiosResponse<ApiResponse<Employe>> = await patchRequest(`/employes/${id}`, data);
   if (response.data.success && response.data.data) {
-    return userModel(response.data.data);
+    return UserModel.fromJSON(response.data.data);
   }
-  
-  throw new Error(response.data.message || "Failed to update user");
+  throw new Error(response.data.message || 'Impossible de mettre à jour l\'employé');
 };
 
-export const deleteUserService = async (id: number): Promise<void> => {
-  const response: AxiosResponse<IApiResponse> = await deleteRequest(`/users/${id}`);
-  
+export const deleteEmployeService = async (id: number): Promise<void> => {
+  const response: AxiosResponse<ApiResponse> = await deleteRequest(`/employes/${id}`);
   if (!response.data.success) {
-    throw new Error(response.data.message || "Failed to delete user");
+    throw new Error(response.data.message || 'Impossible de supprimer l\'employé');
   }
 };

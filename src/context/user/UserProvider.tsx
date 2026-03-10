@@ -1,112 +1,99 @@
-// hooks | libraries
-import { useState, useMemo, ReactElement, useEffect, useCallback } from "react";
+// Aligné avec script/src/context/userContext/UserProvider.tsx
+// Différence : auth par cookies httpOnly (pas de hasValidToken/localStorage)
+import { useState, useEffect, useCallback } from 'react';
+import type { ReactNode } from 'react';
+import type { Employe, LoginCredentials } from '../../utils/types/user.types.ts';
+import { UserContext } from './UserContext.tsx';
+import { loginService, getCurrentUserService, logoutService } from '../../API/services/auth.service.ts';
 
-// context
-import { UserContext } from "./UserContext.tsx";
+interface UserProviderProps {
+  children: ReactNode;
+}
 
-// custom types
-import { IUser, IUserCredentials, IUserRegistration } from "../../utils/types/user.types.ts";
-
-// services
-import { getCurrentUserService } from "../../API/services/user.service.ts";
-import { loginService, registerService, logoutService } from "../../API/services/auth.service.ts";
-import { csrfService } from "../../utils/services/csrfService.ts";
-
-export const UserProvider = ({
-  children,
-}: {
-  children: ReactElement;
-}): ReactElement => {
-  const [user, setUser] = useState<IUser | null>(null);
+export const UserProvider = ({ children }: UserProviderProps) => {
+  const [user, setUser] = useState<Employe | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const isAuthenticated = useMemo(() => !!user, [user]);
+  const isAuthenticated = !!user;
 
-  const getCurrentUser = useCallback(async (): Promise<void> => {
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        setIsLoading(true);
+        // Avec les cookies httpOnly, on tente directement /auth/me
+        // Le cookie est envoyé automatiquement si présent
+        const userModel = await getCurrentUserService();
+        setUser(userModel.toJSON());
+      } catch {
+        setUser(null);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    initializeAuth();
+  }, []);
+
+  const login = useCallback(async (credentials: LoginCredentials): Promise<void> => {
     try {
-      const currentUser = await getCurrentUserService();
-      setUser(currentUser);
-    } catch (error) {
-      console.error("Error while getting current user:", error);
-      setUser(null);
-      throw error;
+      setIsLoading(true);
+      setError(null);
+      const userModel = await loginService(credentials);
+      setUser(userModel.toJSON());
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue lors de la connexion';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setIsLoading(false);
     }
   }, []);
 
   const logout = useCallback(async (): Promise<void> => {
-    await logoutService();
-    csrfService.clearToken();
-    setUser(null);
-  }, []);
-
-  // Vérifier l'authentification au chargement
-  useEffect(() => {
-    const initAuth = async () => {
-      // Avec les cookies httpOnly, on tente directement de récupérer le profil utilisateur
-      // Le cookie sera automatiquement envoyé si présent
-      try {
-        await getCurrentUser();
-      } catch (error) {
-        console.error("Token invalid, logging out:", error);
-        await logout();
-      }
-      setIsLoading(false);
-    };
-    
-    initAuth();
-  }, [getCurrentUser, logout]);
-
-  const login = useCallback(async (credentials: IUserCredentials): Promise<void> => {
-    setIsLoading(true);
     try {
-      const response = await loginService(credentials);
-      if (response.user) {
-        setUser(response.user);
-      }
-    } catch (error) {
-      console.error("Error while logging in:", error);
-      setUser(null);
-      throw error;
+      setIsLoading(true);
+      await logoutService();
+    } catch (err) {
+      console.error('Erreur lors de la déconnexion:', err);
     } finally {
+      setUser(null);
+      setError(null);
       setIsLoading(false);
     }
   }, []);
 
-  const register = useCallback(async (userData: IUserRegistration): Promise<void> => {
-    setIsLoading(true);
+  const refreshUser = useCallback(async (): Promise<void> => {
     try {
-      const response = await registerService(userData);
-      
-      // Gestion de la réponse avec structure différente (data au lieu de user)
-      const user = response.user || (response as { data?: IUser }).data;
-      
-      if (user) {
-        setUser(user);
-      }
-    } catch (error) {
-      console.error("Error while registering:", error);
+      setIsLoading(true);
+      const userModel = await getCurrentUserService();
+      setUser(userModel.toJSON());
+    } catch (err) {
+      console.error('Erreur lors du rafraîchissement:', err);
       setUser(null);
-      throw error;
+      await logout();
     } finally {
       setIsLoading(false);
     }
+  }, [logout]);
+
+  const clearError = useCallback(() => {
+    setError(null);
   }, []);
 
-  const contextValue = useMemo(
-    () => ({
-      user,
-      isAuthenticated,
-      isLoading,
-      setUser,
-      login,
-      register,
-      logout,
-      getCurrentUser,
-    }),
-    [user, isAuthenticated, isLoading],
-  );
+  const value = {
+    user,
+    isAuthenticated,
+    isLoading,
+    error,
+    login,
+    logout,
+    refreshUser,
+    clearError,
+  };
 
   return (
-    <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>
+    <UserContext.Provider value={value}>
+      {children}
+    </UserContext.Provider>
   );
 };

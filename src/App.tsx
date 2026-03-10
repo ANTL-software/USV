@@ -28,6 +28,7 @@ import CourriersWithAuth from "./views/courriers/Courriers.tsx";
 import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
 import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
 import UpdateCourrierWithAuth from "./views/courriers/updateCourrier/UpdateCourrier.tsx";
+import BookingPageWithAuth from "./views/booking/BookingPage.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -85,6 +86,7 @@ function App(): ReactElement {
         <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
+        <Route path={"booking"} element={<BookingPageWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

@@ -1,13 +1,13 @@
-import { useContext, useEffect, ReactElement, ComponentType } from "react";
+import { useEffect, ReactElement, ComponentType } from "react";
 import { useNavigate, NavigateFunction } from "react-router-dom";
-import { UserContext } from "../../context/user/UserContext";
+import { useUserContext } from "../../hooks/useUserContext.ts";
 
 export default function WithAuth<P extends object>(
   WrappedComponent: ComponentType<P>,
 ): (props: P) => ReactElement | null {
   return function AuthenticatedComponent(props: P): ReactElement | null {
     const navigate: NavigateFunction = useNavigate();
-    const { user, isAuthenticated, isLoading } = useContext(UserContext);
+    const { user, isAuthenticated, isLoading } = useUserContext();
 
     useEffect((): void => {
       if (!isLoading && !isAuthenticated) {

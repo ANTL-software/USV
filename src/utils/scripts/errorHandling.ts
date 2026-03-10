@@ -196,8 +196,8 @@ export const showErrorNotification = (message: string, type: 'error' | 'warning'
   const prefix = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
   
   // Essayer d'utiliser notre nouveau système si disponible
-  if (typeof window !== 'undefined' && (window as any).liryna_alert_service) {
-    const alertService = (window as any).liryna_alert_service;
+  if (typeof window !== 'undefined' && (window as any).antl_alert_service) {
+    const alertService = (window as any).antl_alert_service;
     if (type === 'error') {
       alertService.showError(message);
     } else if (type === 'warning') {

@@ -1,6 +1,6 @@
 {
-  "name": "Liryna",
-  "short_name": "Liryna",
+  "name": "ANTL",
+  "short_name": "ANTL",
   "description": "Application de gestion de courriers et outils web",
   "start_url": "/",
   "display": "standalone",

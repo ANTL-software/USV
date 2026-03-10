@@ -15,7 +15,7 @@ export const getApiBaseUrl = (): string => {
     return devUrl;
   } else {
     // Production - utiliser le backend de production
-    const prodUrl = "https://api.liryna.app/api";
+    const prodUrl = "https://api.antl.app/api";
     console.log('🚀 Mode production détecté - Backend:', prodUrl);
     return prodUrl;
   }
@@ -42,7 +42,7 @@ export const getCSP = (): string => {
     return "frame-src 'self' http://localhost:8800; connect-src 'self' http://localhost:8800; img-src 'self' data: http://localhost:8800;";
   } else {
     // Production - utiliser uniquement le domaine de production
-    return "frame-src 'self' https://api.liryna.app; connect-src 'self' https://api.liryna.app; img-src 'self' data: https://api.liryna.app;";
+    return "frame-src 'self' https://api.antl.app; connect-src 'self' https://api.antl.app; img-src 'self' data: https://api.antl.app;";
   }
 };
 

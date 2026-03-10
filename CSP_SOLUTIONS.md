@@ -5,7 +5,7 @@
 En production, les PDFs et images ne se chargeaient pas dans la modal à cause du CSP (Content Security Policy) restrictif qui bloquait les blob URLs dans les iframes.
 
 **Erreurs observées :**
-- "Refused to frame 'blob:https://www.liryna.app/...' because it violates the following Content Security Policy directive: "default-src 'self'""
+- "Refused to frame 'blob:https://www.antl.app/...' because it violates the following Content Security Policy directive: "default-src 'self'""
 - "Not allowed to load local resource: blob:..."
 
 ## Solutions implémentées

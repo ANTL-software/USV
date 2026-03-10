@@ -1,4 +1,4 @@
-# 🔐 Règles de développement - Liryna (Frontend Sécurisé)
+# 🔐 Règles de développement - ANTL (Frontend Sécurisé)
 
 ## Règles TypeScript/TSX
 - **Aucun `any` dans le code** - Toujours typer explicitement

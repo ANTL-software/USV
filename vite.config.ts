@@ -10,7 +10,7 @@ const generateCSP = () => {
     name: 'generate-csp',
     buildStart() {
       // CSP pour production - strict et sécurisé
-      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.antl.app; connect-src 'self' https://api.antl.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
       
       // Générer vercel.json avec la CSP de production
       const vercelConfig = {
@@ -63,7 +63,7 @@ const generateCSP = () => {
         console.log(`🔧 Development CSP applied`);
       } else {
         // CSP pour production - strict et sécurisé
-        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.liryna.app; connect-src 'self' https://api.liryna.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
+        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'sha256-47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob:; object-src 'self' blob:; frame-src 'self' blob: https://api.antl.app; connect-src 'self' https://api.antl.app https://fonts.googleapis.com https://unpkg.com; worker-src 'self' https://unpkg.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none';";
         console.log(`🔒 Production CSP applied`);
       }
       
