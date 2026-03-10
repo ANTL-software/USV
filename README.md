@@ -1,10 +1,10 @@
-# 🔐 Liryna - Gestion Documentaire Sécurisée
+# 🔐 ANTL - Gestion Documentaire Sécurisée
 
 Une application React PWA moderne pour la gestion complète de documents avec authentification sécurisée par cookies httpOnly.
 
 ## 🎯 Description
 
-**Liryna** est une application de gestion documentaire complète spécialisée dans le suivi et la gestion des courriers. L'application offre une interface moderne, responsive et sécurisée avec des fonctionnalités PWA pour une utilisation optimale sur tous les appareils.
+**ANTL** est une application de gestion documentaire complète spécialisée dans le suivi et la gestion des courriers. L'application offre une interface moderne, responsive et sécurisée avec des fonctionnalités PWA pour une utilisation optimale sur tous les appareils.
 
 ## ✨ Fonctionnalités
 
@@ -259,4 +259,4 @@ npm install && npm run dev
 
 ---
 
-**🔐 Liryna** - Solution complète de gestion documentaire sécurisée avec PWA ! 📱✨
+**🔐 ANTL** - Solution complète de gestion documentaire sécurisée avec PWA ! 📱✨

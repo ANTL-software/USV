@@ -1,25 +1,16 @@
-// custom types
-import { IUser, IUserCredentials, IUserRegistration } from "../../utils/types/user.types.ts";
-import { createContext, Context } from "react";
+// Aligné avec script/src/context/userContext/UserContext.tsx
+import { createContext } from 'react';
+import type { Employe, LoginCredentials } from '../../utils/types/user.types.ts';
 
-interface IUserContext {
-    user: IUser | null;
-    isAuthenticated: boolean;
-    isLoading: boolean;
-    setUser: (user: IUser | null) => void;
-    login: (credentials: IUserCredentials) => Promise<void>;
-    register: (userData: IUserRegistration) => Promise<void>;
-    logout: () => void;
-    getCurrentUser: () => Promise<void>;
+export interface UserContextType {
+  user: Employe | null;
+  isAuthenticated: boolean;
+  isLoading: boolean;
+  error: string | null;
+  login: (credentials: LoginCredentials) => Promise<void>;
+  logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
+  clearError: () => void;
 }
 
-export const UserContext: Context<IUserContext> = createContext<IUserContext>({
-    user: null,
-    isAuthenticated: false,
-    isLoading: false,
-    setUser: (): void => {},
-    login: async (): Promise<void> => {},
-    register: async (): Promise<void> => {},
-    logout: (): void => {},
-    getCurrentUser: async (): Promise<void> => {},
-});
+export const UserContext = createContext<UserContextType | undefined>(undefined);

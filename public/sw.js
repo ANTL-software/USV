@@ -1,9 +1,9 @@
-// Service Worker pour Liryna PWA
+// Service Worker pour ANTL PWA
 // Version générée automatiquement lors du build - ne pas modifier manuellement
 const BUILD_VERSION = '__BUILD_VERSION__'; // Sera remplacé par Vite lors du build
-const CACHE_NAME = `liryna-v${BUILD_VERSION}`;
-const STATIC_CACHE = `liryna-static-v${BUILD_VERSION}`;
-const DYNAMIC_CACHE = `liryna-dynamic-v${BUILD_VERSION}`;
+const CACHE_NAME = `antl-v${BUILD_VERSION}`;
+const STATIC_CACHE = `antl-static-v${BUILD_VERSION}`;
+const DYNAMIC_CACHE = `antl-dynamic-v${BUILD_VERSION}`;
 
 // Vérifier si nous sommes en mode développement
 const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
@@ -324,7 +324,7 @@ self.addEventListener('push', (event) => {
     };
     
     event.waitUntil(
-      self.registration.showNotification(data.title || 'Liryna', options)
+      self.registration.showNotification(data.title || 'ANTL', options)
     );
   }
 });

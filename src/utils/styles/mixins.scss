@@ -132,7 +132,7 @@ $subnav-height: 4dvh;
   
   &:focus {
     outline: none;
-    border-color: #26d0ce;
+    border-color: #7c3aed;
     box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
   }
   
@@ -156,11 +156,11 @@ $subnav-height: 4dvh;
     }
     
     &--is-focused {
-      border-color: #26d0ce;
+      border-color: #7c3aed;
       box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.1);
       
       &:hover {
-        border-color: #26d0ce;
+        border-color: #7c3aed;
       }
     }
   }
@@ -191,7 +191,7 @@ $subnav-height: 4dvh;
     padding: 0.5em;
     
     &:hover {
-      color: #26d0ce;
+      color: #7c3aed;
     }
   }
   
@@ -211,7 +211,7 @@ $subnav-height: 4dvh;
     color: #2c3e50;
     
     &--is-selected {
-      background-color: #26d0ce;
+      background-color: #7c3aed;
       color: white;
     }
     

@@ -45,14 +45,14 @@ function CreatableSelectComponent({
       ...provided,
       minHeight: '44px',
       border: state.isFocused 
-        ? '2px solid #26d0ce' 
+        ? '2px solid #7c3aed' 
         : '2px solid #e0e7ff',
       borderRadius: '8px',
       boxShadow: state.isFocused 
         ? '0 0 0 3px rgba(38, 208, 206, 0.2)' 
         : 'none',
       '&:hover': {
-        borderColor: state.isFocused ? '#26d0ce' : '#c7d2fe'
+        borderColor: state.isFocused ? '#7c3aed' : '#c7d2fe'
       },
       fontSize: '1em',
       fontFamily: 'inherit'
@@ -83,7 +83,7 @@ function CreatableSelectComponent({
     option: (provided, state) => ({
       ...provided,
       backgroundColor: state.isSelected
-        ? '#26d0ce'
+        ? '#7c3aed'
         : state.isFocused
         ? '#f0fffe'
         : 'white',
@@ -92,7 +92,7 @@ function CreatableSelectComponent({
       margin: '2px 0',
       cursor: 'pointer',
       '&:active': {
-        backgroundColor: state.isSelected ? '#26d0ce' : '#e6fffd'
+        backgroundColor: state.isSelected ? '#7c3aed' : 'rgba(124,58,237,0.08)'
       }
     })
   };

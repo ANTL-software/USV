@@ -1,42 +1,39 @@
-import { AxiosResponse } from "axios";
-import { postRequest } from "../APICalls.ts";
-import { IUserCredentials, IUserRegistration, IAuthResponse } from "../../utils/types/user.types.ts";
+// Adapté depuis script/src/API/services/User.service.ts
+// Différence : pas de localStorage — tokens gérés via cookies httpOnly par Olympe
+import { postRequest, getRequest } from '../APICalls.ts';
+import { UserModel } from '../models/user.model.ts';
+import { csrfService } from '../../utils/services/csrfService.ts';
+import type { LoginCredentials, ApiResponse, Employe } from '../../utils/types/user.types.ts';
 
-export const loginService = async (credentials: IUserCredentials): Promise<IAuthResponse> => {
-  const response: AxiosResponse<IAuthResponse & { token?: string }> = await postRequest<IUserCredentials, IAuthResponse & { token?: string }>(
-    "/users/login",
+interface LoginResponseData {
+  token: string;
+  refreshToken: string;
+  employe: Employe;
+}
+
+export const loginService = async (credentials: LoginCredentials): Promise<UserModel> => {
+  const response = await postRequest<LoginCredentials, ApiResponse<LoginResponseData>>(
+    '/auth/login',
     credentials
   );
-  
-  // Le token JWT est maintenant dans un cookie httpOnly cross-domain (.liryna.app)
-  // Plus besoin de localStorage - sécurité maximale contre XSS
-  
-  return response.data;
+  const { employe } = response.data.data!;
+  return UserModel.fromJSON(employe);
 };
 
-export const registerService = async (userData: IUserRegistration): Promise<IAuthResponse> => {
-  const response: AxiosResponse<IAuthResponse> = await postRequest<IUserRegistration, IAuthResponse>(
-    "/users/register",
-    userData
-  );
-  
-  // Plus de gestion localStorage - le token JWT est maintenant dans un cookie httpOnly sécurisé
-  return response.data;
+export const getCurrentUserService = async (): Promise<UserModel> => {
+  const response = await getRequest('/auth/me') as { data: ApiResponse<Employe> };
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.message || 'Impossible de récupérer le profil employé');
+  }
+  return UserModel.fromJSON(response.data.data);
 };
 
 export const logoutService = async (): Promise<void> => {
-  // Appeler l'API pour supprimer le cookie httpOnly côté serveur
   try {
-    await postRequest<{}, { success: boolean; message: string }>("/users/logout", {});
+    await postRequest<Record<string, never>, ApiResponse>('/auth/logout', {});
   } catch (error) {
-    console.error("Erreur lors de la déconnexion côté serveur:", error);
-    // Continuer même si l'API échoue - le cookie sera nettoyé côté serveur
+    console.error('Erreur lors de la déconnexion:', error);
+  } finally {
+    csrfService.clearToken();
   }
-  
-  // Plus besoin de nettoyer localStorage - tout est dans le cookie httpOnly
 };
-
-// Plus nécessaire avec les cookies httpOnly - supprimé
-// export const getStoredToken = (): string | null => {
-//   return localStorage.getItem('authToken');
-// };

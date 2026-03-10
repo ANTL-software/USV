@@ -1,86 +1,89 @@
 @use "../../utils/styles/variables" as vars;
 
 #authForm {
-  display: flex;
-  flex-flow: column;
-  background: #f2f2f2f2;
-  border: 2px solid #36395a;
-  border-radius: 4px;
-  padding: 1em;
-  gap: 1em;
-  width: 16.25em;
-
+  & {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+    background: white;
+    border-radius: 12px;
+    padding: 2em 1.75em;
+    width: min(20em, 90vw);
+    box-shadow: 0 0.25em 1.5em rgba(0, 0, 0, 0.1);
+  }
 
   h2 {
-    font-size: 1.125em;
-    font-weight: 700;
-    position: relative;
+    & {
+      font-size: 1.25em;
+      font-weight: 700;
+      margin: 0 0 0.25em;
+      position: relative;
+      color: vars.$fontColorPrimary;
+    }
 
     &::after {
       content: "";
       position: absolute;
-      bottom: 0;
+      bottom: -0.25em;
       left: 0;
-      width: 15%;
-      height: 2px;
+      width: 2em;
+      height: 3px;
       border-radius: 8px;
-      background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
+      background: vars.$utilsGradient;
     }
   }
 
   .inputContainer {
-    label {
-      width: 100%;
-      font-size: 0.875em;
-    }
-    input {
-      width: 100%;
-      font-size: 0.875em;
-      border: 1px solid #36395a;
-      border-radius: 4px;
-      padding: .5em;
-    }
-
-    .password-input-container {
-      position: relative;
+    & {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 0.4em;
+    }
 
-      input {
-        padding-right: 2.5em; // Espace pour le bouton toggle
+    label {
+      font-size: 0.85em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+    }
+
+    input {
+      & {
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 0.9em;
+        font-family: inherit;
+        border: 1px solid #d1d5db;
+        border-radius: 6px;
+        padding: 0.65em 0.75em;
+        color: vars.$fontColorPrimary;
+        transition: border-color vars.$transitionFast, box-shadow vars.$transitionFast;
+        outline: none;
       }
 
-      .password-toggle-btn {
-        position: absolute;
-        right: 0.5em;
-        background: none;
-        border: none;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.25em;
-        color: #36395a;
-        font-size: 1.1em;
-        transition: vars.$transitionMedium;
-
-        &:hover {
-          color: vars.$utilsPrimary;
-          transform: scale(1.1);
-        }
-
-        &:focus {
-          outline: 2px solid vars.$utilsPrimary;
-          outline-offset: 2px;
-          border-radius: 4px;
-        }
+      &:focus {
+        border-color: vars.$utilsPrimary;
+        box-shadow: 0 0 0 3px rgba(38, 208, 206, 0.15);
       }
     }
   }
 
+  .errorMessage {
+    & {
+      font-size: 0.85em;
+      color: vars.$errorColor;
+      background: rgba(231, 76, 60, 0.08);
+      padding: 0.5em 0.75em;
+      border-radius: 6px;
+      border-left: 3px solid vars.$errorColor;
+    }
+  }
+
   .buttonContainer {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 0.25em;
+    }
   }
 }

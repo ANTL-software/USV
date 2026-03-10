@@ -2,11 +2,11 @@
 import "./header.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext } from "react";
+import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList } from "react-icons/io5";
-import { UserContext } from "../../context/user/UserContext.tsx";
+import { IoHome, IoAdd, IoList, IoCalendar } from "react-icons/io5";
+import { useUserContext } from "../../hooks/useUserContext.ts";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
@@ -15,7 +15,7 @@ export default function Header(): ReactElement {
   const location = useLocation();
   const navigate = useNavigate();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { user, logout } = useContext(UserContext);
+  const { user, logout } = useUserContext();
 
   const isAuthRoute: boolean = location.pathname === "/auth";
 
@@ -42,8 +42,8 @@ export default function Header(): ReactElement {
             title={isAuthRoute ? "" : "Home"}
           >
             <h1 className="brandTitle">
-              <span className="Lir">Lir</span>
-              <span className="yna">yna</span>
+              <span className="AN">an</span>
+              <span className="TL">tl</span>
             </h1>
           </Link>
 
@@ -51,7 +51,7 @@ export default function Header(): ReactElement {
           <div className="headerRight">
             {user && !isAuthRoute && (
               <div className="userInfo">
-                <span className="userGreeting">Bonjour {user.firstName}</span>
+                <span className="userGreeting">Bonjour {user.prenom}</span>
                 <PWAInstallButton variant="desktop" compact={true} />
                 <button onClick={handleLogout} className="logoutButton">
                   Déconnexion
@@ -92,7 +92,7 @@ export default function Header(): ReactElement {
               {user && (
                 <div className="mobileUserInfo">
                   <span className="mobileUserGreeting">
-                    Bonjour {user.firstName}
+                    Bonjour {user.prenom}
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
                   <button onClick={handleLogout} className="mobileLogoutButton">
@@ -101,35 +101,39 @@ export default function Header(): ReactElement {
                 </div>
               )}
 
-              {/* Navigation des courriers */}
+              {/* Navigation */}
               <div className="mobileSection">
                 <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/home" ? "active" : ""
-                  }`}
+                  className={`mobileNavItem ${location.pathname === "/home" ? "active" : ""}`}
                   onClick={() => handleNavigate("/home")}
                 >
                   <IoHome className="mobileNavIcon" />
                   <span className="mobileNavText">Accueil</span>
                 </button>
+
                 <h3 className="mobileSectionTitle">Gestion des courriers</h3>
                 <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/mail/new" ? "active" : ""
-                  }`}
+                  className={`mobileNavItem ${location.pathname === "/mail/new" ? "active" : ""}`}
                   onClick={() => handleNavigate("/mail/new")}
                 >
                   <IoAdd className="mobileNavIcon" />
                   <span className="mobileNavText">Ajouter un courrier</span>
                 </button>
                 <button
-                  className={`mobileNavItem ${
-                    location.pathname === "/mail/list" ? "active" : ""
-                  }`}
+                  className={`mobileNavItem ${location.pathname === "/mail/list" ? "active" : ""}`}
                   onClick={() => handleNavigate("/mail/list")}
                 >
                   <IoList className="mobileNavIcon" />
                   <span className="mobileNavText">Liste des courriers</span>
+                </button>
+
+                <h3 className="mobileSectionTitle">Booking</h3>
+                <button
+                  className={`mobileNavItem ${location.pathname === "/booking" ? "active" : ""}`}
+                  onClick={() => handleNavigate("/booking")}
+                >
+                  <IoCalendar className="mobileNavIcon" />
+                  <span className="mobileNavText">Salle de production</span>
                 </button>
               </div>
             </div>

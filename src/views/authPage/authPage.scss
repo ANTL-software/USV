@@ -2,38 +2,26 @@
 @use "../../utils/styles/variables" as vars;
 
 #authPage {
-  @include mixins.pageContainer;
-  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-
-  .navbar {
-    background: rgba(248, 249, 251, 0.85);
-    backdrop-filter: blur(0.625em);
-    -webkit-backdrop-filter: blur(0.625em);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  & {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
   }
 
   main {
-    @include mixins.mainContentExpanding;
-    align-items: center;
-    justify-content: center;
-    padding: calc(6dvh + 1em) 1em 1em;
-    gap: 1.5em;
-
-    .changeFormButtonWrapper {
-      width: 17.5em;
-      text-align: center;
-
-      button {
-        border: none;
-        background: none;
-        padding: unset;
-        color: vars.$utilsDark;
-      }
+    & {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: calc(6dvh + 2em) 1em 2em;
+      gap: 1.5em;
     }
 
     @media (min-width: vars.$tabletWidth) {
-      gap: 2em;
-      padding: 2em;
+      padding: calc(6dvh + 3em) 2em 3em;
     }
   }
 }

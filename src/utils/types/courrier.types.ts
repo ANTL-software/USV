@@ -22,10 +22,10 @@ export interface ICourrier {
 }
 
 export interface IUserBasic {
-  id: number;
-  email: string;
-  firstName: string;
-  lastName: string;
+  id_employe: number;
+  email?: string;
+  prenom: string;
+  nom: string;
 }
 
 export interface ICourrierFormData {

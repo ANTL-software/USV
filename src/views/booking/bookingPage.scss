@@ -1,0 +1,68 @@
+@use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
+
+#bookingPage {
+  @include mixins.mainView;
+
+  main {
+    & {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      padding: 1em 0.5em;
+      gap: 1em;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      padding: 1.5em 1em;
+    }
+
+    @media (min-width: vars.$desktopWidth) {
+      padding: 2em 1.5em;
+    }
+  }
+
+  .bookingHeader {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+
+    h1 {
+      & {
+        margin: 0;
+        font-size: 1.25em;
+        font-weight: 700;
+        background: vars.$utilsGradient;
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 1.5em;
+      }
+    }
+  }
+
+  .calendarWrapper {
+    & {
+      display: flex;
+      flex-direction: column;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+      // Hauteur fixe = viewport moins header (~6dvh) + subNav (~4dvh) + titre (~4em) + paddings
+      height: calc(100dvh - 6dvh - 4dvh - 6em);
+      min-height: 28em;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      height: calc(100dvh - 6dvh - 4dvh - 7em);
+      min-height: 35em;
+    }
+  }
+}

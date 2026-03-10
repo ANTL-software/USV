@@ -1,34 +1,54 @@
-export interface IUser {
-    id: number
-    email: string
-    password?: string
-    firstName: string
-    lastName: string
-    created_at?: string
-    updated_at?: string
+// Aligné avec les types du repo script (source de vérité : Olympe API)
+
+export interface Poste {
+  id_poste: number;
+  libelle_poste: string;
+  description?: string;
+  salaire_base?: number;
+  niveau_hierarchique?: number;
 }
 
-export interface IUserCredentials {
-    email: string
-    password: string
+export interface Departement {
+  id_departement: number;
+  nom_departement: string;
+  budget?: number;
+  id_responsable?: number;
 }
 
-export interface IUserRegistration {
-    email: string
-    password: string
-    firstName: string
-    lastName: string
+export interface Employe {
+  id_employe: number;
+  identifiant: string;
+  nom: string;
+  prenom: string;
+  email?: string;
+  telephone?: string;
+  date_embauche?: string;
+  id_poste?: number;
+  id_departement?: number;
+  actif: boolean;
+  created_at?: string;
+  updated_at?: string;
+  poste?: Poste;
+  departement?: Departement;
 }
 
-export interface IAuthResponse {
-    success: boolean
-    message: string
-    token?: string
-    user?: IUser
+export interface LoginCredentials {
+  identifiant: string;
+  password: string;
 }
 
-export interface IApiResponse<T = unknown> {
-    success: boolean
-    message: string
-    data?: T
+export interface LoginResponse {
+  success: boolean;
+  message: string;
+  data: {
+    token: string;
+    refreshToken: string;
+    employe: Employe;
+  };
+}
+
+export interface ApiResponse<T = unknown> {
+  success: boolean;
+  message: string;
+  data?: T;
 }

@@ -120,10 +120,10 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   useEffect(() => {
     initializeAlertService(contextValue);
     // Exposer le service globalement pour les fallbacks legacy
-    (window as any).liryna_alert_service = contextValue;
+    (window as any).antl_alert_service = contextValue;
     
     return () => {
-      (window as any).liryna_alert_service = null;
+      (window as any).antl_alert_service = null;
     };
   }, [contextValue]);
 

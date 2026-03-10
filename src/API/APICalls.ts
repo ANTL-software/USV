@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 // Interceptor pour ajouter le token CSRF automatiquement (JWT dans cookies httpOnly cross-domain)
 axios.interceptors.request.use(async (config) => {
   // Les cookies JWT httpOnly sont automatiquement envoyés avec withCredentials: true
-  // Domain: .liryna.app permet le partage entre liryna.app et api.liryna.app
+  // Domain: .antl.app permet le partage entre antl.app et api.antl.app
   
   config.headers = config.headers || {};
   
@@ -107,6 +107,18 @@ export const postFormDataRequest = async <R>(
     return await axios.post<R>(url, formData, config);
   } catch (error) {
     console.error("Erreur in postFormDataRequest:", error);
+    throw error;
+  }
+};
+
+export const putRequest = async <T, R>(
+  url: string,
+  data: T,
+): Promise<AxiosResponse<R>> => {
+  try {
+    return await axios.put<R>(url, data);
+  } catch (error) {
+    console.error("Erreur in putRequest:", error);
     throw error;
   }
 };
