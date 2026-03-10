@@ -3,14 +3,14 @@ export interface EmployeBasic {
   nom: string;
   prenom: string;
   email?: string;
+  role?: 'confirme' | 'debutant' | null;
 }
 
 export interface Booking {
   id_booking: number;
   id_organisateur: number;
   id_beneficiaire: number;
-  date_debut: string;
-  date_fin: string;
+  date: string; // YYYY-MM-DD
   statut: 'confirme' | 'annule' | 'en_attente';
   created_at?: string;
   updated_at?: string;
@@ -20,14 +20,14 @@ export interface Booking {
 
 export interface CreateBookingPayload {
   id_beneficiaire: number;
-  date: string;
-  heureDebut: string;
-  heureFin: string;
+  date: string; // YYYY-MM-DD
+}
+
+export interface UpdateBookingPayload {
+  date: string; // YYYY-MM-DD
 }
 
 export interface BookingFilters {
-  page?: number;
-  limit?: number;
   statut?: 'confirme' | 'annule' | 'en_attente';
   id_beneficiaire?: number;
   id_organisateur?: number;
@@ -35,16 +35,19 @@ export interface BookingFilters {
   date_fin?: string;
 }
 
-export interface BookingPagination {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
+export interface BookingConfig {
+  id: number;
+  capacite_journaliere: number;
 }
 
 export interface ApiBookingResponse {
   success: boolean;
   message?: string;
   data?: Booking | Booking[];
-  pagination?: BookingPagination;
+}
+
+export interface ApiBookingConfigResponse {
+  success: boolean;
+  message?: string;
+  data?: BookingConfig;
 }

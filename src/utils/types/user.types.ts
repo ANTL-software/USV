@@ -26,6 +26,7 @@ export interface Employe {
   id_poste?: number;
   id_departement?: number;
   actif: boolean;
+  role?: 'confirme' | 'debutant' | null;
   created_at?: string;
   updated_at?: string;
   poste?: Poste;

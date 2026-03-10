@@ -13,6 +13,7 @@ export class UserModel implements Employe {
   id_poste?: number;
   id_departement?: number;
   actif: boolean;
+  role?: 'confirme' | 'debutant' | null;
   created_at?: string;
   updated_at?: string;
   poste?: Poste;
@@ -29,6 +30,7 @@ export class UserModel implements Employe {
     this.id_poste = data.id_poste;
     this.id_departement = data.id_departement;
     this.actif = data.actif;
+    this.role = data.role;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
     this.poste = data.poste;
@@ -58,6 +60,7 @@ export class UserModel implements Employe {
       id_poste: this.id_poste,
       id_departement: this.id_departement,
       actif: this.actif,
+      role: this.role,
       created_at: this.created_at,
       updated_at: this.updated_at,
       poste: this.poste,
