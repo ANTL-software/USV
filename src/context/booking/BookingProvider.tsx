@@ -1,7 +1,8 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { BookingContext } from './BookingContext.tsx';
 import type { EmployeOption } from './BookingContext.tsx';
+import { UserContext } from '../user/UserContext.tsx';
 import type { BookingModel } from '../../API/models/booking.model.ts';
 import type { CreateBookingPayload, BookingFilters } from '../../utils/types/booking.types.ts';
 import {
@@ -27,13 +28,22 @@ interface BookingProviderProps {
 }
 
 export const BookingProvider = ({ children }: BookingProviderProps) => {
+  const userCtx = useContext(UserContext);
+  const isAuthenticated = !!userCtx?.user;
+
   const [bookings, setBookings] = useState<BookingModel[]>([]);
   const [employes, setEmployes] = useState<EmployeOption[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingEmployes, setLoadingEmployes] = useState<boolean>(true);
 
-  // Chargement initial des employés
+  // Chargement des employés uniquement quand l'utilisateur est authentifié
   useEffect(() => {
+    if (!isAuthenticated) {
+      setEmployes([]);
+      setLoadingEmployes(false);
+      return;
+    }
+    setLoadingEmployes(true);
     getAllEmployesService()
       .then(data => {
         const sorted = [...data].sort((a, b) => a.prenom.localeCompare(b.prenom, 'fr'));
@@ -44,7 +54,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
         showError(handleEmployeLoadError(err), 'Chargement impossible');
       })
       .finally(() => setLoadingEmployes(false));
-  }, []);
+  }, [isAuthenticated]);
 
   const fetchBookings = useCallback(async (filters?: BookingFilters): Promise<void> => {
     try {

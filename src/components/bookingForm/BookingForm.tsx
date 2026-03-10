@@ -131,6 +131,8 @@ export default function BookingForm({ onClose, onSubmit }: Readonly<BookingFormP
                 styles={selectStyles}
                 placeholder="08:00"
                 isSearchable
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
               />
             </div>
             <div className="fieldGroup">
@@ -142,6 +144,8 @@ export default function BookingForm({ onClose, onSubmit }: Readonly<BookingFormP
                 styles={selectStyles}
                 placeholder="09:00"
                 isSearchable
+                menuPortalTarget={document.body}
+                menuPosition="fixed"
               />
             </div>
           </div>

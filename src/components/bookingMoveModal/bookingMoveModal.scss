@@ -121,8 +121,13 @@
         color: #1f2937;
         transition: border-color vars.$transitionFast;
         outline: none;
+        display: block;
         width: 100%;
+        max-width: 100%;
+        min-width: 0;
         box-sizing: border-box;
+        -webkit-appearance: none;
+        appearance: none;
       }
 
       &:focus {
