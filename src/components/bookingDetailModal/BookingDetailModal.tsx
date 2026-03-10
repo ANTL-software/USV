@@ -25,12 +25,8 @@ export default function BookingDetailModal({
   const [isConfirming, setIsConfirming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
-  const dateDebut = new Date(booking.date_debut);
-  const dateFin = new Date(booking.date_fin);
-
-  const dateLabel = format(dateDebut, "EEEE d MMMM yyyy", { locale: fr });
-  const heureDebut = format(dateDebut, "HH:mm");
-  const heureFin = format(dateFin, "HH:mm");
+  // booking.date est DATEONLY (YYYY-MM-DD) — on ajoute T12:00 pour éviter le décalage UTC
+  const dateLabel = format(new Date(`${booking.date}T12:00:00`), "EEEE d MMMM yyyy", { locale: fr });
 
   const beneficiaireLabel = booking.beneficiaire
     ? `${booking.beneficiaire.prenom} ${booking.beneficiaire.nom.toUpperCase()}`
@@ -78,27 +74,14 @@ export default function BookingDetailModal({
             <span className="detailValue capitalize">{dateLabel}</span>
           </div>
 
-          <div className="detailRow">
-            <span className="detailLabel">Horaire</span>
-            <span className="detailValue">{heureDebut} → {heureFin}</span>
-          </div>
-
           {isConfirming && (
             <div className="confirmZone">
               <p>Confirmer l'annulation de cette réservation ?</p>
               <div className="confirmActions">
-                <button
-                  className="btnSecondary"
-                  onClick={() => setIsConfirming(false)}
-                  disabled={isCancelling}
-                >
+                <button className="btnSecondary" onClick={() => setIsConfirming(false)} disabled={isCancelling}>
                   Non, conserver
                 </button>
-                <button
-                  className="btnDanger"
-                  onClick={handleConfirmCancel}
-                  disabled={isCancelling}
-                >
+                <button className="btnDanger" onClick={handleConfirmCancel} disabled={isCancelling}>
                   {isCancelling ? "Annulation..." : "Oui, annuler"}
                 </button>
               </div>

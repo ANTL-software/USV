@@ -9,26 +9,20 @@ import type { SingleValue } from "react-select";
 // context
 import { useBookingContext } from "../../hooks/useBookingContext.ts";
 
-// utils
-import { TIME_OPTIONS, DEFAULT_START, DEFAULT_END } from "../../utils/scripts/bookingUtils.ts";
-import type { TimeOption } from "../../utils/scripts/bookingUtils.ts";
-
 interface EmployeOption {
   value: number;
   label: string;
 }
 
 interface BookingFormProps {
+  initialDate?: string;
   onClose: () => void;
   onSubmit: (data: BookingFormData) => void;
 }
 
 export interface BookingFormData {
   id_beneficiaire: number;
-  employeLabel: string;
   date: string;
-  heureDebut: string;
-  heureFin: string;
 }
 
 const selectStyles = {
@@ -51,36 +45,19 @@ const selectStyles = {
   menuPortal: (base: object) => ({ ...base, zIndex: 9999 }),
 };
 
-export default function BookingForm({ onClose, onSubmit }: Readonly<BookingFormProps>): ReactElement {
+export default function BookingForm({ initialDate, onClose, onSubmit }: Readonly<BookingFormProps>): ReactElement {
   const today = new Date().toISOString().split("T")[0];
   const { employes, loadingEmployes } = useBookingContext();
 
   const [employe, setEmploye] = useState<SingleValue<EmployeOption>>(null);
-  const [date, setDate] = useState(today);
-  const [heureDebut, setHeureDebut] = useState<SingleValue<TimeOption>>(
-    TIME_OPTIONS.find(o => o.value === DEFAULT_START) ?? null
-  );
-  const [heureFin, setHeureFin] = useState<SingleValue<TimeOption>>(
-    TIME_OPTIONS.find(o => o.value === DEFAULT_END) ?? null
-  );
+  const [date, setDate] = useState(initialDate || today);
   const [error, setError] = useState("");
 
   const handleSubmit = () => {
     if (!employe) { setError("Le bénéficiaire est obligatoire."); return; }
     if (!date) { setError("La date est obligatoire."); return; }
-    if (!heureDebut || !heureFin) { setError("Les heures sont obligatoires."); return; }
-    if (heureDebut.value >= heureFin.value) {
-      setError("L'heure de fin doit être après l'heure de début.");
-      return;
-    }
     setError("");
-    onSubmit({
-      id_beneficiaire: employe.value,
-      employeLabel: employe.label,
-      date,
-      heureDebut: heureDebut.value,
-      heureFin: heureFin.value,
-    });
+    onSubmit({ id_beneficiaire: employe.value, date });
   };
 
   return (
@@ -119,35 +96,6 @@ export default function BookingForm({ onClose, onSubmit }: Readonly<BookingFormP
               min={today}
               onChange={e => setDate(e.target.value)}
             />
-          </div>
-
-          <div className="fieldRow">
-            <div className="fieldGroup">
-              <label>Heure de début *</label>
-              <Select
-                options={TIME_OPTIONS}
-                value={heureDebut}
-                onChange={setHeureDebut}
-                styles={selectStyles}
-                placeholder="08:00"
-                isSearchable
-                menuPortalTarget={document.body}
-                menuPosition="fixed"
-              />
-            </div>
-            <div className="fieldGroup">
-              <label>Heure de fin *</label>
-              <Select
-                options={TIME_OPTIONS}
-                value={heureFin}
-                onChange={setHeureFin}
-                styles={selectStyles}
-                placeholder="09:00"
-                isSearchable
-                menuPortalTarget={document.body}
-                menuPosition="fixed"
-              />
-            </div>
           </div>
 
           {error && <p className="formError">{error}</p>}

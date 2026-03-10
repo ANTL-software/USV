@@ -2,16 +2,15 @@ import { useState, useCallback, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { BookingContext } from './BookingContext.tsx';
 import type { EmployeOption } from './BookingContext.tsx';
-import { UserContext } from '../user/UserContext.tsx';
 import type { BookingModel } from '../../API/models/booking.model.ts';
-import type { CreateBookingPayload, BookingFilters } from '../../utils/types/booking.types.ts';
+import type { CreateBookingPayload, BookingFilters, BookingConfig, UpdateBookingPayload } from '../../utils/types/booking.types.ts';
 import {
   getBookingsService,
   createBookingService,
   updateBookingService,
   cancelBookingService,
+  getBookingConfigService,
 } from '../../API/services/booking.service.ts';
-import type { UpdateBookingPayload } from '../../API/services/booking.service.ts';
 import { getAllEmployesService } from '../../API/services/user.service.ts';
 import { showError, showSuccess } from '../../utils/services/alertService.ts';
 import { logError } from '../../utils/scripts/errorHandling.ts';
@@ -22,6 +21,7 @@ import {
   handleBookingCancelError,
   handleEmployeLoadError,
 } from '../../utils/scripts/bookingErrorHandling.ts';
+import { UserContext } from '../user/UserContext.tsx';
 
 interface BookingProviderProps {
   children: ReactNode;
@@ -33,24 +33,29 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
 
   const [bookings, setBookings] = useState<BookingModel[]>([]);
   const [employes, setEmployes] = useState<EmployeOption[]>([]);
+  const [config, setConfig] = useState<BookingConfig | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingEmployes, setLoadingEmployes] = useState<boolean>(true);
 
-  // Chargement des employés uniquement quand l'utilisateur est authentifié
   useEffect(() => {
     if (!isAuthenticated) {
       setEmployes([]);
+      setConfig(null);
       setLoadingEmployes(false);
       return;
     }
     setLoadingEmployes(true);
-    getAllEmployesService()
-      .then(data => {
-        const sorted = [...data].sort((a, b) => a.prenom.localeCompare(b.prenom, 'fr'));
+    Promise.all([
+      getAllEmployesService(),
+      getBookingConfigService(),
+    ])
+      .then(([employes, cfg]) => {
+        const sorted = [...employes].sort((a, b) => a.prenom.localeCompare(b.prenom, 'fr'));
         setEmployes(sorted.map(e => e.toSelectOption()));
+        setConfig(cfg);
       })
       .catch(err => {
-        logError('BookingProvider.loadEmployes', err);
+        logError('BookingProvider.init', err);
         showError(handleEmployeLoadError(err), 'Chargement impossible');
       })
       .finally(() => setLoadingEmployes(false));
@@ -78,7 +83,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
     } catch (err: unknown) {
       logError('BookingProvider.createBooking', err);
       await showError(handleBookingCreateError(err), 'Échec de la réservation');
-      throw err; // Permet au composant de savoir qu'il y a eu une erreur (ex: ne pas fermer le formulaire)
+      throw err;
     } finally {
       setIsLoading(false);
     }
@@ -115,7 +120,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
   }, []);
 
   return (
-    <BookingContext.Provider value={{ bookings, employes, isLoading, loadingEmployes, fetchBookings, createBooking, updateBooking, cancelBooking }}>
+    <BookingContext.Provider value={{ bookings, employes, config, isLoading, loadingEmployes, fetchBookings, createBooking, updateBooking, cancelBooking }}>
       {children}
     </BookingContext.Provider>
   );

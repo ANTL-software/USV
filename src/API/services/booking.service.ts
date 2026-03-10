@@ -1,12 +1,10 @@
 import { getRequest, postRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import { AxiosResponse } from 'axios';
 import { BookingModel } from '../models/booking.model.ts';
-import type { Booking, CreateBookingPayload, BookingFilters, ApiBookingResponse } from '../../utils/types/booking.types.ts';
+import type { Booking, CreateBookingPayload, BookingFilters, ApiBookingResponse, BookingConfig, ApiBookingConfigResponse, UpdateBookingPayload } from '../../utils/types/booking.types.ts';
 
 export const getBookingsService = async (filters?: BookingFilters): Promise<BookingModel[]> => {
   const params = new URLSearchParams();
-  if (filters?.page) params.set('page', String(filters.page));
-  if (filters?.limit) params.set('limit', String(filters.limit));
   if (filters?.statut) params.set('statut', filters.statut);
   if (filters?.id_beneficiaire) params.set('id_beneficiaire', String(filters.id_beneficiaire));
   if (filters?.id_organisateur) params.set('id_organisateur', String(filters.id_organisateur));
@@ -24,18 +22,11 @@ export const getBookingsService = async (filters?: BookingFilters): Promise<Book
 
 export const createBookingService = async (payload: CreateBookingPayload): Promise<BookingModel> => {
   const response: AxiosResponse<ApiBookingResponse> = await postRequest('/bookings', payload);
-
   if (response.data.success && response.data.data && !Array.isArray(response.data.data)) {
     return BookingModel.fromJSON(response.data.data as Booking);
   }
   throw new Error(response.data.message || 'Impossible de créer la réservation');
 };
-
-export interface UpdateBookingPayload {
-  date?: string;
-  heureDebut?: string;
-  heureFin?: string;
-}
 
 export const updateBookingService = async (id: number, payload: UpdateBookingPayload): Promise<BookingModel> => {
   const response: AxiosResponse<ApiBookingResponse> = await putRequest(`/bookings/${id}`, payload);
@@ -48,6 +39,22 @@ export const updateBookingService = async (id: number, payload: UpdateBookingPay
 export const cancelBookingService = async (id: number): Promise<void> => {
   const response: AxiosResponse<ApiBookingResponse> = await deleteRequest(`/bookings/${id}`);
   if (!response.data.success) {
-    throw new Error(response.data.message || 'Impossible d\'annuler la réservation');
+    throw new Error(response.data.message || "Impossible d'annuler la réservation");
   }
+};
+
+export const getBookingConfigService = async (): Promise<BookingConfig> => {
+  const response: AxiosResponse<ApiBookingConfigResponse> = await getRequest('/bookings/config');
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer la configuration');
+};
+
+export const updateBookingConfigService = async (capacite_journaliere: number): Promise<BookingConfig> => {
+  const response: AxiosResponse<ApiBookingConfigResponse> = await putRequest('/bookings/config', { capacite_journaliere });
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de mettre à jour la configuration');
 };

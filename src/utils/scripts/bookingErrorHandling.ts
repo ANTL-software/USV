@@ -36,7 +36,7 @@ export const handleBookingCreateError = (error: unknown): string => {
       case 400: return "Les informations saisies sont incorrectes. Vérifiez le formulaire.";
       case 401: return "Votre session a expiré. Veuillez vous reconnecter.";
       case 404: return "L'employé sélectionné est introuvable.";
-      case 409: return "Ce créneau est déjà occupé par cet employé. Choisissez un autre horaire.";
+      case 409: return error.response?.data?.message || "Cette journée est complète ou cet employé est déjà réservé.";
       case 500: return "Le serveur rencontre un problème. Réessayez dans quelques instants.";
     }
     if (error.response?.data?.message) return error.response.data.message;
@@ -69,7 +69,7 @@ export const handleBookingUpdateError = (error: unknown): string => {
       case 400: return "Les informations saisies sont incorrectes.";
       case 401: return "Votre session a expiré. Veuillez vous reconnecter.";
       case 404: return "Cette réservation est introuvable.";
-      case 409: return "Ce créneau est déjà occupé par cet employé. Choisissez un autre horaire.";
+      case 409: return error.response?.data?.message || "Cette journée est complète ou cet employé est déjà réservé.";
       case 500: return "Le serveur rencontre un problème. Réessayez dans quelques instants.";
     }
     if (error.response?.data?.message) return error.response.data.message;

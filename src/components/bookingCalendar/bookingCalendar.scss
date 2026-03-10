@@ -199,31 +199,200 @@
     color: vars.$utilsPrimary;
   }
 
-  // Events
+  // ──────────────────────────────────────────
+  // BULLES DE RÉSERVATION
+  // ──────────────────────────────────────────
+
+  // Conteneur des events dans les cellules — flex wrap pour les bulles
+  .rbc-row-segment {
+    padding: 1px 2px;
+  }
+
   .rbc-event {
     & {
-      background-color: vars.$utilsPrimary;
-      border: none;
-      border-radius: 6px;
-      padding: 0.25em 0.5em;
-      font-size: 0.8em;
-      font-weight: 500;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+      background: transparent !important;
+      border: none !important;
+      padding: 1px 2px;
+      box-shadow: none !important;
     }
 
     &:focus {
       outline: none;
-      box-shadow: 0 0 0 2px white, 0 0 0 4px vars.$utilsPrimary;
-    }
-
-    &.rbc-selected {
-      background-color: vars.$utilsSecondary;
     }
   }
 
-  .rbc-event-label {
-    font-size: 0.7em;
-    opacity: 0.9;
+  .bookingBubble {
+    & {
+      width: 2em;
+      height: 2em;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.65em;
+      font-weight: 700;
+      color: white;
+      cursor: pointer;
+      transition: transform vars.$transitionFast, box-shadow vars.$transitionFast;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      transform: scale(1.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    }
+  }
+
+  // Dans la popup (+X de plus) : masquer la bulle, afficher le rectangle
+  .rbc-overlay {
+    .bookingBubble {
+      display: none;
+    }
+
+    .bookingPopupEvent {
+      display: flex;
+    }
+  }
+
+  // Dans la grille mois : masquer le rectangle, garder la bulle
+  .rbc-month-view {
+    .bookingPopupEvent {
+      display: none;
+    }
+  }
+
+  // ──────────────────────────────────────────
+  // RECTANGLES (vue semaine)
+  // ──────────────────────────────────────────
+
+  .bookingWeekEvent {
+    & {
+      display: flex;
+      align-items: center;
+      border-radius: 6px;
+      padding: 0.3em 0.6em;
+      font-size: 0.75em;
+      font-weight: 600;
+      color: white;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      transition: opacity vars.$transitionFast, transform vars.$transitionFast;
+      width: 100%;
+    }
+
+    &:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+    }
+  }
+
+  // Header de date avec badge capacité
+  .monthDateHeader {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.25em;
+      gap: 0.25em;
+    }
+  }
+
+  .capacityBadge {
+    & {
+      font-size: 0.6em;
+      font-weight: 600;
+      color: #9ca3af;
+      background: #f3f4f6;
+      border-radius: 4px;
+      padding: 0.1em 0.35em;
+      line-height: 1.4;
+    }
+
+    &.full {
+      color: #dc2626;
+      background: rgba(220, 38, 38, 0.1);
+    }
+  }
+
+  // Vue semaine : masquer le time grid, étirer la zone all-day sur toute la hauteur
+  .rbc-time-view {
+    & {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    // Masquer la grille horaire — inutile en tout-journée
+    .rbc-time-content {
+      display: none;
+    }
+
+    // Le header (jours + zone all-day) prend tout l'espace restant
+    .rbc-time-header {
+      & {
+        flex: 1;
+        display: flex;
+        overflow: hidden;
+      }
+    }
+
+    // Masquer le petit carré gutter en haut à gauche (aligné sur les heures)
+    .rbc-time-header-gutter {
+      display: none;
+    }
+
+    .rbc-time-header-content {
+      & {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border-left: 1px solid #e5e7eb;
+      }
+    }
+
+    // La zone all-day s'étire pour remplir toute la hauteur disponible
+    .rbc-allday-cell {
+      & {
+        flex: 1;
+        height: auto !important;
+        position: relative;
+        overflow-y: auto;
+      }
+    }
+
+    // Les colonnes de fond (portent les border-left = séparateurs verticaux)
+    .rbc-row-bg {
+      .rbc-day-bg + .rbc-day-bg {
+        border-left: 1px solid #e5e7eb;
+      }
+    }
+
+    .rbc-allday-events {
+      & {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25em;
+        padding: 0.5em;
+        align-content: flex-start;
+      }
+    }
+  }
+
+  // Header de colonne semaine (label + badge capacité)
+  .weekDayHeader {
+    & {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2em;
+      padding: 0.2em 0;
+    }
   }
 
   // Vue mois
@@ -273,59 +442,8 @@
     }
   }
 
-  // Vue semaine/jour
-  .rbc-time-view {
-    & {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-    }
-
-    .rbc-time-header {
-      border-bottom: none;
-    }
-
-    .rbc-time-content {
-      border-top: 1px solid #e5e7eb;
-    }
-
-    .rbc-day-slot {
-      border-left: 1px solid #e5e7eb;
-
-      &:first-child {
-        border-left: none;
-      }
-    }
-  }
-
-  .rbc-time-header-content {
-    border-left: 1px solid #e5e7eb;
-  }
-
-  .rbc-allday-cell {
-    display: none;
-  }
-
   .rbc-time-header.rbc-overflowing {
     border-right: none;
-  }
-
-  // Indicateur heure courante
-  .rbc-current-time-indicator {
-    & {
-      background-color: vars.$utilsPrimary;
-      height: 2px;
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      left: -5px;
-      top: -4px;
-      width: 10px;
-      height: 10px;
-      background-color: vars.$utilsPrimary;
-      border-radius: 50%;
-    }
   }
 
   .rbc-show-more {
