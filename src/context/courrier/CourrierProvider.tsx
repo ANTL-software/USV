@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -38,10 +38,10 @@ export const CourrierProvider = ({
     }
   }, []);
 
-  const getAllCourriers = useCallback(async (page: number = 1, limit: number = 10): Promise<void> => {
+  const getAllCourriers = useCallback(async (params: ICourrierListParams = {}): Promise<void> => {
     setIsLoading(true);
     try {
-      const response = await getAllCourriersService(page, limit);
+      const response = await getAllCourriersService(params);
       setCourriers(response.courriers);
       setPagination(response.pagination);
     } catch (error) {
@@ -72,17 +72,17 @@ export const CourrierProvider = ({
     setIsLoading(true);
     try {
       const updatedCourrier = await updateCourrierService(id, metadata);
-      
-      setCourriers(prev => 
-        prev.map(courrier => 
+
+      setCourriers(prev =>
+        prev.map(courrier =>
           courrier.id === id ? updatedCourrier : courrier
         )
       );
-      
+
       if (currentCourrier?.id === id) {
         setCurrentCourrier(updatedCourrier);
       }
-      
+
       return updatedCourrier;
     } catch (error) {
       console.error("Error while updating courrier:", error);
@@ -96,9 +96,9 @@ export const CourrierProvider = ({
     setIsLoading(true);
     try {
       await deleteCourrierService(id);
-      
+
       setCourriers(prev => prev.filter(courrier => courrier.id !== id));
-      
+
       if (currentCourrier?.id === id) {
         setCurrentCourrier(null);
       }
@@ -140,7 +140,7 @@ export const CourrierProvider = ({
   }, []);
 
   const sendCourrierEmail = async (
-    id: number, 
+    id: number,
     emailData: { to: string; subject: string; message: string }
   ): Promise<void> => {
     setIsLoading(true);

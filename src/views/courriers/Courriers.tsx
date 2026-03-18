@@ -4,7 +4,7 @@ import "./courriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdAdd, MdList, MdArchive, MdArrowBack } from "react-icons/md";
+import { MdAdd, MdList, MdPhotoCamera } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
@@ -12,8 +12,6 @@ import { FiCalendar, FiFileText } from "react-icons/fi";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
-import BackToTop from "../../components/backToTop/BackToTop.tsx";
-import Button from "../../components/button/Button.tsx";
 
 // context
 import { CourrierContext } from "../../context/courrier/CourrierContext.tsx";
@@ -23,7 +21,7 @@ function Courriers(): ReactElement {
   const { stats, getCourrierStats } = useContext(CourrierContext);
   const [activeAction, setActiveAction] = useState<string>("");
   const [statsLoading, setStatsLoading] = useState<boolean>(true);
-  
+
   useEffect(() => {
     // Charger les statistiques au montage du composant
     const loadStats = async () => {
@@ -35,7 +33,7 @@ function Courriers(): ReactElement {
         setStatsLoading(false);
       }
     };
-    
+
     loadStats();
   }, [getCourrierStats]);
 
@@ -54,8 +52,8 @@ function Courriers(): ReactElement {
     },
     {
       id: '3',
-      label: 'Archives',
-      icon: <MdArchive />,
+      label: 'Photo → PDF',
+      icon: <MdPhotoCamera />,
       primary: false
     }
   ];
@@ -94,16 +92,13 @@ function Courriers(): ReactElement {
   const handleActionClick = (event: React.MouseEvent, actionId: string) => {
     event.preventDefault();
     event.stopPropagation();
-    console.log("Action clicked:", actionId); // Debug
-    console.log("Current location:", window.location.pathname); // Debug
     if (actionId === '1') {
-      console.log("Navigating to new courrier"); // Debug
       navigate("/mail/new");
     } else if (actionId === '2') {
-      console.log("Navigating to list courriers"); // Debug
       navigate("/mail/list");
+    } else if (actionId === '3') {
+      navigate("/mail/convert");
     } else {
-      console.log("Setting active action:", actionId); // Debug
       setActiveAction(actionId);
     }
   };
@@ -115,10 +110,6 @@ function Courriers(): ReactElement {
       <main id="courriers" className="courriersMain">
         <div className="courriersContainer">
           <section className="courriersHeader" data-aos="fade-down">
-            <Button style="back" onClick={() => navigate("/home")}>
-              <MdArrowBack />
-              <span>Retour</span>
-            </Button>
             <h1 className="courriersTitle">Gestion des courriers</h1>
             <p className="courriersSubtitle">Organisez et suivez vos courriers efficacement</p>
           </section>
@@ -173,7 +164,6 @@ function Courriers(): ReactElement {
           )}
         </div>
       </main>
-      <BackToTop />
     </>
   );
 }

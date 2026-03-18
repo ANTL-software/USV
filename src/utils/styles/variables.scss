@@ -28,6 +28,13 @@ $utilsDark: #5b21b6;
 $utilsGradient: linear-gradient(135deg, $utilsPrimary 0%, $utilsSecondary 100%);
 $utilsGradientReverse: linear-gradient(135deg, $utilsSecondary 0%, $utilsPrimary 100%);
 
+$courrierPrimary: #26d0ce;
+$courrierSecondary: #4dd0e1;
+$courrierDark: #1ba69b;
+
+$courrierGradient: linear-gradient(135deg, $courrierPrimary 0%, $courrierSecondary 100%);
+$courrierGradientReverse: linear-gradient(135deg, $courrierSecondary 0%, $courrierPrimary 100%);
+
 $navTextColor: $fontColorPrimary;
 $navTextColorActive: $whiteBackground;
 

@@ -94,13 +94,20 @@ export const validateCourrierForm = (formData: ICourrierFormData): ValidationRes
     }
   }
 
+  if (!formData.courrierDate) {
+    return {
+      isValid: false,
+      errorMessage: "Veuillez saisir la date du courrier"
+    };
+  }
+
   if (!formData.direction) {
     return {
       isValid: false,
       errorMessage: "Veuillez sélectionner la direction"
     };
   }
-  
+
   return {
     isValid: true,
     errorMessage: ""

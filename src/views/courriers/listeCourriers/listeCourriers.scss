@@ -115,13 +115,13 @@
       align-items: center;
       gap: 1em;
       flex-shrink: 0;
-      
+
       .paginationBtn {
         padding: 0.5em 1em !important;
         font-size: 0.85em !important;
         white-space: nowrap !important;
         @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
-        
+
         &:disabled {
           background: vars.$borderColor;
           color: vars.$fontColorSecondary;
@@ -129,7 +129,7 @@
           transform: none;
         }
       }
-      
+
       .paginationInfo {
         display: flex;
         flex-direction: column;
@@ -139,31 +139,240 @@
         font-size: 0.85em;
         color: vars.$fontColorSecondary;
         min-width: 10em;
-        
+
         .totalItems {
           font-size: 0.8em;
           opacity: 0.8;
         }
       }
     }
-    
+
+    .filterToggleBtn {
+      & {
+        display: flex;
+        align-items: center;
+        gap: 0.4em;
+        padding: 0.5em 1em;
+        border: 1px solid vars.$borderColor;
+        border-radius: 8px;
+        background: white;
+        color: vars.$fontColorSecondary;
+        font-size: 0.85em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: vars.$transitionMedium;
+        position: relative;
+      }
+
+      &:hover {
+        border-color: vars.$utilsPrimary;
+        color: vars.$utilsPrimary;
+      }
+
+      &.active {
+        background: rgba(vars.$utilsPrimary, 0.1);
+        border-color: vars.$utilsPrimary;
+        color: vars.$utilsPrimary;
+      }
+
+      .filterBadge {
+        & {
+          width: 0.5em;
+          height: 0.5em;
+          border-radius: 50%;
+          background: vars.$utilsPrimary;
+          position: absolute;
+          top: 0.4em;
+          right: 0.4em;
+        }
+      }
+    }
+
     @media (max-width: vars.$tabletWidth) {
       flex-direction: column;
       align-items: stretch;
       gap: 1em;
-      
+
+      .filterToggleBtn {
+        align-self: flex-start;
+      }
+
       .paginationControls {
         justify-content: center;
-        
+
         .paginationBtn {
           font-size: 0.85em;
           padding: 0.6em 0.8em;
         }
-        
+
         .paginationInfo {
           min-width: 8em;
           font-size: 0.8em;
         }
+      }
+    }
+  }
+
+  .filterSection {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+      padding: 0.75em;
+      background: rgba(vars.$utilsPrimary, 0.03);
+      border: 1px solid rgba(vars.$utilsPrimary, 0.1);
+      border-radius: 8px;
+      position: relative;
+      z-index: 20;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 0.75em;
+      align-items: center;
+    }
+
+    .filterSelect {
+      & {
+        flex: 1;
+        min-width: 8em;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        max-width: 12em;
+      }
+
+      .react-select-container {
+        @include mixins.reactSelect;
+
+        .react-select__control {
+          min-height: 2.4em;
+          height: 2.4em;
+        }
+
+        .react-select__value-container {
+          height: 2.4em;
+          padding: 0 0.75em;
+          flex-wrap: nowrap;
+        }
+
+        .react-select__single-value {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          max-width: calc(100% - 0.5em);
+        }
+
+        .react-select__indicators {
+          height: 2.4em;
+        }
+
+        .react-select__menu {
+          z-index: 30;
+        }
+      }
+    }
+
+    .filterDateGroup {
+      & {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3em;
+        flex: 1;
+        min-width: 12em;
+      }
+
+      @media (min-width: vars.$tabletWidth) {
+        min-width: 16em;
+        max-width: 20em;
+      }
+
+      .filterDateLabel {
+        & {
+          display: block;
+          font-size: 0.72em;
+          font-weight: 600;
+          color: vars.$fontColorSecondary;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+          padding-left: 0.25em;
+        }
+
+        @media (min-width: vars.$tabletWidth) {
+          display: none;
+        }
+      }
+
+      .filterDateInputs {
+        & {
+          display: flex;
+          align-items: center;
+          gap: 0.4em;
+        }
+
+        .filterDateInput {
+          & {
+            flex: 1;
+            min-width: 0;
+            height: 2.4em;
+            padding: 0 0.5em;
+            border: 1px solid vars.$borderColor;
+            border-radius: 6px;
+            font-size: 0.82em;
+            color: vars.$fontColorPrimary;
+            background: white;
+            cursor: pointer;
+            transition: vars.$transitionMedium;
+            font-family: inherit;
+          }
+
+          &:hover {
+            border-color: vars.$utilsPrimary;
+          }
+
+          &:focus {
+            outline: none;
+            border-color: vars.$utilsPrimary;
+            box-shadow: 0 0 0 2px rgba(vars.$utilsPrimary, 0.15);
+          }
+
+          &::-webkit-calendar-picker-indicator {
+            opacity: 0.5;
+            cursor: pointer;
+          }
+        }
+
+        .filterDateSeparator {
+          & {
+            color: vars.$fontColorSecondary;
+            font-size: 0.85em;
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+
+    .clearFiltersBtn {
+      & {
+        display: flex;
+        align-items: center;
+        gap: 0.3em;
+        padding: 0.5em 0.75em;
+        border: none;
+        border-radius: 6px;
+        background: rgba(vars.$errorColor, 0.1);
+        color: vars.$errorColor;
+        font-size: 0.8em;
+        font-weight: 500;
+        cursor: pointer;
+        transition: vars.$transitionMedium;
+        white-space: nowrap;
+      }
+
+      &:hover {
+        background: vars.$errorColor;
+        color: white;
       }
     }
   }
@@ -221,16 +430,18 @@
           z-index: 10;
           
           th {
-            padding: 1em 0.5em;
-            text-align: left;
-            font-weight: 600;
-            color: vars.$fontColorPrimary;
-            border-bottom: 2px solid vars.$borderColor;
-            font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            background: vars.$greyBackground;
-            
+            & {
+              padding: 1em 0.5em;
+              text-align: left;
+              font-weight: 600;
+              color: vars.$fontColorPrimary;
+              border-bottom: 2px solid vars.$borderColor;
+              font-size: 0.85em;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              background: vars.$greyBackground;
+            }
+
             &:nth-child(1) { min-width: 3em; }
             &:nth-child(2) { min-width: 15em; }
             &:nth-child(3) { min-width: 6em; }
@@ -239,9 +450,38 @@
             &:nth-child(6) { min-width: 10em; }
             &:nth-child(7) { min-width: 8em; }
             &:nth-child(8) { min-width: 12em; }
-            &:nth-child(9) { 
+            &:nth-child(9) {
               min-width: 10em;
               text-align: right;
+            }
+
+            &.sortable {
+              & {
+                cursor: pointer;
+                user-select: none;
+                transition: vars.$transitionMedium;
+              }
+
+              &:hover {
+                background-color: rgba(vars.$utilsPrimary, 0.08);
+              }
+
+              .sortIcon {
+                & {
+                  font-size: 0.9em;
+                  vertical-align: middle;
+                  opacity: 0.5;
+                }
+              }
+
+              &.sorted {
+                color: vars.$utilsPrimary;
+
+                .sortIcon {
+                  opacity: 1;
+                  color: vars.$utilsPrimary;
+                }
+              }
             }
           }
         }

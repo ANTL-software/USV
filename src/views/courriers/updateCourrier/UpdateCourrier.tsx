@@ -15,53 +15,41 @@ import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
-import BackToTop from "../../../components/backToTop/BackToTop.tsx";
 import Button from "../../../components/button/Button.tsx";
 import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 import Loader from "../../../components/loader/Loader.tsx";
 import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // types
-import { ICourrierFormData, ICourrier } from "../../../utils/types/courrier.types.ts";
+import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 // utils
-import { 
-  handleCourrierUploadError, 
-  handleCourrierLoadError, 
-  logError, 
-  showErrorNotification 
+import {
+  handleCourrierUploadError,
+  logError,
 } from "../../../utils/scripts/errorHandling.ts";
 import { validateCourrierUpdateForm } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
-
-// services
-import { downloadCourrierService, getCourrierByIdService } from "../../../API/services/courrier.service.ts";
-import { generateViewUrlService } from "../../../API/services/viewUrl.service.ts";
+import { useCourrierEditPreview } from "../../../utils/hooks/useCourrierEditPreview.ts";
+import { DIRECTION_OPTIONS, PRIORITY_OPTIONS } from "../../../utils/constants/courrierOptions.ts";
 
 // Alert service
 import { showError, showSuccess } from "../../../utils/services/alertService";
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 function UpdateCourrier(): ReactElement {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { updateCourrier, isLoading } = useContext(CourrierContext);
-  
-  const [courrier, setCourrier] = useState<ICourrier | null>(null);
-  const [pdfUrl, setPdfUrl] = useState<string>("");
-  const [fileType, setFileType] = useState<'pdf' | 'image'>('pdf');
-  const [loadingCourrier, setLoadingCourrier] = useState<boolean>(true);
-  
+
+  const { courrier, formDefaults, pdfUrl, fileType, loadingCourrier } =
+    useCourrierEditPreview(id);
+
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
   const departmentOptions = useCourrierFieldOptions('department');
   const emitterOptions = useCourrierFieldOptions('emitter');
   const recipientOptions = useCourrierFieldOptions('recipient');
-  
+
   const [formData, setFormData] = useState<ICourrierFormData>({
     direction: "entrant",
     emitter: "",
@@ -72,83 +60,13 @@ function UpdateCourrier(): ReactElement {
     department: "",
     kind: "",
     description: "",
-    customFileName: ""
+    customFileName: "",
   });
 
-  const directionOptions: SelectOption[] = [
-    { value: 'entrant', label: 'Entrant' },
-    { value: 'sortant', label: 'Sortant' },
-    { value: 'interne', label: 'Interne' }
-  ];
-
-  const priorityOptions: SelectOption[] = [
-    { value: 'low', label: 'Basse' },
-    { value: 'normal', label: 'Normale' },
-    { value: 'high', label: 'Haute' },
-    { value: 'urgent', label: 'Urgente' }
-  ];
-
+  // Peupler le formulaire dès que le courrier est chargé
   useEffect(() => {
-    const fetchCourrier = async () => {
-      if (!id) return;
-      
-      try {
-        setLoadingCourrier(true);
-        
-        // Fetch courrier data using the service
-        const courrierData: ICourrier = await getCourrierByIdService(parseInt(id));
-        setCourrier(courrierData);
-        
-        // Populate form with existing data
-        setFormData({
-          direction: courrierData.direction,
-          emitter: courrierData.emitter || "",
-          recipient: courrierData.recipient || "",
-          receptionDate: courrierData.receptionDate ? courrierData.receptionDate.split('T')[0] : "",
-          courrierDate: courrierData.courrierDate ? courrierData.courrierDate.split('T')[0] : "",
-          priority: courrierData.priority || "normal",
-          department: courrierData.department || "",
-          kind: courrierData.kind || "",
-          description: courrierData.description || "",
-          customFileName: courrierData.fileName.replace(/\.[^/.]+$/, "") || ""
-        });
-
-        // Load file for preview
-        // Détecter le type de fichier basé sur l'extension
-        const isImage = courrierData.fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
-        
-        if (isImage) {
-          // Pour les images, utiliser l'endpoint download direct (pas de problème CSP avec <img>)
-          const blob = await downloadCourrierService(courrierData.id);
-          const url = URL.createObjectURL(blob);
-          setPdfUrl(url);
-          setFileType('image');
-        } else {
-          // Pour les PDFs, utiliser l'URL signée pour éviter les problèmes d'authentification iframe
-          const viewUrlData = await generateViewUrlService(courrierData.id, 10);
-          setPdfUrl(viewUrlData.viewUrl);
-          setFileType('pdf');
-        }
-        
-      } catch (error: unknown) {
-        logError('loadCourrierForEdit', error);
-        const errorMessage = handleCourrierLoadError(error);
-        showErrorNotification(errorMessage);
-        navigate("/mail/list");
-      } finally {
-        setLoadingCourrier(false);
-      }
-    };
-
-    fetchCourrier();
-
-    // Cleanup pour les blob URLs (images uniquement)
-    return () => {
-      if (pdfUrl && pdfUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(pdfUrl);
-      }
-    };
-  }, [id, navigate]);
+    if (formDefaults) setFormData(formDefaults);
+  }, [formDefaults]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -166,7 +84,7 @@ function UpdateCourrier(): ReactElement {
     }));
   };
 
-  const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
+  const handleSelectChange = (selectedOption: { value: string; label: string } | null, name: string) => {
     if (selectedOption) {
       setFormData(prev => ({
         ...prev,
@@ -177,7 +95,7 @@ function UpdateCourrier(): ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!courrier) return;
 
     // Validation
@@ -186,7 +104,7 @@ function UpdateCourrier(): ReactElement {
       await showError(validation.errorMessage, 'Erreur de validation');
       return;
     }
-    
+
     try {
       const updateData = {
         direction: formData.direction,
@@ -281,13 +199,13 @@ function UpdateCourrier(): ReactElement {
                         <label htmlFor="direction">Direction *</label>
                         <Select
                           inputId="direction"
-                          value={directionOptions.find(
+                          value={DIRECTION_OPTIONS.find(
                             (option) => option.value === formData.direction
                           )}
                           onChange={(selectedOption) =>
                             handleSelectChange(selectedOption, "direction")
                           }
-                          options={directionOptions}
+                          options={DIRECTION_OPTIONS}
                           className="react-select-container"
                           classNamePrefix="react-select"
                           placeholder="Sélectionner..."
@@ -372,13 +290,13 @@ function UpdateCourrier(): ReactElement {
                         </label>
                         <Select
                           inputId="priority"
-                          value={priorityOptions.find(
+                          value={PRIORITY_OPTIONS.find(
                             (option) => option.value === formData.priority
                           )}
                           onChange={(selectedOption) =>
                             handleSelectChange(selectedOption, "priority")
                           }
-                          options={priorityOptions}
+                          options={PRIORITY_OPTIONS}
                           className="react-select-container"
                           classNamePrefix="react-select"
                           placeholder="Sélectionner..."
@@ -485,7 +403,7 @@ function UpdateCourrier(): ReactElement {
                       className="imagePreview"
                     />
                   ) : (
-                    <ModernPDFViewer 
+                    <ModernPDFViewer
                       pdfUrl={pdfUrl}
                       fileName={courrier?.fileName || 'document.pdf'}
                     />
@@ -496,7 +414,6 @@ function UpdateCourrier(): ReactElement {
           </div>
         </div>
       </main>
-      <BackToTop />
     </>
   );
 }

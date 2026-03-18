@@ -7,7 +7,7 @@ import { ReactElement, useEffect, useCallback, useState } from "react";
 import { Calendar } from "react-big-calendar";
 import type { View, NavigateAction, SlotInfo } from "react-big-calendar";
 import { format } from "date-fns";
-import { fr } from "date-fns/locale";
+
 import { IoAdd } from "react-icons/io5";
 
 // context

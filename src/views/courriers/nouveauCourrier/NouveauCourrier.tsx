@@ -15,7 +15,6 @@ import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
-import BackToTop from "../../../components/backToTop/BackToTop.tsx";
 import Button from "../../../components/button/Button.tsx";
 import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 
@@ -24,30 +23,26 @@ import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 
 // utils
 import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
+import { DIRECTION_OPTIONS, PRIORITY_OPTIONS } from "../../../utils/constants/courrierOptions.ts";
 import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
-
-interface SelectOption {
-  value: string;
-  label: string;
-}
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
   const { uploadCourrier, isLoading } = useContext(CourrierContext);
-  
+
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
   const departmentOptions = useCourrierFieldOptions('department');
   const emitterOptions = useCourrierFieldOptions('emitter');
   const recipientOptions = useCourrierFieldOptions('recipient');
-  
+
   const [formData, setFormData] = useState<ICourrierFormData>({
     direction: "entrant",
     emitter: "",
     recipient: "",
     receptionDate: new Date().toISOString().split('T')[0],
-    courrierDate: "",
+    courrierDate: new Date().toISOString().split('T')[0],
     priority: "normal",
     department: "",
     kind: "",
@@ -55,19 +50,6 @@ function NouveauCourrier(): ReactElement {
     customFileName: ""
   });
   const [dragActive, setDragActive] = useState(false);
-
-  const directionOptions: SelectOption[] = [
-    { value: 'entrant', label: 'Entrant' },
-    { value: 'sortant', label: 'Sortant' },
-    { value: 'interne', label: 'Interne' }
-  ];
-
-  const priorityOptions: SelectOption[] = [
-    { value: 'low', label: 'Basse' },
-    { value: 'normal', label: 'Normale' },
-    { value: 'high', label: 'Haute' },
-    { value: 'urgent', label: 'Urgente' }
-  ];
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -85,7 +67,7 @@ function NouveauCourrier(): ReactElement {
     }));
   };
 
-  const handleSelectChange = (selectedOption: SelectOption | null, name: string) => {
+  const handleSelectChange = (selectedOption: { value: string; label: string } | null, name: string) => {
     if (selectedOption) {
       setFormData(prev => ({
         ...prev,
@@ -96,7 +78,7 @@ function NouveauCourrier(): ReactElement {
 
   const handleFileUpload = (file: File) => {
     const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").trim();
-    
+
     setFormData(prev => ({
       ...prev,
       fichierJoint: file,
@@ -118,7 +100,7 @@ function NouveauCourrier(): ReactElement {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files[0]);
     }
@@ -132,21 +114,21 @@ function NouveauCourrier(): ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Validation
     const validation = validateCourrierForm(formData);
     if (!validation.isValid) {
       showErrorNotification(validation.errorMessage, 'warning');
       return;
     }
-    
+
     try {
       const uploadData = {
         direction: formData.direction,
         emitter: formData.emitter?.trim() || undefined,
         recipient: formData.recipient?.trim() || undefined,
         receptionDate: formData.receptionDate || undefined,
-        courrierDate: formData.courrierDate || undefined,
+        courrierDate: formData.courrierDate,
         priority: formData.priority,
         department: formData.department?.trim() || undefined,
         kind: formData.kind?.trim() || undefined,
@@ -203,13 +185,13 @@ function NouveauCourrier(): ReactElement {
                     <label htmlFor="direction">Direction *</label>
                     <Select
                       inputId="direction"
-                      value={directionOptions.find(
+                      value={DIRECTION_OPTIONS.find(
                         (option) => option.value === formData.direction
                       )}
                       onChange={(selectedOption) =>
                         handleSelectChange(selectedOption, "direction")
                       }
-                      options={directionOptions}
+                      options={DIRECTION_OPTIONS}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       placeholder="Sélectionner..."
@@ -312,13 +294,13 @@ function NouveauCourrier(): ReactElement {
                     </label>
                     <Select
                       inputId="priority"
-                      value={priorityOptions.find(
+                      value={PRIORITY_OPTIONS.find(
                         (option) => option.value === formData.priority
                       )}
                       onChange={(selectedOption) =>
                         handleSelectChange(selectedOption, "priority")
                       }
-                      options={priorityOptions}
+                      options={PRIORITY_OPTIONS}
                       className="react-select-container"
                       classNamePrefix="react-select"
                       placeholder="Sélectionner..."
@@ -347,13 +329,14 @@ function NouveauCourrier(): ReactElement {
                     />
                   </div>
                   <div className="formGroup">
-                    <label htmlFor="courrierDate">Date du courrier</label>
+                    <label htmlFor="courrierDate">Date du courrier *</label>
                     <input
                       type="date"
                       id="courrierDate"
                       name="courrierDate"
                       value={formData.courrierDate}
                       onChange={handleInputChange}
+                      required
                     />
                   </div>
                 </div>
@@ -474,7 +457,8 @@ function NouveauCourrier(): ReactElement {
                   !formData.fichierJoint ||
                   !formData.customFileName.trim() ||
                   !formData.kind.trim() ||
-                  !formData.department.trim()
+                  !formData.department.trim() ||
+                  !formData.courrierDate
                 }
               >
                 <MdSave />
@@ -484,7 +468,6 @@ function NouveauCourrier(): ReactElement {
           </form>
         </div>
       </main>
-      <BackToTop />
     </>
   );
 }

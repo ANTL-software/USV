@@ -85,3 +85,31 @@ export interface ICourrierStats {
   thisMonth: number;
   thisYear: number;
 }
+
+export type CourrierSortColumn = 'fileName' | 'direction' | 'kind' | 'department' | 'emitter' | 'courrierDate' | 'description';
+
+export type SortOrder = 'ASC' | 'DESC';
+
+export interface ICourrierListParams {
+  page?: number;
+  limit?: number;
+  sortBy?: CourrierSortColumn;
+  sortOrder?: SortOrder;
+  filterKind?: string;
+  filterDepartment?: string;
+  filterEmitter?: string;
+  filterRecipient?: string;
+  filterDirection?: 'entrant' | 'sortant' | 'interne';
+  filterDateMin?: string;
+  filterDateMax?: string;
+}
+
+export interface IColumnFilters {
+  kind: string;
+  department: string;
+  emitter: string;
+  recipient: string;
+  direction: string;
+  dateMin: string;
+  dateMax: string;
+}

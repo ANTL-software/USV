@@ -1,4 +1,4 @@
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
 import { createContext, Context } from "react";
 
 interface ICourrierContext {
@@ -10,7 +10,7 @@ interface ICourrierContext {
   setCourriers: (courriers: ICourrier[]) => void;
   setCurrentCourrier: (courrier: ICourrier | null) => void;
   uploadCourrier: (file: File, metadata: ICourrierUploadData) => Promise<ICourrier>;
-  getAllCourriers: (page?: number, limit?: number) => Promise<void>;
+  getAllCourriers: (params?: ICourrierListParams) => Promise<void>;
   getCourrierById: (id: number) => Promise<void>;
   updateCourrier: (id: number, metadata: Partial<ICourrierUploadData>) => Promise<ICourrier>;
   deleteCourrier: (id: number) => Promise<void>;
