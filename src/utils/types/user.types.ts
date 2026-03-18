@@ -1,11 +1,15 @@
 // Aligné avec les types du repo script (source de vérité : Olympe API)
 
+export type TypePoste = 'direction' | 'commercial' | 'support' | 'rh' | 'technique' | 'adv' | 'autre';
+
 export interface Poste {
   id_poste: number;
   libelle_poste: string;
   description?: string;
-  salaire_base?: number;
-  niveau_hierarchique?: number;
+  salaire_base?: number | null;
+  niveau_hierarchique?: string | null;
+  type_poste?: TypePoste | null;
+  couleur?: string | null;
 }
 
 export interface Departement {
@@ -13,6 +17,12 @@ export interface Departement {
   nom_departement: string;
   budget?: number;
   id_responsable?: number;
+}
+
+export interface RangCommercial {
+  id_rang: number;
+  nom_rang: string;
+  libelle: string;
 }
 
 export interface Employe {
@@ -25,12 +35,30 @@ export interface Employe {
   date_embauche?: string;
   id_poste?: number;
   id_departement?: number;
+  id_rang_commercial?: number | null;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
+  sip_uri?: string | null;
   created_at?: string;
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
+}
+
+export interface CreateEmployeData {
+  nom: string;
+  prenom: string;
+  password: string;
+  email?: string;
+  telephone?: string;
+  date_embauche?: string;
+  id_poste?: number;
+  id_rang_commercial?: number;
+}
+
+export interface UpdateSipData {
+  sip_uri: string;
+  sip_password: string;
 }
 
 export interface LoginCredentials {
@@ -52,4 +80,11 @@ export interface ApiResponse<T = unknown> {
   success: boolean;
   message: string;
   data?: T;
+}
+
+export interface CreateEmployeResponse {
+  employe: import('../../API/models/user.model').UserModel;
+  sip_provisioned: boolean;
+  sip_error: string | null;
+  message: string;
 }

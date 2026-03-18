@@ -1,11 +1,18 @@
 // styles
 import "./header.scss";
 
+// assets
+import antlLogo from "../../assets/antlLogo.png";
+
+// utils
+import { getSalutation } from "../../utils/scripts/utils.ts";
+
 // hooks | libraries
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
 import { IoHome, IoAdd, IoList, IoCalendar } from "react-icons/io5";
+import { LuLogOut } from "react-icons/lu";
 import { useUserContext } from "../../hooks/useUserContext.ts";
 
 // components
@@ -41,20 +48,21 @@ export default function Header(): ReactElement {
             onClick={closeMobileMenu}
             title={isAuthRoute ? "" : "Home"}
           >
-            <h1 className="brandTitle">
-              <span className="AN">an</span>
-              <span className="TL">tl</span>
-            </h1>
+            <figure className="brandLogo">
+              <img src={antlLogo} alt="ANTL" />
+            </figure>
           </Link>
 
           {/* User Info & Desktop Navigation */}
           <div className="headerRight">
             {user && !isAuthRoute && (
-              <div className="userInfo">
-                <span className="userGreeting">Bonjour {user.prenom}</span>
+              <span className="userGreeting">{getSalutation(user.prenom)}</span>
+            )}
+            {user && !isAuthRoute && (
+              <div className="headerActions">
                 <PWAInstallButton variant="desktop" compact={true} />
-                <button onClick={handleLogout} className="logoutButton">
-                  Déconnexion
+                <button onClick={handleLogout} className="logoutButton" title="Déconnexion" aria-label="Déconnexion">
+                  <LuLogOut size={18} />
                 </button>
               </div>
             )}
@@ -92,11 +100,11 @@ export default function Header(): ReactElement {
               {user && (
                 <div className="mobileUserInfo">
                   <span className="mobileUserGreeting">
-                    Bonjour {user.prenom}
+                    {getSalutation(user.prenom)}
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
-                  <button onClick={handleLogout} className="mobileLogoutButton">
-                    Déconnexion
+                  <button onClick={handleLogout} className="mobileLogoutButton" title="Déconnexion">
+                    <LuLogOut size={16} /> Déconnexion
                   </button>
                 </div>
               )}

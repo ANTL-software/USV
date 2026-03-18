@@ -47,6 +47,31 @@ export const getCSP = (): string => {
 };
 
 /**
+ * Retourne un message d'accueil contextuel selon l'heure, le jour et le prénom.
+ */
+export function getSalutation(prenom?: string, _heure?: number, _jour?: number): string {
+  const now  = new Date();
+  const h    = _heure !== undefined ? _heure : now.getHours();
+  const jour = _jour  !== undefined ? _jour  : now.getDay();
+  const p    = prenom ? ` ${prenom}` : "";
+
+  if (h < 5)  return `Vous êtes couché·e très tard${p} !`;
+  if (h < 9)  return `Belle matinée${p}, on attaque !`;
+  if (h < 12) {
+    if (jour === 1) return `Belle semaine en perspective${p} !`;
+    if (jour === 4) return `Dernier grand jour de la semaine${p}, on y va !`;
+    return `Bonjour${p} !`;
+  }
+  if (h < 14) return `Bon appétit${p} !`;
+  if (h < 18) {
+    if (jour === 4) return `Le weekend approche${p}, plus que quelques appels !`;
+    return `Bon après-midi${p} !`;
+  }
+  if (h < 21) return `Bonne soirée${p} !`;
+  return `Encore au bureau${p} ? Rentrez vous reposer !`;
+}
+
+/**
  * Logs des informations sur l'environnement au démarrage
  */
 export const logEnvironmentInfo = (): void => {

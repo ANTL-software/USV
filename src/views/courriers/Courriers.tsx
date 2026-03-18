@@ -4,7 +4,7 @@ import "./courriers.scss";
 // hooks | libraries
 import { ReactElement, useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { MdAdd, MdList, MdArchive } from "react-icons/md";
+import { MdAdd, MdList, MdArchive, MdArrowBack } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
@@ -12,6 +12,8 @@ import { FiCalendar, FiFileText } from "react-icons/fi";
 import WithAuth from "../../utils/middleware/WithAuth.tsx";
 import Header from "../../components/header/Header.tsx";
 import SubNav from "../../components/subNav/SubNav.tsx";
+import BackToTop from "../../components/backToTop/BackToTop.tsx";
+import Button from "../../components/button/Button.tsx";
 
 // context
 import { CourrierContext } from "../../context/courrier/CourrierContext.tsx";
@@ -113,6 +115,10 @@ function Courriers(): ReactElement {
       <main id="courriers" className="courriersMain">
         <div className="courriersContainer">
           <section className="courriersHeader" data-aos="fade-down">
+            <Button style="back" onClick={() => navigate("/home")}>
+              <MdArrowBack />
+              <span>Retour</span>
+            </Button>
             <h1 className="courriersTitle">Gestion des courriers</h1>
             <p className="courriersSubtitle">Organisez et suivez vos courriers efficacement</p>
           </section>
@@ -167,6 +173,7 @@ function Courriers(): ReactElement {
           )}
         </div>
       </main>
+      <BackToTop />
     </>
   );
 }

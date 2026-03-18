@@ -16,12 +16,12 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: calc(6dvh + 2em) 1em 2em;
+      padding: 2em 1em;
       gap: 1.5em;
     }
 
     @media (min-width: vars.$tabletWidth) {
-      padding: calc(6dvh + 3em) 2em 3em;
+      padding: 3em 2em;
     }
   }
 }

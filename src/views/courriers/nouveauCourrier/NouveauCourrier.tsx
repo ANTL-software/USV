@@ -15,6 +15,7 @@ import { CourrierContext } from "../../../context/courrier/CourrierContext.tsx";
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
 import Header from "../../../components/header/Header.tsx";
 import SubNav from "../../../components/subNav/SubNav.tsx";
+import BackToTop from "../../../components/backToTop/BackToTop.tsx";
 import Button from "../../../components/button/Button.tsx";
 import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 
@@ -483,6 +484,7 @@ function NouveauCourrier(): ReactElement {
           </form>
         </div>
       </main>
+      <BackToTop />
     </>
   );
 }

@@ -4,6 +4,7 @@ import "./home.scss";
 // assets
 import mailBackground from "../../assets/background/mailSectionBckground.webp";
 import calendarBackground from "../../assets/background/calendar.webp";
+import callCenterBackground from "../../assets/background/utilsSection.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -13,6 +14,7 @@ import { Link } from "react-router-dom";
 // component
 import Header from "../../components/header/Header";
 import SubNav from "../../components/subNav/SubNav";
+import BackToTop from "../../components/backToTop/BackToTop";
 
 function Home(): ReactElement {
   return (
@@ -37,8 +39,17 @@ function Home(): ReactElement {
               <h2>Booking salle de production</h2>
             </Link>
           </section>
+          <section className={"callCenterSection"}>
+            <Link to={"/operations"}>
+              <figure>
+                <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
+              </figure>
+              <h2>Gestion opérationnelle</h2>
+            </Link>
+          </section>
         </div>
       </main>
+      <BackToTop />
     </div>
   );
 }

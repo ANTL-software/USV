@@ -12,6 +12,20 @@
     box-shadow: 0 0.25em 1.5em rgba(0, 0, 0, 0.1);
   }
 
+  .authForm__logo {
+    margin: 0 auto 0.5em;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      height: 300%;
+      width: auto;
+      object-fit: contain;
+    }
+  }
+
   h2 {
     & {
       font-size: 1.25em;

@@ -4,7 +4,7 @@ import "./subNav.scss";
 // hooks | libraries
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoHome, IoMail, IoCalendar } from "react-icons/io5";
+import { IoHome, IoMail, IoCalendar, IoCallOutline } from "react-icons/io5";
 
 interface ISection {
   id: string;
@@ -34,6 +34,12 @@ export default function SubNav(): ReactElement | null {
       name: "Booking",
       path: "/booking",
       icon: <IoCalendar />,
+    },
+    {
+      id: "4",
+      name: "Gestion opérationnelle",
+      path: "/operations",
+      icon: <IoCallOutline />,
     },
   ];
 

@@ -1,6 +1,9 @@
 // styles
 import "../authForm/authForm.scss";
 
+// assets
+import antlLogo from "../../assets/antlLogo.png";
+
 // hooks | library
 import {
   ChangeEvent,
@@ -68,6 +71,9 @@ export default function SignInForm({
         handleSubmit().finally();
       }}
     >
+      <figure className="authForm__logo">
+        <img src={antlLogo} alt="ANTL" />
+      </figure>
       <h2>Se connecter</h2>
       <div className={"inputContainer"}>
         <label htmlFor={"identifiant"}>Identifiant</label>

@@ -5,7 +5,6 @@ import "./authPage.scss";
 import { ReactElement, useState } from "react";
 
 // components
-import Header from "../../components/header/Header";
 import SignInForm from "../../components/signInForm/SignInForm.tsx";
 import Footer from "../../components/footer/Footer";
 
@@ -15,7 +14,6 @@ export default function AuthPage(): ReactElement {
 
   return (
     <div id="authPage" className="authPageContainer">
-      <Header />
       <main>
         <SignInForm
           identifiant={identifiant}

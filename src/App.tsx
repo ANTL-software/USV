@@ -29,6 +29,11 @@ import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCo
 import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
 import UpdateCourrierWithAuth from "./views/courriers/updateCourrier/UpdateCourrier.tsx";
 import BookingPageWithAuth from "./views/booking/BookingPage.tsx";
+import CentreAppelsWithAuth from "./views/centreAppels/CentreAppels.tsx";
+import AgentsListWithAuth from "./views/centreAppels/agents/AgentsList.tsx";
+import AgentFormWithAuth from "./views/centreAppels/agents/AgentForm.tsx";
+import PostesListWithAuth from "./views/centreAppels/postes/PostesList.tsx";
+import PosteFormWithAuth from "./views/centreAppels/postes/PosteForm.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -87,6 +92,13 @@ function App(): ReactElement {
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
         <Route path={"booking"} element={<BookingPageWithAuth />}></Route>
+        <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
+        <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
+        <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>
+        <Route path={"operations/employes/:id"} element={<AgentFormWithAuth />}></Route>
+        <Route path={"operations/postes"} element={<PostesListWithAuth />}></Route>
+        <Route path={"operations/postes/new"} element={<PosteFormWithAuth />}></Route>
+        <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       
