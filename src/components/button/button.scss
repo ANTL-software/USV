@@ -2,10 +2,11 @@
 @use "../../utils/styles/mixins" as mixins;
 
 %buttonBase {
-  @include mixins.flexContainer(column, 0.5em);
-  
+  @include mixins.flexContainer(row, 0.5em);
+
   & {
     align-items: center;
+    justify-content: center;
     padding: 0.375em 0.875em;
     font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
     border-radius: 6px;
@@ -120,6 +121,28 @@
   &:active {
     @extend %buttonFocus;
     box-shadow: inset 0 0.8px 0 -0.25px rgba(255, 255, 255, 0.2), 0 0.5px 1.5px rgb(177, 3, 3), 0 0 0 3.5px rgb(177, 3, 50);
+  }
+}
+
+.gradientButton {
+  @extend %buttonBase;
+  flex-flow: row;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1.2em;
+  background: vars.$utilsGradient;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 0.5px 1.5px rgba(124, 58, 237, 0.25), inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+
+  &:hover { opacity: 0.88; }
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(124, 58, 237, 0.25), 0px 0px 0px 3.5px rgba(124, 58, 237, 0.4);
   }
 }
 

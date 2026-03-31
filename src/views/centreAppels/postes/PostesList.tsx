@@ -42,10 +42,9 @@ function PostesList(): ReactElement {
               <h1>Postes</h1>
               <p className="postesList__subtitle">{postes.length} poste{postes.length !== 1 ? 's' : ''}</p>
             </div>
-            <button className="postesList__btn-create" onClick={() => navigate('/operations/postes/new')}>
-              <IoAdd />
-              Nouveau poste
-            </button>
+            <Button style="gradient" onClick={() => navigate('/operations/postes/new')}>
+              <IoAdd /> Nouveau poste
+            </Button>
           </div>
 
           {error && <div className="postesList__error">{error}</div>}

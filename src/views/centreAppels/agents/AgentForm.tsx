@@ -15,6 +15,7 @@ import { useAgentForm } from '../../../hooks/useAgentForm';
 import Header from '../../../components/header/Header';
 import SubNav from '../../../components/subNav/SubNav';
 import BackToTop from '../../../components/backToTop/BackToTop';
+import PasswordStrengthIndicator from '../../../components/passwordStrengthIndicator/PasswordStrengthIndicator';
 
 function AgentForm(): ReactElement {
   const navigate = useNavigate();
@@ -24,6 +25,7 @@ function AgentForm(): ReactElement {
     error, success, sipWarning,
     handleChange, handleProvisionSip, handleSubmit,
   } = useAgentForm();
+
 
   if (isFetching) {
     return (
@@ -132,14 +134,21 @@ function AgentForm(): ReactElement {
 
             <fieldset className="agentForm__fieldset">
               <legend>{isEdit ? 'Changer le mot de passe (laisser vide pour conserver)' : 'Mot de passe *'}</legend>
+              <p className="agentForm__fieldset-hint">
+                8 caractères minimum · 1 majuscule · 1 chiffre
+              </p>
               <div className="agentForm__row">
                 <div className="agentForm__field">
                   <label htmlFor="password">{isEdit ? 'Nouveau mot de passe' : 'Mot de passe'}</label>
                   <input id="password" name="password" type="password" value={form.password} onChange={handleChange} required={!isEdit} disabled={isLoading} autoComplete="new-password" />
+                  <PasswordStrengthIndicator password={form.password} />
                 </div>
                 <div className="agentForm__field">
                   <label htmlFor="password_confirm">Confirmer</label>
                   <input id="password_confirm" name="password_confirm" type="password" value={form.password_confirm} onChange={handleChange} required={!isEdit} disabled={isLoading} autoComplete="new-password" />
+                  {form.password_confirm && form.password !== form.password_confirm && (
+                    <p className="agentForm__field-error">Les mots de passe ne correspondent pas</p>
+                  )}
                 </div>
               </div>
             </fieldset>

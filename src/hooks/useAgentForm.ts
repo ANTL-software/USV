@@ -112,13 +112,22 @@ export function useAgentForm() {
     setError(null);
     setSuccess(null);
 
-    if (!isEdit && form.password !== form.password_confirm) {
-      setError('Les mots de passe ne correspondent pas');
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+    if (!isEdit && !form.password) {
+      setError('Le mot de passe est requis');
       return;
     }
-    if (!isEdit && form.password.length < 6) {
-      setError('Le mot de passe doit contenir au moins 6 caractères');
-      return;
+
+    if (form.password) {
+      if (!passwordRegex.test(form.password)) {
+        setError('Le mot de passe doit contenir au moins 8 caractères, une majuscule et un chiffre');
+        return;
+      }
+      if (form.password !== form.password_confirm) {
+        setError('Les mots de passe ne correspondent pas');
+        return;
+      }
     }
 
     setIsLoading(true);

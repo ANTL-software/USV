@@ -35,6 +35,9 @@ import AgentsListWithAuth from "./views/centreAppels/agents/AgentsList.tsx";
 import AgentFormWithAuth from "./views/centreAppels/agents/AgentForm.tsx";
 import PostesListWithAuth from "./views/centreAppels/postes/PostesList.tsx";
 import PosteFormWithAuth from "./views/centreAppels/postes/PosteForm.tsx";
+import CampagnesListWithAuth from "./views/campagnes/CampagnesList.tsx";
+import CampagneFormWithAuth from "./views/campagnes/CampagneForm.tsx";
+import ProspectImportWithAuth from "./views/prospects/ProspectImport.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -101,6 +104,10 @@ function App(): ReactElement {
         <Route path={"operations/postes"} element={<PostesListWithAuth />}></Route>
         <Route path={"operations/postes/new"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
+        <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
+        <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
+        <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
+        <Route path={"prospects/import"} element={<ProspectImportWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

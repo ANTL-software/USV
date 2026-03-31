@@ -60,10 +60,9 @@ function AgentsList(): ReactElement {
                 isSearchable={false}
                 classNamePrefix="reactSelect"
               />
-              <button className="agentsList__btn-create" onClick={() => navigate('/operations/employes/new')}>
-                <IoPersonAdd />
-                Nouvel employé
-              </button>
+              <Button style="gradient" onClick={() => navigate('/operations/employes/new')}>
+                <IoPersonAdd /> Nouvel employé
+              </Button>
             </div>
           </div>
 

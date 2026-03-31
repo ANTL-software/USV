@@ -10,6 +10,7 @@ interface ISection {
   id: string;
   name: string;
   path: string;
+  aliases?: string[];
   icon: ReactElement;
 }
 
@@ -39,13 +40,15 @@ export default function SubNav(): ReactElement | null {
       id: "4",
       name: "Gestion opérationnelle",
       path: "/operations",
+      aliases: ["/campagnes", "/prospects"],
       icon: <IoCallOutline />,
     },
   ];
 
   const getCurrentSection = (): ISection | undefined => {
     return sections.find((app) =>
-      window.location.pathname.startsWith(app.path)
+      window.location.pathname.startsWith(app.path) ||
+      app.aliases?.some(alias => window.location.pathname.startsWith(alias))
     );
   };
 

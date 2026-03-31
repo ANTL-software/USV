@@ -45,12 +45,12 @@ function CentreAppels(): ReactElement {
             <p>Gérer les intitulés de postes, catégories et niveaux hiérarchiques.</p>
           </section>
 
-          <section className="centreAppels__card centreAppels__card--disabled">
+          <section className="centreAppels__card" onClick={() => navigate('/campagnes')}>
             <div className="centreAppels__card-icon">
               <IoCallOutline />
             </div>
             <h2>Campagnes</h2>
-            <p>Définir les campagnes commerciales et affecter les agents. <em>(Prochainement)</em></p>
+            <p>Créer et gérer les campagnes commerciales, affecter et déplacer les agents.</p>
           </section>
         </div>
       </main>

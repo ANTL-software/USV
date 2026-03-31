@@ -1,5 +1,5 @@
 import { ReactElement, useEffect, useState } from 'react';
-import { validatePasswordStrength, PasswordStrength, generateStrongPassword } from '../../utils/scripts/passwordValidation';
+import { validatePasswordStrength, PasswordStrength } from '../../utils/scripts/passwordValidation';
 import './passwordStrengthIndicator.scss';
 
 interface PasswordStrengthIndicatorProps {
@@ -23,15 +23,6 @@ function PasswordStrengthIndicator({
       onValidityChange?.(false, {} as PasswordStrength);
     }
   }, [password]); // Supprimer onValidityChange des dépendances pour éviter la boucle
-
-  const handleGeneratePassword = () => {
-    const generatedPassword = generateStrongPassword(16);
-    // Émettre un événement personnalisé pour informer le parent
-    const event = new CustomEvent('passwordGenerated', { 
-      detail: { password: generatedPassword } 
-    });
-    document.dispatchEvent(event);
-  };
 
   const getStrengthClass = (score: number): string => {
     switch (score) {
@@ -69,22 +60,7 @@ function PasswordStrengthIndicator({
     }
   };
 
-  if (!password) {
-    return (
-      <div id="passwordStrengthIndicator" className="password-strength-container">
-        <div className="tools">
-          <button 
-            type="button"
-            className="generate-password-btn"
-            onClick={handleGeneratePassword}
-            title="Générer un mot de passe sécurisé"
-          >
-            🎲 Générer
-          </button>
-        </div>
-      </div>
-    );
-  }
+  if (!password) return null;
 
   return (
     <div id="passwordStrengthIndicator" className="password-strength-container">
@@ -125,19 +101,6 @@ function PasswordStrengthIndicator({
               ))}
           </div>
 
-          {/* Bouton générer si mot de passe invalide */}
-          {!strength.isValid && (
-            <div className="tools">
-              <button 
-                type="button"
-                className="generate-password-btn"
-                onClick={handleGeneratePassword}
-                title="Générer un mot de passe sécurisé"
-              >
-                🎲 Générer
-              </button>
-            </div>
-          )}
         </>
       )}
     </div>
