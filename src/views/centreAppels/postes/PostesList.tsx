@@ -58,7 +58,6 @@ function PostesList(): ReactElement {
                   <tr>
                     <th>Libellé</th>
                     <th>Catégorie</th>
-                    <th>Niveau</th>
                     <th>Description</th>
                     <th>Actions</th>
                   </tr>
@@ -79,7 +78,6 @@ function PostesList(): ReactElement {
                           <span className="postesList__badge postesList__badge--autre">—</span>
                         )}
                       </td>
-                      <td>{p.niveau_hierarchique || '—'}</td>
                       <td className="postesList__desc">{p.description || '—'}</td>
                       <td>
                         <div className="postesList__actions">

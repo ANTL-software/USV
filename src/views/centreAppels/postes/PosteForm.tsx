@@ -12,12 +12,13 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { usePosteForm } from '../../../hooks/usePosteForm';
 
 // constants
-import { TYPE_OPTIONS, NIVEAU_OPTIONS, COLOR_PALETTE } from '../../../utils/constants/poste.constants';
+import { TYPE_OPTIONS, COLOR_PALETTE } from '../../../utils/constants/poste.constants';
 
 // components
 import Header from '../../../components/header/Header';
 import SubNav from '../../../components/subNav/SubNav';
 import BackToTop from '../../../components/backToTop/BackToTop';
+import Button from '../../../components/button/Button';
 
 function PosteForm(): ReactElement {
   const navigate = useNavigate();
@@ -42,9 +43,9 @@ function PosteForm(): ReactElement {
       <main>
         <div className="posteForm__container">
           <div className="posteForm__header">
-            <button className="posteForm__btn-back" onClick={() => navigate('/operations/postes')}>
+            <Button style="back" onClick={() => navigate('/operations/postes')}>
               <IoArrowBack /> Retour
-            </button>
+            </Button>
             <h1>{isEdit ? 'Modifier le poste' : 'Nouveau poste'}</h1>
           </div>
 
@@ -69,20 +70,6 @@ function PosteForm(): ReactElement {
                   options={TYPE_OPTIONS}
                   value={TYPE_OPTIONS.find(o => o.value === form.type_poste) ?? null}
                   onChange={opt => handleSelectChange('type_poste', opt ? opt.value : '')}
-                  isDisabled={isLoading}
-                  isClearable
-                  placeholder="— Sélectionner —"
-                  noOptionsMessage={() => 'Aucun résultat'}
-                  classNamePrefix="reactSelect"
-                />
-              </div>
-              <div className="posteForm__field">
-                <label>Niveau hiérarchique</label>
-                <Select
-                  inputId="niveau_hierarchique"
-                  options={NIVEAU_OPTIONS.map(n => ({ value: n, label: n }))}
-                  value={form.niveau_hierarchique ? { value: form.niveau_hierarchique, label: form.niveau_hierarchique } : null}
-                  onChange={opt => handleSelectChange('niveau_hierarchique', opt ? opt.value : '')}
                   isDisabled={isLoading}
                   isClearable
                   placeholder="— Sélectionner —"

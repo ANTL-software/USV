@@ -4,21 +4,19 @@ import { getPosteByIdService, createPosteService, updatePosteService } from '../
 import type { Poste, TypePoste } from '../utils/types/user.types';
 
 interface PosteFormState {
-  libelle_poste:       string;
-  description:         string;
-  salaire_base:        string;
-  niveau_hierarchique: string;
-  type_poste:          TypePoste | '';
-  couleur:             string;
+  libelle_poste: string;
+  description: string;
+  salaire_base: string;
+  type_poste: TypePoste | '';
+  couleur: string;
 }
 
 const INITIAL_FORM: PosteFormState = {
-  libelle_poste:       '',
-  description:         '',
-  salaire_base:        '',
-  niveau_hierarchique: '',
-  type_poste:          '',
-  couleur:             '',
+  libelle_poste: '',
+  description: '',
+  salaire_base: '',
+  type_poste: '',
+  couleur: '',
 };
 
 export function usePosteForm() {
@@ -36,12 +34,11 @@ export function usePosteForm() {
     if (!isEdit) return;
     getPosteByIdService(Number(id))
       .then((p: Poste) => setForm({
-        libelle_poste:       p.libelle_poste || '',
-        description:         p.description || '',
-        salaire_base:        p.salaire_base != null ? String(p.salaire_base) : '',
-        niveau_hierarchique: p.niveau_hierarchique || '',
-        type_poste:          (p.type_poste as TypePoste) || '',
-        couleur:             p.couleur || '',
+        libelle_poste: p.libelle_poste || '',
+        description:   p.description || '',
+        salaire_base:  p.salaire_base != null ? String(p.salaire_base) : '',
+        type_poste:    (p.type_poste as TypePoste) || '',
+        couleur:       p.couleur || '',
       }))
       .catch(err => setError(err instanceof Error ? err.message : 'Erreur de chargement'))
       .finally(() => setIsFetching(false));
@@ -65,12 +62,11 @@ export function usePosteForm() {
     setError(null);
     try {
       const payload = {
-        libelle_poste:       form.libelle_poste.trim(),
-        description:         form.description.trim() || undefined,
-        salaire_base:        form.salaire_base ? Number(form.salaire_base) : null,
-        niveau_hierarchique: form.niveau_hierarchique || null,
-        type_poste:          (form.type_poste as TypePoste) || null,
-        couleur:             form.couleur || null,
+        libelle_poste: form.libelle_poste.trim(),
+        description:   form.description.trim() || undefined,
+        salaire_base:  form.salaire_base ? Number(form.salaire_base) : null,
+        type_poste:    (form.type_poste as TypePoste) || null,
+        couleur:       form.couleur || null,
       };
       if (isEdit) {
         await updatePosteService(Number(id), payload);

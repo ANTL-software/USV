@@ -7,7 +7,6 @@ export interface Poste {
   libelle_poste: string;
   description?: string;
   salaire_base?: number | null;
-  niveau_hierarchique?: string | null;
   type_poste?: TypePoste | null;
   couleur?: string | null;
 }

@@ -38,6 +38,12 @@ import PosteFormWithAuth from "./views/centreAppels/postes/PosteForm.tsx";
 import CampagnesListWithAuth from "./views/campagnes/CampagnesList.tsx";
 import CampagneFormWithAuth from "./views/campagnes/CampagneForm.tsx";
 import ProspectImportWithAuth from "./views/prospects/ProspectImport.tsx";
+import ProduitsListWithAuth from "./views/produits/ProduitsList.tsx";
+import ProduitFormWithAuth from "./views/produits/ProduitForm.tsx";
+import MaterielListWithAuth from "./views/centreAppels/materiel/MaterielList.tsx";
+import ProspectInjectionWithAuth from "./views/campagnes/prospectInjection/ProspectInjection.tsx";
+import ProspectsListWithAuth from "./views/campagnes/prospectsList/ProspectsList.tsx";
+import SupervisionViewWithAuth from "./views/supervision/SupervisionView.tsx";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -104,10 +110,17 @@ function App(): ReactElement {
         <Route path={"operations/postes"} element={<PostesListWithAuth />}></Route>
         <Route path={"operations/postes/new"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
+        <Route path={"operations/materiel"} element={<MaterielListWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
+        <Route path={"campagnes/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
+        <Route path={"campagnes/:id/prospects"} element={<ProspectsListWithAuth />}></Route>
+        <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
         <Route path={"prospects/import"} element={<ProspectImportWithAuth />}></Route>
+        <Route path={"produits"} element={<ProduitsListWithAuth />}></Route>
+        <Route path={"produits/new"} element={<ProduitFormWithAuth />}></Route>
+        <Route path={"produits/:id"} element={<ProduitFormWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

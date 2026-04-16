@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../utils/middleware/WithAuth';
 
@@ -29,29 +29,57 @@ function CentreAppels(): ReactElement {
           </Button>
         </div>
         <div className="centreAppels__wrapper">
-          <section className="centreAppels__card" onClick={() => navigate('/operations/employes')}>
-            <div className="centreAppels__card-icon">
-              <IoPeople />
-            </div>
-            <h2>Gestion des employés</h2>
-            <p>Créer, modifier et configurer les employés de antl.</p>
-          </section>
+          <div className="centreAppels__row">
+            <section className="centreAppels__card" onClick={() => navigate('/operations/employes')}>
+              <div className="centreAppels__card-icon">
+                <IoPeople />
+              </div>
+              <h2>Employés</h2>
+              <p>Créer, modifier et configurer les employés de antl.</p>
+            </section>
 
-          <section className="centreAppels__card" onClick={() => navigate('/operations/postes')}>
-            <div className="centreAppels__card-icon">
-              <IoBriefcase />
-            </div>
-            <h2>Postes</h2>
-            <p>Gérer les intitulés de postes, catégories et niveaux hiérarchiques.</p>
-          </section>
+            <section className="centreAppels__card" onClick={() => navigate('/operations/postes')}>
+              <div className="centreAppels__card-icon">
+                <IoBriefcase />
+              </div>
+              <h2>Postes</h2>
+              <p>Gérer les intitulés de postes, catégories et niveaux hiérarchiques.</p>
+            </section>
 
-          <section className="centreAppels__card" onClick={() => navigate('/campagnes')}>
-            <div className="centreAppels__card-icon">
-              <IoCallOutline />
-            </div>
-            <h2>Campagnes</h2>
-            <p>Créer et gérer les campagnes commerciales, affecter et déplacer les agents.</p>
-          </section>
+            <section className="centreAppels__card" onClick={() => navigate('/campagnes')}>
+              <div className="centreAppels__card-icon">
+                <IoCallOutline />
+              </div>
+              <h2>Campagnes</h2>
+              <p>Créer et gérer les campagnes commerciales, affecter les agents.</p>
+            </section>
+
+            <section className="centreAppels__card" onClick={() => navigate('/produits')}>
+              <div className="centreAppels__card-icon">
+                <IoPricetag />
+              </div>
+              <h2>Produits</h2>
+              <p>Gérer le catalogue produits et les catégories disponibles à la vente.</p>
+            </section>
+          </div>
+
+          <div className="centreAppels__row">
+            <section className="centreAppels__card" onClick={() => navigate('/operations/materiel')}>
+              <div className="centreAppels__card-icon">
+                <IoLaptopOutline />
+              </div>
+              <h2>Matériel</h2>
+              <p>Gérer et assigner le matériel informatique aux employés.</p>
+            </section>
+
+            <section className="centreAppels__card" onClick={() => navigate('/supervision')}>
+              <div className="centreAppels__card-icon">
+                <IoEyeOutline />
+              </div>
+              <h2>Supervision</h2>
+              <p>Superviser les files d'appels, agents et appels en cours en temps réel.</p>
+            </section>
+          </div>
         </div>
       </main>
       <BackToTop />

@@ -32,8 +32,6 @@ export const TYPE_OPTIONS: { value: TypePoste; label: string }[] = [
   { value: 'autre',      label: 'Autre'      },
 ];
 
-export const NIVEAU_OPTIONS = ['Junior', 'Senior', 'Manager', 'Support', 'Direction'];
-
 export function getPosteBadgeStyle(couleur: string | null | undefined) {
   if (!couleur) return undefined;
   return {

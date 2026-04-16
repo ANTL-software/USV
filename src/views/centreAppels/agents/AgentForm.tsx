@@ -15,6 +15,7 @@ import { useAgentForm } from '../../../hooks/useAgentForm';
 import Header from '../../../components/header/Header';
 import SubNav from '../../../components/subNav/SubNav';
 import BackToTop from '../../../components/backToTop/BackToTop';
+import Button from '../../../components/button/Button';
 import PasswordStrengthIndicator from '../../../components/passwordStrengthIndicator/PasswordStrengthIndicator';
 
 function AgentForm(): ReactElement {
@@ -44,9 +45,9 @@ function AgentForm(): ReactElement {
       <main>
         <div className="agentForm__container">
           <div className="agentForm__header">
-            <button className="agentForm__btn-back" onClick={() => navigate('/operations/employes')}>
+            <Button style="back" onClick={() => navigate('/operations/employes')}>
               <IoArrowBack /> Retour
-            </button>
+            </Button>
             <h1>{isEdit ? `Modifier ${existing?.prenom} ${existing?.nom}` : 'Nouvel agent'}</h1>
             {isEdit && existing && (
               <span className="agentForm__identifiant">

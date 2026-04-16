@@ -2,7 +2,7 @@ import './campagneForm.scss';
 import { ReactElement, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
-import { IoSwapHorizontal } from 'react-icons/io5';
+import { IoSwapHorizontal, IoAddCircleOutline } from 'react-icons/io5';
 import Select from 'react-select';
 import WithAuth from '../../utils/middleware/WithAuth';
 import { useCampagneForm } from '../../hooks/useCampagneForm';
@@ -13,9 +13,11 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import { useAlert } from '../../context/alert/AlertContext';
 
 function CampagneForm(): ReactElement {
   const navigate = useNavigate();
+  const { showConfirm } = useAlert();
   const {
     form, existing, isEdit, isLoading, isFetching, error, success,
     handleChange, handleSubmit,
@@ -45,7 +47,6 @@ function CampagneForm(): ReactElement {
   const agentIds = new Set(agents.map(a => a.id_employe));
   const emploiesDisponibles = allEmployes.filter(e => e.actif && !agentIds.has(e.id_employe));
 
-  // Campagnes disponibles pour le transfert (toutes sauf la courante)
   const campagnesTransfert = toutesLesCampagnes.filter(
     c => c.id_campagne !== campagneId && c.statut !== 'terminee'
   );
@@ -67,6 +68,16 @@ function CampagneForm(): ReactElement {
     const dest = campagnesTransfert.find(c => c.id_campagne === destId);
     if (!dest) return;
     transferAgent(idEmploye, destId, nom, dest.nom_campagne);
+  };
+
+  const handleRemoveAgent = async (idEmploye: number, nom: string) => {
+    const confirmed = await showConfirm(
+      `Retirer ${nom || 'cet agent'} de cette campagne ?`,
+      'Confirmer le retrait'
+    );
+    if (confirmed) {
+      removeAgent(idEmploye, nom);
+    }
   };
 
   if (isFetching) {
@@ -95,91 +106,119 @@ function CampagneForm(): ReactElement {
           {error   && <div className="campagneForm__error">{error}</div>}
           {success && <div className="campagneForm__success">{success}</div>}
 
-          <form onSubmit={handleSubmit} className="campagneForm__form">
-            <fieldset>
-              <legend>Informations générales</legend>
+          <div className="campagneForm__layout">
+            <form onSubmit={handleSubmit} className="campagneForm__form">
+              <fieldset>
+                <legend>Informations générales</legend>
 
-              <div className="campagneForm__row">
-                <label>
-                  Nom de la campagne *
-                  <input
-                    name="nom_campagne"
-                    value={form.nom_campagne}
+                <div className="campagneForm__row">
+                  <label>
+                    Nom de la campagne *
+                    <input
+                      name="nom_campagne"
+                      value={form.nom_campagne}
+                      onChange={handleChange}
+                      required
+                      placeholder="Ex : Campagne fenêtres PVC 2026"
+                    />
+                  </label>
+
+                  <label>
+                    Type
+                    <input
+                      name="type_campagne"
+                      value={form.type_campagne}
+                      onChange={handleChange}
+                      placeholder="Ex : Rénovation, Énergie..."
+                    />
+                  </label>
+                </div>
+
+                <div className="campagneForm__row">
+                  <label>
+                    Date de début *
+                    <input
+                      type="date"
+                      name="date_debut"
+                      value={form.date_debut}
+                      onChange={handleChange}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Date de fin
+                    <input
+                      type="date"
+                      name="date_fin"
+                      value={form.date_fin}
+                      onChange={handleChange}
+                    />
+                  </label>
+                </div>
+
+                <div className="campagneForm__row">
+                  <label>
+                    Budget (€)
+                    <input
+                      type="number"
+                      name="budget"
+                      value={form.budget}
+                      onChange={handleChange}
+                      min="0"
+                      step="0.01"
+                      placeholder="0.00"
+                    />
+                  </label>
+
+                  <label>
+                    Code postal maison mère
+                    <input
+                      type="text"
+                      name="code_postal_maison_mere"
+                      value={form.code_postal_maison_mere}
+                      onChange={handleChange}
+                      placeholder="ex: 75001"
+                      maxLength={10}
+                    />
+                  </label>
+                </div>
+
+                <label className="campagneForm__label-full">
+                  Objectifs
+                  <textarea
+                    name="objectifs"
+                    value={form.objectifs}
                     onChange={handleChange}
-                    required
-                    placeholder="Ex : Campagne fenêtres PVC 2026"
+                    rows={3}
+                    placeholder="Décrivez les objectifs de la campagne..."
                   />
                 </label>
 
-                <label>
-                  Type
-                  <input
-                    name="type_campagne"
-                    value={form.type_campagne}
-                    onChange={handleChange}
-                    placeholder="Ex : Rénovation, Énergie..."
-                  />
-                </label>
-              </div>
+                <div className="campagneForm__actions">
+                  <Button style="grey" type="button" onClick={() => navigate('/campagnes')}>Annuler</Button>
+                  <Button style="gradient" type="submit" disabled={isLoading}>
+                    {isLoading ? 'Enregistrement...' : isEdit ? 'Mettre à jour' : 'Créer la campagne'}
+                  </Button>
+                </div>
+              </fieldset>
+            </form>
 
-              <div className="campagneForm__row">
-                <label>
-                  Date de début *
-                  <input
-                    type="date"
-                    name="date_debut"
-                    value={form.date_debut}
-                    onChange={handleChange}
-                    required
-                  />
-                </label>
+            {isEdit && (
+            <aside className="campagneForm__sidebar">
 
-                <label>
-                  Date de fin
-                  <input
-                    type="date"
-                    name="date_fin"
-                    value={form.date_fin}
-                    onChange={handleChange}
-                  />
-                </label>
+              {existing?.statut === 'active' && (
+                <div className="campagneForm__sidebar-actions">
+                  <Button style="gradient" type="button" onClick={() => navigate(`/campagnes/${campagneId}/inject`)}>
+                    <IoAddCircleOutline /> Injecter des prospects
+                  </Button>
+                  <Button style="grey" type="button" onClick={() => navigate(`/campagnes/${campagneId}/prospects`)}>
+                    Voir les prospects injectés
+                  </Button>
+                </div>
+              )}
 
-                <label>
-                  Budget (€)
-                  <input
-                    type="number"
-                    name="budget"
-                    value={form.budget}
-                    onChange={handleChange}
-                    min="0"
-                    step="0.01"
-                    placeholder="0.00"
-                  />
-                </label>
-              </div>
-
-              <label className="campagneForm__label-full">
-                Objectifs
-                <textarea
-                  name="objectifs"
-                  value={form.objectifs}
-                  onChange={handleChange}
-                  rows={3}
-                  placeholder="Décrivez les objectifs de la campagne..."
-                />
-              </label>
-
-              <div className="campagneForm__actions">
-                <Button style="grey" type="button" onClick={() => navigate('/campagnes')}>Annuler</Button>
-                <Button style="gradient" type="submit" disabled={isLoading}>
-                  {isLoading ? 'Enregistrement...' : isEdit ? 'Mettre à jour' : 'Créer la campagne'}
-                </Button>
-              </div>
-            </fieldset>
-          </form>
-
-          {isEdit && (
-            <section className="campagneForm__agents">
+              <section className="campagneForm__agents">
               <h2>Agents affectés <span className="campagneForm__agents-count">{agents.length}</span></h2>
 
               <div className="campagneForm__agents-add">
@@ -211,7 +250,11 @@ function CampagneForm(): ReactElement {
                 <p className="campagneForm__agents-empty">Aucun agent affecté à cette campagne.</p>
               ) : (
                 <ul className="campagneForm__agents-list">
-                  {agents.map(a => {
+                  {[...agents].sort((a, b) => {
+                    const nomA = `${a.agent?.prenom ?? ''} ${a.agent?.nom ?? ''}`.trim().toLowerCase();
+                    const nomB = `${b.agent?.prenom ?? ''} ${b.agent?.nom ?? ''}`.trim().toLowerCase();
+                    return nomA.localeCompare(nomB, 'fr');
+                  }).map(a => {
                     const nomComplet = `${a.agent?.prenom ?? ''} ${a.agent?.nom ?? ''}`.trim();
                     const enTransfert = transferEnCours === a.id_employe;
 
@@ -242,7 +285,7 @@ function CampagneForm(): ReactElement {
                               <Button
                                 style="red"
                                 type="button"
-                                onClick={() => removeAgent(a.id_employe, nomComplet)}
+                                onClick={() => handleRemoveAgent(a.id_employe, nomComplet)}
                               >
                                 Retirer
                               </Button>
@@ -285,7 +328,9 @@ function CampagneForm(): ReactElement {
                 </ul>
               )}
             </section>
-          )}
+            </aside>
+            )}
+          </div>
         </div>
       </main>
       <BackToTop />

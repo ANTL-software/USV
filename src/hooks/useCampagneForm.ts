@@ -14,6 +14,7 @@ interface CampagneFormState {
   date_fin: string;
   objectifs: string;
   budget: string;
+  code_postal_maison_mere: string;
 }
 
 const INITIAL_FORM: CampagneFormState = {
@@ -23,6 +24,7 @@ const INITIAL_FORM: CampagneFormState = {
   date_fin: '',
   objectifs: '',
   budget: '',
+  code_postal_maison_mere: '',
 };
 
 export function useCampagneForm() {
@@ -51,6 +53,7 @@ export function useCampagneForm() {
           date_fin: data.date_fin ?? '',
           objectifs: data.objectifs ?? '',
           budget: data.budget != null ? String(data.budget) : '',
+          code_postal_maison_mere: data.code_postal_maison_mere ?? '',
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
@@ -90,6 +93,7 @@ export function useCampagneForm() {
           date_fin: form.date_fin || undefined,
           objectifs: form.objectifs || undefined,
           budget: form.budget ? Number(form.budget) : undefined,
+          code_postal_maison_mere: form.code_postal_maison_mere || undefined,
         };
         await updateCampagneService(Number(id), updateData);
         setSuccess('Campagne mise à jour avec succès');
@@ -102,6 +106,7 @@ export function useCampagneForm() {
           date_fin: form.date_fin || undefined,
           objectifs: form.objectifs || undefined,
           budget: form.budget ? Number(form.budget) : undefined,
+          code_postal_maison_mere: form.code_postal_maison_mere || undefined,
         };
         await createCampagneService(createData);
         setSuccess('Campagne créée avec succès');

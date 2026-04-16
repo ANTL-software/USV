@@ -40,7 +40,7 @@ export default function SubNav(): ReactElement | null {
       id: "4",
       name: "Gestion opérationnelle",
       path: "/operations",
-      aliases: ["/campagnes", "/prospects"],
+      aliases: ["/campagnes", "/prospects", "/produits"],
       icon: <IoCallOutline />,
     },
   ];

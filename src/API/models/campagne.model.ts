@@ -15,6 +15,7 @@ export class CampagneModel implements Campagne {
   statut: StatutCampagne;
   objectifs: string | null;
   budget: number | null;
+  code_postal_maison_mere: string | null;
   agents_count?: number;
   created_at?: string;
   updated_at?: string;
@@ -28,6 +29,7 @@ export class CampagneModel implements Campagne {
     this.statut = data.statut;
     this.objectifs = data.objectifs ?? null;
     this.budget = data.budget ?? null;
+    this.code_postal_maison_mere = data.code_postal_maison_mere ?? null;
     this.agents_count = data.agents_count;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
@@ -55,6 +57,7 @@ export class CampagneModel implements Campagne {
       statut: this.statut,
       objectifs: this.objectifs,
       budget: this.budget,
+      code_postal_maison_mere: this.code_postal_maison_mere,
       agents_count: this.agents_count,
       created_at: this.created_at,
       updated_at: this.updated_at,

@@ -40,23 +40,6 @@
     }
   }
 
-  .agentForm__btn-back {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    padding: 0.5em 1em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 8px;
-    background: white;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: all vars.$transitionSmooth;
-    white-space: nowrap;
-
-    &:hover { background: #f8fafc; color: vars.$fontColorPrimary; }
-  }
-
   .agentForm__error {
     padding: 0.85em 1em;
     background: #fee2e2;
@@ -87,6 +70,8 @@
     display: flex;
     flex-direction: column;
     gap: 1.25em;
+    @include mixins.card(12px, light);
+    padding: 1.5em;
   }
 
   .agentForm__fieldset {

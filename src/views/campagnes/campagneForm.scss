@@ -9,7 +9,39 @@
   }
 
   .campagneForm__container {
-    @include mixins.centeredContainer(900px);
+    @include mixins.centeredContainer(75em);
+  }
+
+  .campagneForm__layout {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+
+    @media (min-width: vars.$desktopWidth) {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+
+  .campagneForm__form {
+    flex: 2;
+    min-width: 0;
+  }
+
+  .campagneForm__sidebar {
+    flex: 3;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    position: sticky;
+    top: 11dvh;
+  }
+
+  .campagneForm__sidebar-actions {
+    display: flex;
+    gap: 0.5em;
+    flex-wrap: wrap;
   }
 
   .campagneForm__loading {
@@ -66,10 +98,15 @@
   }
 
   .campagneForm__row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    display: flex;
     gap: 1em;
     margin-bottom: 1em;
+    flex-wrap: wrap;
+
+    label {
+      flex: 1;
+      min-width: 12em;
+    }
   }
 
   label {
@@ -114,7 +151,6 @@
   // ─── Section agents ─────────────────────────────────────────────────────────
 
   .campagneForm__agents {
-    margin-top: 2em;
     @include mixins.card(10px, light);
     border: 1px solid vars.$borderColor;
     padding: 1.5em;

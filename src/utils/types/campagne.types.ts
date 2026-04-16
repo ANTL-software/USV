@@ -9,6 +9,7 @@ export interface Campagne {
   statut: StatutCampagne;
   objectifs: string | null;
   budget: number | null;
+  code_postal_maison_mere: string | null;
   agents_count?: number;
   created_at?: string;
   updated_at?: string;
@@ -21,6 +22,7 @@ export interface CreateCampagneData {
   date_fin?: string;
   objectifs?: string;
   budget?: number;
+  code_postal_maison_mere?: string;
 }
 
 export interface UpdateCampagneData {
@@ -30,6 +32,7 @@ export interface UpdateCampagneData {
   date_fin?: string;
   objectifs?: string;
   budget?: number;
+  code_postal_maison_mere?: string;
 }
 
 export interface AgentAffecte {
