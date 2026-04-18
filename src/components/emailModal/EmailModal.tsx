@@ -54,11 +54,11 @@ function EmailModal({
   // Update form data when courrier changes
   useEffect(() => {
     if (isVisible) {
-      setFormData({
+      queueMicrotask(() => setFormData({
         to: "",
         subject: getDefaultSubject(courrier, bulkMode, selectedCount),
         message: getDefaultMessage()
-      });
+      }));
     }
   }, [isVisible, courrier, bulkMode, selectedCount]);
 

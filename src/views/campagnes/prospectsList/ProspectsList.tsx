@@ -100,7 +100,10 @@ const ProspectsList = () => {
                 <Select
                   options={STATUT_OPTIONS}
                   value={STATUT_OPTIONS.find(o => o.value === statut) || STATUT_OPTIONS[0]}
-                  onChange={(option) => setStatut((option?.value ?? '') as StatutProspection | '')}
+                  onChange={(option) => {
+                    const val = (option as typeof STATUT_OPTIONS[number] | null)?.value ?? '';
+                    setStatut(val as StatutProspection | '');
+                  }}
                   styles={reactSelectStyles}
                   placeholder="Tous les statuts"
                   isSearchable={false}

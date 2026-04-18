@@ -1,4 +1,4 @@
-import React, { ReactNode, useState, useCallback, useEffect } from 'react';
+import React, { ReactNode, useState, useCallback, useEffect, useMemo } from 'react';
 import { AlertContext, ShowAlertOptions } from './AlertContext';
 import Alert, { AlertProps } from '../../components/alert/Alert';
 import { initializeAlertService } from '../../utils/services/alertService';
@@ -107,23 +107,23 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
     }
   }, [alerts, removeAlert]);
 
-  const contextValue = {
+  const contextValue = useMemo(() => ({
     showAlert,
     showConfirm,
     showInfo,
     showSuccess,
     showWarning,
     showError
-  };
+  }), [showAlert, showConfirm, showInfo, showSuccess, showWarning, showError]);
 
   // Initialiser le service d'alerte au montage du provider
   useEffect(() => {
     initializeAlertService(contextValue);
     // Exposer le service globalement pour les fallbacks legacy
-    (window as any).antl_alert_service = contextValue;
-    
+    (window as unknown as Record<string, unknown>).antl_alert_service = contextValue;
+
     return () => {
-      (window as any).antl_alert_service = null;
+      (window as unknown as Record<string, unknown>).antl_alert_service = null;
     };
   }, [contextValue]);
 

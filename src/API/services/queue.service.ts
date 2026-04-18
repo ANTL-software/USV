@@ -75,7 +75,7 @@ export const getProspectsCampagneService = async (
   if (response.data.success && response.data.data) {
     return {
       data: response.data.data,
-      pagination: (response.data as Record<string, unknown>).pagination as { page: number; limit: number; total: number; totalPages: number }
+      pagination: (response.data as unknown as Record<string, unknown>).pagination as { page: number; limit: number; total: number; totalPages: number }
     };
   }
   throw new Error(response.data.message || 'Impossible de récupérer les prospects');

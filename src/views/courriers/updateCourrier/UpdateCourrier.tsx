@@ -65,7 +65,7 @@ function UpdateCourrier(): ReactElement {
 
   // Peupler le formulaire dès que le courrier est chargé
   useEffect(() => {
-    if (formDefaults) setFormData(formDefaults);
+    if (formDefaults) queueMicrotask(() => setFormData(formDefaults));
   }, [formDefaults]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {

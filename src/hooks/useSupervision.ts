@@ -39,12 +39,17 @@ export const useSupervision = (idCampagne: number | null): UseSupervisionReturn 
 
   useEffect(() => {
     if (!idCampagne) {
-      setQueueState(null);
+      queueMicrotask(() => setQueueState(null));
       return;
     }
 
-    setIsLoading(true);
-    refresh().finally(() => setIsLoading(false));
+    const init = async () => {
+      queueMicrotask(() => setIsLoading(true));
+      await refresh();
+      queueMicrotask(() => setIsLoading(false));
+    };
+
+    init();
 
     intervalRef.current = setInterval(() => {
       refresh();

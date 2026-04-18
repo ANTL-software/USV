@@ -150,7 +150,7 @@ export function useProduitForm() {
       };
 
       const campagnePayload = {
-        argumentaire: form.argumentaire.trim() || null,
+        argumentaire: form.argumentaire.trim() || undefined,
         disponible: form.disponible,
         stock_alloue: form.stock_alloue ? Number(form.stock_alloue) : null,
       };

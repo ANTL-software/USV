@@ -47,6 +47,6 @@ export const testEnvironmentConfig = (): void => {
 };
 
 // Auto-exécution en développement si la variable globale est définie
-if (typeof window !== 'undefined' && (window as any).__TEST_ENV__) {
+if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).__TEST_ENV__) {
   testEnvironmentConfig();
 }

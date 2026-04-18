@@ -158,11 +158,11 @@ export const usePWA = (): PWAState & PWAActions => {
   // Installer l'application (déclencher le prompt d'installation)
   const installApp = async (): Promise<boolean> => {
     return new Promise((resolve) => {
-      let deferredPrompt: any = null;
+      let deferredPrompt: { prompt: () => void; userChoice: Promise<{ outcome: string }> } | null = null;
 
       const handleBeforeInstallPrompt = (e: Event) => {
         e.preventDefault();
-        deferredPrompt = e;
+        deferredPrompt = e as unknown as typeof deferredPrompt;
 
         if (deferredPrompt) {
           deferredPrompt.prompt();

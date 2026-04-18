@@ -37,7 +37,7 @@ function ProduitsList(): ReactElement {
   useEffect(() => {
     if (state?.campagneId && campagnes.length > 0) {
       const c = campagnes.find(c => c.id_campagne === state.campagneId);
-      if (c) setSelectedCampagne({ value: String(c.id_campagne), label: c.nom_campagne });
+      if (c) queueMicrotask(() => setSelectedCampagne({ value: String(c.id_campagne), label: c.nom_campagne }));
     }
   }, [state?.campagneId, campagnes]);
 

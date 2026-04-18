@@ -111,7 +111,7 @@ function ProspectImport(): ReactElement {
                   </div>
 
                   <div className="prospectImport__actions">
-                    <Button onClick={handleImport} disabled={isImporting}>
+                    <Button style="gradient" onClick={handleImport} disabled={isImporting}>
                       {isImporting ? 'Import en cours...' : `Importer ${rows.length} prospect${rows.length > 1 ? 's' : ''}`}
                     </Button>
                     <button type="button" onClick={reset} style={{ background: 'none', border: '1px solid #ccc', borderRadius: 4, padding: '0.5rem 1rem', cursor: 'pointer' }}>
@@ -155,7 +155,7 @@ function ProspectImport(): ReactElement {
               )}
 
               <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem' }}>
-                <Button onClick={reset}>Nouvel import</Button>
+                <Button style="grey" onClick={reset}>Nouvel import</Button>
                 <button type="button" onClick={() => navigate('/home')} style={{ background: 'none', border: '1px solid #ccc', borderRadius: 4, padding: '0.5rem 1rem', cursor: 'pointer' }}>
                   Retour à l'accueil
                 </button>

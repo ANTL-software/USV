@@ -61,7 +61,7 @@ export default function SignInForm({
     if (user) {
       navigate("/home");
     }
-  }, [user]);
+  }, [user, navigate]);
 
   return (
     <form

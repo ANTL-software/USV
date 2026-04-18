@@ -5,7 +5,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 // hooks | libraries
 import { ReactElement, useEffect, useCallback, useState } from "react";
 import { Calendar } from "react-big-calendar";
-import type { View, NavigateAction, SlotInfo } from "react-big-calendar";
+import type { View, SlotInfo } from "react-big-calendar";
 import { format } from "date-fns";
 
 import { IoAdd } from "react-icons/io5";
@@ -126,7 +126,7 @@ export default function BookingCalendar(): ReactElement {
     });
   }, [fetchBookings, currentDate]);
 
-  const handleNavigate = useCallback((newDate: Date, _view: View, _action: NavigateAction) => {
+  const handleNavigate = useCallback((newDate: Date) => {
     setCurrentDate(newDate);
   }, []);
 

@@ -33,6 +33,8 @@ import { showError } from "../../../utils/services/alertService.ts";
 
 type AspectRatio = "libre" | "carre" | "4-3" | "a4";
 
+const DEFAULT_CROP: Crop = { unit: "%", x: 5, y: 5, width: 90, height: 90 };
+
 const ASPECT_RATIOS: Record<AspectRatio, number | undefined> = {
   libre: undefined,
   carre: 1,
@@ -54,8 +56,7 @@ function ConvertisseurImage(): ReactElement {
   const [isConverting, setIsConverting] = useState<boolean>(false);
   const [customFileName, setCustomFileName] = useState<string>("");
 
-  const defaultCrop: Crop = { unit: "%", x: 5, y: 5, width: 90, height: 90 };
-  const [crop, setCrop] = useState<Crop>(defaultCrop);
+  const [crop, setCrop] = useState<Crop>(DEFAULT_CROP);
   const [completedCrop, setCompletedCrop] = useState<PercentCrop>({
     unit: "%", x: 5, y: 5, width: 90, height: 90,
   });
@@ -81,7 +82,7 @@ function ConvertisseurImage(): ReactElement {
     setImageFile(file);
     setImagePreviewUrl(url);
     setImageLoadFailed(false);
-    setCrop(defaultCrop);
+    setCrop(DEFAULT_CROP);
     setCompletedCrop({ unit: "%", x: 5, y: 5, width: 90, height: 90 });
     setCustomFileName(nameWithoutExt);
     setStep(2);
@@ -154,7 +155,7 @@ function ConvertisseurImage(): ReactElement {
     setImagePreviewUrl("");
     setImageLoadFailed(false);
     setCustomFileName("");
-    setCrop(defaultCrop);
+    setCrop(DEFAULT_CROP);
     setCompletedCrop({ unit: "%", x: 5, y: 5, width: 90, height: 90 });
     setAspectRatio("libre");
     setStep(1);

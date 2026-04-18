@@ -225,7 +225,7 @@ const hasRepetitiveChars = (password: string): boolean => {
  */
 const getSpecialCharVariety = (password: string): number => {
   const specialChars = new Set();
-  const specialPattern = /[@$!%*?&()_+=\-{}\[\]:";'<>?,./\\|`~]/;
+  const specialPattern = /[@$!%*?&()_+=\-{}[\]:";'<>?,./\\|`~]/;
   
   for (const char of password) {
     if (specialPattern.test(char)) {
@@ -266,7 +266,7 @@ const getCharsetSize = (password: string): number => {
   if (/[a-z]/.test(password)) size += 26;
   if (/[A-Z]/.test(password)) size += 26;
   if (/\d/.test(password)) size += 10;
-  if (/[@$!%*?&()_+=\-{}\[\]:";'<>?,./\\|`~]/.test(password)) size += 32;
+  if (/[@$!%*?&()_+=\-{}[\]:";'<>?,./\\|`~]/.test(password)) size += 32;
   return size;
 };
 

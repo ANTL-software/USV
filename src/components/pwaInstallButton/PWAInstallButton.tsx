@@ -17,14 +17,14 @@ function PWAInstallButton({
   compact = true
 }: PWAInstallButtonProps): ReactElement | null {
   const { isInstalled } = usePWAInstall();
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<{ prompt: () => void; userChoice: Promise<{ outcome: string }> } | null>(null);
   const [showButton, setShowButton] = useState<boolean>(false);
 
   // Écouter l'événement beforeinstallprompt
   useEffect(() => {
     const handleBeforeInstallPrompt = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as unknown as typeof deferredPrompt);
       setShowButton(true);
     };
 

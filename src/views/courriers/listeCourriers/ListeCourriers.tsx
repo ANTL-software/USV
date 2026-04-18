@@ -2,7 +2,7 @@
 import "./listeCourriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext } from "react";
+import { ReactElement, useState, useEffect, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MdArrowBack,
@@ -104,7 +104,7 @@ function ListeCourriers(): ReactElement {
   const { selected, toggle, toggleAll, clear, isAllSelected } = useCourrierSelection(filteredCourriers);
   const { tooltip, handleMouseEnter, handleMouseMove, handleMouseLeave } = useTooltip();
 
-  const loadCourriers = async (page: number, limit = 10): Promise<void> => {
+  const loadCourriers = useCallback(async (page: number, limit = 10): Promise<void> => {
     try {
       await getAllCourriers({
         page,
@@ -123,7 +123,7 @@ function ListeCourriers(): ReactElement {
       logError("loadCourriers", error);
       showErrorNotification(handleCourrierLoadError(error));
     }
-  };
+  }, [getAllCourriers, sortBy, sortOrder, columnFilters]);
 
   const {
     pdfModal, emailModal, bulkEmailModal,
@@ -141,7 +141,7 @@ function ListeCourriers(): ReactElement {
     } else if (!searchTerm.trim()) {
       loadCourriers(currentPage);
     }
-  }, [currentPage, searchTerm, sortBy, sortOrder, columnFilters]);
+  }, [currentPage, searchTerm, sortBy, sortOrder, columnFilters, loadCourriers]);
 
   useEffect(() => {
     const handleScroll = () => {

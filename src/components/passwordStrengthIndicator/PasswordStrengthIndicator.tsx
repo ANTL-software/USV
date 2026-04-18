@@ -16,13 +16,13 @@ function PasswordStrengthIndicator({
   useEffect(() => {
     if (password) {
       const passwordStrength = validatePasswordStrength(password);
-      setStrength(passwordStrength);
+      queueMicrotask(() => setStrength(passwordStrength));
       onValidityChange?.(passwordStrength.isValid, passwordStrength);
     } else {
-      setStrength(null);
+      queueMicrotask(() => setStrength(null));
       onValidityChange?.(false, {} as PasswordStrength);
     }
-  }, [password]); // Supprimer onValidityChange des dépendances pour éviter la boucle
+  }, [password]); // onValidityChange omis intentionnellement pour éviter boucle
 
   const getStrengthClass = (score: number): string => {
     switch (score) {
@@ -60,7 +60,7 @@ function PasswordStrengthIndicator({
     }
   };
 
-  if (!password) return null;
+  if (!password) return <></>;
 
   return (
     <div id="passwordStrengthIndicator" className="password-strength-container">

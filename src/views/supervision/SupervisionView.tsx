@@ -233,7 +233,7 @@ const SupervisionView = () => {
   const { queueState, isLoading, error } = useSupervision(selectedCampagne);
 
   // Tick chaque seconde pour animer les chronomètres (durées statuts, etc.)
-  const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
@@ -273,7 +273,7 @@ const SupervisionView = () => {
             <Select
               options={campagneOptions}
               value={campagneOptions.find((o: { value: string }) => o.value === String(selectedCampagne)) || null}
-              onChange={(option) => setSelectedCampagne(option ? Number(option.value) : null)}
+              onChange={(option) => setSelectedCampagne(option ? Number((option as { value: string }).value) : null)}
               styles={reactSelectStyles}
               placeholder="Choisir une campagne..."
               isClearable

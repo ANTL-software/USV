@@ -1,7 +1,7 @@
 interface ValidationError {
   field: string;
   message: string;
-  value?: any;
+  value?: unknown;
 }
 
 interface AxiosError {
@@ -196,8 +196,8 @@ export const showErrorNotification = (message: string, type: 'error' | 'warning'
   const prefix = type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️';
   
   // Essayer d'utiliser notre nouveau système si disponible
-  if (typeof window !== 'undefined' && (window as any).antl_alert_service) {
-    const alertService = (window as any).antl_alert_service;
+  if (typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).antl_alert_service) {
+    const alertService = (window as unknown as Record<string, unknown>).antl_alert_service as Record<string, (msg: string) => void>;
     if (type === 'error') {
       alertService.showError(message);
     } else if (type === 'warning') {

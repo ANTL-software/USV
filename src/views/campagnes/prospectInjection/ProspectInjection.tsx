@@ -18,7 +18,7 @@ import './prospectInjection.scss';
 const ProspectionInjection = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { confirm } = useAlert();
+  const { showConfirm } = useAlert();
   const { filters, setFilters, count, result, isLoading, loadCount, inject } = useInjection();
   const campagneId = id ? parseInt(id, 10) : null;
   const [campagneNom, setCampagneNom] = useState<string>('');
@@ -35,14 +35,16 @@ const ProspectionInjection = () => {
 
   useEffect(() => {
     if (count !== null && !isLoading) {
-      setCountModalOpen(true);
+      queueMicrotask(() => setCountModalOpen(true));
     }
   }, [count, isLoading]);
 
   useEffect(() => {
     if (result) {
-      setResultModalOpen(true);
-      setHasInjected(true);
+      queueMicrotask(() => {
+        setResultModalOpen(true);
+        setHasInjected(true);
+      });
     }
   }, [result]);
 
@@ -53,7 +55,7 @@ const ProspectionInjection = () => {
 
   const handleInject = async () => {
     if (!campagneId) return;
-    const confirmed = await confirm(
+    const confirmed = await showConfirm(
       `Injecter les prospects correspondants aux filtres dans cette campagne ?`,
       'Confirmer l\'injection'
     );
@@ -72,13 +74,13 @@ const ProspectionInjection = () => {
     setHasInjected(false);
   };
 
-  const typeProspectOptions = [
+  const typeProspectOptions: { value: string; label: string }[] = [
     { value: '', label: 'Tous' },
     { value: 'Particulier', label: 'Particulier' },
     { value: 'Entreprise', label: 'Entreprise' },
   ];
 
-  const statutOptions = [
+  const statutOptions: { value: string; label: string }[] = [
     { value: 'nouveau', label: 'Nouveau' },
     { value: 'contacte', label: 'Contacté' },
     { value: 'rappel', label: 'Rappel' },
@@ -150,7 +152,7 @@ const ProspectionInjection = () => {
                     <Select
                       options={typeProspectOptions}
                       value={typeProspectOptions.find(o => o.value === (filters.type_prospect || '')) || typeProspectOptions[0]}
-                      onChange={(option) => updateFilter('type_prospect', option?.value || '')}
+                      onChange={(option) => updateFilter('type_prospect', (option as typeof typeProspectOptions[number] | null)?.value || '')}
                       styles={reactSelectStyles}
                       placeholder="Tous"
                       isSearchable={false}
@@ -161,7 +163,7 @@ const ProspectionInjection = () => {
                     <Select
                       options={statutOptions}
                       value={statutOptions.find(o => o.value === (filters.statut || 'nouveau')) || statutOptions[0]}
-                      onChange={(option) => updateFilter('statut', option?.value || '')}
+                      onChange={(option) => updateFilter('statut', (option as typeof statutOptions[number] | null)?.value || '')}
                       styles={reactSelectStyles}
                       placeholder="Nouveau"
                       isSearchable={false}

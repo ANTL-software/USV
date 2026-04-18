@@ -256,19 +256,19 @@ export const startUpdateChecker = (): (() => void) => {
 export const isPWAInstalled = (): boolean => {
   return window.matchMedia('(display-mode: standalone)').matches ||
          window.matchMedia('(display-mode: fullscreen)').matches ||
-         // @ts-ignore - Pour Safari
-         (window.navigator as any).standalone === true;
+         // @ts-expect-error - standalone est spécifique à Safari
+         (window.navigator as Record<string, unknown>).standalone === true;
 };
 
 // Prompt d'installation PWA
 export const showInstallPrompt = (): Promise<boolean> => {
   return new Promise((resolve) => {
-    let deferredPrompt: any = null;
+    let deferredPrompt: { prompt: () => void; userChoice: Promise<{ outcome: string }> } | null = null;
 
     // Écouter l'événement beforeinstallprompt
     const handleBeforeInstallPrompt = async (e: Event) => {
       e.preventDefault();
-      deferredPrompt = e;
+      deferredPrompt = e as unknown as typeof deferredPrompt;
       
       // Import dynamique pour éviter les problèmes de bundle
       const { showPWAUpdatePrompt } = await import('../services/alertService');

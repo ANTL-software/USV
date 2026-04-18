@@ -14,7 +14,7 @@ import { useCategories } from '../../hooks/useProduits';
 import { useCampagnes } from '../../hooks/useCampagnes';
 
 // utils
-import { toSelectOptions, type SelectOption } from '../../utils/scripts/utils';
+import { toSelectOptions } from '../../utils/scripts/utils';
 
 // components
 import Header from '../../components/header/Header';

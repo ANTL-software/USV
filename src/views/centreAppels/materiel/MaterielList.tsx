@@ -355,7 +355,7 @@ function MaterielList(): ReactElement {
                     <Select
                       options={TYPE_MATERIEL_OPTIONS}
                       value={TYPE_MATERIEL_OPTIONS.find(o => o.value === form.type_materiel)}
-                      onChange={opt => opt && setForm(f => ({ ...f, type_materiel: opt.value }))}
+                      onChange={opt => opt && setForm(f => ({ ...f, type_materiel: (opt as typeof TYPE_MATERIEL_OPTIONS[number]).value }))}
                       isSearchable={false}
                       className="react-select-container"
                       classNamePrefix="react-select"
@@ -505,7 +505,7 @@ function MaterielList(): ReactElement {
                   <Select
                     options={employeOptions}
                     value={employeOptions.find(o => o.value === selectedEmployeId) ?? null}
-                    onChange={opt => setSelectedEmployeId(opt?.value ?? null)}
+                    onChange={opt => setSelectedEmployeId((opt as { value: number; label: string } | null)?.value ?? null)}
                     placeholder="Sélectionner un employé..."
                     className="react-select-container"
                     classNamePrefix="react-select"
@@ -521,7 +521,7 @@ function MaterielList(): ReactElement {
                   <Select
                     options={ETAT_MATERIEL_OPTIONS}
                     value={ETAT_MATERIEL_OPTIONS.find(o => o.value === affectationEtat) ?? null}
-                    onChange={opt => setAffectationEtat(opt?.value ?? null)}
+                    onChange={opt => setAffectationEtat((opt as typeof ETAT_MATERIEL_OPTIONS[number] | null)?.value ?? null)}
                     placeholder="Sélectionner un état..."
                     className="react-select-container"
                     classNamePrefix="react-select"
@@ -575,7 +575,7 @@ function MaterielList(): ReactElement {
                   <Select
                     options={ETAT_MATERIEL_OPTIONS}
                     value={ETAT_MATERIEL_OPTIONS.find(o => o.value === restitutionEtat) ?? null}
-                    onChange={opt => setRestitutionEtat(opt?.value ?? null)}
+                    onChange={opt => setRestitutionEtat((opt as typeof ETAT_MATERIEL_OPTIONS[number] | null)?.value ?? null)}
                     placeholder="Sélectionner un état..."
                     className="react-select-container"
                     classNamePrefix="react-select"
