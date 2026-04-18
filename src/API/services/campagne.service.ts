@@ -17,15 +17,10 @@ interface ApiResponse<T> {
   message?: string;
 }
 
-interface CampagnesListResponse {
-  campagnes: Campagne[];
-  pagination: { page: number; limit: number; total: number; totalPages: number };
-}
-
 export const getAllCampagnesService = async (): Promise<CampagneModel[]> => {
-  const response: AxiosResponse<ApiResponse<CampagnesListResponse>> = await getRequest('/campagnes');
-  if (response.data.success && response.data.data?.campagnes) {
-    return response.data.data.campagnes.map(c => CampagneModel.fromJSON(c));
+  const response: AxiosResponse<ApiResponse<Campagne[]>> = await getRequest('/campagnes');
+  if (response.data.success && Array.isArray(response.data.data)) {
+    return response.data.data.map(c => CampagneModel.fromJSON(c));
   }
   throw new Error(response.data.message || 'Impossible de récupérer les campagnes');
 };

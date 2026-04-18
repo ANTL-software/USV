@@ -4,9 +4,9 @@ import { UserModel } from '../models/user.model.ts';
 import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, UpdateSipData, CreateEmployeResponse } from '../../utils/types/user.types.ts';
 
 export const getAllEmployesService = async (): Promise<UserModel[]> => {
-  const response: AxiosResponse<ApiResponse<Employe[]>> = await getRequest('/employes');
-  if (response.data.success && response.data.data) {
-    return response.data.data.map(e => UserModel.fromJSON(e));
+  const response: AxiosResponse<ApiResponse<{ employes: Employe[] }>> = await getRequest('/employes');
+  if (response.data.success && response.data.data?.employes) {
+    return response.data.data.employes.map(e => UserModel.fromJSON(e));
   }
   throw new Error(response.data.message || 'Impossible de récupérer les employés');
 };
@@ -38,12 +38,12 @@ export const deleteEmployeService = async (id: number): Promise<void> => {
 };
 
 export const createEmployeService = async (data: CreateEmployeData): Promise<CreateEmployeResponse> => {
-  const response: AxiosResponse<ApiResponse<Employe> & { sip_provisioned: boolean; sip_error: string | null }> = await postRequest('/employes', data);
+  const response: AxiosResponse<ApiResponse<{ employe: Employe; sip_provisioned: boolean; sip_error: string | null }>> = await postRequest('/employes', data);
   if (response.data.success && response.data.data) {
     return {
-      employe: UserModel.fromJSON(response.data.data),
-      sip_provisioned: response.data.sip_provisioned ?? false,
-      sip_error: response.data.sip_error ?? null,
+      employe: UserModel.fromJSON(response.data.data.employe),
+      sip_provisioned: response.data.data.sip_provisioned ?? false,
+      sip_error: response.data.data.sip_error ?? null,
       message: response.data.message || ''
     };
   }

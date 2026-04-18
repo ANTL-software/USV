@@ -20,8 +20,8 @@ export const getAllProduitsService = async (params?: { actif?: boolean; search?:
   if (params?.actif !== undefined) query.set('actif', String(params.actif));
   if (params?.search) query.set('search', params.search);
   query.set('limit', '100');
-  const res: AxiosResponse<ApiResponse<{ produits: Produit[] }>> = await getRequest(`/produits?${query}`);
-  if (res.data.success && res.data.data) return res.data.data.produits;
+  const res: AxiosResponse<ApiResponse<Produit[]>> = await getRequest(`/produits?${query}`);
+  if (res.data.success && Array.isArray(res.data.data)) return res.data.data;
   throw new Error(res.data.message || 'Erreur récupération produits');
 };
 
