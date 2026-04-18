@@ -2,7 +2,7 @@
 import './produitForm.scss';
 
 // hooks | library
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
@@ -13,13 +13,14 @@ import { useProduitForm } from '../../hooks/useProduitForm';
 import { useCategories } from '../../hooks/useProduits';
 import { useCampagnes } from '../../hooks/useCampagnes';
 
+// utils
+import { toSelectOptions, type SelectOption } from '../../utils/scripts/utils';
+
 // components
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
-
-type SelectOption = { value: string; label: string };
 
 function ProduitForm(): ReactElement {
   const navigate = useNavigate();
@@ -32,18 +33,18 @@ function ProduitForm(): ReactElement {
   const { categories } = useCategories();
   const { campagnes } = useCampagnes();
 
-  const [categorieOptions, setCategorieOptions] = useState<SelectOption[]>([]);
-  const [campagneOptions, setCampagneOptions] = useState<SelectOption[]>([]);
+  const categorieOptions = useMemo(() =>
+    toSelectOptions(categories, c => c.id_categorie, c => c.nom_categorie),
+    [categories]
+  );
 
-  useEffect(() => {
-    setCategorieOptions(categories.map(c => ({ value: String(c.id_categorie), label: c.nom_categorie })));
-  }, [categories]);
-
-  useEffect(() => {
-    setCampagneOptions(campagnes
-      .filter(c => c.statut !== 'terminee')
-      .map(c => ({ value: String(c.id_campagne), label: c.nom_campagne })));
-  }, [campagnes]);
+  const campagneOptions = useMemo(() =>
+    toSelectOptions(
+      campagnes, c => c.id_campagne, c => c.nom_campagne,
+      c => c.statut !== 'terminee'
+    ),
+    [campagnes]
+  );
 
   const selectedCampagneOpt = campagneId
     ? (campagneOptions.find(o => o.value === String(campagneId)) ?? (campagneNom ? { value: String(campagneId), label: campagneNom } : null))

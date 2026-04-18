@@ -78,7 +78,7 @@ export const logEnvironmentInfo = (): void => {
   const env = getEnvironment();
   const apiUrl = getApiBaseUrl();
   const csp = getCSP();
-  
+
   console.group('🌍 Configuration Environnement');
   console.log('Environnement:', env);
   console.log('Hostname:', window.location.hostname);
@@ -87,3 +87,25 @@ export const logEnvironmentInfo = (): void => {
   console.log('CSP:', csp);
   console.groupEnd();
 };
+
+export type SelectOption = { value: string; label: string };
+
+/**
+ * Transforme une liste d'items en options react-select.
+ * @param items - Liste d'objets
+ * @param getValue - Fonction pour extraire la valeur (sera convertie en string)
+ * @param getLabel - Fonction pour extraire le label
+ * @param filter - Filtre optionnel (retourne true pour inclure l'item)
+ */
+export function toSelectOptions<T>(
+  items: T[],
+  getValue: (item: T) => string | number,
+  getLabel: (item: T) => string,
+  filter?: (item: T) => boolean,
+): SelectOption[] {
+  const filtered = filter ? items.filter(filter) : items;
+  return filtered.map(item => ({
+    value: String(getValue(item)),
+    label: getLabel(item),
+  }));
+}

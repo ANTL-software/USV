@@ -31,6 +31,7 @@ export interface CallInProgress {
   agent_nom: string;
   agent_prenom: string;
   duree_secondes: number;
+  origine_appel: string;
 }
 
 export interface QueueState {

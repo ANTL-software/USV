@@ -1,5 +1,5 @@
 import './campagneForm.scss';
-import { ReactElement, useState, useEffect } from 'react';
+import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import { IoSwapHorizontal, IoAddCircleOutline } from 'react-icons/io5';
@@ -7,8 +7,7 @@ import Select from 'react-select';
 import WithAuth from '../../utils/middleware/WithAuth';
 import { useCampagneForm } from '../../hooks/useCampagneForm';
 import { useCampagneAgents, useCampagnes } from '../../hooks/useCampagnes';
-import { getAllEmployesService } from '../../API/services/user.service';
-import type { Employe } from '../../utils/types/user.types';
+import { useEmployes } from '../../hooks/useEmployes';
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
@@ -32,17 +31,12 @@ function CampagneForm(): ReactElement {
 
   const { campagnes: toutesLesCampagnes } = useCampagnes();
 
+  const { employes: allEmployes } = useEmployes();
+
   type SelectOption = { value: string; label: string };
 
-  const [allEmployes, setAllEmployes] = useState<Employe[]>([]);
   const [selectedAgent, setSelectedAgent] = useState<SelectOption | null>(null);
   const [transferDestId, setTransferDestId] = useState<Record<number, SelectOption | null>>({});
-
-  useEffect(() => {
-    getAllEmployesService()
-      .then(data => setAllEmployes(data.map(m => m.toJSON ? m.toJSON() : m as unknown as Employe)))
-      .catch(() => {});
-  }, []);
 
   const agentIds = new Set(agents.map(a => a.id_employe));
   const emploiesDisponibles = allEmployes.filter(e => e.actif && !agentIds.has(e.id_employe));

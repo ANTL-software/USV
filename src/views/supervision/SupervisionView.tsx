@@ -13,6 +13,7 @@ import Loader from '../../components/loader/Loader';
 import reactSelectStyles from '../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../utils/types/queue.types';
 import type { Campagne } from '../../utils/types/campagne.types';
+import { formatCallDuration, formatSince } from '../../utils/scripts/formatters';
 import './supervisionView.scss';
 
 const STATUT_LABELS: Record<string, string> = {
@@ -37,29 +38,30 @@ const DIALER_STATUT_COLORS: Record<string, string> = {
   disponible: '#27ae60',
   en_appel: '#3498db',
   appel_sortant: '#6366f1',
-  apres_appel: '#f1c40f',
+  pause_apres_appel: '#f1c40f',
   pause: '#e67e22',
   hors_ligne: '#95a5a6'
 };
 
-const formatDuration = (seconds: number): string => {
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-  return `${m}:${s.toString().padStart(2, '0')}`;
+const DIALER_STATUT_LABELS: Record<string, string> = {
+  disponible: 'Disponible',
+  en_appel: 'En appel',
+  appel_sortant: 'Appel sortant',
+  pause_apres_appel: 'Pause après appel',
+  pause: 'En pause',
+  hors_ligne: 'Hors ligne',
 };
 
-const formatSince = (isoDate: string | null): string => {
-  if (!isoDate) return '';
-  const seconds = Math.floor((Date.now() - new Date(isoDate).getTime()) / 1000);
-  if (seconds < 0) return '';
-  const h = Math.floor(seconds / 3600);
-  const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
-  if (h > 0) return `${h}h${m.toString().padStart(2, '0')}`;
-  if (m > 0) return `${m}min ${s}s`;
-  return `${s}s`;
+const ORIGINE_LABELS: Record<string, string> = {
+  auto: 'File',
+  manuel: 'Manuel',
+  rappel: 'Rappel',
+};
+
+const ORIGINE_COLORS: Record<string, string> = {
+  auto: '#3498db',
+  manuel: '#6366f1',
+  rappel: '#f39c12',
 };
 
 const QueueCards = ({ counts }: { counts: QueueCount[] }) => {
@@ -107,7 +109,7 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
       <div className="supervisionView__agents__summary">
         {Object.entries(summary).map(([statut, count]) => (
           <span key={statut} className="stat-badge" style={{ backgroundColor: DIALER_STATUT_COLORS[statut] }}>
-            {count} {statut.replace('_', ' ')}
+            {count} {DIALER_STATUT_LABELS[statut] || statut}
           </span>
         ))}
       </div>
@@ -120,7 +122,7 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
             <div key={a.id_employe} className="agent-row">
               <span className="agent-dot" style={{ backgroundColor: DIALER_STATUT_COLORS[a.statut_dialer || 'hors_ligne'] }} />
               <span className="agent-name">{a.nom} {a.prenom}</span>
-              <span className="agent-statut">{a.statut_dialer?.replace('_', ' ') || 'hors ligne'}</span>
+              <span className="agent-statut">{DIALER_STATUT_LABELS[a.statut_dialer || 'hors_ligne'] || 'Hors ligne'}</span>
               {a.debut_statut && sinceSeconds > 0 && (
                 <span className="agent-since">depuis {formatSince(a.debut_statut)}</span>
               )}
@@ -145,6 +147,7 @@ const CallsTable = ({ calls }: { calls: CallInProgress[] }) => (
             <th>Agent</th>
             <th>Prospect</th>
             <th>Téléphone</th>
+            <th>Origine</th>
             <th>Durée</th>
           </tr>
         </thead>
@@ -154,7 +157,15 @@ const CallsTable = ({ calls }: { calls: CallInProgress[] }) => (
               <td>{c.agent_nom} {c.agent_prenom}</td>
               <td>{c.prospect_nom} {c.prospect_prenom}</td>
               <td>{c.telephone}</td>
-              <td className="calls-duration">{formatDuration(c.duree_secondes)}</td>
+              <td>
+                <span
+                  className="origin-badge"
+                  style={{ backgroundColor: ORIGINE_COLORS[c.origine_appel] || '#95a5a6' }}
+                >
+                  {ORIGINE_LABELS[c.origine_appel] || c.origine_appel}
+                </span>
+              </td>
+              <td className="calls-duration">{formatCallDuration(c.duree_secondes)}</td>
             </tr>
           ))}
         </tbody>
@@ -192,6 +203,21 @@ const SummaryCards = ({ counts, agents, calls }: {
       <div className="summary-card summary-card--call" role="status" aria-label={`${inCallCount} appels en cours`}>
         <span className="summary-card__value">{inCallCount}</span>
         <span className="summary-card__label">Appels en cours</span>
+        {inCallCount > 0 && (
+          <div className="summary-card__origins">
+            {Object.entries(
+              calls.reduce((acc, c) => {
+                const o = c.origine_appel || 'auto';
+                acc[o] = (acc[o] || 0) + 1;
+                return acc;
+              }, {} as Record<string, number>)
+            ).map(([origin, count]) => (
+              <span key={origin} className="origin-badge origin-badge--sm" style={{ backgroundColor: ORIGINE_COLORS[origin] || '#95a5a6' }}>
+                {count} {ORIGINE_LABELS[origin] || origin}
+              </span>
+            ))}
+          </div>
+        )}
       </div>
       <div className="summary-card" role="status" aria-label={`${agents.length} agents affectés`}>
         <span className="summary-card__value">{agents.length}</span>
@@ -224,6 +250,10 @@ const SupervisionView = () => {
   const counts = queueState?.queueCounts || [];
   const agents = queueState?.agents || [];
   const calls = queueState?.callsInProgress || [];
+
+  // Agents en appel = ceux présents dans callsInProgress → ne pas afficher dans "Agents affectés"
+  const inCallAgentIds = new Set(calls.map(c => c.id_agent));
+  const visibleAgents = agents.filter(a => !inCallAgentIds.has(a.id_employe));
 
   return (
     <div id="supervisionView">
@@ -258,7 +288,7 @@ const SupervisionView = () => {
 
               {queueState && (
                 <div className="supervisionView__content">
-                  <SummaryCards counts={counts} agents={agents} calls={calls} />
+                  <SummaryCards counts={counts} agents={visibleAgents} calls={calls} />
 
                   <section>
                     <h3>État de la file</h3>
@@ -266,8 +296,8 @@ const SupervisionView = () => {
                   </section>
 
                   <section>
-                    <h3>Agents affectés ({agents.length})</h3>
-                    <AgentList agents={agents} now={now} />
+                    <h3>Agents affectés ({visibleAgents.length})</h3>
+                    <AgentList agents={visibleAgents} now={now} />
                   </section>
 
                   <section>

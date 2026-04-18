@@ -241,6 +241,29 @@
     }
   }
 
+  // Origin badges
+  .origin-badge {
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 0.2em 0.6em;
+    border-radius: 12px;
+    color: white;
+    white-space: nowrap;
+
+    &--sm {
+      font-size: 0.7em;
+      padding: 0.15em 0.5em;
+    }
+  }
+
+  .summary-card__origins {
+    display: flex;
+    gap: 0.4em;
+    flex-wrap: wrap;
+    margin-top: 0.25em;
+  }
+
   // Calls table
   .supervisionView__calls {
     table {

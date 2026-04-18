@@ -47,6 +47,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 
 // utils
 import { handleCourrierLoadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
+import { formatDate, getDirectionBadge } from "../../../utils/scripts/formatters.ts";
 
 // types
 import { ICourrier, CourrierSortColumn, SortOrder, IColumnFilters } from "../../../utils/types/courrier.types.ts";
@@ -186,20 +187,6 @@ function ListeCourriers(): ReactElement {
   const hasActiveFilters = Object.values(columnFilters).some((v) => v !== "");
 
   // --- Helpers ---
-  const formatDate = (dateString?: string): string => {
-    if (!dateString) return "N/A";
-    return new Date(dateString).toLocaleDateString("fr-FR");
-  };
-
-  const getDirectionBadge = (direction: string): string => {
-    const map: Record<string, string> = {
-      entrant: "badge-entrant",
-      sortant: "badge-sortant",
-      interne: "badge-interne",
-    };
-    return map[direction] ?? "";
-  };
-
   const renderSortIcon = (column: CourrierSortColumn): ReactElement | null => {
     if (sortBy !== column) return null;
     return sortOrder === "ASC"
