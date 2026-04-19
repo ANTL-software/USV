@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../utils/middleware/WithAuth';
 
@@ -78,6 +78,14 @@ function CentreAppels(): ReactElement {
               </div>
               <h2>Supervision</h2>
               <p>Superviser les files d'appels, agents et appels en cours en temps réel.</p>
+            </section>
+
+            <section className="centreAppels__card" onClick={() => navigate('/operations/commandes')}>
+              <div className="centreAppels__card-icon">
+                <IoReceipt />
+              </div>
+              <h2>Commandes</h2>
+              <p>Consulter les commandes passées depuis le script vendeur.</p>
             </section>
           </div>
         </div>

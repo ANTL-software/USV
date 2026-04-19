@@ -7,6 +7,7 @@ import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
 import { BookingProvider } from "./context/booking/BookingProvider.tsx";
 import LoaderProvider from "./context/loader/LoaderProvider.tsx";
 import { AlertProvider } from "./context/alert/AlertProvider.tsx";
+import { VenteProvider } from "./context/vente/VenteProvider.tsx";
 
 // PWA initialization
 import { initializePWA } from "./utils/scripts/serviceWorker.ts";
@@ -34,7 +35,9 @@ createRoot(document.getElementById("root")!).render(
       <LoaderProvider>
         <AlertProvider>
           <BookingProvider>
-            <App />
+            <VenteProvider>
+              <App />
+            </VenteProvider>
           </BookingProvider>
         </AlertProvider>
       </LoaderProvider>

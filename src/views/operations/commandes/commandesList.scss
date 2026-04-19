@@ -1,0 +1,214 @@
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
+
+#commandesList {
+  @include mixins.mainView;
+
+  main { padding: 1.5em 1em; }
+
+  .commandesList__container {
+    @include mixins.centeredContainer;
+  }
+
+  .commandesList__header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1.5em;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  // Filtres
+  .commandesList__filters {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+    margin-bottom: 1.5em;
+    padding: 1em;
+    background: vars.$greyBackground;
+    border-radius: 8px;
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+  }
+
+  .commandesList__filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    flex: 1;
+    min-width: 10em;
+
+    label {
+      font-weight: 600;
+      font-size: 0.85em;
+      color: vars.$fontColorSecondary;
+    }
+
+    input[type="date"] {
+      padding: 0.5em 0.75em;
+      border: 2px solid vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.95em;
+      font-family: inherit;
+      height: 44px;
+
+      &:focus {
+        border-color: vars.$utilsPrimary;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+      }
+    }
+  }
+
+  .commandesList__filter-actions {
+    display: flex;
+    gap: 0.5em;
+    align-items: flex-end;
+
+    @media (min-width: vars.$tabletWidth) {
+      align-self: flex-end;
+    }
+  }
+
+  // Cards récapitulatives
+  .commandesList__summary {
+    display: flex;
+    gap: 0.75em;
+    flex-wrap: wrap;
+    margin-bottom: 1.5em;
+  }
+
+  .summary-card {
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    padding: 1em 1.25em;
+    flex: 1;
+    min-width: 8em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    border-top: 3px solid vars.$fontColorSecondary;
+
+    &__value {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    &__label {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+    }
+
+    &--total { border-top-color: vars.$utilsPrimary; }
+    &--total .summary-card__value { color: vars.$utilsPrimary; }
+
+    &--amount { border-top-color: vars.$successColor; }
+    &--amount .summary-card__value { color: vars.$successColor; }
+
+    &--validee { border-top-color: vars.$successColor; }
+    &--validee .summary-card__value { color: vars.$successColor; }
+
+    &--attente { border-top-color: vars.$warningColor; }
+    &--attente .summary-card__value { color: vars.$warningColor; }
+
+    &--annulee { border-top-color: vars.$errorColor; }
+    &--annulee .summary-card__value { color: vars.$errorColor; }
+  }
+
+  // Tableau
+  .commandesList__table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 1em;
+    border-radius: 8px;
+    border: 1px solid vars.$borderColor;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 50em;
+
+      th, td {
+        text-align: left;
+        padding: 0.65em 0.75em;
+        border-bottom: 1px solid vars.$borderColor;
+        white-space: nowrap;
+      }
+
+      th {
+        font-size: 0.85em;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+        background: vars.$greyBackground;
+      }
+
+      tbody tr:hover {
+        background: rgba(124, 58, 237, 0.04);
+      }
+
+      .commandesList__row--clickable {
+        cursor: pointer;
+        transition: background 0.15s ease;
+      }
+    }
+  }
+
+  // Badge statut
+  .statut-badge {
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 0.25em 0.65em;
+    border-radius: 12px;
+    color: white;
+
+    &--en_attente { background: vars.$warningColor; }
+    &--validee { background: vars.$successColor; }
+    &--annulee { background: vars.$errorColor; }
+  }
+
+  // Pagination
+  .commandesList__pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1em;
+    padding: 0.75em 0;
+
+    span {
+      font-size: 0.9em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .empty, .loading {
+    text-align: center;
+    color: vars.$fontColorSecondary;
+    padding: 2em 1em;
+  }
+
+  .commandesList__error {
+    padding: 0.85em 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #dc2626;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+
+  .commandesList__montant {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+}
