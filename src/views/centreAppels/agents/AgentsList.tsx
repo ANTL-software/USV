@@ -4,7 +4,7 @@ import './agentsList.scss';
 // hooks | library
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPersonAdd, IoPencil, IoCheckmarkCircle, IoCloseCircle } from 'react-icons/io5';
+import { IoPersonAdd, IoPencil, IoCheckmarkCircle, IoCloseCircle, IoEye } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -89,7 +89,12 @@ function AgentsList(): ReactElement {
                 </thead>
                 <tbody>
                   {filtered.map(agent => (
-                    <tr key={agent.id_employe} className={!agent.actif ? 'agentsList__row--inactive' : ''}>
+                    <tr
+                      key={agent.id_employe}
+                      className={!agent.actif ? 'agentsList__row--inactive' : ''}
+                      onClick={() => navigate(`/operations/employes/details/${agent.id_employe}`)}
+                      style={{ cursor: 'pointer' }}
+                    >
                       <td style={{ textAlign: 'center' }}><code>{agent.id_employe}</code></td>
                       <td><code>{agent.identifiant}</code></td>
                       <td style={{ textTransform: 'uppercase' }}>{agent.nom}</td>
@@ -118,7 +123,14 @@ function AgentsList(): ReactElement {
                           : <span className="agentsList__badge agentsList__badge--inactive">Inactif</span>
                         }
                       </td>
-                      <td className="agentsList__actions">
+                      <td className="agentsList__actions" onClick={(e) => e.stopPropagation()}>
+                        <button
+                          className="agentsList__btn-view"
+                          onClick={() => navigate(`/operations/employes/details/${agent.id_employe}`)}
+                          title="Voir"
+                        >
+                          <IoEye />
+                        </button>
                         <button
                           className="agentsList__btn-edit"
                           onClick={() => navigate(`/operations/employes/${agent.id_employe}`)}

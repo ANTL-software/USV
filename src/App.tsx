@@ -32,6 +32,7 @@ import ConvertisseurImageWithAuth from "./views/courriers/convertisseurImage/Con
 import BookingPageWithAuth from "./views/booking/BookingPage.tsx";
 import CentreAppelsWithAuth from "./views/centreAppels/CentreAppels.tsx";
 import AgentsListWithAuth from "./views/centreAppels/agents/AgentsList.tsx";
+import AgentDetailsWithAuth from "./views/centreAppels/agents/AgentDetails.tsx";
 import AgentFormWithAuth from "./views/centreAppels/agents/AgentForm.tsx";
 import PostesListWithAuth from "./views/centreAppels/postes/PostesList.tsx";
 import PosteFormWithAuth from "./views/centreAppels/postes/PosteForm.tsx";
@@ -107,6 +108,7 @@ function App(): ReactElement {
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
         <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>
+        <Route path={"operations/employes/details/:id"} element={<AgentDetailsWithAuth />}></Route>
         <Route path={"operations/employes/:id"} element={<AgentFormWithAuth />}></Route>
         <Route path={"operations/postes"} element={<PostesListWithAuth />}></Route>
         <Route path={"operations/postes/new"} element={<PosteFormWithAuth />}></Route>
