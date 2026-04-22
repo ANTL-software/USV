@@ -1,0 +1,145 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#campagnesList {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .campagnesList__container {
+    @include mixins.centeredContainer(1200px);
+  }
+
+  .campagnesList__back {
+    margin-bottom: 1em;
+  }
+
+  .campagnesList__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5em;
+
+    h1 {
+      margin: 0 0 0.25em;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+  }
+
+  .campagnesList__subtitle {
+    margin: 0;
+    color: vars.$fontColorSecondary;
+    font-size: 0.9rem;
+  }
+
+  .campagnesList__error {
+    padding: 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: vars.$errorColor;
+    margin-bottom: 1em;
+  }
+
+  .campagnesList__loading,
+  .campagnesList__empty {
+    text-align: center;
+    padding: 3em;
+    color: vars.$fontColorSecondary;
+  }
+
+  .campagnesList__table-wrapper {
+    overflow-x: auto;
+    @include mixins.card(12px, light);
+  }
+
+  .campagnesList__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    th {
+      text-align: left;
+      padding: 0.85em 1em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid vars.$borderColor;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.85em 1em;
+      border-bottom: 1px solid vars.$borderColor;
+      vertical-align: middle;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+  }
+
+  .campagnesList__nom {
+    font-weight: 600;
+    color: vars.$fontColorPrimary;
+  }
+
+  .campagnesList__agents-count {
+    text-align: center;
+    font-weight: 600;
+    color: vars.$utilsPrimary;
+  }
+
+  .campagnesList__badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25em 0.65em;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &--active   { background: #dcfce7; color: #16a34a; }
+    &--inactive { background: #f1f5f9; color: vars.$fontColorSecondary; }
+    &--terminee { background: #fee2e2; color: #dc2626; }
+  }
+
+  .campagnesList__actions {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+  }
+
+  .campagnesList__btn-edit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    background: #e0f2fe;
+    color: #0284c7;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background vars.$transitionSmooth;
+    &:hover { background: #bae6fd; }
+  }
+
+  .campagnesList__btn-statut {
+    padding: 0.3em 0.75em;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.78rem;
+    font-weight: 600;
+    transition: background vars.$transitionSmooth;
+
+    &--active   { background: #dcfce7; color: #16a34a; &:hover { background: #bbf7d0; } }
+    &--terminee { background: #fee2e2; color: #dc2626; &:hover { background: #fecaca; } }
+  }
+}

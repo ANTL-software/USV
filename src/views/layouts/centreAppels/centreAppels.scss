@@ -1,0 +1,89 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#centreAppels {
+  @include mixins.mainView;
+
+  .centreAppels__back {
+    padding: 1em 1em 0;
+    @include mixins.centeredContainer;
+  }
+
+  .centreAppels__wrapper {
+    @include mixins.centeredContainer;
+
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
+      flex: 1;
+      padding: 2em 1em;
+    }
+  }
+
+  .centreAppels__row {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+    justify-content: center;
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+  }
+
+  .centreAppels__card {
+    flex: 1;
+    min-width: 200px;
+    @include mixins.card(16px, light);
+
+    & {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2.5em 2em;
+      cursor: pointer;
+      transition: all vars.$transitionMedium;
+      border: none;
+      text-decoration: none;
+    }
+
+    &:hover:not(&--disabled) {
+      transform: translateY(-0.35em);
+      box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.13);
+    }
+
+    &--disabled {
+      opacity: 0.55;
+      cursor: default;
+    }
+
+    &-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h2 {
+      margin: 0 0 0.75em;
+      font-size: 1.5rem;
+      font-weight: 700;
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p {
+      margin: 0;
+      color: vars.$fontColorSecondary;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+  }
+}

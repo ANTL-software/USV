@@ -1,0 +1,270 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#agentForm {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .agentForm__container {
+    @include mixins.centeredContainer(780px);
+  }
+
+  .agentForm__header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
+
+    h1 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      flex: 1;
+    }
+  }
+
+  .agentForm__identifiant {
+    font-size: 0.9rem;
+    color: vars.$fontColorSecondary;
+
+    code {
+      font-family: monospace;
+      background: #f1f5f9;
+      padding: 0.15em 0.5em;
+      border-radius: 4px;
+      font-size: 0.95em;
+    }
+  }
+
+  .agentForm__error {
+    padding: 0.85em 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #dc2626;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+
+  .agentForm__success {
+    padding: 0.85em 1em;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    color: #16a34a;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+
+  .agentForm__loading {
+    text-align: center;
+    padding: 4em;
+    color: vars.$fontColorSecondary;
+  }
+
+  .agentForm__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+    @include mixins.card(12px, light);
+    padding: 1.5em;
+  }
+
+  .agentForm__fieldset {
+    border: 1px solid vars.$borderColor;
+    border-radius: 12px;
+    padding: 1.25em 1.5em;
+    margin: 0;
+
+    legend {
+      padding: 0 0.5em;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &--sip {
+      border-color: #a5b4fc;
+      background: #f5f3ff;
+
+      legend { color: #6d28d9; }
+    }
+  }
+
+  .agentForm__fieldset-hint {
+    margin: 0.25em 0 1em;
+    font-size: 0.82rem;
+    color: vars.$fontColorSecondary;
+
+    code {
+      font-family: monospace;
+      background: white;
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+      font-size: 0.9em;
+    }
+  }
+
+  .agentForm__row {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+
+    & + & { margin-top: 0.85em; }
+  }
+
+  .agentForm__field {
+    flex: 1;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+
+    label {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: vars.$fontColorPrimary;
+    }
+
+    input {
+      padding: 0.6em 0.85em;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      background: white;
+      transition: border-color vars.$transitionSmooth;
+      width: 100%;
+      box-sizing: border-box;
+
+      &:focus {
+        outline: none;
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+      }
+
+      &:disabled { background: #f8fafc; color: vars.$fontColorSecondary; cursor: not-allowed; }
+      &::placeholder { color: #94a3b8; }
+    }
+
+    .reactSelect__control {
+      border-color: vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      min-height: unset;
+      box-shadow: none;
+      transition: border-color vars.$transitionSmooth;
+
+      &:hover { border-color: vars.$borderColor; }
+      &--is-focused {
+        border-color: #818cf8 !important;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
+      }
+      &--is-disabled { background: #f8fafc; cursor: not-allowed; }
+    }
+
+    .reactSelect__value-container { padding: 0.35em 0.85em; }
+    .reactSelect__placeholder { color: #94a3b8; }
+    .reactSelect__single-value { color: vars.$fontColorPrimary; }
+    .reactSelect__option--is-focused { background: #ede9fe; }
+    .reactSelect__option--is-selected { background: #818cf8; }
+    .reactSelect__menu { border-radius: 8px; font-size: 0.9rem; }
+  }
+
+  .agentForm__sip-info {
+    padding: 0.85em 1em;
+    background: #f5f3ff;
+    border: 1px solid #a5b4fc;
+    border-radius: 8px;
+    color: #6d28d9;
+    font-size: 0.88rem;
+  }
+
+  .agentForm__sip-warning {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75em;
+    padding: 0.85em 1em;
+    background: #fef9c3;
+    border: 1px solid #fde047;
+    border-radius: 8px;
+    color: #854d0e;
+    font-size: 0.88rem;
+    margin-bottom: 1em;
+  }
+
+  .agentForm__sip-unprov {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.75em;
+    color: vars.$fontColorSecondary;
+    font-size: 0.88rem;
+  }
+
+  .agentForm__btn-provision-sip {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    padding: 0.55em 1.2em;
+    background: #6d28d9;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity vars.$transitionSmooth;
+    white-space: nowrap;
+
+    &:hover:not(:disabled) { opacity: 0.85; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  .agentForm__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75em;
+    padding-top: 0.5em;
+  }
+
+  .agentForm__btn-cancel {
+    padding: 0.65em 1.5em;
+    border: 1px solid vars.$borderColor;
+    border-radius: 8px;
+    background: white;
+    color: vars.$fontColorSecondary;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all vars.$transitionSmooth;
+
+    &:hover:not(:disabled) { background: #f8fafc; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  .agentForm__btn-save {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.65em 1.75em;
+    background: vars.$utilsGradient;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity vars.$transitionSmooth;
+
+    &:hover:not(:disabled) { opacity: 0.88; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+}

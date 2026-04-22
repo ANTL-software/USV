@@ -1,0 +1,416 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 100;
+  height: 6dvh;
+  background: rgba(vars.$utilsPrimary, 0.05);
+  backdrop-filter: vars.$blurMedium;
+  -webkit-backdrop-filter: vars.$blurMedium;
+  transition: all vars.$transitionSmooth;
+
+  &.webdev {
+    background: rgba(vars.$webdevPrimary, 0.05);
+  }
+
+  &.utils {
+    background: rgba(vars.$utilsPrimary, 0.05);
+  }
+}
+
+.headerContainer {
+  @media (min-width: 1980px) {
+    padding: 0 !important;
+  }
+
+  & {
+
+    display: flex !important;
+    align-items: center !important;
+    padding: 0 1rem !important;
+    justify-content: space-between !important;
+    height: 100% !important;
+    @include mixins.centeredContainer(1980px);
+  }
+}
+
+.headerBrand {
+  text-decoration: none;
+  transition: all vars.$transitionFast;
+}
+
+.brandLogo {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  height: 3rem;
+  padding: 0.25rem 0;
+
+  img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
+  }
+}
+
+.headerRight {
+  align-items: center !important;
+  @include mixins.flexContainer(row, 1rem);
+}
+
+.headerActions {
+  & {
+    display: none;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  @media (min-width: vars.$mobileWidth) {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .pwa-install-btn.compact.desktop {
+    font-size: 0.8em;
+    padding: 0.4em 0.6em;
+    border-radius: 6px;
+  }
+}
+
+.userGreeting {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  pointer-events: none;
+  font-size: 0.85em;
+  color: vars.$fontColorPrimary;
+
+  @media (min-width: vars.$mobileWidth) {
+    font-size: 0.9em;
+  }
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: transparent;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+  transition: background vars.$transitionFast, color vars.$transitionFast;
+
+  &:hover {
+    background: rgba(vars.$errorColor, 0.08);
+    color: vars.$errorColor;
+  }
+
+  &:active {
+    background: rgba(vars.$errorColor, 0.15);
+  }
+}
+
+.headerDesktop {
+  @media (max-width: vars.$mobileWidth) {
+    display: none;
+  }
+
+  & {
+    align-items: center !important;
+    @include mixins.flexContainer(row, 0.5rem);
+  }
+
+}
+
+.navItem {
+  align-items: center !important;
+  padding: 0.2em .5em !important;
+  border: none !important;
+  background: transparent !important;
+  color: vars.$navTextColor !important;
+  font-size: 0.95rem !important;
+  font-weight: 500 !important;
+  border-radius: 25px !important;
+  cursor: pointer !important;
+  transition: all vars.$transitionSmooth !important;
+  position: relative !important;
+  overflow: hidden !important;
+  @include mixins.flexContainer(row, 0.5rem);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left vars.$transitionMedium;
+    z-index: -1;
+  }
+
+  &:hover:not(.active) {
+    transform: translateY(-0.125em);
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: vars.$shadowLight;
+  }
+
+  &.active {
+    color: vars.$navTextColorActive;
+    transform: translateY(-0.125em);
+    box-shadow: vars.$shadowMedium;
+
+    #header.utils & {
+      background: vars.$utilsGradient;
+
+      &::before {
+        background: vars.$utilsGradientReverse;
+        left: 0;
+      }
+    }
+
+    #header.webdev & {
+      background: vars.$webdevGradient;
+
+      &::before {
+        background: vars.$webdevGradientReverse;
+        left: 0;
+      }
+    }
+  }
+
+  .navIcon {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+  }
+
+  .navText {
+    white-space: nowrap;
+  }
+}
+
+.headerToggle {
+  & {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5em;
+    height: 1.5em;
+    border: none;
+    background: transparent;
+    color: vars.$navTextColor;
+    font-size: 1.5rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all vars.$transitionFast;
+  }
+
+  @media (max-width: vars.$mobileWidth) {
+    display: flex;
+  }
+
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+.mobileMenuOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1500;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4em;
+}
+
+.mobileMenu {
+  width: 90%;
+  max-width: 25em;
+  background: vars.$whiteBackground;
+  border-radius: 20px;
+  box-shadow: vars.$shadowHeavy;
+  overflow: hidden;
+  animation: slideInDown 0.3s ease;
+
+  &.utils {
+    border-top: 4px solid vars.$utilsPrimary;
+  }
+
+  &.webdev {
+    border-top: 4px solid vars.$webdevPrimary;
+  }
+}
+
+.mobileMenuHeader {
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 1rem 1.5rem !important;
+  background: vars.$greyBackground !important;
+  @include mixins.flexContainer(row, 1rem);
+
+  .mobileMenu & {
+    &.utils {
+      background: rgba(38, 208, 206, 0.1);
+    }
+
+    &.webdev {
+      background: rgba(255, 107, 71, 0.1);
+    }
+  }
+}
+
+.mobileMenuTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+
+.mobileMenuClose {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: none;
+  background: rgba(0, 0, 0, 0.1);
+  color: vars.$fontColorPrimary;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.2);
+    transform: rotate(90deg);
+  }
+}
+
+.mobileMenuContent {
+  padding: 1rem;
+}
+
+.mobileUserInfo {
+  background: rgba(0, 0, 0, 0.05) !important;
+  border-radius: 12px !important;
+  padding: 1rem !important;
+  margin-bottom: 1rem !important;
+  @include mixins.flexContainer(column, 0.75rem);
+
+  .mobileUserGreeting {
+    font-size: 0.9rem;
+    color: vars.$fontColorPrimary;
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .pwa-install-btn.compact.mobile {
+    align-self: center;
+    min-width: 150px;
+  }
+
+  .mobileLogoutButton {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    padding: 0.5em 0.75em !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    border: none !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+    color: vars.$fontColorSecondary !important;
+    cursor: pointer !important;
+    transition: background vars.$transitionFast, color vars.$transitionFast !important;
+
+    &:hover {
+      background: rgba(vars.$errorColor, 0.08) !important;
+      color: vars.$errorColor !important;
+    }
+  }
+}
+
+.mobileSection {
+  margin-bottom: 1rem;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.mobileSectionTitle {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: vars.$utilsPrimary;
+  margin: 1rem 0 0.75rem 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.mobileNavItem {
+  align-items: center !important;
+  width: 100% !important;
+  padding: 1rem 1.5rem !important;
+  border: none !important;
+  background: transparent !important;
+  color: vars.$fontColorPrimary !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  border-radius: 12px !important;
+  cursor: pointer !important;
+  transition: all vars.$transitionFast !important;
+  text-align: left !important;
+  @include mixins.flexContainer(row, 1rem);
+
+  &:hover:not(.active) {
+    background: vars.$greyBackground;
+    transform: translateX(0.25em);
+  }
+
+  &.active {
+    color: vars.$whiteBackground;
+
+    .mobileMenu.utils & {
+      background: vars.$utilsGradient;
+    }
+
+    .mobileMenu.webdev & {
+      background: vars.$webdevGradient;
+    }
+  }
+
+  .mobileNavIcon {
+    font-size: 1.3rem;
+    min-width: 1.5em;
+  }
+
+  .mobileNavText {
+    flex: 1;
+  }
+}
+
+@keyframes slideInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-1.25em);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

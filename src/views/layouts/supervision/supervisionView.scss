@@ -1,0 +1,302 @@
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
+
+#supervisionView {
+  @include mixins.mainView;
+
+  main { padding: 1.5em 1em; }
+
+  .supervisionView__container {
+    @include mixins.centeredContainer;
+  }
+
+  .supervisionView__header {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 1.5em;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  .supervisionView__selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    max-width: 30em;
+    margin-bottom: 1.5em;
+
+    label {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .supervisionView__content {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+
+    section {
+      h3 {
+        margin: 0 0 0.75em;
+        font-size: 1.1em;
+        color: vars.$fontColorPrimary;
+      }
+    }
+  }
+
+  // Summary cards
+  .supervisionView__summary {
+    display: flex;
+    gap: 0.75em;
+    flex-wrap: wrap;
+  }
+
+  .summary-card {
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    padding: 1em 1.25em;
+    flex: 1;
+    min-width: 8em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    border-top: 3px solid vars.$fontColorSecondary;
+
+    &__value {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    &__label {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+    }
+
+    &--danger {
+      border-top-color: vars.$errorColor;
+      .summary-card__value { color: vars.$errorColor; }
+    }
+
+    &--warning {
+      border-top-color: vars.$warningColor;
+      .summary-card__value { color: vars.$warningColor; }
+    }
+
+    &--info {
+      border-top-color: #27ae60;
+      .summary-card__value { color: #27ae60; }
+    }
+
+    &--call {
+      border-top-color: #3498db;
+      .summary-card__value { color: #3498db; }
+    }
+  }
+
+  // Queue cards
+  .supervisionView__queue {
+    &__total {
+      display: flex;
+      align-items: baseline;
+      gap: 0.5em;
+      margin-bottom: 1em;
+    }
+
+    &__remaining {
+      display: flex;
+      align-items: baseline;
+      gap: 0.25em;
+
+      .count {
+        font-size: 2em;
+        font-weight: 700;
+        color: vars.$successColor;
+      }
+
+      .label {
+        font-size: 0.9em;
+        color: vars.$fontColorSecondary;
+      }
+
+      &.danger .count { color: vars.$errorColor; }
+      &.warning .count { color: vars.$warningColor; }
+    }
+
+    .separator {
+      font-size: 1.5em;
+      color: vars.$fontColorSecondary;
+      margin: 0 0.25em;
+    }
+
+    .total {
+      font-size: 1em;
+      color: vars.$fontColorSecondary;
+    }
+
+    .alert-badge {
+      font-size: 0.75em;
+      padding: 0.2em 0.6em;
+      border-radius: 4px;
+      color: white;
+      margin-left: 0.5em;
+
+      &.danger { background: vars.$errorColor; }
+      &.warning { background: vars.$warningColor; }
+    }
+
+    &__cards {
+      display: flex;
+      gap: 0.75em;
+      flex-wrap: wrap;
+    }
+  }
+
+  .queue-card {
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    padding: 0.75em 1em;
+    border-left: 4px solid;
+    min-width: 8em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    &__count {
+      font-size: 1.4em;
+      font-weight: 700;
+    }
+
+    &__label {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  // Agents
+  .supervisionView__agents {
+    &__summary {
+      display: flex;
+      gap: 0.5em;
+      flex-wrap: wrap;
+      margin-bottom: 0.75em;
+    }
+
+    .stat-badge {
+      font-size: 0.8em;
+      padding: 0.25em 0.6em;
+      border-radius: 4px;
+      color: white;
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5em;
+    }
+  }
+
+  .agent-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.4em 0.75em;
+    background: vars.$greyBackground;
+    border-radius: 6px;
+
+    .agent-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .agent-name {
+      font-weight: 500;
+    }
+
+    .agent-statut {
+      font-size: 0.85em;
+      color: vars.$fontColorSecondary;
+      text-transform: capitalize;
+    }
+
+    .agent-since {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+      font-family: 'Courier New', monospace;
+    }
+
+    .agent-pause {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  // Origin badges
+  .origin-badge {
+    display: inline-block;
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 0.2em 0.6em;
+    border-radius: 12px;
+    color: white;
+    white-space: nowrap;
+
+    &--sm {
+      font-size: 0.7em;
+      padding: 0.15em 0.5em;
+    }
+  }
+
+  .summary-card__origins {
+    display: flex;
+    gap: 0.4em;
+    flex-wrap: wrap;
+    margin-top: 0.25em;
+  }
+
+  // Calls table
+  .supervisionView__calls {
+    table {
+      width: 100%;
+      border-collapse: collapse;
+
+      th, td {
+        text-align: left;
+        padding: 0.5em 0.75em;
+        border-bottom: 1px solid vars.$borderColor;
+      }
+
+      th {
+        font-size: 0.85em;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  .empty, .loading {
+    text-align: center;
+    color: vars.$fontColorSecondary;
+    padding: 1em;
+  }
+
+  .supervisionView__error {
+    padding: 0.85em 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #dc2626;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+}

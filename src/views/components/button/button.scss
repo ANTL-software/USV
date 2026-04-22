@@ -1,0 +1,179 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+%buttonBase {
+  @include mixins.flexContainer(row, 0.5em);
+
+  & {
+    align-items: center;
+    justify-content: center;
+    padding: 0.375em 0.875em;
+    font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+    border-radius: 6px;
+    border: none;
+    font-size: 1rem;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    cursor: pointer;
+    transition: all vars.$transitionMedium;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: .8rem;
+  }
+
+  @media (max-width: 25em) {
+    font-size: .8rem;
+  }
+}
+
+%buttonFocus {
+  outline: 3.5px solid #36395a;
+}
+
+.orangeButton {
+  @extend %buttonBase;
+  color: #fff;
+  background: linear-gradient(180deg, #fa8e7e 0%, #ff7e5f 100%);
+  background-origin: border-box;
+  box-shadow: 0 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  }
+}
+
+.seaGreenButton {
+  @extend %buttonBase;
+  color: #fff;
+  background: linear-gradient(180deg, #7c3aed 0%, #5b21b6 100%);
+  background-origin: border-box;
+  box-shadow: 0 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(54, 122, 246, 0.25), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  }
+}
+
+.whiteButton {
+  @extend %buttonBase;
+  color: #3d3d3d;
+  background: #fff;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1);
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), 0 0 0 3.5px rgba(58, 108, 217, 0.5);
+  }
+}
+
+.greyButton {
+  @extend %buttonBase;
+  background: #8e8c91;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0 0.5px 0.5px rgba(142, 140, 145, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  color: #ffffff;
+
+  @media (max-width: 1024px) {
+    font-size: 0.8em;
+  }
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1px rgba(0, 0, 0, 0.1), 0px 0px 0px 3.5px rgba(58, 108, 217, 0.5);
+  }
+}
+
+.greenButton {
+  @extend %buttonBase;
+  @include mixins.flexContainer(row, 0.5em);
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(180deg, #00cc66 0%, #00af59 100%);
+  background-origin: border-box;
+  box-shadow: 0 0.5px 1.5px rgba(54, 122, 246, 0.25), inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+
+  @media (max-width: 1024px) {
+    font-size: 0.8em;
+  }
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgb(0, 175, 89), 0px 0px 0px 3.5px rgb(0, 204, 102);
+  }
+}
+
+.redButton {
+  @extend %buttonBase;
+  color: #fff;
+  background: linear-gradient(180deg, #da033b 0%, #b10303 100%);
+  background-origin: border-box;
+  box-shadow: 0 0.5px 1.5px rgb(177, 3, 3), inset 0 0.8px 0 -0.25px rgba(255, 255, 255, 0.2);
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0 -0.25px rgba(255, 255, 255, 0.2), 0 0.5px 1.5px rgb(177, 3, 3), 0 0 0 3.5px rgb(177, 3, 50);
+  }
+}
+
+.gradientButton {
+  @extend %buttonBase;
+  flex-flow: row;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.6em 1.2em;
+  background: vars.$utilsGradient;
+  color: white;
+  font-size: 0.95rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 0.5px 1.5px rgba(124, 58, 237, 0.25), inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2);
+
+  &:hover { opacity: 0.88; }
+
+  &:focus,
+  &:active {
+    @extend %buttonFocus;
+    box-shadow: inset 0 0.8px 0px -0.25px rgba(255, 255, 255, 0.2), 0px 0.5px 1.5px rgba(124, 58, 237, 0.25), 0px 0px 0px 3.5px rgba(124, 58, 237, 0.4);
+  }
+}
+
+.backButton {
+  align-items: center;
+  padding: 0.75em 1em;
+  font-size: 0.9em;
+  font-family: -apple-system, BlinkMacSystemFont, "Roboto", sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+
+  @include mixins.flexContainer(row, 0.5em);
+  @include mixins.actionButton(vars.$utilsSecondary, vars.$utilsPrimary);
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+
+  &:disabled {
+    background: #6e6d70;
+    cursor: not-allowed;
+    transform: none;
+  }
+}
+
+button:disabled {
+  @extend %buttonBase;
+  flex-flow: row;
+  background: #6e6d70;
+  box-shadow: 0 0.5px 1px rgba(0, 0, 0, 0.1), inset 0 0.5px 0.5px rgba(255, 255, 255, 0.5), 0 0 0 0.5px rgba(0, 0, 0, 0.12);
+  color: #ffffff;
+  cursor: not-allowed;
+}

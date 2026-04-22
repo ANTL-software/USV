@@ -1,0 +1,349 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#nouveauCourrier {
+  @include mixins.mainView;
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
+
+  .nouveauCourrierContainer {
+    @include mixins.centeredContainer(62.5em);
+    @include mixins.flexContainer(column, 1em);
+    
+    & {
+      flex: 1;
+      padding: 0 0.5em;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      padding: 0 1em;
+    }
+  }
+
+  .nouveauCourrierHeader {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    color: vars.$fontColorPrimary;
+
+    @media (min-width: vars.$tabletWidth) {
+      flex-direction: row;
+      align-items: center;
+      gap: 2em;
+    }
+
+
+    .pageTitle {
+      font-size: 2em;
+      font-weight: 700;
+      margin: 0;
+      background: vars.$utilsGradient;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+
+      @media (min-width: vars.$tabletWidth) {
+        font-size: 2.3em;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        font-size: 2.5em;
+      }
+    }
+  }
+
+  .courrierForm {
+    @include mixins.card(12px, light);
+    
+    & {
+      overflow: hidden;
+      margin: 1.5em 0 0;
+    }
+
+    @media (min-width: vars.$tabletWidth) {
+      border-radius: 16px;
+      margin-top: 2em;
+    }
+
+    .formGrid {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+
+      @media (min-width: vars.$tabletWidth) {
+        padding: 2rem;
+        gap: 1.5em;
+      }
+
+      @media (min-width: vars.$desktopWidth) {
+        gap: 1.8em;
+      }
+    }
+
+    .formSection {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+
+      .sectionTitle {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: vars.$utilsPrimary;
+        padding: 0 0 0.5rem;
+        border-bottom: 2px solid vars.$borderColor;
+        margin: 0;
+
+        @media (min-width: vars.$tabletWidth) {
+          font-size: 1.3rem;
+        }
+
+        svg {
+          font-size: 1.3rem;
+
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 1.4rem;
+          }
+        }
+      }
+
+      .formRow:not(:last-child) {
+        margin-bottom: 0.5em;
+      }
+    }
+
+    .formRow {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+
+      @media (min-width: vars.$tabletWidth) {
+        flex-direction: row;
+        gap: 1.5rem;
+      }
+    }
+
+    .formGroup {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex: 1;
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        color: vars.$fontColorPrimary;
+        font-size: 0.9rem;
+
+        svg {
+          font-size: 1rem;
+          color: vars.$utilsPrimary;
+        }
+      }
+
+      input,
+      textarea {
+        @include mixins.formInput;
+      }
+
+      .react-select-container {
+        @include mixins.reactSelect;
+      }
+
+      textarea {
+        resize: vertical;
+        min-height: 100px;
+      }
+    }
+
+    .uploadZone {
+      border: 2px dashed vars.$borderColor;
+      border-radius: 10px;
+      padding: 2rem 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: vars.$greyBackground;
+
+      @media (min-width: vars.$tabletWidth) {
+        border-radius: 12px;
+        padding: 3rem 2rem;
+      }
+
+      &:hover {
+        border-color: vars.$utilsPrimary;
+        background: rgba(38, 208, 206, 0.05);
+      }
+
+      &.dragActive {
+        border-color: vars.$utilsPrimary;
+        background: rgba(38, 208, 206, 0.1);
+        transform: scale(1.02);
+      }
+
+      &.hasFile {
+        border-color: vars.$successColor;
+        background: rgba(39, 174, 96, 0.05);
+      }
+
+      .fileInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: white;
+        border-radius: 8px;
+        border: 1px solid vars.$borderColor;
+
+        @media (min-width: vars.$tabletWidth) {
+          flex-direction: row;
+          text-align: left;
+        }
+
+        .fileIcon {
+          font-size: 2rem;
+          color: vars.$successColor;
+          flex-shrink: 0;
+        }
+
+        .fileDetails {
+          flex: 1;
+
+          .fileName {
+            display: block;
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+            margin: 0 0 0.25rem;
+          }
+
+          .fileSize {
+            display: block;
+            font-size: 0.85rem;
+            color: vars.$fontColorSecondary;
+            margin: 0;
+          }
+        }
+
+        .removeFile {
+          background: none;
+          border: none;
+          color: vars.$errorColor;
+          font-size: 1.2rem;
+          cursor: pointer;
+          padding: 0.25rem;
+          border-radius: 4px;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(231, 76, 60, 0.1);
+          }
+        }
+      }
+
+      .uploadPrompt {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+
+        .uploadIcon {
+          font-size: 2.5rem;
+          color: vars.$utilsPrimary;
+          opacity: 0.7;
+
+          @media (min-width: vars.$tabletWidth) {
+            font-size: 3rem;
+          }
+        }
+
+        .uploadText {
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          text-align: center;
+
+          .primaryText {
+            font-size: 1rem;
+            font-weight: 600;
+            color: vars.$fontColorPrimary;
+
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 1.1rem;
+            }
+          }
+
+          .secondaryText {
+            font-size: 0.9rem;
+            color: vars.$fontColorSecondary;
+
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 0.95rem;
+            }
+          }
+
+          .formatText {
+            font-size: 0.75rem;
+            color: vars.$fontColorSecondary;
+
+            @media (min-width: vars.$tabletWidth) {
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
+
+    .formActions {
+      @include mixins.formActions;
+
+      .btnCancel,
+      .btnSubmit {
+        padding: 0.75rem 2rem;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+
+        @media (min-width: vars.$tabletWidth) {
+          width: auto;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      .btnCancel {
+        background: white;
+        color: vars.$fontColorPrimary;
+        border: 2px solid vars.$borderColor;
+
+        &:hover:not(:disabled) {
+          border-color: vars.$errorColor;
+          color: vars.$errorColor;
+        }
+      }
+
+      .btnSubmit {
+        background: vars.$utilsGradient;
+        color: white;
+        border: none;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-1em);
+          box-shadow: 0 4em 12em rgba(38, 208, 206, 0.4);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,137 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#produitForm {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .produitForm__container {
+    @include mixins.centeredContainer(800px);
+  }
+
+  .produitForm__loading {
+    text-align: center;
+    padding: 3em;
+    color: vars.$fontColorSecondary;
+  }
+
+  .produitForm__back {
+    margin-bottom: 1em;
+  }
+
+  h1 {
+    margin: 0 0 1.5em;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: vars.$fontColorPrimary;
+  }
+
+  .produitForm__error {
+    padding: 0.85em 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: vars.$errorColor;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+
+  .produitForm__success {
+    padding: 0.85em 1em;
+    background: #dcfce7;
+    border: 1px solid #86efac;
+    border-radius: 8px;
+    color: #16a34a;
+    margin-bottom: 1em;
+    font-size: 0.9rem;
+  }
+
+  .produitForm__form {
+    fieldset {
+      @include mixins.card(10px, light);
+      border: 1px solid vars.$borderColor;
+      padding: 1.5em;
+      margin-bottom: 1.5em;
+
+      legend {
+        font-weight: 600;
+        padding: 0 0.5em;
+        color: vars.$fontColorPrimary;
+        font-size: 0.95rem;
+      }
+    }
+  }
+
+  .produitForm__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1em;
+    margin-bottom: 1em;
+  }
+
+  label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: vars.$fontColorSecondary;
+
+    input, textarea {
+      @include mixins.formInput;
+      font-family: inherit;
+    }
+  }
+
+  .produitForm__label-full {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: vars.$fontColorSecondary;
+    margin-bottom: 1em;
+
+    textarea {
+      @include mixins.formInput;
+      font-family: inherit;
+      resize: vertical;
+    }
+  }
+
+  .produitForm__actif-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: vars.$fontColorSecondary;
+    margin-bottom: 1em;
+
+    input[type="checkbox"] {
+      width: 1.1em;
+      height: 1.1em;
+      cursor: pointer;
+    }
+  }
+
+  .produitForm__campagne-info {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: vars.$fontColorPrimary;
+    padding: 0.5em 0;
+  }
+
+  .produitForm__actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1em;
+    margin-top: 1.5em;
+    padding-top: 1.25em;
+    border-top: 1px solid vars.$borderColor;
+  }
+}

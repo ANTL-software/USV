@@ -1,0 +1,87 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#subNav {
+  position: fixed;
+  top: 6dvh;
+  left: 0;
+  right: 0;
+  z-index: 99;
+  height: 4dvh;
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+  border-bottom: 1px solid vars.$borderColor;
+  transition: all vars.$transitionSmooth;
+  
+  @media (max-width: vars.$tabletWidth) {
+    display: none !important;
+  }
+}
+
+.subNavContainer {
+  @include mixins.centeredContainer(1440px);
+  @include mixins.flexContainer(row, 1em);
+  
+  & {
+    align-items: center;
+    justify-content: flex-start;
+    padding: 0 1em;
+    height: 100%;
+  }
+}
+
+.subNavItem {
+  @include mixins.flexContainer(row, 0.5rem);
+  
+  & {
+    align-items: center;
+    border: none;
+    background: transparent;
+    color: vars.$navTextColor;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all vars.$transitionSmooth;
+    position: relative;
+    overflow: hidden;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    transition: left vars.$transitionMedium;
+    z-index: -1;
+  }
+  
+  &:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: vars.$shadowLight;
+  }
+  
+  &.active {
+    color: vars.$navTextColorActive;
+    box-shadow: vars.$shadowMedium;
+    background: vars.$utilsGradient;
+    
+    &::before {
+      background: vars.$utilsGradientReverse;
+      left: 0;
+    }
+  }
+  
+  .subNavIcon {
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+  }
+  
+  .subNavText {
+    white-space: nowrap;
+  }
+}

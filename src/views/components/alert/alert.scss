@@ -1,0 +1,211 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+@use "sass:color";
+
+.alert-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  backdrop-filter: vars.$blurMedium;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1em;
+  
+  animation: fadeIn vars.$transitionMedium;
+}
+
+.alert {
+  background: vars.$whiteBackground;
+  border-radius: 12px;
+  box-shadow: vars.$shadowHeavy;
+  max-width: 90dvw;
+  width: 100%;
+  max-height: 80dvh;
+  overflow: hidden;
+  position: relative;
+  
+  animation: slideIn vars.$transitionMedium cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  @media (min-width: vars.$tabletWidth) {
+    max-width: 28em;
+  }
+  
+  &--info {
+    border-top: 4px solid vars.$utilsPrimary;
+  }
+  
+  &--success {
+    border-top: 4px solid vars.$successColor;
+  }
+  
+  &--warning {
+    border-top: 4px solid vars.$warningColor;
+  }
+  
+  &--error {
+    border-top: 4px solid vars.$errorColor;
+  }
+  
+  &--confirm {
+    border-top: 4px solid vars.$warningColor;
+  }
+}
+
+.alert__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.5em 1.5em 0;
+  gap: 1em;
+}
+
+.alert__header-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75em;
+  flex: 1;
+}
+
+.alert__icon {
+  font-size: 1.5em;
+  flex-shrink: 0;
+  margin-top: 0.125em;
+  
+  &--info {
+    color: vars.$utilsPrimary;
+  }
+  
+  &--success {
+    color: vars.$successColor;
+  }
+  
+  &--warning {
+    color: vars.$warningColor;
+  }
+  
+  &--error {
+    color: vars.$errorColor;
+  }
+  
+  &--confirm {
+    color: vars.$warningColor;
+  }
+}
+
+.alert__title {
+  margin: 0;
+  font-size: 1.125em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  line-height: 1.4;
+}
+
+.alert__close {
+  background: none;
+  border: none;
+  padding: 0.25em;
+  cursor: pointer;
+  color: vars.$fontColorSecondary;
+  font-size: 1.25em;
+  border-radius: 4px;
+  transition: all vars.$transitionFast;
+  flex-shrink: 0;
+  
+  &:hover {
+    background-color: vars.$greyBackground;
+    color: vars.$fontColorPrimary;
+  }
+  
+  &:focus {
+    outline: 2px solid vars.$utilsPrimary;
+    outline-offset: 2px;
+  }
+}
+
+.alert__body {
+  padding: 1em 1.5em 1.5em;
+}
+
+.alert__message {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.5;
+  font-size: 0.9375em;
+}
+
+.alert__actions {
+  display: flex;
+  gap: 0.75em;
+  padding: 0 1.5em 1.5em;
+  justify-content: flex-end;
+  
+  @media (max-width: calc(vars.$mobileWidth - 1px)) {
+    flex-direction: column-reverse;
+  }
+}
+
+.alert__button {
+  padding: 0.75em 1.5em;
+  border-radius: 8px;
+  font-size: 0.9375em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+  border: 1px solid transparent;
+  min-width: 6em;
+  
+  @media (max-width: calc(vars.$mobileWidth - 1px)) {
+    width: 100%;
+  }
+  
+  &:focus {
+    outline: 2px solid vars.$utilsPrimary;
+    outline-offset: 2px;
+  }
+  
+  &--cancel {
+    background: vars.$greyBackground;
+    color: vars.$fontColorPrimary;
+    border-color: vars.$borderColor;
+    
+    &:hover {
+      background: rgba(vars.$fontColorSecondary, 0.1);
+      border-color: vars.$fontColorSecondary;
+    }
+  }
+  
+  &--confirm {
+    background: vars.$warningColor;
+    color: vars.$whiteBackground;
+    
+    &:hover {
+      background: color.adjust(vars.$warningColor, $lightness: -10%);
+    }
+  }
+}
+
+// Animations
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(-1em);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
