@@ -14,6 +14,7 @@ export interface BookingContextType {
   isLoading: boolean;
   loadingEmployes: boolean;
   fetchBookings: (filters?: BookingFilters) => Promise<void>;
+  fetchConfig: () => Promise<void>;
   createBooking: (payload: CreateBookingPayload) => Promise<void>;
   updateBooking: (id: number, payload: UpdateBookingPayload) => Promise<void>;
   cancelBooking: (id: number) => Promise<void>;

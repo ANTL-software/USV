@@ -69,23 +69,5 @@
         }
       ]
     }
-  ],
-  "prefer_related_applications": false,
-  "related_applications": [],
-  "screenshots": [
-    {
-      "src": "/screenshot-mobile.png",
-      "sizes": "390x844",
-      "type": "image/png",
-      "platform": "mobile",
-      "label": "Vue mobile de l'application"
-    },
-    {
-      "src": "/screenshot-desktop.png", 
-      "sizes": "1920x1080",
-      "type": "image/png",
-      "platform": "wide",
-      "label": "Vue desktop de l'application"
-    }
   ]
 }

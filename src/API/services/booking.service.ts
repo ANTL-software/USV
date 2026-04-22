@@ -44,11 +44,17 @@ export const cancelBookingService = async (id: number): Promise<void> => {
 };
 
 export const getBookingConfigService = async (): Promise<BookingConfig> => {
-  const response: AxiosResponse<ApiBookingConfigResponse> = await getRequest('/bookings/config');
-  if (response.data.success && response.data.data) {
-    return response.data.data;
+  try {
+    const response: AxiosResponse<ApiBookingConfigResponse> = await getRequest('/bookings/config');
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Impossible de récupérer la configuration');
+  } catch (error) {
+    // Fallback si l'endpoint n'existe pas - valeurs par défaut
+    console.warn('Impossible de charger la config des réservations, utilisation des valeurs par défaut');
+    return { id: 1, capacite_journaliere: 10 };
   }
-  throw new Error(response.data.message || 'Impossible de récupérer la configuration');
 };
 
 export const updateBookingConfigService = async (capacite_journaliere: number): Promise<BookingConfig> => {

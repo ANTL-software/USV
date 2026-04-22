@@ -20,10 +20,11 @@ axios.interceptors.request.use(async (config) => {
   const protectedMethods = ['post', 'patch', 'delete'];
   if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
     try {
-      // Exclure les routes de login/register/csrf-token
+      // Exclure les routes d'authentification ( pas besoin de CSRF )
       const isAuthRoute = config.url?.includes('/login') || 
                          config.url?.includes('/register') || 
-                         config.url?.includes('/csrf-token');
+                         config.url?.includes('/csrf-token') ||
+                         config.url?.includes('/refresh');
       if (!isAuthRoute) {
         const csrfHeaders = await csrfService.getCSRFHeaders();
         Object.assign(config.headers as Record<string, string>, csrfHeaders);
@@ -37,14 +38,46 @@ axios.interceptors.request.use(async (config) => {
 });
 
 // Interceptor de réponse pour gérer les erreurs d'authentification automatiquement
+// Basé sur le pattern de script/src/API/config.ts
 axios.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // Gestion automatique des erreurs d'authentification avec cookies
-    if (error.response?.status === 401) {
-      // Token JWT expiré ou invalide - laisser le UserProvider gérer l'état
-      console.warn('Token JWT invalide ou expiré');
-      // Ne pas rediriger ici - laisser le UserProvider s'en charger
+  async (error) => {
+    const originalRequest = error.config as {
+      _retry?: boolean;
+      url?: string;
+    };
+
+    const authEndpoints = ['/auth/login', '/auth/refresh', '/auth/logout', '/api/auth/refresh', '/auth/me'];
+    const isAuthEndpoint = authEndpoints.some(endpoint =>
+      originalRequest?.url?.includes(endpoint)
+    );
+
+    // Gestion automatique du refresh de token sur 401
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest &&
+      !isAuthEndpoint
+    ) {
+      originalRequest._retry = true;
+
+      try {
+        console.warn('Token JWT expiré - tentative de refresh...');
+        // Appeler l'endpoint de refresh - le cookie httpOnly est envoyé automatiquement (withCredentials: true global)
+        await axios.post('/auth/refresh', {});
+        
+        // Le nouveau token est posé par le serveur dans les cookies httpOnly
+        // On rejoue la requête originale avec le nouveau token
+        console.warn('Token rafraîchi avec succès - rejouons la requête');
+        return axios(originalRequest);
+      } catch (refreshError) {
+        console.error('Échec du refresh du token:', refreshError);
+        // Nettoyer le token CSRF et la session
+        csrfService.clearToken();
+        // Rediriger vers la page de login
+        window.location.href = '/auth';
+        return Promise.reject(refreshError);
+      }
     } else if (error.response?.status === 403) {
       // Token CSRF invalide - nettoyer et redemander
       console.warn('Token CSRF invalide');
@@ -89,7 +122,6 @@ export const postFormDataRequest = async <R>(
   formData: FormData,
 ): Promise<AxiosResponse<R>> => {
   try {
-    // Les cookies JWT sont automatiquement envoyés avec withCredentials: true
     const config: Record<string, unknown> = {
       headers: {} as Record<string, string>,
       withCredentials: true // Assurer que les cookies sont envoyés

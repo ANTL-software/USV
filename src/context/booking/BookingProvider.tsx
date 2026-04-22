@@ -37,6 +37,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [loadingEmployes, setLoadingEmployes] = useState<boolean>(true);
 
+  // Chargement initial des employés seulement
   useEffect(() => {
     if (!isAuthenticated) {
       setEmployes([]);
@@ -45,14 +46,10 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
       return;
     }
     setLoadingEmployes(true);
-    Promise.all([
-      getAllEmployesService(),
-      getBookingConfigService(),
-    ])
-      .then(([employes, cfg]) => {
+    getAllEmployesService()
+      .then((employes) => {
         const sorted = [...employes].sort((a, b) => a.prenom.localeCompare(b.prenom, 'fr'));
         setEmployes(sorted.map(e => e.toSelectOption()));
-        setConfig(cfg);
       })
       .catch(err => {
         logError('BookingProvider.init', err);
@@ -60,6 +57,17 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
       })
       .finally(() => setLoadingEmployes(false));
   }, [isAuthenticated]);
+
+  // Chargement de la config à la demande (appelé depuis BookingCalendar)
+  const fetchConfig = useCallback(async (): Promise<void> => {
+    try {
+      const cfg = await getBookingConfigService();
+      setConfig(cfg);
+    } catch (err: unknown) {
+      logError('BookingProvider.fetchConfig', err);
+      // Ne pas afficher d'erreur, on utilise la valeur par défaut dans le composant
+    }
+  }, []);
 
   const fetchBookings = useCallback(async (filters?: BookingFilters): Promise<void> => {
     try {
@@ -120,7 +128,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
   }, []);
 
   return (
-    <BookingContext.Provider value={{ bookings, employes, config, isLoading, loadingEmployes, fetchBookings, createBooking, updateBooking, cancelBooking }}>
+    <BookingContext.Provider value={{ bookings, employes, config, isLoading, loadingEmployes, fetchBookings, fetchConfig, createBooking, updateBooking, cancelBooking }}>
       {children}
     </BookingContext.Provider>
   );

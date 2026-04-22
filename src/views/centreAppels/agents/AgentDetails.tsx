@@ -2,19 +2,21 @@
 import './agentDetails.scss';
 
 // hooks | library
-import { ReactElement, useMemo, useState, useRef, useCallback } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { ReactElement } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { IoArrowBack, IoTime, IoStatsChart, IoCalendar, IoDownload, IoEye, IoDocumentText, IoCloudUpload, IoClose } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 // hooks
-import { useEmployes } from '../../../hooks/useEmployes';
+import { useEmployeeDetails } from '../../../hooks/useEmployeeDetails';
 
 // components
 import Header from '../../../components/header/Header';
 import SubNav from '../../../components/subNav/SubNav';
 import BackToTop from '../../../components/backToTop/BackToTop';
 import Button from '../../../components/button/Button';
+import Modal from '../../../components/modal/Modal';
+import ModernPDFViewer from '../../../components/pdfViewer/ModernPDFViewer';
 
 // Types pour les actions
 interface ActionItem {
@@ -22,13 +24,6 @@ interface ActionItem {
   label: string;
   icon: ReactElement;
   description: string;
-}
-
-// Types pour les documents
-interface EmployeeDocument {
-  id: number;
-  name: string;
-  date: string;
 }
 
 // Actions disponibles pour un employé
@@ -42,129 +37,43 @@ const ACTIONS: ActionItem[] = [
 
 function AgentDetails(): ReactElement {
   const navigate = useNavigate();
-  const { id } = useParams<{ id: string }>();
-  const { employes, isLoading } = useEmployes();
-  const [documents, setDocuments] = useState<EmployeeDocument[]>([]);
 
-  // Modale d'upload
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [dragging, setDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [fileName, setFileName] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  // Hook personnalisé pour gérer les détails de l'employé et ses documents
+  const {
+    pageTitle,
+    documents,
+    documentsLoading,
+    documentsError,
+    isUploadModalOpen,
+    fileName,
+    selectedFile,
+    dragging,
+    isUploading,
+    uploadError,
+    uploadSuccess,
+    fileInputRef,
+    pdfModal,
+    setFileName,
+    handleAddDocument,
+    handleCloseUploadModal,
+    handleDragOver,
+    handleDragLeave,
+    handleDrop,
+    handleFileChange,
+    handleUpload,
+    handleDeleteDocument,
+    handleDownloadDocument,
+    handleViewDocument,
+    closePdfModal,
+  } = useEmployeeDetails();
 
-  // Trouver l'employé par son ID
-  const currentEmploye = useMemo(() => {
-    if (!id) return null;
-    const idNum = parseInt(id, 10);
-    return employes.find(e => e.id_employe === idNum) || null;
-  }, [id, employes]);
-
-  // Format du titre : "Détails de l'employé #ID – firstName LastName"
-  const pageTitle = currentEmploye 
-    ? `Détails de l'employé #${currentEmploye.id_employe} – ${currentEmploye.prenom} ${currentEmploye.nom}`
-    : id ? `Détails de l'employé #${id}` : 'Détails de l\'employé';
-
-  // Ouvrir la modale d'upload
-  const handleAddDocument = useCallback(() => {
-    setIsUploadModalOpen(true);
-  }, []);
-
-  // Fermer la modale
-  const handleCloseUploadModal = useCallback(() => {
-    setIsUploadModalOpen(false);
-    setDragging(false);
-    setFileName('');
-    setSelectedFile(null);
-  }, []);
-
-  // Gestion du drag & drop
-  const handleDragOver = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(true);
-  }, []);
-
-  const handleDragLeave = useCallback(() => {
-    setDragging(false);
-  }, []);
-
-  // Sélection de fichier via le bouton
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Vérifier le poids du fichier (5Mo max)
-      const maxSize = 5 * 1024 * 1024; // 5Mo
-      if (file.size > maxSize) {
-        alert('Le fichier dépasse la taille maximale autorisée de 5Mo.');
-        return;
-      }
-      
-      // Si aucun nom custom, utiliser le nom du fichier
-      if (!fileName) {
-        setFileName(file.name);
-      }
-      
-      setSelectedFile(file);
-      console.log('Fichier sélectionné:', file);
-    }
-  }, [fileName]);
-
-  // Gestion du drop
-  const handleDrop = useCallback((e: React.DragEvent) => {
-    e.preventDefault();
-    setDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      // Vérifier le poids du fichier (5Mo max)
-      const maxSize = 5 * 1024 * 1024; // 5Mo
-      if (file.size > maxSize) {
-        alert('Le fichier dépasse la taille maximale autorisée de 5Mo.');
-        return;
-      }
-      
-      // Si aucun nom custom, utiliser le nom du fichier
-      if (!fileName) {
-        setFileName(file.name);
-      }
-      
-      setSelectedFile(file);
-      console.log('Fichier déposé:', file);
-    }
-  }, [fileName]);
-
-  // Soumission du formulaire d'upload
-  const handleUpload = useCallback(async () => {
-    if (!selectedFile) {
-      alert('Veuillez sélectionner un fichier.');
-      return;
-    }
-    
-    if (!fileName.trim()) {
-      alert('Veuillez donner un nom au fichier.');
-      return;
-    }
-    
-    setIsUploading(true);
-    // TODO: Implémenter l'upload réel via API
-    console.log('Upload du fichier:', selectedFile.name, 'avec le nom:', fileName);
-    
-    // Simuler un délai
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setIsUploading(false);
-    
-    // Fermer la modale après upload
-    handleCloseUploadModal();
-    // TODO: Ajouter le document à la liste après upload réussi
-  }, [selectedFile, fileName, handleCloseUploadModal]);
-
-  // Cliquer sur l'action "Ajouter un document" ouvre la modale
+  // Map des actions
   const actionMap: Record<number, () => void> = {
     1: handleAddDocument, // Ajouter un document
-    2: () => {}, // Rapport de performance
-    3: () => {}, // Temps de travail
-    4: () => {}, // Entretiens annuels
-    5: () => {}, // Export données
+    2: () => {},
+    3: () => {},
+    4: () => {},
+    5: () => {},
   };
 
   return (
@@ -185,7 +94,11 @@ function AgentDetails(): ReactElement {
             {/* Tableau des documents - côté gauche */}
             <div className="agentDetails__documents">
               <h2>Documents liés</h2>
-              {documents.length === 0 ? (
+              {documentsLoading ? (
+                <p className="agentDetails__no-documents">Chargement des documents...</p>
+              ) : documentsError ? (
+                <p className="agentDetails__no-documents agentDetails__no-documents--error">{documentsError}</p>
+              ) : documents.length === 0 ? (
                 <p className="agentDetails__no-documents">Aucun document trouvé pour cet employé.</p>
               ) : (
                 <div className="agentDetails__documents-table-wrapper">
@@ -193,6 +106,7 @@ function AgentDetails(): ReactElement {
                     <thead>
                       <tr>
                         <th>Nom du document</th>
+                        <th>Taille</th>
                         <th>Date</th>
                         <th>Actions</th>
                       </tr>
@@ -201,19 +115,29 @@ function AgentDetails(): ReactElement {
                       {documents.map(doc => (
                         <tr key={doc.id} className="agentDetails__documents-row">
                           <td className="agentDetails__documents-name">{doc.name}</td>
-                          <td>{doc.date}</td>
+                          <td>{doc.formattedSize}</td>
+                          <td>{new Date(doc.date_created).toLocaleDateString()}</td>
                           <td className="agentDetails__documents-actions">
                             <button
                               className="agentDetails__btn-view"
                               title="Voir"
+                              onClick={() => handleViewDocument(doc.id, doc.filename)}
                             >
                               <IoEye />
                             </button>
                             <button
                               className="agentDetails__btn-download"
                               title="Télécharger"
+                              onClick={() => handleDownloadDocument(doc.id, doc.filename)}
                             >
                               <IoDownload />
+                            </button>
+                            <button
+                              className="agentDetails__btn-delete"
+                              title="Supprimer"
+                              onClick={() => handleDeleteDocument(doc.id)}
+                            >
+                              <IoClose />
                             </button>
                           </td>
                         </tr>
@@ -258,6 +182,20 @@ function AgentDetails(): ReactElement {
               </button>
             </div>
             <div className="agentDetails__modal-content">
+              {/* Message de succès */}
+              {uploadSuccess && (
+                <div className="agentDetails__upload-success">
+                  {uploadSuccess}
+                </div>
+              )}
+              
+              {/* Message d'erreur */}
+              {uploadError && (
+                <div className="agentDetails__upload-error">
+                  {uploadError}
+                </div>
+              )}
+
               {/* Champ pour le nom du fichier */}
               <div className="agentDetails__form-group">
                 <label className="agentDetails__form-label">Nom du fichier *</label>
@@ -267,6 +205,7 @@ function AgentDetails(): ReactElement {
                   onChange={(e) => setFileName(e.target.value)}
                   placeholder="Nom personnalisé du document"
                   className="agentDetails__form-input"
+                  disabled={isUploading}
                 />
               </div>
 
@@ -277,6 +216,7 @@ function AgentDetails(): ReactElement {
                 accept=".pdf,.jpg,.jpeg,.webp,application/pdf,image/jpeg,image/webp"
                 onChange={handleFileChange}
                 style={{ display: 'none' }}
+                disabled={isUploading}
               />
 
               {/* Zone de drop cliquable */}
@@ -316,7 +256,7 @@ function AgentDetails(): ReactElement {
               </div>
 
               <div className="agentDetails__upload-actions">
-                <Button style="grey" onClick={handleCloseUploadModal}>
+                <Button style="grey" onClick={handleCloseUploadModal} disabled={isUploading}>
                   Annuler
                 </Button>
                 <Button 
@@ -331,6 +271,28 @@ function AgentDetails(): ReactElement {
           </div>
         </div>
       )}
+
+      {/* Modale de visualisation PDF/Image (comme courrier) */}
+      <Modal
+        isVisible={pdfModal.visible}
+        onClose={closePdfModal}
+        title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
+      >
+        {pdfModal.fileType === 'image' ? (
+          <img
+            src={pdfModal.pdfUrl}
+            alt={pdfModal.fileName}
+            className="modal-content-image"
+          />
+        ) : (
+          <div id="pdfViewerDocument">
+            <ModernPDFViewer
+              pdfUrl={pdfModal.pdfUrl}
+              fileName={pdfModal.fileName || "document.pdf"}
+            />
+          </div>
+        )}
+      </Modal>
 
       <BackToTop />
     </div>

@@ -104,8 +104,15 @@ function WeekDayHeader({ date, label, bookings, capacite }: {
 }
 
 export default function BookingCalendar(): ReactElement {
-  const { bookings, isLoading, fetchBookings, createBooking, cancelBooking, config } = useBookingContext();
+  const { bookings, isLoading, fetchBookings, createBooking, cancelBooking, config, fetchConfig } = useBookingContext();
   const capacite = config?.capacite_journaliere ?? 6;
+
+  // Charger la config au montage si pas déjà disponible
+  useEffect(() => {
+    if (!config) {
+      fetchConfig();
+    }
+  }, [config, fetchConfig]);
 
   const [currentDate, setCurrentDate] = useState(new Date());
   const [currentView, setCurrentView] = useState<View>("week");
