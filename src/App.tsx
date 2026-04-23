@@ -45,6 +45,7 @@ import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
 import ProspectsListWithAuth from "./views/layouts/prospectsList/ProspectsList";
 import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
 import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
+import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -114,6 +115,7 @@ function App(): ReactElement {
         <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/materiel"} element={<MaterielListWithAuth />}></Route>
         <Route path={"operations/commandes"} element={<CommandesListWithAuth />}></Route>
+        <Route path={"operations/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>

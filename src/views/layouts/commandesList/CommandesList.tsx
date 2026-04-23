@@ -9,7 +9,7 @@ import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
-import { VenteContext } from '../../../context/venteContext/VenteContext.tsx';
+import { VenteContext } from '../../../context/vente/VenteContext.tsx';
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
 import {
