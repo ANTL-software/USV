@@ -232,9 +232,9 @@ function CommandesList(): ReactElement {
                         <td>
                           <span
                             className={`statut-badge statut-badge--${v.statut_vente}`}
-                            style={{ backgroundColor: STATUT_VENTE_COLORS[v.statut_vente] }}
+                            style={{ backgroundColor: STATUT_VENTE_COLORS[v.statut_vente as StatutVente] }}
                           >
-                            {STATUT_VENTE_LABELS[v.statut_vente]}
+                            {STATUT_VENTE_LABELS[v.statut_vente as StatutVente]}
                           </span>
                         </td>
                         <td>{v.mode_paiement ? MODE_PAIEMENT_LABELS[v.mode_paiement as ModePaiement] ?? v.mode_paiement : '—'}</td>

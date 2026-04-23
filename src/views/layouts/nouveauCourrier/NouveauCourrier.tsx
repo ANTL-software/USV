@@ -9,7 +9,7 @@ import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
 
 // context
-import { CourrierContext } from "../../../context/courrierContext/CourrierContext.tsx";
+import { CourrierContext } from "../../../context/courrierContext/CourrierContext";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";

@@ -22,30 +22,29 @@ import AOS from 'aos';
 // components
 
 // views
-import AuthPage from "./views/authPage/AuthPage";
-import HomeWithAuth from "./views/home/Home.tsx";
-import CourriersWithAuth from "./views/courriers/Courriers.tsx";
-import NouveauCourrierWithAuth from "./views/courriers/nouveauCourrier/NouveauCourrier.tsx";
-import ListeCourriersWithAuth from "./views/courriers/listeCourriers/ListeCourriers.tsx";
-import UpdateCourrierWithAuth from "./views/courriers/updateCourrier/UpdateCourrier.tsx";
-import ConvertisseurImageWithAuth from "./views/courriers/convertisseurImage/ConvertisseurImage.tsx";
-import BookingPageWithAuth from "./views/booking/BookingPage.tsx";
-import CentreAppelsWithAuth from "./views/centreAppels/CentreAppels.tsx";
-import AgentsListWithAuth from "./views/centreAppels/agents/AgentsList.tsx";
-import AgentDetailsWithAuth from "./views/centreAppels/agents/AgentDetails.tsx";
-import AgentFormWithAuth from "./views/centreAppels/agents/AgentForm.tsx";
-import PostesListWithAuth from "./views/centreAppels/postes/PostesList.tsx";
-import PosteFormWithAuth from "./views/centreAppels/postes/PosteForm.tsx";
-import CampagnesListWithAuth from "./views/campagnes/CampagnesList.tsx";
-import CampagneFormWithAuth from "./views/campagnes/CampagneForm.tsx";
-import ProspectImportWithAuth from "./views/prospects/ProspectImport.tsx";
-import ProduitsListWithAuth from "./views/produits/ProduitsList.tsx";
-import ProduitFormWithAuth from "./views/produits/ProduitForm.tsx";
-import MaterielListWithAuth from "./views/centreAppels/materiel/MaterielList.tsx";
-import ProspectInjectionWithAuth from "./views/campagnes/prospectInjection/ProspectInjection.tsx";
-import ProspectsListWithAuth from "./views/campagnes/prospectsList/ProspectsList.tsx";
-import SupervisionViewWithAuth from "./views/supervision/SupervisionView.tsx";
-import CommandesListWithAuth from "./views/operations/commandes/CommandesList.tsx";
+import AuthPage from "./views/layouts/authPage/AuthPage";
+import HomeWithAuth from "./views/layouts/home/Home";
+import CourriersWithAuth from "./views/layouts/courriers/Courriers";
+import NouveauCourrierWithAuth from "./views/layouts/nouveauCourrier/NouveauCourrier";
+import ListeCourriersWithAuth from "./views/layouts/listeCourriers/ListeCourriers";
+import UpdateCourrierWithAuth from "./views/layouts/updateCourrier/UpdateCourrier";
+import ConvertisseurImageWithAuth from "./views/layouts/convertisseurImage/ConvertisseurImage";
+import BookingPageWithAuth from "./views/layouts/booking/BookingPage";
+import CentreAppelsWithAuth from "./views/layouts/centreAppels/CentreAppels";
+import AgentsListWithAuth from "./views/layouts/agentsList/AgentsList";
+import AgentDetailsWithAuth from "./views/layouts/agentDetails/AgentDetails";
+import AgentFormWithAuth from "./views/layouts/agentForm/AgentForm";
+import PostesListWithAuth from "./views/layouts/postesList/PostesList";
+import PosteFormWithAuth from "./views/layouts/posteForm/PosteForm";
+import CampagnesListWithAuth from "./views/layouts/campagnesList/CampagnesList";
+import CampagneFormWithAuth from "./views/layouts/campagneForm/CampagneForm";
+import ProspectImportWithAuth from "./views/layouts/prospectImport/ProspectImport";
+import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
+import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
+import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
+import ProspectsListWithAuth from "./views/layouts/prospectsList/ProspectsList";
+import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
+import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -118,7 +117,7 @@ function App(): ReactElement {
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
-        <Route path={"campagnes/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
+        <Route path={"campagnes/:id/inject"} element={<ProspectImportWithAuth />}></Route>
         <Route path={"campagnes/:id/prospects"} element={<ProspectsListWithAuth />}></Route>
         <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
         <Route path={"prospects/import"} element={<ProspectImportWithAuth />}></Route>

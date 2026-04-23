@@ -37,7 +37,7 @@ import EmailModal from "../../components/emailModal/EmailModal.tsx";
 import ModernPDFViewer from "../../components/modernPdfViewer/ModernPDFViewer.tsx";
 
 // context
-import { CourrierContext } from "../../../context/courrierContext/CourrierContext.tsx";
+import { CourrierContext } from "../../../context/courrierContext/CourrierContext";
 
 // hooks
 import { useCourrierSelection } from "../../../hooks/useCourrierSelection.ts";
@@ -88,7 +88,7 @@ function ListeCourriers(): ReactElement {
   const normalize = (str: string): string =>
     str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-  const filteredCourriers = courriers.filter((courrier) => {
+  const filteredCourriers = courriers.filter((courrier: ICourrier) => {
     const term = normalize(searchTerm);
     return (
       normalize(courrier.fileName).includes(term) ||
