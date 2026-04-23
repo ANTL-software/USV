@@ -40,6 +40,8 @@ export const useProspectsSignales = (): UseProspectsSignalesReturn => {
     } finally {
       setIsLoading(false);
     }
+    // refreshKey inclus intentionnellement pour forcer le rechargement
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, type, refreshKey]);
 
   useEffect(() => {

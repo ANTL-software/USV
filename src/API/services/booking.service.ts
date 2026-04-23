@@ -50,7 +50,7 @@ export const getBookingConfigService = async (): Promise<BookingConfig> => {
       return response.data.data;
     }
     throw new Error(response.data.message || 'Impossible de récupérer la configuration');
-  } catch (error) {
+  } catch {
     // Fallback si l'endpoint n'existe pas - valeurs par défaut
     console.warn('Impossible de charger la config des réservations, utilisation des valeurs par défaut');
     return { id: 1, capacite_journaliere: 10 };

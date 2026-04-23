@@ -22,7 +22,9 @@ function PasswordStrengthIndicator({
       queueMicrotask(() => setStrength(null));
       onValidityChange?.(false, {} as PasswordStrength);
     }
-  }, [password]); // onValidityChange omis intentionnellement pour éviter boucle
+    // onValidityChange omis intentionnellement pour éviter boucle infinie
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [password]);
 
   const getStrengthClass = (score: number): string => {
     switch (score) {

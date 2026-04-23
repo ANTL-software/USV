@@ -45,6 +45,8 @@ export const useProspectsCampagne = (idCampagne: number | null): UseProspectsCam
     } finally {
       setIsLoading(false);
     }
+    // refreshKey inclus intentionnellement pour forcer le rechargement
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idCampagne, page, statut, search, refreshKey]);
 
   useEffect(() => {
