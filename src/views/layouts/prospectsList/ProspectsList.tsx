@@ -10,7 +10,8 @@ import Modal from '../../components/modal/Modal';
 import Button from '../../components/button/Button';
 import { useProspectsCampagne } from '../../../hooks/useProspectsCampagne';
 import { getCampagneByIdService } from '../../../API/services/campagne.service';
-import { purgeProspectsService } from '../../../API/services/queue.service';
+import { purgeProspectsService, getProspectsCountService } from '../../../API/services/queue.service';
+import type { ProspectsCount } from '../../../API/services/queue.service';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { StatutProspection } from '../../../utils/types/queue.types';
 import './prospectsList.scss';
@@ -34,6 +35,8 @@ const STATUT_OPTIONS: { value: StatutProspection | ''; label: string }[] = [
   { value: 'refuse', label: 'Refusé' },
 ];
 
+const isMobilePhone = (tel: string): boolean => /^(\+33|0033|0)[67]/.test(tel);
+
 const ProspectsList = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -42,6 +45,7 @@ const ProspectsList = () => {
   const [showPurgeModal, setShowPurgeModal] = useState(false);
   const [purgeLoading, setPurgeLoading] = useState(false);
   const [purgeError, setPurgeError] = useState<string | null>(null);
+  const [counts, setCounts] = useState<ProspectsCount>({ fixe: 0, mobile: 0, total: 0 });
 
   const {
     rows, pagination, isLoading, error,
@@ -54,6 +58,9 @@ const ProspectsList = () => {
     getCampagneByIdService(campagneId)
       .then(c => setCampagneNom(c.toJSON().nom_campagne))
       .catch(() => {});
+    getProspectsCountService(campagneId)
+      .then(setCounts)
+      .catch(() => {});
   }, [campagneId]);
 
   const handlePurge = async () => {
@@ -64,6 +71,7 @@ const ProspectsList = () => {
       await purgeProspectsService(campagneId);
       setShowPurgeModal(false);
       refresh();
+      getProspectsCountService(campagneId).then(setCounts).catch(() => {});
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erreur lors de la purge';
       setPurgeError(msg);
@@ -86,6 +94,17 @@ const ProspectsList = () => {
           </div>
 
           <div className="prospectsList__content">
+            <div className="prospectsList__counters">
+              <span className="prospectsList__counter prospectsList__counter--fixe">
+                {counts.fixe} ligne{counts.fixe !== 1 ? 's' : ''} fixe{counts.fixe !== 1 ? 's' : ''}
+              </span>
+              <span className="prospectsList__counter prospectsList__counter--mobile">
+                {counts.mobile} ligne{counts.mobile !== 1 ? 's' : ''} mobile{counts.mobile !== 1 ? 's' : ''}
+              </span>
+              <span className="prospectsList__counter-info">
+                Les lignes mobiles ne seront pas envoyées en liste d&apos;appels.
+              </span>
+            </div>
             <div className="prospectsList__filters">
               <div className="prospectsList__filter-group">
                 <input
@@ -148,7 +167,14 @@ const ProspectsList = () => {
                       {rows.map(r => (
                         <tr key={r.id_prospection}>
                           <td>{r.prospect?.prenom} {r.prospect?.nom}</td>
-                          <td>{r.prospect?.telephone}</td>
+                          <td>
+                            <span className={r.prospect?.telephone && isMobilePhone(r.prospect.telephone) ? 'prospectsList__mobile' : ''}>
+                              {r.prospect?.telephone}
+                            </span>
+                            {r.prospect?.telephone && isMobilePhone(r.prospect.telephone) && (
+                              <span className="prospectsList__mobile-tag">Mobile</span>
+                            )}
+                          </td>
                           <td>
                             <span className={`prospectsList__badge prospectsList__badge--${r.statut}`}>
                               {STATUT_LABELS[r.statut] || r.statut}

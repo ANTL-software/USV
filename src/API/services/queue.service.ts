@@ -92,3 +92,21 @@ export const purgeProspectsService = async (
   }
   throw new Error(response.data.message || 'Erreur lors de la purge');
 };
+
+export interface ProspectsCount {
+  fixe: number;
+  mobile: number;
+  total: number;
+}
+
+export const getProspectsCountService = async (
+  idCampagne: number
+): Promise<ProspectsCount> => {
+  const response: AxiosResponse<ApiResponse<ProspectsCount>> = await getRequest(
+    `/campagnes/${idCampagne}/prospects/count`
+  );
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Erreur lors du comptage');
+};

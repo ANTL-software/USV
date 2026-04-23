@@ -12,7 +12,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
-import { useAlert } from '../../../context/alertContext/AlertContext';
+import { useAlert } from '../../../context/alert/AlertContext';
 
 function CampagneForm(): ReactElement {
   const navigate = useNavigate();

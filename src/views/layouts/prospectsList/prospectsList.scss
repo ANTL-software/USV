@@ -114,6 +114,57 @@
     &--refuse    { background: #ffebee; color: #c62828; }
   }
 
+  .prospectsList__mobile {
+    color: vars.$errorColor;
+    font-weight: 600;
+  }
+
+  .prospectsList__mobile-tag {
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 0.1em 0.4em;
+    background: vars.$errorColor;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.75em;
+    font-weight: 500;
+  }
+
+  .prospectsList__counters {
+    display: flex;
+    gap: 1em;
+    flex-wrap: wrap;
+    align-items: center;
+    padding: 0.75em 1em;
+    background: vars.$shadowLight;
+    border-radius: 8px;
+  }
+
+  .prospectsList__counter {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.3em 0.7em;
+    border-radius: 6px;
+    font-size: 0.85em;
+    font-weight: 600;
+
+    &--fixe {
+      background: #e8f5e9;
+      color: #2e7d32;
+    }
+
+    &--mobile {
+      background: #ffebee;
+      color: vars.$errorColor;
+    }
+  }
+
+  .prospectsList__counter-info {
+    font-size: 0.8em;
+    color: vars.$fontColorSecondary;
+    font-style: italic;
+  }
+
   .prospectsList__pagination {
     display: flex;
     align-items: center;
