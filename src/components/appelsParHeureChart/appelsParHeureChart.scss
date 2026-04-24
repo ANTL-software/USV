@@ -1,0 +1,61 @@
+@use "../../utils/styles/variables" as vars;
+@use "../../utils/styles/mixins" as mixins;
+
+#appelsParHeureChart {
+  @include mixins.card(12px, light);
+
+  & {
+    margin-bottom: 2em;
+  }
+
+  .appelsParHeureChart__container {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 1em;
+      padding: 1.5em;
+    }
+  }
+
+  .appelsParHeureChart__header {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    h3 {
+      & {
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: vars.$fontColorPrimary;
+      }
+    }
+  }
+
+  .appelsParHeureChart__chart {
+    & {
+      position: relative;
+      min-height: 20em;
+    }
+  }
+
+  .appelsParHeureChart__empty {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 20em;
+      margin: 0;
+      color: vars.$fontColorSecondary;
+      font-size: 0.95rem;
+    }
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    .appelsParHeureChart__container {
+      padding: 2em;
+    }
+  }
+}

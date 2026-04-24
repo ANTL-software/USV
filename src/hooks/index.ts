@@ -18,3 +18,4 @@ export { useProspectImport } from './useProspectImport.ts';
 export { useInjection } from './useInjection.ts';
 export { useSupervision } from './useSupervision.ts';
 export { useTooltip } from './useTooltip.ts';
+export { useGraphiques, useAppelsParHeure, useTauxAbouti, useDureeMoyenne, useTopRaisons } from './useGraphiques.ts';

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { useSupervision } from '../../../hooks/useSupervision';
 import { useCampagnes } from '../../../hooks/useCampagnes';
+import { useGraphiques } from '../../../hooks/useGraphiques';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
@@ -10,6 +11,10 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
+import AppelsParHeureChart from '../../../components/appelsParHeureChart/AppelsParHeureChart';
+import TauxAboutiChart from '../../../components/tauxAboutiChart/TauxAboutiChart';
+import DureeMoyenneChart from '../../../components/dureeMoyenneChart/DureeMoyenneChart';
+import TopRaisonsChart from '../../../components/topRaisonsChart/TopRaisonsChart';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../../utils/types/queue.types';
 import type { Campagne } from '../../../utils/types/campagne.types';
@@ -230,7 +235,9 @@ const SummaryCards = ({ counts, agents, calls }: {
 const SupervisionView = () => {
   const navigate = useNavigate();
   const [selectedCampagne, setSelectedCampagne] = useState<number | null>(null);
+  const [showGraphiques, setShowGraphiques] = useState<boolean>(true);
   const { queueState, isLoading, error } = useSupervision(selectedCampagne);
+  const { stats: graphiquesStats, isLoading: graphiquesLoading } = useGraphiques(selectedCampagne || undefined);
 
   // Tick chaque seconde pour animer les chronomètres (durées statuts, etc.)
   const [now, setNow] = useState(() => Date.now());
@@ -291,18 +298,63 @@ const SupervisionView = () => {
                   <SummaryCards counts={counts} agents={visibleAgents} calls={calls} />
 
                   <section>
-                    <h3>État de la file</h3>
+                    <div className="supervisionView__section-header">
+                      <h3>État de la file</h3>
+                    </div>
                     <QueueCards counts={counts} />
                   </section>
 
                   <section>
-                    <h3>Agents affectés ({visibleAgents.length})</h3>
+                    <div className="supervisionView__section-header">
+                      <h3>Agents affectés ({visibleAgents.length})</h3>
+                    </div>
                     <AgentList agents={visibleAgents} now={now} />
                   </section>
 
                   <section>
-                    <h3>Appels en cours ({calls.length})</h3>
+                    <div className="supervisionView__section-header">
+                      <h3>Appels en cours ({calls.length})</h3>
+                    </div>
                     <CallsTable calls={calls} />
+                  </section>
+
+                  <section className="supervisionView__graphiques">
+                    <div className="supervisionView__section-header supervisionView__section-header--toggle">
+                      <h3>Graphiques de performance</h3>
+                      <button
+                        className="supervisionView__toggle-btn"
+                        onClick={() => setShowGraphiques(!showGraphiques)}
+                        aria-expanded={showGraphiques}
+                      >
+                        {showGraphiques ? 'Masquer' : 'Afficher'}
+                      </button>
+                    </div>
+
+                    {showGraphiques && (
+                      <>
+                        {graphiquesLoading && <Loader size="small" message="Chargement des graphiques..." />}
+
+                        {!graphiquesLoading && graphiquesStats && (
+                          <div className="supervisionView__graphiques-grid">
+                            <div className="supervisionView__graphique supervisionView__graphique--full">
+                              <AppelsParHeureChart data={graphiquesStats.appelsParHeure} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <TauxAboutiChart data={graphiquesStats.tauxAbouti} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <DureeMoyenneChart data={graphiquesStats.dureeMoyenne7j} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--full">
+                              <TopRaisonsChart data={graphiquesStats.topRaisons} />
+                            </div>
+                          </div>
+                        )}
+                      </>
+                    )}
                   </section>
                 </div>
               )}

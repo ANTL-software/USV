@@ -141,3 +141,13 @@ export type {
   CampaignAgentStats,
   GlobalStats,
 } from './queue.types.ts';
+
+export type {
+  AppelsParHeure,
+  TauxAbouti,
+  DureeMoyenneParJour,
+  RaisonEchec,
+  AllGraphiquesStats,
+} from './graphiques.types.ts';
+
+export { STATUT_LABELS, STATUT_COLORS } from './graphiques.types.ts';

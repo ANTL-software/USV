@@ -23,6 +23,7 @@
     "react-pdf": "^10.1.0",
     "react-router-dom": "^7.0.2",
     "react-select": "^5.10.2",
+    "recharts": "^3.8.1",
     "sass": "^1.82.0"
   },
   "devDependencies": {

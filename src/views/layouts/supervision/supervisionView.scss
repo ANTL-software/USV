@@ -299,4 +299,84 @@
     margin-bottom: 1em;
     font-size: 0.9rem;
   }
+
+  // Section headers
+  .supervisionView__section-header {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1em;
+    }
+
+    h3 {
+      & {
+        margin: 0;
+        font-size: 1.1em;
+        color: vars.$fontColorPrimary;
+      }
+    }
+
+    &--toggle {
+      margin-bottom: 0.75em;
+    }
+  }
+
+  // Toggle button
+  .supervisionView__toggle-btn {
+    & {
+      padding: 0.4em 1em;
+      border: 1px solid vars.$borderColor;
+      border-radius: 6px;
+      background: vars.$whiteBackground;
+      color: vars.$fontColorPrimary;
+      font-size: 0.85em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all vars.$transitionSmooth;
+    }
+
+    &:hover {
+      background: vars.$greyBackground;
+      border-color: rgba(0, 0, 0, 0.15);
+    }
+  }
+
+  // Graphiques section
+  .supervisionView__graphiques {
+    & {
+      margin-top: 1em;
+    }
+  }
+
+  .supervisionView__graphiques-grid {
+    & {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5em;
+    }
+  }
+
+  .supervisionView__graphique {
+    &--full {
+      width: 100%;
+    }
+
+    &--half {
+      width: 100%;
+    }
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    .supervisionView__graphiques-grid {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+    }
+
+    .supervisionView__graphique--half {
+      flex: 1 1 calc(50% - 0.75em);
+      min-width: 20em;
+    }
+  }
 }
