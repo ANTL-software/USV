@@ -1,4 +1,4 @@
-import * as APICalls from '../APICalls';
+import { getRequest } from '../APICalls';
 import type {
   AppelsParHeure,
   TauxAbouti,
@@ -25,7 +25,7 @@ class GraphiquesService {
    */
   public async getAllStats(idCampagne?: number): Promise<AllGraphiquesStats> {
     const params = idCampagne ? { id_campagne: String(idCampagne) } : undefined;
-    const response = await APICalls.getRequest(
+    const response = await getRequest(
       '/supervision/graphiques/all',
       params
     );
@@ -38,7 +38,7 @@ class GraphiquesService {
    */
   public async getAppelsParHeure(idCampagne?: number): Promise<AppelsParHeure[]> {
     const params = idCampagne ? { id_campagne: String(idCampagne) } : undefined;
-    const response = await APICalls.getRequest(
+    const response = await getRequest(
       '/supervision/graphiques/appels-par-heure',
       params
     );
@@ -61,7 +61,7 @@ class GraphiquesService {
     if (dateDebut) params.date_debut = dateDebut;
     if (dateFin) params.date_fin = dateFin;
 
-    const response = await APICalls.getRequest(
+    const response = await getRequest(
       '/supervision/graphiques/taux-abouti',
       Object.keys(params).length > 0 ? params : undefined
     );
@@ -74,7 +74,7 @@ class GraphiquesService {
    */
   public async getDureeMoyenne(idCampagne?: number): Promise<DureeMoyenneParJour[]> {
     const params = idCampagne ? { id_campagne: String(idCampagne) } : undefined;
-    const response = await APICalls.getRequest(
+    const response = await getRequest(
       '/supervision/graphiques/duree-moyenne',
       params
     );
@@ -97,7 +97,7 @@ class GraphiquesService {
     if (dateDebut) params.date_debut = dateDebut;
     if (dateFin) params.date_fin = dateFin;
 
-    const response = await APICalls.getRequest(
+    const response = await getRequest(
       '/supervision/graphiques/top-raisons',
       Object.keys(params).length > 0 ? params : undefined
     );

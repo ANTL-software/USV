@@ -334,22 +334,22 @@ const SupervisionView = () => {
                       <>
                         {graphiquesLoading && <Loader size="small" message="Chargement des graphiques..." />}
 
-                        {!graphiquesLoading && graphiquesStats && (
+                        {!graphiquesLoading && (
                           <div className="supervisionView__graphiques-grid">
                             <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <AppelsParHeureChart data={graphiquesStats.appelsParHeure} />
+                              <AppelsParHeureChart data={graphiquesStats?.appelsParHeure || []} />
                             </div>
 
                             <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <TauxAboutiChart data={graphiquesStats.tauxAbouti} />
+                              <TauxAboutiChart data={graphiquesStats?.tauxAbouti || { aboutis: 0, non_aboutis: 0, taux_abouti: 0 }} />
                             </div>
 
                             <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <DureeMoyenneChart data={graphiquesStats.dureeMoyenne7j} />
+                              <DureeMoyenneChart data={graphiquesStats?.dureeMoyenne7j || []} />
                             </div>
 
                             <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <TopRaisonsChart data={graphiquesStats.topRaisons} />
+                              <TopRaisonsChart data={graphiquesStats?.topRaisons || []} />
                             </div>
                           </div>
                         )}
