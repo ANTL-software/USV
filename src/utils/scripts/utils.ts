@@ -36,14 +36,24 @@ export const getEnvironment = (): 'development' | 'production' => {
 export const getCSP = (): string => {
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const isDevPort = ["5173", "5174", "5175"].includes(window.location.port);
-  
-  if (isDev && isDevPort) {
-    // Environnement de développement - inclure localhost:8800
-    return "frame-src 'self' http://localhost:8800; connect-src 'self' http://localhost:8800; img-src 'self' data: http://localhost:8800;";
-  } else {
-    // Production - utiliser uniquement le domaine de production
-    return "frame-src 'self' https://api.antl.fr; connect-src 'self' https://api.antl.fr; img-src 'self' data: https://api.antl.fr;";
-  }
+
+  const apiDomain = isDev ? "http://localhost:8800" : "https://api.antl.fr";
+
+  return [
+    `default-src 'self';`,
+    `script-src 'self' 'unsafe-inline' 'unsafe-eval';`,
+    `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;`,
+    `font-src 'self' https://fonts.gstatic.com;`,
+    `img-src 'self' data: blob: ${apiDomain};`,
+    `connect-src 'self' ${apiDomain} https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com;`,
+    `frame-src 'self' ${apiDomain} blob:;`,
+    `object-src 'self' blob:;`,
+    `worker-src 'self' blob:;`,
+    `base-uri 'self';`,
+    `form-action 'self';`,
+    `frame-ancestors 'none';`,
+    `upgrade-insecure-requests;`
+  ].join(' ');
 };
 
 /**
