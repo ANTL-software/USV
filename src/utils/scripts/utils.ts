@@ -31,31 +31,6 @@ export const getEnvironment = (): 'development' | 'production' => {
 };
 
 /**
- * Génère la CSP (Content Security Policy) adaptée à l'environnement
- */
-export const getCSP = (): string => {
-  const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-
-  const apiDomain = isDev ? "http://localhost:8800" : "https://api.antl.fr";
-
-  return [
-    `default-src 'self';`,
-    `script-src 'self' 'unsafe-inline' 'unsafe-eval';`,
-    `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;`,
-    `font-src 'self' https://fonts.gstatic.com;`,
-    `img-src 'self' data: blob: ${apiDomain};`,
-    `connect-src 'self' ${apiDomain} https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com;`,
-    `frame-src 'self' ${apiDomain} blob:;`,
-    `object-src 'self' blob:;`,
-    `worker-src 'self' blob:;`,
-    `base-uri 'self';`,
-    `form-action 'self';`,
-    `frame-ancestors 'none';`,
-    `upgrade-insecure-requests;`
-  ].join(' ');
-};
-
-/**
  * Retourne un message d'accueil contextuel selon l'heure, le jour et le prénom.
  */
 export function getSalutation(prenom?: string, _heure?: number, _jour?: number): string {
@@ -86,14 +61,12 @@ export function getSalutation(prenom?: string, _heure?: number, _jour?: number):
 export const logEnvironmentInfo = (): void => {
   const env = getEnvironment();
   const apiUrl = getApiBaseUrl();
-  const csp = getCSP();
 
   console.group('🌍 Configuration Environnement');
   console.log('Environnement:', env);
   console.log('Hostname:', window.location.hostname);
   console.log('Port:', window.location.port);
   console.log('API Backend:', apiUrl);
-  console.log('CSP:', csp);
   console.groupEnd();
 };
 
