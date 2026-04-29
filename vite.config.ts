@@ -10,7 +10,7 @@ const generateCSP = () => {
     name: 'generate-csp',
     buildStart() {
       // CSP pour production - strict et sécurisé
-      const prodCSP = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
+      const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
       
       // Générer vercel.json avec la CSP de production
       const vercelConfig = {
@@ -63,7 +63,7 @@ const generateCSP = () => {
         console.log(`🔧 Development CSP applied`);
       } else {
         // CSP pour production - strict et sécurisé
-        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval'; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
+        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
         console.log(`🔒 Production CSP applied`);
       }
       
