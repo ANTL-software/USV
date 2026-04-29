@@ -44,7 +44,7 @@ function LoaderProvider({ children }: ILoaderProviderProps): ReactElement {
         <Loader 
           overlay={true}
           message={loadingMessage}
-          size="large"
+         
         />
       )}
     </LoaderContext.Provider>

@@ -18,9 +18,16 @@ interface UseGraphiquesResult {
 /**
  * Hook pour récupérer toutes les statistiques de graphiques
  * @param idCampagne - Optionnel, filtrer par campagne
+ * @param dateDebut - Optionnel (YYYY-MM-DD)
+ * @param dateFin - Optionnel (YYYY-MM-DD)
  * @param refreshInterval - Intervalle de rafraîchissement en ms (défaut: 60000 = 1 min)
  */
-export function useGraphiques(idCampagne?: number, refreshInterval: number = 60000): UseGraphiquesResult {
+export function useGraphiques(
+  idCampagne?: number,
+  dateDebut?: string,
+  dateFin?: string,
+  refreshInterval: number = 60000
+): UseGraphiquesResult {
   const [stats, setStats] = useState<AllGraphiquesStats | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,7 +36,7 @@ export function useGraphiques(idCampagne?: number, refreshInterval: number = 600
     try {
       setIsLoading(true);
       setError(null);
-      const data = await graphiquesService.getAllStats(idCampagne);
+      const data = await graphiquesService.getAllStats(idCampagne, dateDebut, dateFin);
       setStats(data);
     } catch (err) {
       console.error('[useGraphiques] Erreur lors de la récupération des stats:', err);
@@ -46,7 +53,7 @@ export function useGraphiques(idCampagne?: number, refreshInterval: number = 600
       const interval = setInterval(fetchStats, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [idCampagne, refreshInterval]);
+  }, [idCampagne, dateDebut, dateFin, refreshInterval]);
 
   return {
     stats,
@@ -64,8 +71,11 @@ interface UseAppelsParHeureResult {
 
 /**
  * Hook pour récupérer les appels par heure
+ * @param idCampagne - Optionnel, filtrer par campagne
+ * @param dateDebut - Optionnel (YYYY-MM-DD)
+ * @param dateFin - Optionnel (YYYY-MM-DD)
  */
-export function useAppelsParHeure(idCampagne?: number): UseAppelsParHeureResult {
+export function useAppelsParHeure(idCampagne?: number, dateDebut?: string, dateFin?: string): UseAppelsParHeureResult {
   const [data, setData] = useState<AppelsParHeure[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,7 +85,7 @@ export function useAppelsParHeure(idCampagne?: number): UseAppelsParHeureResult 
       try {
         setIsLoading(true);
         setError(null);
-        const result = await graphiquesService.getAppelsParHeure(idCampagne);
+        const result = await graphiquesService.getAppelsParHeure(idCampagne, dateDebut, dateFin);
         setData(result);
       } catch (err) {
         console.error('[useAppelsParHeure] Erreur:', err);
@@ -86,7 +96,7 @@ export function useAppelsParHeure(idCampagne?: number): UseAppelsParHeureResult 
     };
 
     fetchData();
-  }, [idCampagne]);
+  }, [idCampagne, dateDebut, dateFin]);
 
   return { data, isLoading, error };
 }
@@ -134,8 +144,11 @@ interface UseDureeMoyenneResult {
 
 /**
  * Hook pour récupérer la durée moyenne par jour
+ * @param idCampagne - Optionnel, filtrer par campagne
+ * @param dateDebut - Optionnel (YYYY-MM-DD)
+ * @param dateFin - Optionnel (YYYY-MM-DD)
  */
-export function useDureeMoyenne(idCampagne?: number): UseDureeMoyenneResult {
+export function useDureeMoyenne(idCampagne?: number, dateDebut?: string, dateFin?: string): UseDureeMoyenneResult {
   const [data, setData] = useState<DureeMoyenneParJour[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -145,7 +158,7 @@ export function useDureeMoyenne(idCampagne?: number): UseDureeMoyenneResult {
       try {
         setIsLoading(true);
         setError(null);
-        const result = await graphiquesService.getDureeMoyenne(idCampagne);
+        const result = await graphiquesService.getDureeMoyenne(idCampagne, dateDebut, dateFin);
         setData(result);
       } catch (err) {
         console.error('[useDureeMoyenne] Erreur:', err);
@@ -156,7 +169,7 @@ export function useDureeMoyenne(idCampagne?: number): UseDureeMoyenneResult {
     };
 
     fetchData();
-  }, [idCampagne]);
+  }, [idCampagne, dateDebut, dateFin]);
 
   return { data, isLoading, error };
 }

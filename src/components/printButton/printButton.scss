@@ -1,0 +1,51 @@
+@use "../../utils/styles/variables" as vars;
+
+.printButton {
+  // Règles par défaut encapsulées (mobile first)
+  & {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 0.5em 1em;
+    background-color: vars.$utilsPrimary;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background-color: #0d9488;
+    }
+
+    &:active:not(:disabled) {
+      transform: scale(0.98);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    font-size: 1.2em;
+  }
+
+  &__label {
+    font-size: 0.95em;
+  }
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 0.75em 1.25em;
+    font-size: 1em;
+
+    &__icon {
+      font-size: 1.1em;
+    }
+  }
+}

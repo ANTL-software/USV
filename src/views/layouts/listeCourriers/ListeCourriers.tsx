@@ -387,7 +387,7 @@ function ListeCourriers(): ReactElement {
           <section className="courriersSection" data-aos="fade-up" data-aos-delay="200">
             {isLoading ? (
               <div className="loadingState">
-                <Loader size="large" message="Chargement des courriers..." />
+                <Loader message="Chargement des courriers..." />
               </div>
             ) : filteredCourriers.length === 0 ? (
               <div className="emptyState">

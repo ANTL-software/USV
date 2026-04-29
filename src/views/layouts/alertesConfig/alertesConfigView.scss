@@ -1,0 +1,235 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#alertesConfigView {
+  @include mixins.fullViewport;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .alertesConfigView__container {
+    @include mixins.centeredContainer;
+  }
+
+  .alertesConfigView__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-bottom: 2em;
+
+    h2 {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    button {
+      align-self: flex-start;
+    }
+  }
+
+  .alertesConfigView__error {
+    padding: 1em;
+    background-color: #fee;
+    color: #c33;
+    border-radius: 8px;
+    margin-bottom: 1.5em;
+  }
+
+  .alertesConfigView__empty {
+    text-align: center;
+    padding: 3em 1em;
+    background-color: vars.$greyBackground;
+    border-radius: 8px;
+
+    p {
+      margin: 0 0 1.5em;
+      font-size: 1.1em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .alertesConfigView__alertes {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+  }
+}
+
+.alerteCard {
+  & {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1.5em;
+    transition: all 0.2s ease;
+  }
+
+  &--inactive {
+    opacity: 0.6;
+    background-color: #f9f9f9;
+  }
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    margin-bottom: 1em;
+  }
+
+  &__title {
+    h3 {
+      margin: 0 0 0.25em;
+      font-size: 1.1em;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  &__description {
+    margin: 0;
+    font-size: 0.9em;
+    color: vars.$fontColorSecondary;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: center;
+  }
+
+  &__toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    cursor: pointer;
+    font-size: 0.9em;
+
+    input {
+      cursor: pointer;
+    }
+  }
+
+  &__edit,
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    label {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+    }
+
+    input {
+      padding: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+    }
+  }
+
+  &__destinataires {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  &__destinataire {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+
+    select {
+      flex: 1;
+      padding: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    input {
+      flex: 2;
+      padding: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+  }
+
+  &__edit-actions {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  &__seuil {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  &__seuil-label {
+    font-weight: 600;
+    color: vars.$fontColorSecondary;
+  }
+
+  &__seuil-value {
+    font-size: 1.2em;
+    font-weight: 700;
+    color: vars.$utilsPrimary;
+  }
+
+  &__destinataires-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    align-items: center;
+  }
+
+  &__destinataires-label {
+    font-weight: 600;
+    color: vars.$fontColorSecondary;
+  }
+
+  &__destinataire-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0.25em 0.75em;
+    background-color: #f0f0f0;
+    border-radius: 16px;
+    font-size: 0.85em;
+  }
+
+  &__no-destinataires {
+    font-style: italic;
+    color: vars.$fontColorSecondary;
+  }
+
+  @media (min-width: vars.$tabletWidth) {
+    padding: 2em;
+
+    &__header {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    &__actions {
+      flex-wrap: nowrap;
+    }
+
+    &__destinataire {
+      select {
+        flex: 0 0 100px;
+      }
+    }
+  }
+}

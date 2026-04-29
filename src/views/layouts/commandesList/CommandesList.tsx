@@ -199,7 +199,7 @@ function CommandesList(): ReactElement {
           )}
 
           {filters.campagne && isLoading && (
-            <Loader size="medium" message="Chargement des commandes..." />
+            <Loader message="Chargement des commandes..." />
           )}
 
           {filters.campagne && !isLoading && ventes.length === 0 && !error && (

@@ -15,6 +15,10 @@ import AppelsParHeureChart from '../../../components/appelsParHeureChart/AppelsP
 import TauxAboutiChart from '../../../components/tauxAboutiChart/TauxAboutiChart';
 import DureeMoyenneChart from '../../../components/dureeMoyenneChart/DureeMoyenneChart';
 import TopRaisonsChart from '../../../components/topRaisonsChart/TopRaisonsChart';
+import FilterPanel, { DateFilters } from '../../../components/filterPanel/FilterPanel';
+import ExportButton from '../../../components/exportButton/ExportButton';
+import PrintButton from '../../../components/printButton/PrintButton';
+import OvhTrunkBadge from '../../../components/ovhTrunkBadge';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../../utils/types/queue.types';
 import type { Campagne } from '../../../utils/types/campagne.types';
@@ -236,8 +240,13 @@ const SupervisionView = () => {
   const navigate = useNavigate();
   const [selectedCampagne, setSelectedCampagne] = useState<number | null>(null);
   const [showGraphiques, setShowGraphiques] = useState<boolean>(true);
+  const [dateFilters, setDateFilters] = useState<DateFilters>({ dateDebut: null, dateFin: null });
   const { queueState, isLoading, error } = useSupervision(selectedCampagne);
-  const { stats: graphiquesStats, isLoading: graphiquesLoading } = useGraphiques(selectedCampagne || undefined);
+  const { stats: graphiquesStats, isLoading: graphiquesLoading } = useGraphiques(
+    selectedCampagne || undefined,
+    dateFilters.dateDebut || undefined,
+    dateFilters.dateFin || undefined
+  );
 
   // Tick chaque seconde pour animer les chronomètres (durées statuts, etc.)
   const [now, setNow] = useState(() => Date.now());
@@ -273,6 +282,7 @@ const SupervisionView = () => {
               <MdArrowBack /> Retour
             </Button>
             <h2>Supervision des campagnes</h2>
+            <OvhTrunkBadge />
           </div>
 
           <div className="supervisionView__selector">
@@ -289,7 +299,7 @@ const SupervisionView = () => {
 
           {selectedCampagne && (
             <>
-              {isLoading && !queueState && <Loader size="medium" message="Chargement de la supervision..." />}
+              {isLoading && !queueState && <Loader message="Chargement de la supervision..." />}
 
               {error && <div className="supervisionView__error">{error}</div>}
 
@@ -319,20 +329,43 @@ const SupervisionView = () => {
                   </section>
 
                   <section className="supervisionView__graphiques">
+                    <FilterPanel
+                      filters={dateFilters}
+                      onFiltersChange={setDateFilters}
+                    />
                     <div className="supervisionView__section-header supervisionView__section-header--toggle">
                       <h3>Graphiques de performance</h3>
-                      <button
-                        className="supervisionView__toggle-btn"
-                        onClick={() => setShowGraphiques(!showGraphiques)}
-                        aria-expanded={showGraphiques}
-                      >
-                        {showGraphiques ? 'Masquer' : 'Afficher'}
-                      </button>
+                      <div className="supervisionView__header-actions">
+                        <ExportButton
+                          data={{
+                            campagne: campagneOptions.find((o: { value: string }) => o.value === String(selectedCampagne))?.label,
+                            dateDebut: dateFilters.dateDebut || undefined,
+                            dateFin: dateFilters.dateFin || undefined,
+                            stats: graphiquesStats || {
+                              appelsParHeure: [],
+                              tauxAbouti: { aboutis: 0, non_aboutis: 0, taux_abouti: 0 },
+                              dureeMoyenne7j: [],
+                              topRaisons: []
+                            }
+                          }}
+                          disabled={!graphiquesStats || graphiquesLoading}
+                        />
+                        <PrintButton
+                          disabled={!graphiquesStats || graphiquesLoading}
+                        />
+                        <button
+                          className="supervisionView__toggle-btn"
+                          onClick={() => setShowGraphiques(!showGraphiques)}
+                          aria-expanded={showGraphiques}
+                        >
+                          {showGraphiques ? 'Masquer' : 'Afficher'}
+                        </button>
+                      </div>
                     </div>
 
                     {showGraphiques && (
                       <>
-                        {graphiquesLoading && <Loader size="small" message="Chargement des graphiques..." />}
+                        {graphiquesLoading && <Loader message="Chargement des graphiques..." />}
 
                         {!graphiquesLoading && (
                           <div className="supervisionView__graphiques-grid">

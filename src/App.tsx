@@ -44,6 +44,8 @@ import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
 import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
 import ProspectsListWithAuth from "./views/layouts/prospectsList/ProspectsList";
 import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
+import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
+import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHistoryView";
 import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
 import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 
@@ -122,6 +124,8 @@ function App(): ReactElement {
         <Route path={"campagnes/:id/inject"} element={<ProspectImportWithAuth />}></Route>
         <Route path={"campagnes/:id/prospects"} element={<ProspectsListWithAuth />}></Route>
         <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
+        <Route path={"supervision/alertes"} element={<AlertesConfigViewWithAuth />}></Route>
+        <Route path={"supervision/alertes/historique"} element={<AlertesHistoryViewWithAuth />}></Route>
         <Route path={"prospects/import"} element={<ProspectImportWithAuth />}></Route>
         <Route path={"produits"} element={<ProduitsListWithAuth />}></Route>
         <Route path={"produits/new"} element={<ProduitFormWithAuth />}></Route>

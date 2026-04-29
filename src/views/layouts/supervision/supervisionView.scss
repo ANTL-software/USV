@@ -342,6 +342,15 @@
     }
   }
 
+  // Header actions
+  .supervisionView__header-actions {
+    & {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+  }
+
   // Graphiques section
   .supervisionView__graphiques {
     & {
@@ -377,6 +386,115 @@
     .supervisionView__graphique--half {
       flex: 1 1 calc(50% - 0.75em);
       min-width: 20em;
+    }
+  }
+}
+
+// Styles d'impression
+@media print {
+  #supervisionView {
+    // Masquer les éléments non nécessaires
+    #header,
+    #subNav,
+    #backToTop,
+    .supervisionView__header,
+    .supervisionView__selector,
+    .filterPanel,
+    .supervisionView__section-header--toggle,
+    .supervisionView__toggle-btn,
+    .exportButton,
+    .printButton {
+      display: none !important;
+    }
+
+    // Layout optimisé pour l'impression A4
+    main {
+      padding: 0 !important;
+    }
+
+    .supervisionView__container {
+      max-width: none !important;
+      padding: 0 !important;
+    }
+
+    // Titre du rapport
+    .supervisionView__content::before {
+      content: 'Rapport de Supervision - ANTL';
+      display: block;
+      font-size: 18pt;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 1em;
+      color: #000;
+    }
+
+    // Afficher toutes les sections
+    .supervisionView__graphiques {
+      page-break-inside: avoid;
+    }
+
+    .supervisionView__graphique {
+      page-break-inside: avoid;
+      margin-bottom: 2em;
+      padding: 1em;
+      border: 1px solid #e0e0e0;
+      background: #fff;
+    }
+
+    // Forcer l'affichage des graphiques même si masqués
+    .supervisionView__graphiques-grid {
+      display: block !important;
+    }
+
+    .supervisionView__graphique--half,
+    .supervisionView__graphique--full {
+      width: 100% !important;
+      flex: none !important;
+      page-break-inside: avoid;
+    }
+
+    // Améliorer la lisibilité des textes
+    h3 {
+      color: #000 !important;
+      font-size: 14pt !important;
+      page-break-after: avoid;
+    }
+
+    // Masquer les couleurs de fond
+    .summary-card,
+    .queue-card,
+    .agent-row,
+    table {
+      background: #fff !important;
+    }
+
+    // Améliorer les tableaux
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      page-break-inside: avoid;
+
+      thead {
+        background: #f0f0f0 !important;
+      }
+
+      th,
+      td {
+        border: 1px solid #ccc;
+        padding: 0.5em;
+        color: #000;
+      }
+    }
+
+    // Pied de page avec numéro de page
+    @page {
+      size: A4;
+      margin: 1.5cm;
+    }
+
+    body {
+      font-size: 11pt;
+      color: #000;
     }
   }
 }

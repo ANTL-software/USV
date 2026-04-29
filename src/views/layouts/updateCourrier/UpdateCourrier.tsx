@@ -140,7 +140,7 @@ function UpdateCourrier(): ReactElement {
         <main id="updateCourrier" className="updateCourrierMain">
           <div className="updateCourrierContainer">
             <div className="loadingState">
-              <Loader size="large" message="Chargement du courrier..." />
+              <Loader message="Chargement du courrier..." />
             </div>
           </div>
         </main>
