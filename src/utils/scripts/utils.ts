@@ -35,7 +35,6 @@ export const getEnvironment = (): 'development' | 'production' => {
  */
 export const getCSP = (): string => {
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-  const isDevPort = ["5173", "5174", "5175"].includes(window.location.port);
 
   const apiDomain = isDev ? "http://localhost:8800" : "https://api.antl.fr";
 
