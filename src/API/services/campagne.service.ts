@@ -1,4 +1,4 @@
-import { getRequest, postRequest, patchRequest, deleteRequest } from '../APICalls.ts';
+import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import { CampagneModel } from '../models/campagne.model.ts';
 import type {
@@ -42,7 +42,7 @@ export const createCampagneService = async (data: CreateCampagneData): Promise<C
 };
 
 export const updateCampagneService = async (id: number, data: UpdateCampagneData): Promise<CampagneModel> => {
-  const response: AxiosResponse<ApiResponse<Campagne>> = await patchRequest(`/campagnes/${id}`, data);
+  const response: AxiosResponse<ApiResponse<Campagne>> = await putRequest(`/campagnes/${id}`, data);
   if (response.data.success && response.data.data) {
     return CampagneModel.fromJSON(response.data.data);
   }
