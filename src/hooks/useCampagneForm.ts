@@ -15,6 +15,7 @@ interface CampagneFormState {
   objectifs: string;
   budget: string;
   code_postal_maison_mere: string;
+  autoriser_mobile: boolean;
 }
 
 const INITIAL_FORM: CampagneFormState = {
@@ -25,6 +26,7 @@ const INITIAL_FORM: CampagneFormState = {
   objectifs: '',
   budget: '',
   code_postal_maison_mere: '',
+  autoriser_mobile: false,
 };
 
 export function useCampagneForm() {
@@ -54,6 +56,7 @@ export function useCampagneForm() {
           objectifs: data.objectifs ?? '',
           budget: data.budget != null ? String(data.budget) : '',
           code_postal_maison_mere: data.code_postal_maison_mere ?? '',
+          autoriser_mobile: data.autoriser_mobile ?? false,
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
@@ -65,8 +68,13 @@ export function useCampagneForm() {
   }, [id, isEdit]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
+    const { name, value, type } = e.target;
+    if (type === 'checkbox') {
+      const checked = (e.target as HTMLInputElement).checked;
+      setForm(prev => ({ ...prev, [name]: checked }));
+    } else {
+      setForm(prev => ({ ...prev, [name]: value }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -94,6 +102,7 @@ export function useCampagneForm() {
           objectifs: form.objectifs || undefined,
           budget: form.budget ? Number(form.budget) : undefined,
           code_postal_maison_mere: form.code_postal_maison_mere || undefined,
+          autoriser_mobile: form.autoriser_mobile,
         };
         await updateCampagneService(Number(id), updateData);
         setSuccess('Campagne mise à jour avec succès');
@@ -107,6 +116,7 @@ export function useCampagneForm() {
           objectifs: form.objectifs || undefined,
           budget: form.budget ? Number(form.budget) : undefined,
           code_postal_maison_mere: form.code_postal_maison_mere || undefined,
+          autoriser_mobile: form.autoriser_mobile,
         };
         await createCampagneService(createData);
         setSuccess('Campagne créée avec succès');

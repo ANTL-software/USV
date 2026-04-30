@@ -178,6 +178,23 @@ function CampagneForm(): ReactElement {
                   </label>
                 </div>
 
+                <div className="campagneForm__row">
+                  <label className="campagneForm__checkbox-label">
+                    <input
+                      type="checkbox"
+                      name="autoriser_mobile"
+                      checked={form.autoriser_mobile}
+                      onChange={handleChange}
+                    />
+                    <span>Autoriser les appels sur mobile (06/07)</span>
+                  </label>
+                  <span className="campagneForm__hint">
+                    {form.autoriser_mobile
+                      ? 'Les agents pourront appeler les numéros mobiles'
+                      : 'Les agents ne pourront pas appeler les numéros mobiles (verrouillé)'}
+                  </span>
+                </div>
+
                 <label className="campagneForm__label-full">
                   Objectifs
                   <textarea

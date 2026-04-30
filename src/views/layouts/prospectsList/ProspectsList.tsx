@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import { MdArrowBack, MdDeleteSweep } from 'react-icons/md';
+import { MdArrowBack, MdDeleteSweep, MdDelete } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
@@ -47,10 +47,18 @@ const ProspectsList = () => {
   const [purgeError, setPurgeError] = useState<string | null>(null);
   const [counts, setCounts] = useState<ProspectsCount>({ fixe: 0, mobile: 0, total: 0 });
 
+  // Sélection multiple pour suppression
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+  const [prospectToDelete, setProspectToDelete] = useState<number | null>(null);
+  const [isBulkDelete, setIsBulkDelete] = useState(false);
+
   const {
     rows, pagination, isLoading, error,
     page, setPage, statut, setStatut,
-    search, setSearch, refresh,
+    search, setSearch, refresh, removeProspect,
   } = useProspectsCampagne(campagneId);
 
   useEffect(() => {
@@ -77,6 +85,65 @@ const ProspectsList = () => {
       setPurgeError(msg);
     } finally {
       setPurgeLoading(false);
+    }
+  };
+
+  // Gestion de la sélection/désélection d'un prospect
+  const toggleSelection = useCallback((id: number) => {
+    setSelectedIds(prev => prev.includes(id) ? prev.filter(sid => sid !== id) : [...prev, id]);
+  }, []);
+
+  // Gestion de la sélection/désélection de tous les prospects de la page
+  const toggleSelectAll = useCallback(() => {
+    const allIds = rows.map(r => r.id_prospection);
+    setSelectedIds(prev => {
+      const allSelected = allIds.every(id => prev.includes(id));
+      return allSelected ? [] : allIds;
+    });
+  }, [rows]);
+
+  // Vérifier si tous les prospects de la page sont sélectionnés
+  const allSelected = rows.length > 0 && rows.every(r => selectedIds.includes(r.id_prospection));
+  const someSelected = selectedIds.length > 0;
+
+  // Ouvrir la modal de suppression individuelle
+  const openSingleDeleteModal = (id: number) => {
+    setProspectToDelete(id);
+    setIsBulkDelete(false);
+    setDeleteError(null);
+    setShowDeleteModal(true);
+  };
+
+  // Ouvrir la modal de suppression groupée
+  const openBulkDeleteModal = () => {
+    setIsBulkDelete(true);
+    setDeleteError(null);
+    setShowDeleteModal(true);
+  };
+
+  // Handler de suppression
+  const handleDelete = async () => {
+    if (!campagneId) return;
+    setDeleteLoading(true);
+    setDeleteError(null);
+    try {
+      if (isBulkDelete) {
+        // Suppression groupée
+        await Promise.all(selectedIds.map(id => removeProspect(id)));
+        setSelectedIds([]);
+      } else if (prospectToDelete) {
+        // Suppression individuelle
+        await removeProspect(prospectToDelete);
+      }
+      setShowDeleteModal(false);
+      setProspectToDelete(null);
+      refresh();
+      getProspectsCountService(campagneId).then(setCounts).catch(() => {});
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Erreur lors de la suppression';
+      setDeleteError(msg);
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -142,6 +209,17 @@ const ProspectsList = () => {
                   <MdDeleteSweep /> Vider la liste
                 </Button>
               </div>
+              {someSelected && (
+                <div className="prospectsList__filter-group">
+                  <Button
+                    style="orange"
+                    onClick={openBulkDeleteModal}
+                    disabled={isLoading}
+                  >
+                    <MdDelete /> Supprimer ({selectedIds.length})
+                  </Button>
+                </div>
+              )}
             </div>
 
             {error && <p className="prospectsList__error">{error}</p>}
@@ -156,16 +234,33 @@ const ProspectsList = () => {
                   <table className="prospectsList__table">
                     <thead>
                       <tr>
+                        <th className="prospectsList__checkbox-col">
+                          <input
+                            type="checkbox"
+                            checked={allSelected}
+                            onChange={toggleSelectAll}
+                            aria-label="Sélectionner tous les prospects"
+                          />
+                        </th>
                         <th>Nom</th>
                         <th>Téléphone</th>
                         <th>Statut file</th>
                         <th>Tentatives</th>
                         <th>Date injection</th>
+                        <th className="prospectsList__actions-col">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {rows.map(r => (
                         <tr key={r.id_prospection}>
+                          <td className="prospectsList__checkbox-col">
+                            <input
+                              type="checkbox"
+                              checked={selectedIds.includes(r.id_prospection)}
+                              onChange={() => toggleSelection(r.id_prospection)}
+                              aria-label={`Sélectionner ${r.prospect?.prenom} ${r.prospect?.nom}`}
+                            />
+                          </td>
                           <td>{r.prospect?.prenom} {r.prospect?.nom}</td>
                           <td>
                             <span className={r.prospect?.telephone && isMobilePhone(r.prospect.telephone) ? 'prospectsList__mobile' : ''}>
@@ -182,6 +277,14 @@ const ProspectsList = () => {
                           </td>
                           <td>{r.nb_tentatives}/{r.max_tentatives}</td>
                           <td>{new Date(r.date_injection).toLocaleDateString('fr-FR')}</td>
+                          <td className="prospectsList__actions-col">
+                            <Button
+                              style="red"
+                              onClick={() => openSingleDeleteModal(r.id_prospection)}
+                            >
+                              <MdDelete />
+                            </Button>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -234,6 +337,38 @@ const ProspectsList = () => {
             </Button>
             <Button style="red" onClick={handlePurge} disabled={purgeLoading}>
               {purgeLoading ? 'Purge en cours...' : 'Confirmer la purge'}
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
+      <Modal
+        isVisible={showDeleteModal}
+        onClose={() => setShowDeleteModal(false)}
+        title={isBulkDelete ? 'Supprimer les prospects sélectionnés' : 'Retirer ce prospect de la campagne'}
+      >
+        <div className="prospectsList__modal-delete">
+          {isBulkDelete ? (
+            <>
+              <p>
+                Cette action va retirer <strong>{selectedIds.length} prospect(s)</strong> de la campagne
+                {campagneNom ? ` « ${campagneNom} »` : ` #${id}`}.
+              </p>
+            </>
+          ) : (
+            <p>
+              Ce prospect sera retiré de la campagne
+              {campagneNom ? ` « ${campagneNom} »` : ` #${id}`}.
+            </p>
+          )}
+          <p className="prospectsList__purge-warning">Cette action est irréversible.</p>
+          {deleteError && <p className="prospectsList__error">{deleteError}</p>}
+          <div className="prospectsList__modal-actions">
+            <Button style="grey" onClick={() => setShowDeleteModal(false)} disabled={deleteLoading}>
+              Annuler
+            </Button>
+            <Button style="red" onClick={handleDelete} disabled={deleteLoading}>
+              {deleteLoading ? 'Suppression...' : 'Confirmer'}
             </Button>
           </div>
         </div>

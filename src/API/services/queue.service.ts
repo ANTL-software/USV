@@ -110,3 +110,16 @@ export const getProspectsCountService = async (
   }
   throw new Error(response.data.message || 'Erreur lors du comptage');
 };
+
+export const removeProspectService = async (
+  idCampagne: number,
+  idProspection: number
+): Promise<{ removed: number }> => {
+  const response: AxiosResponse<ApiResponse<{ removed: number }>> = await deleteRequest(
+    `/campagnes/${idCampagne}/prospects/${idProspection}`
+  );
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Erreur lors de la suppression du prospect');
+};

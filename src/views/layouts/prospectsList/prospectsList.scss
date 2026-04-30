@@ -94,8 +94,43 @@
       text-transform: uppercase;
     }
 
-    tbody tr:hover {
-      background: vars.$shadowMedium;
+    .prospectsList__checkbox-col {
+      width: 2.5em;
+      text-align: center;
+
+      input[type='checkbox'] {
+        width: 1.1em;
+        height: 1.1em;
+        cursor: pointer;
+        accent-color: vars.$webdevPrimary;
+      }
+    }
+
+    .prospectsList__actions-col {
+      width: 3em;
+      text-align: center;
+    }
+
+    tbody tr {
+      &.selected {
+        background: vars.$shadowMedium;
+      }
+
+      &:hover {
+        background: vars.$shadowMedium;
+      }
+
+      td {
+        .button {
+          padding: 0.4em;
+          min-width: auto;
+
+          svg {
+            width: 1.1em;
+            height: 1.1em;
+          }
+        }
+      }
     }
   }
 
@@ -190,7 +225,8 @@
     }
   }
 
-  .prospectsList__modal-purge {
+  .prospectsList__modal-purge,
+  .prospectsList__modal-delete {
     display: flex;
     flex-direction: column;
     align-items: center;

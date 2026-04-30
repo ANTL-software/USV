@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getProspectsCampagneService } from '../API/services/queue.service';
+import { getProspectsCampagneService, removeProspectService } from '../API/services/queue.service';
 import type { ProspectCampagneRow, StatutProspection } from '../utils/types/queue.types';
 
 interface UseProspectsCampagneReturn {
@@ -14,6 +14,7 @@ interface UseProspectsCampagneReturn {
   search: string;
   setSearch: (s: string) => void;
   refresh: () => void;
+  removeProspect: (idProspection: number) => Promise<void>;
 }
 
 export const useProspectsCampagne = (idCampagne: number | null): UseProspectsCampagneReturn => {
@@ -71,11 +72,18 @@ export const useProspectsCampagne = (idCampagne: number | null): UseProspectsCam
     setRefreshKey(k => k + 1);
   }, []);
 
+  const removeProspect = useCallback(async (idProspection: number) => {
+    if (!idCampagne) return;
+    await removeProspectService(idCampagne, idProspection);
+    setRefreshKey(k => k + 1);
+  }, [idCampagne]);
+
   return {
     rows, pagination, isLoading, error,
     page, setPage: handleSetPage,
     statut, setStatut: handleSetStatut,
     search, setSearch: handleSetSearch,
     refresh,
+    removeProspect,
   };
 };
