@@ -57,6 +57,12 @@ export const getAllCategoriesService = async (): Promise<Categorie[]> => {
   throw new Error(res.data.message || 'Erreur récupération catégories');
 };
 
+export const getCategoriesFromProduitsService = async (): Promise<Categorie[]> => {
+  const res: AxiosResponse<ApiResponse<Categorie[]>> = await getRequest('/categories/from-products');
+  if (res.data.success && res.data.data) return res.data.data;
+  throw new Error(res.data.message || 'Erreur récupération catégories depuis produits');
+};
+
 export const createCategorieService = async (data: CreateCategorieData): Promise<Categorie> => {
   const res: AxiosResponse<ApiResponse<Categorie>> = await postRequest<CreateCategorieData, ApiResponse<Categorie>>('/categories', data);
   if (res.data.success && res.data.data) return res.data.data;

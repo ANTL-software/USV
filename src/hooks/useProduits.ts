@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getAllCategoriesService } from '../API/services/produit.service';
+import { getAllCategoriesService, getCategoriesFromProduitsService, createCategorieService } from '../API/services/produit.service';
 import { confirm, showError } from '../utils/services/alertService';
-import type { Categorie } from '../utils/types/produit.types';
+import type { Categorie, CreateCategorieData } from '../utils/types/produit.types';
 
 export function useCategories() {
   const [categories, setCategories] = useState<Categorie[]>([]);
@@ -12,7 +12,17 @@ export function useCategories() {
     try {
       setIsLoading(true);
       setError(null);
-      setCategories(await getAllCategoriesService());
+      const [fromTable, fromProducts] = await Promise.all([
+        getAllCategoriesService(),
+        getCategoriesFromProduitsService()
+      ]);
+      const allCategories = [...fromTable];
+      for (const cat of fromProducts) {
+        if (!allCategories.find(c => c.id_categorie === cat.id_categorie)) {
+          allCategories.push(cat);
+        }
+      }
+      setCategories(allCategories);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur de chargement');
     } finally {
@@ -33,5 +43,40 @@ export function useCategories() {
     }
   }, [load]);
 
-  return { categories, isLoading, error, load, deleteCategorie };
+  const handleCategorieChange = useCallback(async (
+    newValue: { value: string; label: string; __isNew__?: boolean } | null,
+    onSelect: (id: string) => void
+  ): Promise<void> => {
+    if (!newValue) {
+      onSelect('');
+      return;
+    }
+
+    if (newValue.__isNew__) {
+      const newId = await createCategorieIfNotExists(newValue.label);
+      onSelect(String(newId));
+      await load();
+    } else {
+      onSelect(newValue.value);
+    }
+  }, [load]);
+
+  return { categories, isLoading, error, load, deleteCategorie, handleCategorieChange };
+}
+
+export async function createCategorieIfNotExists(nomCategorie: string): Promise<number> {
+  try {
+    // Chercher si la catégorie existe déjà
+    const { getAllCategoriesService } = await import('../API/services/produit.service');
+    const existing = await getAllCategoriesService();
+    const found = existing.find(c => c.nom_categorie.toLowerCase() === nomCategorie.toLowerCase());
+    if (found) return found.id_categorie;
+
+    // Créer la nouvelle catégorie
+    const data: CreateCategorieData = { nom_categorie: nomCategorie };
+    const nouvelle = await createCategorieService(data);
+    return nouvelle.id_categorie;
+  } catch (err) {
+    throw err;
+  }
 }

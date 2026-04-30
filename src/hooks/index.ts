@@ -6,7 +6,7 @@ export { usePosteForm } from './usePosteForm.ts';
 export { useAgentForm } from './useAgentForm.ts';
 export { useCampagnes, useCampagneAgents, useCampagneProduits } from './useCampagnes.ts';
 export { useCampagneForm } from './useCampagneForm.ts';
-export { useCategories } from './useProduits.ts';
+export { useCategories, createCategorieIfNotExists } from './useProduits.ts';
 export { useProduitForm } from './useProduitForm.ts';
 export { useVentes } from './useVentes.ts';
 export { useCourrierSelection } from './useCourrierSelection.ts';

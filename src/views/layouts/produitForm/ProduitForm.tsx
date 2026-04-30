@@ -5,13 +5,14 @@ import './produitForm.scss';
 import { ReactElement, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
+import Creatable from 'react-select/creatable';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 // hooks
-import { useProduitForm } from '../../../hooks/useProduitForm';
-import { useCategories } from '../../../hooks/useProduits';
-import { useCampagnes } from '../../../hooks/useCampagnes';
+import { useProduitForm } from '../../../hooks';
+import { useCategories } from '../../../hooks';
+import { useCampagnes } from '../../../hooks';
 
 // utils
 import { toSelectOptions } from '../../../utils/scripts/utils';
@@ -30,7 +31,7 @@ function ProduitForm(): ReactElement {
     handleChange, handleSelectChange, handleSubmit,
   } = useProduitForm();
 
-  const { categories } = useCategories();
+  const { categories, handleCategorieChange } = useCategories();
   const { campagnes } = useCampagnes();
 
   const categorieOptions = useMemo(() =>
@@ -137,12 +138,12 @@ function ProduitForm(): ReactElement {
               <div className="produitForm__row">
                 <label>
                   Catégorie
-                  <Select
+                  <Creatable
                     value={categorieOptions.find(o => o.value === form.id_categorie) ?? null}
-                    onChange={opt => handleSelectChange('id_categorie', opt?.value ?? '')}
+                    onChange={(newValue) => handleCategorieChange(newValue, (id) => handleSelectChange('id_categorie', id))}
                     options={categorieOptions}
                     isClearable
-                    placeholder="— Sélectionner —"
+                    placeholder="— Sélectionner ou taper une nouvelle catégorie —"
                     noOptionsMessage={() => 'Aucune catégorie'}
                     classNamePrefix="reactSelect"
                     menuPortalTarget={document.body}
