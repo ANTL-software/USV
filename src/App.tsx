@@ -39,6 +39,7 @@ import PosteFormWithAuth from "./views/layouts/posteForm/PosteForm";
 import CampagnesListWithAuth from "./views/layouts/campagnesList/CampagnesList";
 import CampagneFormWithAuth from "./views/layouts/campagneForm/CampagneForm";
 import ProspectImportWithAuth from "./views/layouts/prospectImport/ProspectImport";
+import ProspectInjectionWithAuth from "./views/layouts/prospectInjection/ProspectInjection";
 import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
 import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
 import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
@@ -121,7 +122,7 @@ function App(): ReactElement {
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
-        <Route path={"campagnes/:id/inject"} element={<ProspectImportWithAuth />}></Route>
+        <Route path={"campagnes/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
         <Route path={"campagnes/:id/prospects"} element={<ProspectsListWithAuth />}></Route>
         <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
         <Route path={"supervision/alertes"} element={<AlertesConfigViewWithAuth />}></Route>
