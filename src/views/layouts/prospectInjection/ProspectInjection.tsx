@@ -19,12 +19,21 @@ const ProspectionInjection = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { showConfirm } = useAlert();
-  const { filters, setFilters, count, result, isLoading, loadCount, inject } = useInjection();
+  const { filters, setFilters, count, result, isLoading, loadCount, inject, reset } = useInjection();
   const campagneId = id ? parseInt(id, 10) : null;
   const [campagneNom, setCampagneNom] = useState<string>('');
   const [countModalOpen, setCountModalOpen] = useState(false);
   const [resultModalOpen, setResultModalOpen] = useState(false);
   const [hasInjected, setHasInjected] = useState(false);
+
+  // Cleanup au unmount pour éviter les fuites de mémoire
+  useEffect(() => {
+    return () => {
+      setCountModalOpen(false);
+      setResultModalOpen(false);
+      reset();
+    };
+  }, [reset]);
 
   useEffect(() => {
     if (!campagneId) return;
@@ -44,9 +53,11 @@ const ProspectionInjection = () => {
       queueMicrotask(() => {
         setResultModalOpen(true);
         setHasInjected(true);
+        // Réinitialiser les filtres et compteurs après injection réussie
+        reset();
       });
     }
-  }, [result]);
+  }, [result, reset]);
 
   const handleCount = () => {
     if (!campagneId) return;
