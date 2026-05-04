@@ -1,4 +1,4 @@
-import type { Campagne, StatutCampagne } from '../../utils/types/campagne.types';
+import type { Campagne, StatutCampagne, ModePaiement } from '../../utils/types/campagne.types';
 
 const STATUT_LABELS: Record<StatutCampagne, string> = {
   inactive: 'Inactive',
@@ -20,6 +20,14 @@ export class CampagneModel implements Campagne {
   agents_count?: number;
   created_at?: string;
   updated_at?: string;
+  logo_path?: string | null;
+  logo_file_name?: string | null;
+  siret?: string | null;
+  tva?: string | null;
+  email_contact?: string | null;
+  adresse?: string | null;
+  footer_text?: string | null;
+  modes_paiement?: ModePaiement[];
 
   constructor(data: Campagne) {
     this.id_campagne = data.id_campagne;
@@ -35,6 +43,14 @@ export class CampagneModel implements Campagne {
     this.agents_count = data.agents_count;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
+    this.logo_path = data.logo_path ?? null;
+    this.logo_file_name = data.logo_file_name ?? null;
+    this.siret = data.siret ?? null;
+    this.tva = data.tva ?? null;
+    this.email_contact = data.email_contact ?? null;
+    this.adresse = data.adresse ?? null;
+    this.footer_text = data.footer_text ?? null;
+    this.modes_paiement = data.modes_paiement ?? [];
   }
 
   public get statutLabel(): string {
@@ -64,6 +80,14 @@ export class CampagneModel implements Campagne {
       agents_count: this.agents_count,
       created_at: this.created_at,
       updated_at: this.updated_at,
+      logo_path: this.logo_path,
+      logo_file_name: this.logo_file_name,
+      siret: this.siret,
+      tva: this.tva,
+      email_contact: this.email_contact,
+      adresse: this.adresse,
+      footer_text: this.footer_text,
+      modes_paiement: this.modes_paiement,
     };
   }
 

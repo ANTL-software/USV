@@ -2,7 +2,7 @@ import './campagneForm.scss';
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
-import { IoSwapHorizontal, IoAddCircleOutline } from 'react-icons/io5';
+import { IoCloudUpload, IoDocumentText, IoTrash, IoAddCircleOutline, IoSwapHorizontal, IoClose } from 'react-icons/io5';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { useCampagneForm } from '../../../hooks/useCampagneForm';
@@ -17,9 +17,15 @@ import { useAlert } from '../../../context/alert/AlertContext';
 function CampagneForm(): ReactElement {
   const navigate = useNavigate();
   const { showConfirm } = useAlert();
+
   const {
     form, existing, isEdit, isLoading, isFetching, error, success,
-    handleChange, handleSubmit,
+    handleChange, handleModesPaiementChange, handleSubmit,
+    isLogoModalOpen, logoFileName, setLogoFileName, selectedLogoFile,
+    isLogoDragging, isLogoUploading, logoUploadError, logoUploadSuccess, fileInputRef,
+    handleOpenLogoModal, handleCloseLogoModal, handleLogoDragOver,
+    handleLogoDragLeave, handleLogoDrop, handleLogoFileChange,
+    handleLogoUpload, handleDeleteLogo,
   } = useCampagneForm();
 
   const campagneId = existing?.id_campagne ?? null;
@@ -206,6 +212,146 @@ function CampagneForm(): ReactElement {
                   />
                 </label>
 
+                {/* SECTION LOGO DE LA CAMPAGNE */}
+                <fieldset className="campagneForm__fieldset campagnForm__fieldset--logo">
+                  <legend>Logo de la campagne</legend>
+
+                  <div className="campagneForm__logo-section">
+                    {existing?.logo_path && existing?.logo_file_name ? (
+                      <div className="campagneForm__logo-display">
+                        <div className="campagneForm__logo-preview">
+                          <img
+                            src={`${existing.logo_path}?t=${Date.now()}`}
+                            alt={`Logo ${existing.nom_campagne}`}
+                            onError={(e) => { e.currentTarget.src = ''; }}
+                          />
+                        </div>
+                        <div className="campagneForm__logo-info">
+                          <p className="campagneForm__logo-filename">{existing.logo_file_name}</p>
+                          <div className="campagneForm__logo-actions">
+                            <Button
+                              style="seaGreen"
+                              type="button"
+                              onClick={handleOpenLogoModal}
+                            >
+                              <IoCloudUpload /> Changer le logo
+                            </Button>
+                            <Button
+                              style="red"
+                              type="button"
+                              onClick={handleDeleteLogo}
+                            >
+                              <IoTrash /> Supprimer
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="campagneForm__no-logo">
+                        <p>Aucun logo n'est configuré pour cette campagne.</p>
+                        <Button
+                          style="gradient"
+                          type="button"
+                          onClick={handleOpenLogoModal}
+                        >
+                          <IoCloudUpload /> Ajouter un logo
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+                </fieldset>
+
+                {/* SECTION DOCUMENTATION ENTREPRISE */}
+                <fieldset className="campagneForm__fieldset">
+                  <legend><IoDocumentText /> Documentation entreprise</legend>
+
+                  <div className="campagneForm__doc-grid">
+                    <label>
+                      SIRET
+                      <input
+                        type="text"
+                        name="siret"
+                        value={form.siret}
+                        onChange={handleChange}
+                        placeholder="123 456 789 00001"
+                        maxLength={14}
+                      />
+                    </label>
+
+                    <label>
+                      Numéro TVA
+                      <input
+                        type="text"
+                        name="tva"
+                        value={form.tva}
+                        onChange={handleChange}
+                        placeholder="FR12345678901"
+                        maxLength={20}
+                      />
+                    </label>
+
+                    <label>
+                      Email de contact
+                      <input
+                        type="email"
+                        name="email_contact"
+                        value={form.email_contact}
+                        onChange={handleChange}
+                        placeholder="contact@entreprise.fr"
+                      />
+                    </label>
+
+                    <label className="campagneForm__label-full">
+                      Adresse complète
+                      <textarea
+                        name="adresse"
+                        value={form.adresse}
+                        onChange={handleChange}
+                        rows={2}
+                        placeholder="123 Rue de la République, 75001 Paris..."
+                      />
+                    </label>
+                  </div>
+
+                  <label className="campagneForm__label-full">
+                    Texte footer (personnalisé)
+                    <textarea
+                      name="footer_text"
+                      value={form.footer_text}
+                      onChange={handleChange}
+                      rows={2}
+                      placeholder="Texte personnalisé qui apparaîtra en bas des bons de commande..."
+                    />
+                  </label>
+                </fieldset>
+
+                {/* SECTION MODES DE PAIEMENT */}
+                <fieldset className="campagneForm__fieldset">
+                  <legend>Modes de paiement autorisés</legend>
+                  <div className="campagneForm__modes-description">
+                    Sélectionnez les modes de paiement acceptés pour cette campagne.
+                  </div>
+                  <Select
+                    isMulti
+                    value={[
+                      { value: 'Prelevement', label: 'Prélèvement automatique' },
+                      { value: 'Cheque', label: 'Chèque bancaire' },
+                      { value: 'Virement', label: 'Virement bancaire' },
+                      { value: 'CB', label: 'Carte bancaire (par téléphone)' },
+                    ].filter(opt => form.modes_paiement.split(',').includes(opt.value))}
+                    onChange={handleModesPaiementChange as unknown as (options: unknown) => void}
+                    options={[
+                      { value: 'Prelevement', label: 'Prélèvement automatique' },
+                      { value: 'Cheque', label: 'Chèque bancaire' },
+                      { value: 'Virement', label: 'Virement bancaire' },
+                      { value: 'CB', label: 'Carte bancaire (par téléphone)' },
+                    ]}
+                    className="campagneForm__modes-select"
+                    placeholder="Tous les modes acceptés..."
+                    noOptionsMessage={() => 'Aucun mode disponible'}
+                  />
+                </fieldset>
+
                 <div className="campagneForm__actions">
                   <Button style="grey" type="button" onClick={() => navigate('/campagnes')}>Annuler</Button>
                   <Button style="gradient" type="submit" disabled={isLoading}>
@@ -345,6 +491,97 @@ function CampagneForm(): ReactElement {
         </div>
       </main>
       <BackToTop />
+
+      {/* MODAL UPLOAD LOGO */}
+      {isLogoModalOpen && (
+        <div className="campagneForm__modal-backdrop" onClick={handleCloseLogoModal}>
+          <div className="campagneForm__modal-container" onClick={e => e.stopPropagation()}>
+            <div className="campagneForm__modal-header">
+              <h3>Uploader un logo</h3>
+              <button type="button" onClick={handleCloseLogoModal}>
+                <IoClose />
+              </button>
+            </div>
+
+            <div className="campagneForm__modal-content">
+              {logoUploadSuccess && (
+                <div className="campagneForm__upload-success">
+                  {logoUploadSuccess}
+                </div>
+              )}
+
+              {logoUploadError && (
+                <div className="campagneForm__upload-error">
+                  {logoUploadError}
+                </div>
+              )}
+
+              {!logoUploadSuccess && (
+                <>
+                  <div className="campagneForm__form-group">
+                    <label className="campagneForm__form-label">Nom du fichier</label>
+                    <input
+                      type="text"
+                      className="campagneForm__form-input"
+                      value={logoFileName}
+                      onChange={e => setLogoFileName(e.target.value)}
+                      placeholder="Ex: logo-campagne"
+                    />
+                  </div>
+
+                  <div
+                    className={`campagneForm__dropzone ${isLogoDragging ? 'campagneForm__dropzone--active' : ''} ${selectedLogoFile ? 'campagneForm__dropzone--has-file' : ''}`}
+                    onDragOver={handleLogoDragOver}
+                    onDragLeave={handleLogoDragLeave}
+                    onDrop={handleLogoDrop}
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <div className="campagneForm__dropzone-icon">
+                      <IoCloudUpload />
+                    </div>
+                    {selectedLogoFile ? (
+                      <>
+                        <p className="campagneForm__dropzone-filename">{selectedLogoFile.name}</p>
+                        <p className="campagneForm__dropzone-size">{(selectedLogoFile.size / 1024).toFixed(2)} Ko</p>
+                        <p className="campagneForm__dropzone-change-hint">Cliquez ou glissez un autre fichier pour changer</p>
+                      </>
+                    ) : (
+                      <>
+                        <p>Glissez-déposez un fichier ou cliquez pour sélectionner</p>
+                        <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5em' }}>
+                          PNG, JPG, WEBP (max 2 Mo)
+                        </p>
+                      </>
+                    )}
+                  </div>
+
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp"
+                    style={{ display: 'none' }}
+                    onChange={handleLogoFileChange}
+                  />
+
+                  <div className="campagneForm__upload-actions">
+                    <Button style="grey" type="button" onClick={handleCloseLogoModal}>
+                      Annuler
+                    </Button>
+                    <Button
+                      style="gradient"
+                      type="button"
+                      onClick={handleLogoUpload}
+                      disabled={!selectedLogoFile || !logoFileName.trim() || isLogoUploading}
+                    >
+                      {isLogoUploading ? 'Upload...' : 'Uploader'}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

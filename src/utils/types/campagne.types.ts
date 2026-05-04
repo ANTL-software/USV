@@ -1,5 +1,7 @@
 export type StatutCampagne = 'inactive' | 'active' | 'terminee';
 
+export type ModePaiement = 'CB' | 'Prelevement' | 'Cheque' | 'Virement';
+
 export interface Campagne {
   id_campagne: number;
   nom_campagne: string;
@@ -14,6 +16,15 @@ export interface Campagne {
   agents_count?: number;
   created_at?: string;
   updated_at?: string;
+  // Champs de documentation pour personnalisaton des bons de commande
+  logo_path?: string | null;
+  logo_file_name?: string | null;
+  siret?: string | null;
+  tva?: string | null;
+  email_contact?: string | null;
+  adresse?: string | null;
+  footer_text?: string | null;
+  modes_paiement?: ModePaiement[];
 }
 
 export interface CreateCampagneData {
@@ -25,6 +36,15 @@ export interface CreateCampagneData {
   budget?: number;
   code_postal_maison_mere?: string;
   autoriser_mobile?: boolean;
+  // Champs de documentation
+  logo_path?: string;
+  logo_file_name?: string;
+  siret?: string;
+  tva?: string;
+  email_contact?: string;
+  adresse?: string;
+  footer_text?: string;
+  modes_paiement?: ModePaiement[];
 }
 
 export interface UpdateCampagneData {
@@ -36,6 +56,15 @@ export interface UpdateCampagneData {
   budget?: number;
   code_postal_maison_mere?: string;
   autoriser_mobile?: boolean;
+  // Champs de documentation
+  logo_path?: string;
+  logo_file_name?: string;
+  siret?: string;
+  tva?: string;
+  email_contact?: string;
+  adresse?: string;
+  footer_text?: string;
+  modes_paiement?: ModePaiement[];
 }
 
 export interface AgentAffecte {
@@ -62,4 +91,19 @@ export interface AddAgentCampagneData {
 
 export interface TransfertAgentData {
   id_campagne_destination: number;
+}
+
+// Types pour les résultats d'upload/suppression de logo
+export interface CampagneLogoUploadResult {
+  success: boolean;
+  data: {
+    logo_path: string;
+    logo_file_name: string;
+  };
+  message?: string;
+}
+
+export interface CampagneLogoDeleteResult {
+  success: boolean;
+  message?: string;
 }

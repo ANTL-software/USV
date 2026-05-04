@@ -9,8 +9,8 @@ const generateCSP = () => {
   return {
     name: 'generate-csp',
     buildStart() {
-      // CSP pour production - strict et sécurisé
-      const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
+      // CSP pour production - strict et sécurisé (pour headers HTTP uniquement)
+      const prodCSP = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
       
       // Générer vercel.json avec la CSP de production
       const vercelConfig = {
@@ -55,15 +55,15 @@ const generateCSP = () => {
     transformIndexHtml(html: string, context: IndexHtmlTransformContext) {
       // Déterminer l'environnement
       const isDev = context?.server !== undefined;
-      
+
       let cspValue;
       if (isDev) {
         // CSP pour développement - plus permissive pour Vite HMR et API locale
         cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data:; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' http://localhost:8800 http://localhost:8800/api ws: ws://localhost:* http://localhost:* https://localhost:* https://fonts.googleapis.com https://unpkg.com; worker-src 'self' blob:; base-uri 'self'; form-action 'self';";
         console.log(`🔧 Development CSP applied`);
       } else {
-        // CSP pour production - strict et sécurisé
-        cspValue = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests;";
+        // CSP pour production - frame-ancestors retiré car ne fonctionne que dans headers HTTP
+        cspValue = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:; style-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://fonts.googleapis.com; img-src 'self' data: blob: https://api.antl.fr; connect-src 'self' https://api.antl.fr https://fonts.googleapis.com https://unpkg.com wss://antl-aa98bd8eb2f9.sip.signalwire.com; frame-src 'self' https://api.antl.fr blob:; object-src 'self' blob:; worker-src 'self' blob:; base-uri 'self'; form-action 'self'; upgrade-insecure-requests;";
         console.log(`🔒 Production CSP applied`);
       }
       
