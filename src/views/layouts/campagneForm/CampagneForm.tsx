@@ -221,7 +221,7 @@ function CampagneForm(): ReactElement {
                       <div className="campagneForm__logo-display">
                         <div className="campagneForm__logo-preview">
                           <img
-                            src={`${existing.logo_path}?t=${Date.now()}`}
+                            src={existing.logo_path}
                             alt={`Logo ${existing.nom_campagne}`}
                             onError={(e) => { e.currentTarget.src = ''; }}
                           />

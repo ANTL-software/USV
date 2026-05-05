@@ -18,7 +18,6 @@ import TopRaisonsChart from '../../../components/topRaisonsChart/TopRaisonsChart
 import FilterPanel, { DateFilters } from '../../../components/filterPanel/FilterPanel';
 import ExportButton from '../../../components/exportButton/ExportButton';
 import PrintButton from '../../../components/printButton/PrintButton';
-import OvhTrunkBadge from '../../../components/ovhTrunkBadge';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../../utils/types/queue.types';
 import type { Campagne } from '../../../utils/types/campagne.types';
@@ -282,7 +281,6 @@ const SupervisionView = () => {
               <MdArrowBack /> Retour
             </Button>
             <h2>Supervision des campagnes</h2>
-            <OvhTrunkBadge />
           </div>
 
           <div className="supervisionView__selector">
