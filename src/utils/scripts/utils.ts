@@ -7,7 +7,7 @@ export const isOnProduction = (): boolean => {
 export const getApiBaseUrl = (): string => {
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const isDevPort = ["5173", "5174", "5175"].includes(window.location.port); // Ports de développement Vite
-  
+
   if (isDev && isDevPort) {
     // Environnement de développement - utiliser le backend local
     const devUrl = "http://localhost:8800/api";
@@ -19,6 +19,31 @@ export const getApiBaseUrl = (): string => {
     console.log('🚀 Mode production détecté - Backend:', prodUrl);
     return prodUrl;
   }
+};
+
+/**
+ * Construit l'URL complète pour une image de logo de campagne
+ * @param logoPath - Chemin relatif du logo (ex: /uploads/campagne_logos/filename.png)
+ * @returns URL complète de l'image (ex: http://localhost:8800/uploads/campagne_logos/filename.png)
+ */
+export const getCampagneLogoUrl = (logoPath: string | null | undefined): string | null => {
+  if (!logoPath) return null;
+
+  // Si le chemin est déjà une URL complète, le retourner tel quel
+  if (logoPath.startsWith('http://') || logoPath.startsWith('https://')) {
+    return logoPath;
+  }
+
+  // Pour les chemins relatifs commençant par /uploads/, construire l'URL complète
+  if (logoPath.startsWith('/uploads/')) {
+    // Retirer /api de getApiBaseUrl pour obtenir l'URL de base du serveur
+    const apiBaseUrl = getApiBaseUrl();
+    const serverUrl = apiBaseUrl.replace('/api', '');
+    return `${serverUrl}${logoPath}`;
+  }
+
+  // Pour les chemins absolus (ancien format), retourner tel quel (ne fonctionnera pas en prod)
+  return logoPath;
 };
 
 /**

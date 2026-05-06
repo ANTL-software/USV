@@ -17,6 +17,7 @@ export interface Campagne {
   created_at?: string;
   updated_at?: string;
   // Champs de documentation pour personnalisaton des bons de commande
+  // logo_path: chemin relatif depuis la racine du serveur (ex: /uploads/campagne_logos/filename.png)
   logo_path?: string | null;
   logo_file_name?: string | null;
   siret?: string | null;

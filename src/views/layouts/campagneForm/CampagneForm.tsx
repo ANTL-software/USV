@@ -13,6 +13,7 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import { useAlert } from '../../../context/alert/AlertContext';
+import { getCampagneLogoUrl } from '../../../utils/scripts/utils';
 
 function CampagneForm(): ReactElement {
   const navigate = useNavigate();
@@ -221,7 +222,7 @@ function CampagneForm(): ReactElement {
                       <div className="campagneForm__logo-display">
                         <div className="campagneForm__logo-preview">
                           <img
-                            src={existing.logo_path}
+                            src={getCampagneLogoUrl(existing.logo_path) || ''}
                             alt={`Logo ${existing.nom_campagne}`}
                             onError={(e) => { e.currentTarget.src = ''; }}
                           />
