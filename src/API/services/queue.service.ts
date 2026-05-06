@@ -67,6 +67,9 @@ export const getProspectsCampagneService = async (
   if (params?.limit) queryParams.set('limit', String(params.limit));
   if (params?.statut) queryParams.set('statut', params.statut);
   if (params?.search) queryParams.set('search', params.search);
+  // Tri par défaut par ID croissant
+  queryParams.set('sort', 'id_prospect');
+  queryParams.set('order', 'ASC');
 
   const qs = queryParams.toString();
   const url = `/campagnes/${idCampagne}/prospects${qs ? `?${qs}` : ''}`;

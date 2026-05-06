@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoWarning } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoWarning, IoPersonCircleOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
@@ -54,6 +54,16 @@ function CentreAppels(): ReactElement {
               <p>Créer et gérer les campagnes commerciales, affecter les agents.</p>
             </section>
 
+            <section className="centreAppels__card" onClick={() => navigate('/operations/prospects')}>
+              <div className="centreAppels__card-icon">
+                <IoPersonCircleOutline />
+              </div>
+              <h2>Prospects</h2>
+              <p>Gérer et consulter la base de données des prospects.</p>
+            </section>
+          </div>
+
+          <div className="centreAppels__row">
             <section className="centreAppels__card" onClick={() => navigate('/produits')}>
               <div className="centreAppels__card-icon">
                 <IoPricetag />
@@ -61,9 +71,7 @@ function CentreAppels(): ReactElement {
               <h2>Produits</h2>
               <p>Gérer le catalogue produits et les catégories disponibles à la vente.</p>
             </section>
-          </div>
 
-          <div className="centreAppels__row">
             <section className="centreAppels__card" onClick={() => navigate('/operations/signalements')}>
               <div className="centreAppels__card-icon">
                 <IoWarning />

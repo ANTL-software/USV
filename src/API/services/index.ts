@@ -107,6 +107,8 @@ export {
 
 export {
   importProspectsService,
+  getAllProspectsService,
+  getProspectByIdService,
 } from './prospect.service.ts';
 
 export {

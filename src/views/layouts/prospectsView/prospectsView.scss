@@ -1,0 +1,386 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#prospectsView {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .prospectsView__container {
+    @include mixins.centeredContainer(1400px);
+  }
+
+  .prospectsView__back {
+    margin-bottom: 1em;
+  }
+
+  .prospectsView__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1.5em;
+    flex-wrap: wrap;
+    gap: 1em;
+
+    h1 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+    }
+  }
+
+  .prospectsView__filters {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    flex-wrap: wrap;
+
+    & {
+      flex: 1;
+      justify-content: flex-end;
+    }
+  }
+
+  .prospectsView__filter {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    label {
+      font-size: 0.9em;
+      font-weight: 500;
+      color: vars.$fontColorSecondary;
+      white-space: nowrap;
+    }
+
+    .reactSelect__control {
+      border-color: vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.9em;
+      min-height: unset;
+      box-shadow: none;
+      min-width: 180px;
+      cursor: pointer;
+
+      &:hover { border-color: vars.$borderColor; }
+      &--is-focused {
+        border-color: #818cf8 !important;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
+      }
+    }
+
+    .reactSelect__value-container { padding: 0.35em 0.85em; }
+    .reactSelect__single-value { color: vars.$fontColorPrimary; }
+    .reactSelect__option--is-focused { background: #ede9fe; }
+    .reactSelect__option--is-selected { background: #818cf8; }
+    .reactSelect__menu { border-radius: 8px; font-size: 0.9em; }
+  }
+
+  .prospectsView__search {
+    input {
+      padding: 0.5em 0.85em;
+      border: 1px solid vars.$borderColor;
+      border-radius: 8px;
+      font-size: 0.9em;
+      min-width: 200px;
+      transition: border-color vars.$transitionSmooth;
+
+      &:focus {
+        outline: none;
+        border-color: #818cf8;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+      }
+
+      &::placeholder {
+        color: vars.$fontColorSecondary;
+      }
+    }
+  }
+
+  .prospectsView__error {
+    padding: 1em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    color: #dc2626;
+    margin-bottom: 1em;
+  }
+
+  .prospectsView__loading {
+    text-align: center;
+    padding: 3em;
+    color: vars.$fontColorSecondary;
+  }
+
+  .prospectsView__empty {
+    text-align: center;
+    padding: 3em;
+    color: vars.$fontColorSecondary;
+    font-style: italic;
+  }
+
+  .prospectsView__table-wrapper {
+    @include mixins.card(12px, light);
+    overflow-x: auto;
+  }
+
+  .prospectsView__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    table-layout: auto;
+
+    th {
+      text-align: left;
+      padding: 0.85em 1em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      font-size: 0.8em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid vars.$borderColor;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75em 1em;
+      border-bottom: 1px solid vars.$borderColor;
+      vertical-align: middle;
+      display: table-cell;
+    }
+
+    tbody tr {
+      cursor: pointer;
+      transition: background vars.$transitionSmooth;
+
+      &:hover {
+        background: #f8fafc;
+      }
+
+      &--alert {
+        background: #fef3c7;
+
+        &:hover {
+          background: #fde68a;
+        }
+      }
+
+      display: table-row;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+  }
+
+  .prospectsView__id {
+    white-space: nowrap;
+    text-align: center;
+
+    code {
+      font-family: monospace;
+      font-size: 0.88em;
+      background: #f1f5f9;
+      padding: 0.2em 0.5em;
+      border-radius: 4px;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .prospectsView__name,
+  .prospectsView__phone,
+  .prospectsView__email,
+  .prospectsView__location {
+    display: flex;
+    align-items: center;
+    gap: 0.4em;
+    white-space: nowrap;
+
+    a {
+      color: vars.$utilsPrimary;
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    code {
+      font-family: monospace;
+      font-size: 0.88em;
+      background: #f1f5f9;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+  }
+
+  .prospectsView__date {
+    white-space: nowrap;
+    font-size: 0.85em;
+    color: vars.$fontColorSecondary;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25em;
+    padding: 0.2em 0.6em;
+    border-radius: 999px;
+    font-size: 0.75em;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &--nouveau {
+      background: #e0e7ff;
+      color: #4f46e5;
+    }
+
+    &--contacte {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    &--interesse {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    &--rappel {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    &--non_interesse {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    &--vente_conclue {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    &--particulier {
+      background: #dbeafe;
+      color: #1d4ed8;
+    }
+
+    &--entreprise {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    &--mobile {
+      background: #f3e8ff;
+      color: #7c3aed;
+    }
+
+    &--fixe {
+      background: #e0f2fe;
+      color: #0284c7;
+    }
+
+    &--voip {
+      background: #fce7f3;
+      color: #be185d;
+    }
+
+    &--inconnu {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+  }
+
+  .prospectsView__pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    border-top: 1px solid vars.$borderColor;
+    flex-wrap: wrap;
+    gap: 1em;
+  }
+
+  .pagination-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25em;
+    flex: 1;
+  }
+
+  .pagination-info {
+    font-size: 0.9em;
+    color: vars.$fontColorSecondary;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    white-space: nowrap;
+  }
+
+  .pagination-jump-input {
+    width: 3.5em;
+    padding: 0.35em 0.5em;
+    border: 1px solid vars.$borderColor;
+    border-radius: 4px;
+    font-size: 0.9em;
+    text-align: center;
+    font-family: monospace;
+    background: white;
+    transition: border-color vars.$transitionSmooth;
+
+    &:focus {
+      outline: none;
+      border-color: #818cf8;
+      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
+    }
+
+    &::placeholder {
+      color: vars.$fontColorSecondary;
+      opacity: 0.7;
+    }
+
+    /* Masquer les flèches du number input */
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    &[type=number] {
+      -moz-appearance: textfield;
+    }
+  }
+
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em 1em;
+    border: 1px solid vars.$borderColor;
+    border-radius: 6px;
+    background: white;
+    color: vars.$fontColorPrimary;
+    font-size: 0.9em;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all vars.$transitionSmooth;
+
+    &:hover:not(:disabled) {
+      background: vars.$utilsGradient;
+      color: white;
+      border-color: transparent;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  .pagination-total {
+    font-size: 0.85em;
+    opacity: 0.8;
+  }
+}

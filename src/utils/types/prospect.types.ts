@@ -53,3 +53,54 @@ export interface ImportApiResponse {
   data: ImportResult;
   message?: string;
 }
+
+// ===== PROSPECTS VIEW - Types pour la vue Prospects =====
+
+export interface Prospect {
+  id_prospect: number;
+  type_prospect: TypeProspect;
+  nom: string;
+  prenom: string | null;
+  raison_sociale: string | null;
+  email: string | null;
+  telephone: string;
+  type_telephone: 'mobile' | 'fixe' | 'voip' | 'inconnu';
+  adresse: string | null;
+  code_postal: string | null;
+  ville: string | null;
+  pays: string | null;
+  statut: StatutProspect;
+  siret: string | null;
+  code_naf: string | null;
+  activite: string | null;
+  secteur: string | null;
+  region: string | null;
+  civilite: string | null;
+  telephone_contact: string | null;
+  est_doublon: boolean;
+  optout: boolean;
+  doublon_date: string | null;
+  optout_date: string | null;
+  doublon_signale_par: number | null;
+  optout_signale_par: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProspectsApiResponse {
+  data: Prospect[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface ProspectFilters {
+  page?: number;
+  limit?: number;
+  statut?: StatutProspect;
+  type_prospect?: TypeProspect;
+  search?: string;
+}

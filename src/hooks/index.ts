@@ -15,6 +15,7 @@ export { useMateriel, useMarques } from './useMateriel.ts';
 export { useBookingContext } from './useBookingContext.ts';
 export { useProspectsCampagne } from './useProspectsCampagne.ts';
 export { useProspectImport } from './useProspectImport.ts';
+export { useProspects } from './useProspects.ts';
 export { useInjection } from './useInjection.ts';
 export { useSupervision } from './useSupervision.ts';
 export { useTooltip } from './useTooltip.ts';

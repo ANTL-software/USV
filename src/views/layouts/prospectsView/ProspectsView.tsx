@@ -1,0 +1,288 @@
+import './prospectsView.scss';
+
+import { ReactElement, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { IoChevronBack, IoChevronForward, IoCallOutline, IoMailOutline, IoLocationOutline, IoBusinessOutline, IoPersonOutline } from 'react-icons/io5';
+import { MdArrowBack } from 'react-icons/md';
+import Select from 'react-select';
+import WithAuth from '../../../utils/middleware/WithAuth';
+
+import { useCampagnes, useProspects } from '../../../hooks';
+import type { Prospect } from '../../../utils/types/prospect.types';
+import { ProspectDetailModal } from '../../../components/prospectDetailModal';
+
+import Header from '../../components/header/Header';
+import SubNav from '../../components/subNav/SubNav';
+import BackToTop from '../../components/backToTop/BackToTop';
+import Button from '../../components/button/Button';
+
+function ProspectsView(): ReactElement {
+  const navigate = useNavigate();
+  const { campagnes } = useCampagnes();
+  const {
+    prospects,
+    pagination,
+    isLoading,
+    error,
+    selectedCampagne,
+    setSelectedCampagne,
+    currentPage,
+    setCurrentPage,
+    search,
+    setSearch,
+  } = useProspects(campagnes);
+
+  const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
+  const [jumpToPage, setJumpToPage] = useState<string>('');
+
+  const campagneOptions = [
+    { value: null, label: 'Tous' },
+    ...campagnes.map(c => ({ value: c, label: c.nom_campagne })),
+  ];
+
+  const selectedCampagneOption = campagneOptions.find(o => o.value === selectedCampagne);
+
+  const handleRowClick = (prospect: Prospect) => {
+    setSelectedProspect(prospect);
+  };
+
+  const handlePreviousPage = () => {
+    if (pagination && currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleNextPage = () => {
+    if (pagination && currentPage < pagination.totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const getStatutBadgeClass = (statut: string): string => {
+    switch (statut) {
+      case 'nouveau': return 'badge--nouveau';
+      case 'contacte': return 'badge--contacte';
+      case 'interesse': return 'badge--interesse';
+      case 'rappel': return 'badge--rappel';
+      case 'non_interesse': return 'badge--non_interesse';
+      case 'vente_conclue': return 'badge--vente_conclue';
+      default: return '';
+    }
+  };
+
+  const getTypeBadgeClass = (type: string): string => {
+    return type === 'Entreprise' ? 'badge--entreprise' : 'badge--particulier';
+  };
+
+  const getPhoneTypeBadgeClass = (type: string): string => {
+    switch (type) {
+      case 'mobile': return 'badge--mobile';
+      case 'fixe': return 'badge--fixe';
+      case 'voip': return 'badge--voip';
+      default: return 'badge--inconnu';
+    }
+  };
+
+  return (
+    <div id="prospectsView">
+      <Header />
+      <SubNav />
+      <main>
+        <div className="prospectsView__container">
+          <div className="prospectsView__back">
+            <Button style="back" onClick={() => navigate('/operations')}>
+              <MdArrowBack />
+              <span>Retour</span>
+            </Button>
+          </div>
+
+          <div className="prospectsView__header">
+            <h1>Prospects</h1>
+            <div className="prospectsView__filters">
+              <div className="prospectsView__filter">
+                <label htmlFor="campagne-select">Campagne :</label>
+                <Select
+                  inputId="campagne-select"
+                  options={campagneOptions}
+                  value={selectedCampagneOption}
+                  onChange={opt => setSelectedCampagne(opt?.value ?? null)}
+                  placeholder="Choisir..."
+                  isSearchable={false}
+                  classNamePrefix="reactSelect"
+                />
+              </div>
+              <div className="prospectsView__search">
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {error && <div className="prospectsView__error">{error}</div>}
+
+          <div className="prospectsView__table-wrapper">
+            {isLoading ? (
+              <div className="prospectsView__loading">Chargement...</div>
+            ) : prospects.length === 0 ? (
+              <div className="prospectsView__empty">
+                {selectedCampagne
+                  ? `Aucun prospect trouvé pour la campagne "${selectedCampagne.nom_campagne}"`
+                  : 'Aucun prospect trouvé'
+                }
+              </div>
+            ) : (
+              <>
+                <table className="prospectsView__table">
+                  <thead>
+                    <tr>
+                      <th style={{ textAlign: 'center' }}>ID</th>
+                      <th>Nom</th>
+                      <th>Téléphone</th>
+                      <th>Email</th>
+                      <th>Ville</th>
+                      <th>Pays</th>
+                      <th>Statut</th>
+                      <th>Type</th>
+                      <th>Secteur</th>
+                      <th>Date création</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {prospects.map(prospect => (
+                      <tr
+                        key={prospect.id_prospect}
+                        onClick={() => handleRowClick(prospect)}
+                        className={prospect.est_doublon || prospect.optout ? 'prospectsView__row--alert' : ''}
+                      >
+                        <td className="prospectsView__id" style={{ textAlign: 'center' }}>
+                          <code>{prospect.id_prospect}</code>
+                        </td>
+                        <td className="prospectsView__name">
+                          {prospect.type_prospect === 'Entreprise' && prospect.raison_sociale
+                            ? (
+                                <>
+                                  <IoBusinessOutline />
+                                  {prospect.raison_sociale}
+                                </>
+                              )
+                            : (
+                                <>
+                                  <IoPersonOutline />
+                                  {prospect.nom.toUpperCase()}
+                                  {prospect.prenom && ` ${prospect.prenom}`}
+                                </>
+                              )
+                          }
+                        </td>
+                        <td className="prospectsView__phone">
+                          <IoCallOutline />
+                          <code>{prospect.telephone}</code>
+                          <span className={`badge ${getPhoneTypeBadgeClass(prospect.type_telephone)}`}>
+                            {prospect.type_telephone}
+                          </span>
+                        </td>
+                        <td className="prospectsView__email">
+                          {prospect.email ? (
+                            <>
+                              <IoMailOutline />
+                              <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()}>
+                                {prospect.email}
+                              </a>
+                            </>
+                          ) : '—'}
+                        </td>
+                        <td className="prospectsView__location">
+                          {prospect.ville ? (
+                            <>
+                              <IoLocationOutline />
+                              {prospect.code_postal ? `${prospect.code_postal} ` : ''}
+                              {prospect.ville}
+                            </>
+                          ) : '—'}
+                        </td>
+                        <td>{prospect.pays || '—'}</td>
+                        <td>
+                          <span className={`badge ${getStatutBadgeClass(prospect.statut)}`}>
+                            {prospect.statut.replace(/_/g, ' ')}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={`badge ${getTypeBadgeClass(prospect.type_prospect)}`}>
+                            {prospect.type_prospect}
+                          </span>
+                        </td>
+                        <td>{prospect.secteur || '—'}</td>
+                        <td className="prospectsView__date">
+                          {new Date(prospect.created_at).toLocaleDateString('fr-FR')}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+
+                {pagination && pagination.totalPages > 1 && (
+                  <div className="prospectsView__pagination">
+                    <button
+                      className="pagination-btn"
+                      onClick={handlePreviousPage}
+                      disabled={currentPage === 1}
+                    >
+                      <IoChevronBack />
+                      Précédent
+                    </button>
+                    <div className="pagination-center">
+                      <span className="pagination-info">
+                        Page <input
+                          type="number"
+                          min="1"
+                          max={pagination.totalPages}
+                          value={jumpToPage}
+                          onChange={e => setJumpToPage(e.target.value)}
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') {
+                              const page = parseInt(jumpToPage, 10);
+                              if (page >= 1 && page <= pagination.totalPages) {
+                                setCurrentPage(page);
+                                setJumpToPage('');
+                              }
+                            }
+                          }}
+                          placeholder={currentPage.toString()}
+                          className="pagination-jump-input"
+                        /> sur {pagination.totalPages}
+                      </span>
+                      <span className="pagination-total">({pagination.total} prospects)</span>
+                    </div>
+                    <button
+                      className="pagination-btn"
+                      onClick={handleNextPage}
+                      disabled={currentPage === pagination.totalPages}
+                    >
+                      Suivant
+                      <IoChevronForward />
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </main>
+      <BackToTop />
+
+      {selectedProspect && (
+        <ProspectDetailModal
+          prospect={selectedProspect}
+          onClose={() => setSelectedProspect(null)}
+        />
+      )}
+    </div>
+  );
+}
+
+const ProspectsViewWithAuth = WithAuth(ProspectsView);
+export default ProspectsViewWithAuth;
