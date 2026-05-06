@@ -2,7 +2,7 @@ import './prospectsView.scss';
 
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoChevronBack, IoChevronForward, IoCallOutline, IoMailOutline, IoLocationOutline, IoBusinessOutline, IoPersonOutline } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -163,23 +163,11 @@ function ProspectsView(): ReactElement {
                         </td>
                         <td className="prospectsView__name">
                           {prospect.type_prospect === 'Entreprise' && prospect.raison_sociale
-                            ? (
-                                <>
-                                  <IoBusinessOutline />
-                                  {prospect.raison_sociale}
-                                </>
-                              )
-                            : (
-                                <>
-                                  <IoPersonOutline />
-                                  {prospect.nom.toUpperCase()}
-                                  {prospect.prenom && ` ${prospect.prenom}`}
-                                </>
-                              )
+                            ? prospect.raison_sociale
+                            : `${prospect.nom.toUpperCase()}${prospect.prenom ? ` ${prospect.prenom}` : ''}`
                           }
                         </td>
                         <td className="prospectsView__phone">
-                          <IoCallOutline />
                           <code>{prospect.telephone}</code>
                           <span className={`badge ${getPhoneTypeBadgeClass(prospect.type_telephone)}`}>
                             {prospect.type_telephone}
@@ -187,18 +175,14 @@ function ProspectsView(): ReactElement {
                         </td>
                         <td className="prospectsView__email">
                           {prospect.email ? (
-                            <>
-                              <IoMailOutline />
-                              <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()}>
-                                {prospect.email}
-                              </a>
-                            </>
+                            <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()}>
+                              {prospect.email}
+                            </a>
                           ) : '—'}
                         </td>
                         <td className="prospectsView__location">
                           {prospect.ville ? (
                             <>
-                              <IoLocationOutline />
                               {prospect.code_postal ? `${prospect.code_postal} ` : ''}
                               {prospect.ville}
                             </>

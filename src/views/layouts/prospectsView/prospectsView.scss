@@ -188,13 +188,23 @@
     }
   }
 
-  .prospectsView__name,
-  .prospectsView__phone,
-  .prospectsView__email,
-  .prospectsView__location {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
+  .prospectsView__name {
+    white-space: nowrap;
+  }
+
+  .prospectsView__phone {
+    white-space: nowrap;
+
+    code {
+      font-family: monospace;
+      font-size: 0.88em;
+      background: #f1f5f9;
+      padding: 0.15em 0.4em;
+      border-radius: 4px;
+    }
+  }
+
+  .prospectsView__email {
     white-space: nowrap;
 
     a {
@@ -205,14 +215,10 @@
         text-decoration: underline;
       }
     }
+  }
 
-    code {
-      font-family: monospace;
-      font-size: 0.88em;
-      background: #f1f5f9;
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-    }
+  .prospectsView__location {
+    white-space: nowrap;
   }
 
   .prospectsView__date {
