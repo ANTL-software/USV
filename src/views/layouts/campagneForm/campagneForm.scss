@@ -17,6 +17,11 @@
     flex-direction: column;
     gap: 1.5em;
 
+    // Mobile : agents en premier
+    @media (max-width: vars.$desktopWidth - 1px) {
+      flex-direction: column-reverse;
+    }
+
     @media (min-width: vars.$desktopWidth) {
       flex-direction: row;
       align-items: flex-start;
@@ -26,16 +31,28 @@
   .campagneForm__form {
     flex: 2;
     min-width: 0;
+
+    // En desktop, le formulaire est à gauche
+    @media (min-width: vars.$desktopWidth) {
+      order: 1;
+    }
   }
 
   .campagneForm__sidebar {
-    flex: 3;
+    flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
     gap: 1em;
-    position: sticky;
-    top: 11dvh;
+
+    // Sticky seulement en desktop
+    @media (min-width: vars.$desktopWidth) {
+      position: sticky;
+      top: 11dvh;
+      max-height: calc(100dvh - 12dvh);
+      overflow-y: auto;
+      order: 2;
+    }
   }
 
   .campagneForm__sidebar-actions {
@@ -319,8 +336,6 @@
     align-items: center;
     gap: 1.5em;
     padding: 1.5em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 8px;
     margin-bottom: 1.5em;
   }
 

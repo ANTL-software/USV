@@ -104,7 +104,7 @@ const ProspectionInjection = () => {
       <main>
         <div className="prospectInjection__container">
           <div className="prospectInjection__header">
-            <Button style="back" onClick={() => navigate(`/campagnes/${id}`)}>
+            <Button style="back" onClick={() => navigate('/operations/prospects')}>
               <MdArrowBack /> Retour
             </Button>
             <h2>Injecter des prospects dans la campagne #{id}{campagneNom ? ` — ${campagneNom}` : ''}</h2>

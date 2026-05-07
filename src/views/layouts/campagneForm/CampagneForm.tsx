@@ -2,7 +2,7 @@ import './campagneForm.scss';
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
-import { IoCloudUpload, IoDocumentText, IoTrash, IoAddCircleOutline, IoSwapHorizontal, IoClose } from 'react-icons/io5';
+import { IoCloudUpload, IoDocumentText, IoTrash, IoSwapHorizontal, IoClose } from 'react-icons/io5';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { useCampagneForm } from '../../../hooks/useCampagneForm';
@@ -365,17 +365,6 @@ function CampagneForm(): ReactElement {
             {isEdit && (
             <aside className="campagneForm__sidebar">
 
-              {existing?.statut === 'active' && (
-                <div className="campagneForm__sidebar-actions">
-                  <Button style="gradient" type="button" onClick={() => navigate(`/campagnes/${campagneId}/inject`)}>
-                    <IoAddCircleOutline /> Injecter des prospects
-                  </Button>
-                  <Button style="grey" type="button" onClick={() => navigate(`/campagnes/${campagneId}/prospects`)}>
-                    Voir les prospects injectés
-                  </Button>
-                </div>
-              )}
-
               <section className="campagneForm__agents">
               <h2>Agents affectés <span className="campagneForm__agents-count">{agents.length}</span></h2>
 
@@ -383,10 +372,10 @@ function CampagneForm(): ReactElement {
                 <Select
                   value={selectedAgent}
                   onChange={opt => setSelectedAgent(opt)}
-                  options={emploiesDisponibles.map(e => ({ value: String(e.id_employe), label: `${e.prenom} ${e.nom} (${e.identifiant})` }))}
+                  options={emploiesDisponibles.map(e => ({ value: String(e.id_employe), label: `${e.prenom} ${e.nom}` }))}
                   isDisabled={emploiesDisponibles.length === 0}
                   isClearable
-                  placeholder="— Sélectionner un agent —"
+                  placeholder="Choisir un agent"
                   noOptionsMessage={() => 'Aucun agent disponible'}
                   classNamePrefix="reactSelect"
                   menuPortalTarget={document.body}
@@ -437,7 +426,7 @@ function CampagneForm(): ReactElement {
                                   type="button"
                                   onClick={() => handleStartTransfer(a.id_employe)}
                                 >
-                                  <IoSwapHorizontal /> Transférer
+                                  <IoSwapHorizontal /> Transfert
                                 </Button>
                               )}
                               <Button

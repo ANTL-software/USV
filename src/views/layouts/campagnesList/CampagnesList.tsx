@@ -74,7 +74,11 @@ function CampagnesList(): ReactElement {
                   {campagnes.map((c: Campagne) => {
                     const nextStatut = NEXT_STATUT[c.statut];
                     return (
-                      <tr key={c.id_campagne}>
+                      <tr
+                        key={c.id_campagne}
+                        onClick={() => navigate(`/campagnes/${c.id_campagne}`)}
+                        className="campagnesList__row--clickable"
+                      >
                         <td className="campagnesList__nom">{c.nom_campagne}</td>
                         <td>{c.type_campagne ?? '—'}</td>
                         <td>{c.date_debut}</td>
@@ -88,7 +92,10 @@ function CampagnesList(): ReactElement {
                         <td className="campagnesList__actions">
                           <button
                             className="campagnesList__btn-edit"
-                            onClick={() => navigate(`/campagnes/${c.id_campagne}`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/campagnes/${c.id_campagne}`);
+                            }}
                             title="Modifier"
                           >
                             <IoPencil />
@@ -96,7 +103,10 @@ function CampagnesList(): ReactElement {
                           {nextStatut && (
                             <button
                               className={`campagnesList__btn-statut campagnesList__btn-statut--${nextStatut.value}`}
-                              onClick={() => changerStatut(c.id_campagne, nextStatut.value, c.nom_campagne)}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                changerStatut(c.id_campagne, nextStatut.value, c.nom_campagne);
+                              }}
                             >
                               {nextStatut.label}
                             </button>

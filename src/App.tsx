@@ -43,7 +43,6 @@ import ProspectInjectionWithAuth from "./views/layouts/prospectInjection/Prospec
 import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
 import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
 import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
-import ProspectsListWithAuth from "./views/layouts/prospectsList/ProspectsList";
 import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
 import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
 import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHistoryView";
@@ -124,8 +123,7 @@ function App(): ReactElement {
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
-        <Route path={"campagnes/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
-        <Route path={"campagnes/:id/prospects"} element={<ProspectsListWithAuth />}></Route>
+        <Route path={"operations/prospect/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
         <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
         <Route path={"supervision/alertes"} element={<AlertesConfigViewWithAuth />}></Route>
         <Route path={"supervision/alertes/historique"} element={<AlertesHistoryViewWithAuth />}></Route>

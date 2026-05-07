@@ -2,7 +2,7 @@ import './prospectsView.scss';
 
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward, IoAddCircleOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -98,7 +98,15 @@ function ProspectsView(): ReactElement {
           </div>
 
           <div className="prospectsView__header">
-            <h1>Prospects</h1>
+            <div className="prospectsView__title-section">
+              <h1>Prospects</h1>
+              {selectedCampagne && (
+                <Button style="gradient" onClick={() => navigate(`/operations/prospect/${selectedCampagne.id_campagne}/inject`)}>
+                  <IoAddCircleOutline />
+                  <span>Injecter des prospects</span>
+                </Button>
+              )}
+            </div>
             <div className="prospectsView__filters">
               <div className="prospectsView__filter">
                 <label htmlFor="campagne-select">Campagne :</label>

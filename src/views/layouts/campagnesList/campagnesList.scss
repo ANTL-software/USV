@@ -81,6 +81,10 @@
 
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #f8fafc; }
+
+    tbody tr.campagnesList__row--clickable {
+      cursor: pointer;
+    }
   }
 
   .campagnesList__nom {

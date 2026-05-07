@@ -23,6 +23,12 @@
     margin-bottom: 1.5em;
     flex-wrap: wrap;
     gap: 1em;
+  }
+
+  .prospectsView__title-section {
+    display: flex;
+    align-items: center;
+    gap: 1em;
 
     h1 {
       margin: 0;
