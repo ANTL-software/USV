@@ -1,4 +1,4 @@
-import { postRequest, getRequest } from '../APICalls.ts';
+import { postRequest, getRequest, putRequest } from '../APICalls.ts';
 import { AxiosResponse } from 'axios';
 import type {
   ImportProspectRow,
@@ -9,6 +9,7 @@ import type {
   Prospect,
   ProspectsApiResponse,
   ProspectFilters,
+  ProspectUpdateData,
 } from '../../utils/types/prospect.types.ts';
 
 export const importProspectsService = async (rows: ImportProspectRow[]): Promise<ImportResult> => {
@@ -69,4 +70,33 @@ export const getProspectByIdService = async (id: number): Promise<Prospect> => {
     return response.data.data;
   }
   throw new Error(response.data.message || 'Impossible de récupérer le prospect');
+};
+
+export const updateProspectService = async (id: number, data: ProspectUpdateData): Promise<Prospect> => {
+  try {
+    const response = await putRequest<ProspectUpdateData, { success: boolean; data?: Prospect; message?: string; errors?: unknown }>(`/prospects/${id}`, data);
+    if (response.data.success && response.data.data) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Impossible de mettre à jour le prospect');
+  } catch (error: unknown) {
+    console.error('[updateProspectService] Erreur complète:', error);
+    if (error && typeof error === 'object' && 'response' in error) {
+      const axiosError = error as { response?: { data?: { message?: string; errors?: { field: string; message: string }[] } } };
+      console.error('[updateProspectService] Détails réponse:', JSON.stringify(axiosError.response?.data, null, 2));
+
+      // Si il y a des erreurs de validation détaillées, les extraire
+      if (axiosError.response?.data?.errors && Array.isArray(axiosError.response.data.errors)) {
+        const validationErrors = axiosError.response.data.errors
+          .map((e: { field: string; message: string }) => `${e.field}: ${e.message}`)
+          .join(', ');
+        throw new Error(validationErrors || axiosError.response.data.message || 'Erreur de validation');
+      }
+
+      if (axiosError.response?.data?.message) {
+        throw new Error(axiosError.response.data.message);
+      }
+    }
+    throw error;
+  }
 };

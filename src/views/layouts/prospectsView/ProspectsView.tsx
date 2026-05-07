@@ -30,6 +30,7 @@ function ProspectsView(): ReactElement {
     setCurrentPage,
     search,
     setSearch,
+    refresh,
   } = useProspects(campagnes);
 
   const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
@@ -262,6 +263,7 @@ function ProspectsView(): ReactElement {
         <ProspectDetailModal
           prospect={selectedProspect}
           onClose={() => setSelectedProspect(null)}
+          onProspectUpdated={refresh}
         />
       )}
     </div>

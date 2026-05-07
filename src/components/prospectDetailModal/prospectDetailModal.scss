@@ -15,7 +15,7 @@
   background: white;
   border-radius: 12px;
   width: 100%;
-  max-width: 32em;
+  max-width: 75em;
   box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -103,7 +103,12 @@
     font-weight: 500;
     color: vars.$fontColorSecondary;
     flex-shrink: 0;
-    min-width: 8em;
+    min-width: 10em;
+
+    .required {
+      color: #ef4444;
+      margin-left: 0.15em;
+    }
   }
 
   .detailValue {
@@ -115,6 +120,7 @@
     gap: 0.5em;
     flex-wrap: wrap;
     justify-content: flex-end;
+    flex: 1;
 
     a {
       color: vars.$utilsPrimary;
@@ -131,6 +137,35 @@
       background: #f1f5f9;
       padding: 0.15em 0.4em;
       border-radius: 4px;
+    }
+
+    .detailInput,
+    .detailSelect {
+      padding: 0.4em 0.6em;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 0.9em;
+      font-family: inherit;
+      color: vars.$fontColorPrimary;
+      background: white;
+      transition: border-color vars.$transitionFast;
+      width: 48%;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$utilsPrimary;
+        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+      }
+
+      &:disabled {
+        background: #f9fafb;
+        color: #9ca3af;
+        cursor: not-allowed;
+      }
+    }
+
+    .detailSelect {
+      cursor: pointer;
     }
   }
 

@@ -109,6 +109,7 @@ export {
   importProspectsService,
   getAllProspectsService,
   getProspectByIdService,
+  updateProspectService,
 } from './prospect.service.ts';
 
 export {

@@ -70,13 +70,29 @@ export interface ProspectCampagneRow {
   date_traitement: string | null;
   prospect: {
     id_prospect: number;
+    type_prospect: 'Particulier' | 'Entreprise';
     nom: string;
-    prenom: string;
-    telephone: string;
+    prenom: string | null;
+    raison_sociale: string | null;
     email: string | null;
-    statut: string;
+    telephone: string;
+    type_telephone: 'mobile' | 'fixe' | 'voip' | 'inconnu';
+    adresse: string | null;
     code_postal: string | null;
     ville: string | null;
+    pays: string | null;
+    statut: string;
+    siret: string | null;
+    code_naf: string | null;
+    activite: string | null;
+    secteur: string | null;
+    region: string | null;
+    civilite: string | null;
+    telephone_contact: string | null;
+    est_doublon: boolean;
+    optout: boolean;
+    created_at: string;
+    updated_at: string;
   };
 }
 
