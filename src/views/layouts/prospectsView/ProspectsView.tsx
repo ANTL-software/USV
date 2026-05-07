@@ -148,7 +148,7 @@ function ProspectsView(): ReactElement {
                       <th>Pays</th>
                       <th>Statut</th>
                       <th>Type</th>
-                      <th>Secteur</th>
+                      <th>Activité</th>
                       <th>Date création</th>
                     </tr>
                   </thead>
@@ -200,7 +200,7 @@ function ProspectsView(): ReactElement {
                             {prospect.type_prospect}
                           </span>
                         </td>
-                        <td>{prospect.secteur || '—'}</td>
+                        <td>{prospect.activite || '—'}</td>
                         <td className="prospectsView__date">
                           {new Date(prospect.created_at).toLocaleDateString('fr-FR')}
                         </td>
