@@ -43,6 +43,16 @@
     }
   }
 
+  .produitsList__search {
+    margin-bottom: 1.5em;
+
+    .produitsList__search-input {
+      @include mixins.formInput;
+      max-width: 480px;
+      width: 100%;
+    }
+  }
+
   .produitsList__label {
     display: block;
     font-size: 0.88rem;
@@ -124,6 +134,7 @@
 
   .produitsList__table-wrapper {
     overflow-x: auto;
+    max-height: 60dvh;
     @include mixins.card(12px, light);
   }
 
@@ -152,6 +163,20 @@
 
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #f8fafc; }
+
+    // Highlight animé pour le produit édité
+    .produitsList__row-highlight {
+      animation: highlightFade 2s ease-out;
+    }
+
+    @keyframes highlightFade {
+      0% {
+        background-color: rgba(14, 165, 157, 0.3);
+      }
+      100% {
+        background-color: transparent;
+      }
+    }
   }
 
   .produitsList__nom {
@@ -430,5 +455,99 @@
   .produitsList__empty {
     color: #cbd5e1;
     font-size: 0.85rem;
+  }
+
+  // --- Compteur pour scroll infini ---
+  .produitsList__counter {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1em;
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    margin-top: 1.5em;
+    font-size: 0.9rem;
+    color: vars.$fontColorSecondary;
+    font-weight: 500;
+  }
+
+  // --- Pagination ---
+  .produitsList__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 1.5em;
+    padding: 1em;
+    background: vars.$greyBackground;
+    border-radius: 8px;
+
+    button {
+      padding: 0.6em 1.2em;
+      font-size: 0.9rem;
+      white-space: nowrap;
+    }
+
+    .produitsList__page-info {
+      font-size: 0.9rem;
+      color: vars.$fontColorSecondary;
+      font-weight: 500;
+    }
+
+    .produitsList__page-input-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      font-size: 0.9rem;
+      color: vars.$fontColorSecondary;
+    }
+
+    .produitsList__page-label {
+      font-weight: 500;
+    }
+
+    .produitsList__page-input {
+      width: 3.5em;
+      padding: 0.4em 0.5em;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      text-align: center;
+      color: vars.$fontColorPrimary;
+      background: white;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$utilsPrimary;
+        box-shadow: 0 0 0 2px rgba(14, 165, 157, 0.1);
+      }
+
+      /* Remove spinner buttons */
+      &::-webkit-outer-spin-button,
+      &::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      &[type=number] {
+        -moz-appearance: textfield;
+      }
+    }
+
+    .produitsList__page-separator {
+      color: vars.$fontColorSecondary;
+      font-weight: 500;
+    }
+
+    .produitsList__page-total {
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+
+    .produitsList__page-count {
+      color: vars.$fontColorSecondary;
+      font-size: 0.85rem;
+      margin-left: 0.5em;
+    }
   }
 }

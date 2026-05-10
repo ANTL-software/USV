@@ -3,7 +3,7 @@ import './produitForm.scss';
 
 // hooks | library
 import { ReactElement, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import Creatable from 'react-select/creatable';
 import Select from 'react-select';
@@ -25,6 +25,8 @@ import Button from '../../components/button/Button';
 
 function ProduitForm(): ReactElement {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { id } = useParams<{ id: string }>();
   const {
     form, isEdit, isLoading, isFetching, error, success,
     campagneId, campagneNom, setCampagneId, setCampagneNom,
@@ -57,7 +59,14 @@ function ProduitForm(): ReactElement {
     ? (campagneOptions.find(o => o.value === String(campagneId)) ?? (campagneNom ? { value: String(campagneId), label: campagneNom } : null))
     : null;
 
-  const backState = campagneId ? { campagneId, campagneNom } : undefined;
+  // Préserver les informations de retour depuis location.state
+  const backState = campagneId ? {
+    campagneId,
+    campagneNom,
+    highlightProductId: isEdit && id ? Number(id) : undefined,
+    returnPage: (location.state as any)?.returnPage,
+    returnScrollPosition: (location.state as any)?.returnScrollPosition,
+  } : undefined;
 
   if (isFetching) {
     return (

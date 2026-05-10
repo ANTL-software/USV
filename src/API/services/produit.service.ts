@@ -84,8 +84,32 @@ export const deleteCategorieService = async (id: number): Promise<void> => {
 // ─── Produits d'une campagne ───────────────────────────────────────────────────
 
 export const getCampagneProduitsService = async (campagneId: number): Promise<CampagneProduit[]> => {
-  const res: AxiosResponse<ApiResponse<CampagneProduit[]>> = await getRequest(`/campagnes/${campagneId}/produits/all`);
-  if (res.data.success && res.data.data) return res.data.data;
+  const res: AxiosResponse<ApiResponse<{
+    data: CampagneProduit[];
+    pagination: { page: number; limit: number; total: number; totalPages: number };
+  }>> = await getRequest(`/campagnes/${campagneId}/produits/all`);
+  if (res.data.success && res.data.data) {
+    // Les données sont imbriquées: res.data.data.data
+    return Array.isArray(res.data.data.data) ? res.data.data.data : [];
+  }
+  throw new Error(res.data.message || 'Erreur récupération produits de la campagne');
+};
+
+export const getCampagneProduitsPaginatedService = async (
+  campagneId: number,
+  params: { page: number; limit: number; search?: string }
+): Promise<{ data: CampagneProduit[]; pagination: { page: number; limit: number; total: number; totalPages: number } }> => {
+  const query = new URLSearchParams();
+  query.set('page', String(params.page));
+  query.set('limit', String(params.limit));
+  if (params.search) query.set('search', params.search);
+  const res: AxiosResponse<ApiResponse<CampagneProduit[]> & { pagination?: { page: number; limit: number; total: number; totalPages: number } }> = await getRequest(`/campagnes/${campagneId}/produits?${query}`);
+  if (res.data.success && res.data.data) {
+    // Vérification de sécurité : s'assurer que data est un tableau
+    const data = Array.isArray(res.data.data) ? res.data.data : [];
+    const pagination = res.data.pagination || { page: 1, limit: params.limit, total: 0, totalPages: 0 };
+    return { data, pagination };
+  }
   throw new Error(res.data.message || 'Erreur récupération produits de la campagne');
 };
 

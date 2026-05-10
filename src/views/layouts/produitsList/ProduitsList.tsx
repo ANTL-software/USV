@@ -10,13 +10,10 @@ import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 // hooks
-import { useCampagnes, useCampagneProduits } from '../../../hooks/useCampagnes';
+import { useCampagnes } from '../../../hooks/useCampagnes';
+import { useCampagneProduitsPaginated } from '../../../hooks/useCampagneProduitsPaginated';
+import { useProduitImport } from '../../../hooks/useProduitImport';
 
-// services
-import { importProduitsCSVService } from '../../../API/services/produit.service';
-
-// types
-import type { ImportProduitResult } from '../../../utils/types/produit.types';
 
 // components
 import Header from '../../components/header/Header';
@@ -29,6 +26,7 @@ type SelectOption = { value: string; label: string };
 interface LocationState {
   campagneId?: number;
   campagneNom?: string;
+  highlightProductId?: number;
 }
 
 function ProduitsList(): ReactElement {
@@ -38,8 +36,9 @@ function ProduitsList(): ReactElement {
 
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
   const [selectedCampagne, setSelectedCampagne] = useState<SelectOption | null>(null);
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
 
-  // Restaurer la campagne sélectionnée si on revient du formulaire
+  // Restaurer la campagne depuis le state de navigation
   useEffect(() => {
     if (state?.campagneId && campagnes.length > 0) {
       const c = campagnes.find(c => c.id_campagne === state.campagneId);
@@ -50,66 +49,76 @@ function ProduitsList(): ReactElement {
   const campagneId = selectedCampagne ? Number(selectedCampagne.value) : null;
 
   const [showImportModal, setShowImportModal] = useState(false);
-  const [importFile, setImportFile] = useState<File | null>(null);
-  const [importResult, setImportResult] = useState<ImportProduitResult | null>(null);
-  const [importError, setImportError] = useState<string | null>(null);
-  const [importLoading, setImportLoading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const {
+    importFile,
+    importResult,
+    importError,
+    importLoading,
+    fileInputRef,
+    handleImportFileChange,
+  } = useProduitImport({
+    onSuccess: async () => {
+      await loadProduits();
+    },
+  });
 
   const {
     produits: campagneProduits,
+    pagination,
     isLoading: produitsLoading,
+    isLoadingMore,
     error: produitsError,
-    removeProduit,
+    search,
+    setSearch,
     load: loadProduits,
-  } = useCampagneProduits(campagneId);
+    loadUntilProductId,
+    removeProduit,
+  } = useCampagneProduitsPaginated(campagneId, {
+    tableScrollableRef: tableWrapperRef,
+  });
+
+  const navState = selectedCampagne
+    ? { campagneId: Number(selectedCampagne.value), campagneNom: selectedCampagne.label }
+    : undefined;
 
   const campagneOptions: SelectOption[] = campagnes.map(c => ({
     value: String(c.id_campagne),
     label: `${c.nom_campagne}${c.statut === 'terminee' ? ' (terminée)' : ''}`,
   }));
 
-  const navState = selectedCampagne
-    ? { campagneId: Number(selectedCampagne.value), campagneNom: selectedCampagne.label }
-    : undefined;
+  // Scroll automatique vers le produit modifié au retour du formulaire
+  useEffect(() => {
+    const productId = state?.highlightProductId;
+    if (!productId || !tableWrapperRef.current) return;
 
-  const handleImportFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !campagneId) return;
+    const scrollToProduct = async () => {
+      // D'abord charger les pages jusqu'à trouver le produit
+      await loadUntilProductId(productId);
 
-    setImportFile(file);
-    setImportResult(null);
-    setImportError(null);
-    setImportLoading(true);
+      // Attendre que le DOM soit à jour après le chargement
+      requestAnimationFrame(() => {
+        const container = tableWrapperRef.current;
+        if (!container) return;
 
-    try {
-      const text = await file.text();
-      const separator = text.trim().split(/\r?\n/)[0].includes(';') ? ';' : ',';
-      const rows = text.trim().split(/\r?\n/).slice(1)
-        .filter(line => line.trim())
-        .map(line => {
-          const cells = line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
-          return {
-            code_produit_origine: cells[0] || '',
-            nom_produit_origine: cells[1] || '',
-            description: cells[2] || undefined,
-            prix_unitaire: cells[3] ? parseFloat(cells[3].replace(',', '.')) : undefined,
-            conditionnement: cells[4] || undefined,
-          };
-        })
-        .filter(row => row.code_produit_origine || row.nom_produit_origine);
+        // Trouver la ligne du produit dans le tableau
+        const rows = container.querySelectorAll('tbody tr');
+        for (const row of rows) {
+          const idCell = row.querySelector('.produitsList__id');
+          if (idCell && idCell.textContent === `#${productId}`) {
+            // Scroller vers l'élément dans le container scrollable
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            break;
+          }
+        }
+      });
+    };
 
-      const result = await importProduitsCSVService(campagneId, rows);
-      setImportResult(result);
+    scrollToProduct();
+  }, [state?.highlightProductId, loadUntilProductId]);
 
-      if (result.created > 0) {
-        await loadProduits();
-      }
-    } catch (err) {
-      setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
-    } finally {
-      setImportLoading(false);
-    }
+  const handleEditProduct = (idProduit: number) => {
+    navigate(`/produits/${idProduit}`, { state: navState });
   };
 
   return (
@@ -167,6 +176,19 @@ function ProduitsList(): ReactElement {
             />
           </div>
 
+          {selectedCampagne && (
+            <div className="produitsList__search">
+              <label className="produitsList__label">Recherche</label>
+              <input
+                type="text"
+                className="produitsList__search-input"
+                placeholder="Rechercher (code, nom, fournisseur...)"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+          )}
+
           {!selectedCampagne ? (
             <div className="produitsList__empty">
               Sélectionnez une campagne pour voir ses produits.
@@ -180,130 +202,138 @@ function ProduitsList(): ReactElement {
               Aucun produit pour cette campagne.
             </div>
           ) : (
-            <div className="produitsList__table-wrapper">
-              <table className="produitsList__table">
-                <thead>
-                  <tr>
-                    <th>Id antl</th>
-                    <th>Code produit</th>
-                    <th>Nom produit</th>
-                    <th>Type</th>
-                    <th>Conditionnement</th>
-                    <th>Lot</th>
-                    <th>Prix</th>
-                    <th>Panier</th>
-                    <th>Origine (code / nom)</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {campagneProduits.map((cp) => {
-                    const p = cp.produit;
-                    const nomProduit =
-                      p?.nom_produit ?? `Produit #${cp.id_produit}`;
-                    const codeOrigine = p?.code_produit_origine || "—";
-                    const nomOrigine = p?.nom_produit_origine || "—";
+            <>
+              <div className="produitsList__table-wrapper" ref={tableWrapperRef}>
+                <table className="produitsList__table">
+                  <thead>
+                    <tr>
+                      <th>Id antl</th>
+                      <th>Code produit</th>
+                      <th>Nom produit</th>
+                      <th>Type</th>
+                      <th>Conditionnement</th>
+                      <th>Lot</th>
+                      <th>Prix</th>
+                      <th>Panier</th>
+                      <th>Origine (code / nom)</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {campagneProduits.map((cp) => {
+                      const p = cp.produit;
+                      const nomProduit =
+                        p?.nom_produit ?? `Produit #${cp.id_produit}`;
+                      const codeOrigine = p?.code_produit_origine || "—";
+                      const nomOrigine = p?.nom_produit_origine || "—";
 
-                    return (
-                      <tr key={cp.id_campagne_produit}>
-                        {/* Id antl */}
-                        <td className="produitsList__id">
-                          #{p?.id_produit || cp.id_produit}
-                        </td>
+                      return (
+                        <tr key={cp.id_campagne_produit}>
+                          {/* Id antl */}
+                          <td className="produitsList__id">
+                            #{p?.id_produit || cp.id_produit}
+                          </td>
 
-                        {/* Code produit */}
-                        <td>
-                          {p?.code_produit && (
-                            <span className="produitsList__code">
-                              {p.code_produit}
-                            </span>
-                          )}
-                        </td>
-
-                        {/* Nom produit */}
-                        <td>
-                          <span className="produitsList__nom">
-                            {nomProduit}
-                          </span>
-                        </td>
-
-                        {/* Type */}
-                        <td>{p?.type_produit || "—"}</td>
-
-                        {/* Conditionnement */}
-                        <td>{p?.conditionnement || "—"}</td>
-
-                        {/* Lot */}
-                        <td>
-                          {p?.quantite_lot != null
-                            ? String(p.quantite_lot)
-                            : "—"}
-                        </td>
-
-                        {/* Prix */}
-                        <td>
-                          {p?.prix_unitaire != null
-                            ? new Intl.NumberFormat("fr-FR", {
-                                style: "currency",
-                                currency: "EUR",
-                              }).format(p.prix_unitaire)
-                            : "—"}
-                        </td>
-
-                        {/* Panier */}
-                        <td>
-                          {p?.panier?.label || <em className="produitsList__empty">—</em>}
-                        </td>
-
-                        {/* Origine */}
-                        <td className="produitsList__origine">
-                          {codeOrigine !== "—" || nomOrigine !== "—" ? (
-                            <span className="produitsList__origine-info">
-                              <span className="produitsList__code-origine">
-                                {codeOrigine}
+                          {/* Code produit */}
+                          <td>
+                            {p?.code_produit && (
+                              <span className="produitsList__code">
+                                {p.code_produit}
                               </span>
-                              {nomOrigine !== "—" && (
-                                <span className="produitsList__nom-origine">
-                                  / {nomOrigine}
-                                </span>
-                              )}
-                            </span>
-                          ) : (
-                            "—"
-                          )}
-                        </td>
+                            )}
+                          </td>
 
-                        {/* Actions */}
-                        <td>
-                          <div className="produitsList__actions">
-                            <button
-                              className="produitsList__btn-edit"
-                              title="Modifier"
-                              onClick={() =>
-                                navigate(`/produits/${cp.id_produit}`, {
-                                  state: navState,
-                                })
-                              }
-                            >
-                              <IoPencil />
-                            </button>
-                            <button
-                              className="produitsList__btn-delete"
-                              title="Retirer de la campagne"
-                              onClick={() =>
-                                removeProduit(cp.id_produit, nomProduit)
-                              }
-                            >
-                              <IoTrash />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
+                          {/* Nom produit */}
+                          <td>
+                            <span className="produitsList__nom">
+                              {nomProduit}
+                            </span>
+                          </td>
+
+                          {/* Type */}
+                          <td>{p?.type_produit || "—"}</td>
+
+                          {/* Conditionnement */}
+                          <td>{p?.conditionnement || "—"}</td>
+
+                          {/* Lot */}
+                          <td>
+                            {p?.quantite_lot != null
+                              ? String(p.quantite_lot)
+                              : "—"}
+                          </td>
+
+                          {/* Prix */}
+                          <td>
+                            {p?.prix_unitaire != null
+                              ? new Intl.NumberFormat("fr-FR", {
+                                  style: "currency",
+                                  currency: "EUR",
+                                }).format(p.prix_unitaire)
+                              : "—"}
+                          </td>
+
+                          {/* Panier */}
+                          <td>
+                            {p?.panier?.label || <em className="produitsList__empty">—</em>}
+                          </td>
+
+                          {/* Origine */}
+                          <td className="produitsList__origine">
+                            {codeOrigine !== "—" || nomOrigine !== "—" ? (
+                              <span className="produitsList__origine-info">
+                                <span className="produitsList__code-origine">
+                                  {codeOrigine}
+                                </span>
+                                {nomOrigine !== "—" && (
+                                  <span className="produitsList__nom-origine">
+                                    / {nomOrigine}
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              "—"
+                            )}
+                          </td>
+
+                          {/* Actions */}
+                          <td>
+                            <div className="produitsList__actions">
+                              <button
+                                className="produitsList__btn-edit"
+                                title="Modifier"
+                                onClick={() => handleEditProduct(cp.id_produit)}
+                              >
+                                <IoPencil />
+                              </button>
+                              <button
+                                className="produitsList__btn-delete"
+                                title="Retirer de la campagne"
+                                onClick={() =>
+                                  removeProduit(cp.id_produit, nomProduit)
+                                }
+                              >
+                                <IoTrash />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Compteur de produits et indicateur de chargement */}
+              <div className="produitsList__counter">
+                {pagination && (
+                  <span>
+                    {campagneProduits.length} / {pagination.total} produits
+                    {isLoadingMore && ' - Chargement...'}
+                  </span>
+                )}
+              </div>
+            </>
           )}
         </div>
       </main>
@@ -341,7 +371,7 @@ function ProduitsList(): ReactElement {
                 ref={fileInputRef}
                 type="file"
                 accept=".csv,text/csv"
-                onChange={handleImportFileChange}
+                onChange={handleImportFileChange(campagneId!)}
                 style={{ display: "none" }}
               />
 
