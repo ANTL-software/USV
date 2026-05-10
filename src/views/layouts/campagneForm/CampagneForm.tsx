@@ -171,18 +171,6 @@ function CampagneForm(): ReactElement {
                       placeholder="0.00"
                     />
                   </label>
-
-                  <label>
-                    Code postal maison mère
-                    <input
-                      type="text"
-                      name="code_postal_maison_mere"
-                      value={form.code_postal_maison_mere}
-                      onChange={handleChange}
-                      placeholder="ex: 75001"
-                      maxLength={10}
-                    />
-                  </label>
                 </div>
 
                 <div className="campagneForm__row">
@@ -302,6 +290,29 @@ function CampagneForm(): ReactElement {
                       />
                     </label>
 
+                    <label>
+                      Email bon de commande
+                      <input
+                        type="email"
+                        name="email_bon_commande"
+                        value={form.email_bon_commande}
+                        onChange={handleChange}
+                        placeholder="commandes@entreprise.fr"
+                      />
+                    </label>
+
+                    <label>
+                      Code postal maison mère
+                      <input
+                        type="text"
+                        name="code_postal_maison_mere"
+                        value={form.code_postal_maison_mere}
+                        onChange={handleChange}
+                        placeholder="ex: 75001"
+                        maxLength={10}
+                      />
+                    </label>
+
                     <label className="campagneForm__label-full">
                       Adresse complète
                       <textarea
@@ -310,6 +321,39 @@ function CampagneForm(): ReactElement {
                         onChange={handleChange}
                         rows={2}
                         placeholder="123 Rue de la République, 75001 Paris..."
+                      />
+                    </label>
+
+                    <label className="campagneForm__label">
+                      Ville
+                      <input
+                        type="text"
+                        name="ville"
+                        value={form.ville}
+                        onChange={handleChange}
+                        placeholder="Paris"
+                      />
+                    </label>
+
+                    <label className="campagneForm__label">
+                      Téléphone
+                      <input
+                        type="tel"
+                        name="telephone"
+                        value={form.telephone}
+                        onChange={handleChange}
+                        placeholder="01 23 45 67 89"
+                      />
+                    </label>
+
+                    <label className="campagneForm__label">
+                      Pays
+                      <input
+                        type="text"
+                        name="pays"
+                        value={form.pays}
+                        onChange={handleChange}
+                        placeholder="France"
                       />
                     </label>
                   </div>

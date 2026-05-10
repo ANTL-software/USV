@@ -29,8 +29,9 @@
   }
 
   .campagneForm__form {
-    flex: 2;
+    flex: 1;
     min-width: 0;
+    // Le formulaire prend l'espace restant
 
     // En desktop, le formulaire est à gauche
     @media (min-width: vars.$desktopWidth) {
@@ -39,8 +40,7 @@
   }
 
   .campagneForm__sidebar {
-    flex: 1;
-    min-width: 0;
+    flex: 0 0 22em; // Largeur fixe de 22em pour la sidebar agents
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -52,6 +52,11 @@
       max-height: calc(100dvh - 12dvh);
       overflow-y: auto;
       order: 2;
+    }
+
+    // Adapter pour les écrans plus petits
+    @media (max-width: 1400px) {
+      flex: 0 0 18em;
     }
   }
 

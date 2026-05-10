@@ -5,6 +5,7 @@ import type {
   CreateProduitData, UpdateProduitData,
   CreateCategorieData, UpdateCategorieData,
   CampagneProduit, AddProduitCampagneData, UpdateProduitCampagneData,
+  ImportProduitRow, ImportProduitResult,
 } from '../../utils/types/produit.types.ts';
 
 interface ApiResponse<T> {
@@ -103,4 +104,11 @@ export const updateProduitCampagneService = async (campagneId: number, idProduit
 export const removeProduitCampagneService = async (campagneId: number, idProduit: number): Promise<void> => {
   const res: AxiosResponse<ApiResponse<void>> = await deleteRequest(`/campagnes/${campagneId}/produits/${idProduit}`);
   if (!res.data.success) throw new Error(res.data.message || 'Erreur suppression produit campagne');
+};
+
+export const importProduitsCSVService = async (campagneId: number, rows: ImportProduitRow[]): Promise<ImportProduitResult> => {
+  const requestBody = { produits: rows };
+  const res: AxiosResponse<ApiResponse<ImportProduitResult>> = await postRequest<typeof requestBody, ApiResponse<ImportProduitResult>>(`/campagnes/${campagneId}/produits/import`, requestBody);
+  if (res.data.success && res.data.data) return res.data.data;
+  throw new Error(res.data.message || 'Erreur lors de l\'import');
 };

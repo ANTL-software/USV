@@ -2,15 +2,21 @@
 import './produitsList.scss';
 
 // hooks | library
-import { ReactElement, useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IoPencil, IoTrash, IoAdd } from 'react-icons/io5';
+import { IoPencil, IoTrash, IoAdd, IoCloudUpload, IoClose, IoBasketOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 // hooks
 import { useCampagnes, useCampagneProduits } from '../../../hooks/useCampagnes';
+
+// services
+import { importProduitsCSVService } from '../../../API/services/produit.service';
+
+// types
+import type { ImportProduitResult } from '../../../utils/types/produit.types';
 
 // components
 import Header from '../../components/header/Header';
@@ -43,11 +49,19 @@ function ProduitsList(): ReactElement {
 
   const campagneId = selectedCampagne ? Number(selectedCampagne.value) : null;
 
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importResult, setImportResult] = useState<ImportProduitResult | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importLoading, setImportLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const {
     produits: campagneProduits,
     isLoading: produitsLoading,
     error: produitsError,
     removeProduit,
+    load: loadProduits,
   } = useCampagneProduits(campagneId);
 
   const campagneOptions: SelectOption[] = campagnes.map(c => ({
@@ -59,6 +73,45 @@ function ProduitsList(): ReactElement {
     ? { campagneId: Number(selectedCampagne.value), campagneNom: selectedCampagne.label }
     : undefined;
 
+  const handleImportFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !campagneId) return;
+
+    setImportFile(file);
+    setImportResult(null);
+    setImportError(null);
+    setImportLoading(true);
+
+    try {
+      const text = await file.text();
+      const separator = text.trim().split(/\r?\n/)[0].includes(';') ? ';' : ',';
+      const rows = text.trim().split(/\r?\n/).slice(1)
+        .filter(line => line.trim())
+        .map(line => {
+          const cells = line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
+          return {
+            code_produit_origine: cells[0] || '',
+            nom_produit_origine: cells[1] || '',
+            description: cells[2] || undefined,
+            prix_unitaire: cells[3] ? parseFloat(cells[3].replace(',', '.')) : undefined,
+            conditionnement: cells[4] || undefined,
+          };
+        })
+        .filter(row => row.code_produit_origine || row.nom_produit_origine);
+
+      const result = await importProduitsCSVService(campagneId, rows);
+      setImportResult(result);
+
+      if (result.created > 0) {
+        await loadProduits();
+      }
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
   return (
     <div id="produitsList">
       <Header />
@@ -66,7 +119,7 @@ function ProduitsList(): ReactElement {
       <main>
         <div className="produitsList__container">
           <div className="produitsList__back">
-            <Button style="back" onClick={() => navigate('/operations')}>
+            <Button style="back" onClick={() => navigate("/operations")}>
               <MdArrowBack />
               <span>Retour</span>
             </Button>
@@ -75,94 +128,171 @@ function ProduitsList(): ReactElement {
           <div className="produitsList__header">
             <div>
               <h1>Produits</h1>
-              <p className="produitsList__subtitle">Gérez les produits par campagne client</p>
+              <p className="produitsList__subtitle">
+                Gérez les produits par campagne client
+              </p>
             </div>
-            <Button
-              style="gradient"
-              onClick={() => navigate('/produits/new', { state: navState })}
-              disabled={!selectedCampagne}
-            >
-              <IoAdd /> Nouveau produit
-            </Button>
+            <div className="produitsList__actions">
+              <Button
+                style="gradient"
+                onClick={() => navigate("/produits/new", { state: navState })}
+                disabled={!selectedCampagne}
+              >
+                <IoAdd /> Nouveau produit
+              </Button>
+              <Button
+                style="gradient"
+                onClick={() => setShowImportModal(true)}
+                disabled={!selectedCampagne}
+              >
+                <IoCloudUpload /> Import CSV
+              </Button>
+              <Button style="gradient" onClick={() => navigate("/paniers")}>
+                <IoBasketOutline /> Paniers
+              </Button>
+            </div>
           </div>
 
           <div className="produitsList__campagne-select">
             <label className="produitsList__label">Campagne</label>
             <Select
               value={selectedCampagne}
-              onChange={opt => setSelectedCampagne(opt)}
+              onChange={(opt) => setSelectedCampagne(opt)}
               options={campagneOptions}
               isLoading={campagnesLoading}
               isClearable
               placeholder="— Sélectionner une campagne —"
-              noOptionsMessage={() => 'Aucune campagne'}
+              noOptionsMessage={() => "Aucune campagne"}
               classNamePrefix="reactSelect"
             />
           </div>
 
           {!selectedCampagne ? (
-            <div className="produitsList__empty">Sélectionnez une campagne pour voir ses produits.</div>
+            <div className="produitsList__empty">
+              Sélectionnez une campagne pour voir ses produits.
+            </div>
           ) : produitsError ? (
             <div className="produitsList__error">{produitsError}</div>
           ) : produitsLoading ? (
             <div className="produitsList__loading">Chargement...</div>
           ) : campagneProduits.length === 0 ? (
-            <div className="produitsList__empty">Aucun produit pour cette campagne.</div>
+            <div className="produitsList__empty">
+              Aucun produit pour cette campagne.
+            </div>
           ) : (
             <div className="produitsList__table-wrapper">
               <table className="produitsList__table">
                 <thead>
                   <tr>
-                    <th>Produit</th>
-                    <th>Catégorie</th>
+                    <th>Id antl</th>
+                    <th>Code produit</th>
+                    <th>Nom produit</th>
+                    <th>Type</th>
+                    <th>Conditionnement</th>
+                    <th>Lot</th>
                     <th>Prix</th>
-                    <th>Disponible</th>
-                    <th>Argumentaire</th>
+                    <th>Panier</th>
+                    <th>Origine (code / nom)</th>
                     <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {campagneProduits.map(cp => {
-                    const nomProduit = cp.produit?.nom_produit ?? `Produit #${cp.id_produit}`;
-                    const prix = cp.produit?.prix_unitaire;
+                  {campagneProduits.map((cp) => {
+                    const p = cp.produit;
+                    const nomProduit =
+                      p?.nom_produit ?? `Produit #${cp.id_produit}`;
+                    const codeOrigine = p?.code_produit_origine || "—";
+                    const nomOrigine = p?.nom_produit_origine || "—";
 
                     return (
                       <tr key={cp.id_campagne_produit}>
+                        {/* Id antl */}
+                        <td className="produitsList__id">
+                          #{p?.id_produit || cp.id_produit}
+                        </td>
+
+                        {/* Code produit */}
                         <td>
-                          <span className="produitsList__nom">{nomProduit}</span>
-                          {cp.produit?.code_produit && (
-                            <span className="produitsList__code">{cp.produit.code_produit}</span>
+                          {p?.code_produit && (
+                            <span className="produitsList__code">
+                              {p.code_produit}
+                            </span>
                           )}
                         </td>
-                        <td>{cp.produit?.categorie?.nom_categorie || '—'}</td>
+
+                        {/* Nom produit */}
                         <td>
-                          {prix != null
-                            ? new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(prix)
-                            : '—'}
-                        </td>
-                        <td>
-                          <span className={`produitsList__badge produitsList__badge--${cp.disponible ? 'actif' : 'inactif'}`}>
-                            {cp.disponible ? 'Oui' : 'Non'}
+                          <span className="produitsList__nom">
+                            {nomProduit}
                           </span>
                         </td>
-                        <td className="produitsList__argumentaire-cell">
-                          {cp.argumentaire
-                            ? <span className="produitsList__argumentaire-preview">{cp.argumentaire}</span>
-                            : <em className="produitsList__argumentaire-empty">—</em>}
+
+                        {/* Type */}
+                        <td>{p?.type_produit || "—"}</td>
+
+                        {/* Conditionnement */}
+                        <td>{p?.conditionnement || "—"}</td>
+
+                        {/* Lot */}
+                        <td>
+                          {p?.quantite_lot != null
+                            ? String(p.quantite_lot)
+                            : "—"}
                         </td>
+
+                        {/* Prix */}
+                        <td>
+                          {p?.prix_unitaire != null
+                            ? new Intl.NumberFormat("fr-FR", {
+                                style: "currency",
+                                currency: "EUR",
+                              }).format(p.prix_unitaire)
+                            : "—"}
+                        </td>
+
+                        {/* Panier */}
+                        <td>
+                          {p?.panier?.label || <em className="produitsList__empty">—</em>}
+                        </td>
+
+                        {/* Origine */}
+                        <td className="produitsList__origine">
+                          {codeOrigine !== "—" || nomOrigine !== "—" ? (
+                            <span className="produitsList__origine-info">
+                              <span className="produitsList__code-origine">
+                                {codeOrigine}
+                              </span>
+                              {nomOrigine !== "—" && (
+                                <span className="produitsList__nom-origine">
+                                  / {nomOrigine}
+                                </span>
+                              )}
+                            </span>
+                          ) : (
+                            "—"
+                          )}
+                        </td>
+
+                        {/* Actions */}
                         <td>
                           <div className="produitsList__actions">
                             <button
                               className="produitsList__btn-edit"
                               title="Modifier"
-                              onClick={() => navigate(`/produits/${cp.id_produit}`, { state: navState })}
+                              onClick={() =>
+                                navigate(`/produits/${cp.id_produit}`, {
+                                  state: navState,
+                                })
+                              }
                             >
                               <IoPencil />
                             </button>
                             <button
                               className="produitsList__btn-delete"
                               title="Retirer de la campagne"
-                              onClick={() => removeProduit(cp.id_produit, nomProduit)}
+                              onClick={() =>
+                                removeProduit(cp.id_produit, nomProduit)
+                              }
                             >
                               <IoTrash />
                             </button>
@@ -178,6 +308,99 @@ function ProduitsList(): ReactElement {
         </div>
       </main>
       <BackToTop />
+
+      {/* Modal d'import CSV inline */}
+      {showImportModal && (
+        <div
+          className="produitsList__modal-backdrop"
+          onClick={() => setShowImportModal(false)}
+        >
+          <div
+            className="produitsList__modal-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="produitsList__modal-header">
+              <h3>Importer des produits (CSV)</h3>
+              <button type="button" onClick={() => setShowImportModal(false)}>
+                <IoClose />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="produitsList__modal-content">
+              <p className="produitsList__modal-format">
+                Format attendu (séparateur ; ou ,) :<br />
+                <code>
+                  code_produit_origine; nom_produit_origine; description;
+                  prix_unitaire; conditionnement;
+                </code>
+              </p>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                onChange={handleImportFileChange}
+                style={{ display: "none" }}
+              />
+
+              <button
+                className="produitsList__modal-btn-select"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importLoading}
+              >
+                {importFile ? importFile.name : "Choisir un fichier CSV"}
+              </button>
+
+              {importLoading && (
+                <p className="produitsList__modal-status">
+                  Import en cours... (cela peut prendre plusieurs minutes pour
+                  les gros fichiers)
+                </p>
+              )}
+
+              {importResult && (
+                <div className="produitsList__modal-result">
+                  <p className="produitsList__modal-success">
+                    ✅ {importResult.created} produits créés
+                  </p>
+                  {importResult.skipped > 0 && (
+                    <p className="produitsList__modal-warning">
+                      ⚠️ {importResult.skipped} produits ignorés (déjà
+                      existants)
+                    </p>
+                  )}
+                  {importResult.errors.length > 0 && (
+                    <div className="produitsList__modal-errors">
+                      <p className="produitsList__modal-error">
+                        ❌ {importResult.errors.length} erreurs :
+                      </p>
+                      <ul className="produitsList__modal-error-list">
+                        {importResult.errors.map((err, idx) => (
+                          <li key={idx}>
+                            Ligne {err.ligne}: {err.message}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {importError && (
+                <p className="produitsList__modal-error">{importError}</p>
+              )}
+
+              <div className="produitsList__modal-actions">
+                <button type="button" onClick={() => setShowImportModal(false)}>
+                  Fermer
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

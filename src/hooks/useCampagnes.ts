@@ -161,5 +161,5 @@ export function useCampagneProduits(idCampagne: number | null) {
     }
   }, [idCampagne, load]);
 
-  return { produits, isLoading, error, addProduit, updateArgumentaire, removeProduit };
+  return { produits, isLoading, error, load, addProduit, updateArgumentaire, removeProduit };
 }

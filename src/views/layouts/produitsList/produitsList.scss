@@ -228,4 +228,207 @@
     color: #cbd5e1;
     font-size: 0.85rem;
   }
+
+  // --- Modal inline ---
+  .produitsList__modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1em;
+  }
+
+  .produitsList__modal-container {
+    background: white;
+    border-radius: 12px;
+    max-width: 600px;
+    width: 100%;
+    max-height: 90dvh;
+    overflow-y: auto;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .produitsList__modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5em;
+    border-bottom: 1px solid vars.$borderColor;
+
+    h3 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      color: vars.$fontColorSecondary;
+      font-size: 1.2rem;
+
+      &:hover {
+        background: vars.$greyBackground;
+        color: vars.$fontColorPrimary;
+      }
+    }
+  }
+
+  .produitsList__modal-content {
+    padding: 1.5em;
+  }
+
+  .produitsList__modal-format {
+    margin-bottom: 1em;
+    padding: 1em;
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+
+    code {
+      background: #e0e0e0;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.85em;
+    }
+  }
+
+  .produitsList__modal-btn-select {
+    width: 100%;
+    padding: 0.75em;
+    background: vars.$webdevPrimary;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 0.5em;
+
+    &:hover {
+      background: vars.$webdevSecondary;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .produitsList__modal-status {
+    text-align: center;
+    font-style: italic;
+    color: vars.$fontColorSecondary;
+    margin: 1em 0;
+  }
+
+  .produitsList__modal-result {
+    margin-top: 1.5em;
+    padding: 1em;
+    background: #f9f9f9;
+    border-radius: 8px;
+
+    & > * {
+      margin: 0.5em 0;
+    }
+  }
+
+  .produitsList__modal-success {
+    color: #16a34a;
+    font-weight: 600;
+  }
+
+  .produitsList__modal-warning {
+    color: #d97706;
+    font-weight: 600;
+  }
+
+  .produitsList__modal-error {
+    color: #dc2626;
+    font-weight: 600;
+  }
+
+  .produitsList__modal-errors {
+    margin-top: 1em;
+  }
+
+  .produitsList__modal-error-list {
+    margin: 0.5em 0 0 1.5em;
+    padding: 0;
+    font-size: 0.85rem;
+
+    li {
+      color: #dc2626;
+      margin: 0.25em 0;
+    }
+  }
+
+  .produitsList__modal-actions {
+    display: flex;
+    gap: 0.5em;
+    margin-top: 1.5em;
+
+    button {
+      flex: 1;
+      padding: 0.75em;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem;
+
+      &:first-child {
+        background: vars.$greyBackground;
+        color: vars.$fontColorPrimary;
+      }
+    }
+  }
+
+  // --- Styles pour le tableau ---
+
+  .produitsList__id {
+    font-family: monospace;
+    font-size: 0.85rem;
+    color: vars.$fontColorSecondary;
+  }
+
+  .produitsList__origine {
+    font-size: 0.85rem;
+  }
+
+  .produitsList__origine-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15em;
+  }
+
+  .produitsList__code-origine {
+    color: vars.$fontColorSecondary;
+    font-size: 0.82rem;
+  }
+
+  .produitsList__nom-origine {
+    color: vars.$fontColorPrimary;
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+
+  .produitsList__empty {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+  }
 }

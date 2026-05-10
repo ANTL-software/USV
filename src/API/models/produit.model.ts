@@ -6,6 +6,7 @@ export class ProduitModel implements Produit {
   nom_produit: string;
   description: string | null;
   id_categorie: number | null;
+  id_panier: number | null;
   type_produit: string | null;
   actif: boolean;
   format: string | null;
@@ -25,6 +26,7 @@ export class ProduitModel implements Produit {
     this.nom_produit = data.nom_produit;
     this.description = data.description ?? null;
     this.id_categorie = data.id_categorie ?? null;
+    this.id_panier = data.id_panier ?? null;
     this.type_produit = data.type_produit ?? null;
     this.actif = data.actif;
     this.format = data.format ?? null;
@@ -55,6 +57,7 @@ export class ProduitModel implements Produit {
       nom_produit: this.nom_produit,
       description: this.description,
       id_categorie: this.id_categorie,
+      id_panier: this.id_panier,
       type_produit: this.type_produit,
       actif: this.actif,
       format: this.format,

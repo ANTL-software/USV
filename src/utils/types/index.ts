@@ -35,6 +35,12 @@ export type {
 } from './produit.types.ts';
 
 export type {
+  Panier,
+  CreatePanierData,
+  UpdatePanierData,
+} from './panier.types.ts';
+
+export type {
   TypeMateriel,
   EtatMateriel,
 } from './materiel.types.ts';

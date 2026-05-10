@@ -23,7 +23,11 @@ export interface Campagne {
   siret?: string | null;
   tva?: string | null;
   email_contact?: string | null;
+  email_bon_commande?: string | null;
   adresse?: string | null;
+  ville?: string | null;
+  telephone?: string | null;
+  pays?: string | null;
   footer_text?: string | null;
   modes_paiement?: ModePaiement[];
 }
@@ -43,7 +47,11 @@ export interface CreateCampagneData {
   siret?: string;
   tva?: string;
   email_contact?: string;
+  email_bon_commande?: string;
   adresse?: string;
+  ville?: string;
+  telephone?: string;
+  pays?: string;
   footer_text?: string;
   modes_paiement?: ModePaiement[];
 }
@@ -63,7 +71,11 @@ export interface UpdateCampagneData {
   siret?: string;
   tva?: string;
   email_contact?: string;
+  email_bon_commande?: string;
   adresse?: string;
+  ville?: string;
+  telephone?: string;
+  pays?: string;
   footer_text?: string;
   modes_paiement?: ModePaiement[];
 }

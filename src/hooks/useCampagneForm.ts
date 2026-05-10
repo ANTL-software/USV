@@ -23,7 +23,11 @@ interface CampagneFormState {
   siret: string;
   tva: string;
   email_contact: string;
+  email_bon_commande: string;
   adresse: string;
+  ville: string;
+  telephone: string;
+  pays: string;
   footer_text: string;
   modes_paiement: string;
 }
@@ -40,7 +44,11 @@ const INITIAL_FORM: CampagneFormState = {
   siret: '',
   tva: '',
   email_contact: '',
+  email_bon_commande: '',
   adresse: '',
+  ville: '',
+  telephone: '',
+  pays: 'France',
   footer_text: '',
   modes_paiement: 'Prelevement,Cheque,Virement',
 };
@@ -93,7 +101,11 @@ export function useCampagneForm() {
           siret: campagne.siret || '',
           tva: campagne.tva || '',
           email_contact: campagne.email_contact || '',
+          email_bon_commande: campagne.email_bon_commande || '',
           adresse: campagne.adresse || '',
+          ville: campagne.ville || '',
+          telephone: campagne.telephone || '',
+          pays: campagne.pays || 'France',
           footer_text: campagne.footer_text || '',
           modes_paiement: modesString,
         });
@@ -264,7 +276,11 @@ export function useCampagneForm() {
           siret: form.siret || undefined,
           tva: form.tva || undefined,
           email_contact: form.email_contact || undefined,
+          email_bon_commande: form.email_bon_commande || undefined,
           adresse: form.adresse || undefined,
+          ville: form.ville || undefined,
+          telephone: form.telephone || undefined,
+          pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
           modes_paiement: modesArray.length > 0 ? modesArray : undefined,
         };
@@ -285,7 +301,11 @@ export function useCampagneForm() {
           siret: form.siret || undefined,
           tva: form.tva || undefined,
           email_contact: form.email_contact || undefined,
+          email_bon_commande: form.email_bon_commande || undefined,
           adresse: form.adresse || undefined,
+          ville: form.ville || undefined,
+          telephone: form.telephone || undefined,
+          pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
           modes_paiement: modesArray.length > 0 ? modesArray : undefined,
         };

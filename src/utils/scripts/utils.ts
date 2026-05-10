@@ -27,21 +27,29 @@ export const getApiBaseUrl = (): string => {
  * @returns URL complète de l'image (ex: http://localhost:8800/uploads/campagne_logos/filename.png)
  */
 export const getCampagneLogoUrl = (logoPath: string | null | undefined): string | null => {
-  if (!logoPath) return null;
+  console.log('🔍 [DEBUG] getCampagneLogoUrl called with:', logoPath);
+
+  if (!logoPath) {
+    console.log('❌ [DEBUG] logoPath is null/undefined');
+    return null;
+  }
 
   // Si le chemin est déjà une URL complète, le retourner tel quel
   if (logoPath.startsWith('http://') || logoPath.startsWith('https://')) {
+    console.log('✅ [DEBUG] Full URL detected, returning as-is:', logoPath);
     return logoPath;
   }
 
   // Pour les chemins relatifs commençant par /uploads/, construire l'URL complète
   if (logoPath.startsWith('/uploads/')) {
-    // Retirer /api de getApiBaseUrl pour obtenir l'URL de base du serveur
     const apiBaseUrl = getApiBaseUrl();
     const serverUrl = apiBaseUrl.replace('/api', '');
-    return `${serverUrl}${logoPath}`;
+    const fullUrl = `${serverUrl}${logoPath}`;
+    console.log('🔧 [DEBUG] Constructing URL:', { apiBaseUrl, serverUrl, fullUrl });
+    return fullUrl;
   }
 
+  console.log('⚠️ [DEBUG] Unexpected path format, returning as-is:', logoPath);
   // Pour les chemins absolus (ancien format), retourner tel quel (ne fonctionnera pas en prod)
   return logoPath;
 };

@@ -5,7 +5,7 @@ import axios, { AxiosResponse } from "axios";
 import { getApiBaseUrl } from "../utils/scripts/utils.ts";
 import { csrfService } from "../utils/services/csrfService.ts";
 
-axios.defaults.timeout = 10000;
+axios.defaults.timeout = 300000; // 5 minutes pour supporter les imports CSV volumineux
 axios.defaults.baseURL = getApiBaseUrl();
 axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 
@@ -17,7 +17,7 @@ axios.interceptors.request.use(async (config) => {
   config.headers = config.headers || {};
   
   // Ajouter le token CSRF pour les méthodes protégées
-  const protectedMethods = ['post', 'patch', 'delete'];
+  const protectedMethods = ['post', 'patch', 'delete', 'put'];
   if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
     try {
       // Exclure les routes d'authentification ( pas besoin de CSRF )

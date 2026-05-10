@@ -28,6 +28,7 @@ function ProduitForm(): ReactElement {
   const {
     form, isEdit, isLoading, isFetching, error, success,
     campagneId, campagneNom, setCampagneId, setCampagneNom,
+    paniers,
     handleChange, handleSelectChange, handleSubmit,
   } = useProduitForm();
 
@@ -37,6 +38,11 @@ function ProduitForm(): ReactElement {
   const categorieOptions = useMemo(() =>
     toSelectOptions(categories, c => c.id_categorie, c => c.nom_categorie),
     [categories]
+  );
+
+  const panierOptions = useMemo(() =>
+    paniers.map(p => ({ value: String(p.id_panier), label: p.label })),
+    [paniers]
   );
 
   const campagneOptions = useMemo(() =>
@@ -137,6 +143,28 @@ function ProduitForm(): ReactElement {
 
               <div className="produitForm__row">
                 <label>
+                  Code fournisseur
+                  <input
+                    name="code_produit_origine"
+                    value={form.code_produit_origine}
+                    onChange={handleChange}
+                    placeholder="Ex : REF-001"
+                  />
+                </label>
+
+                <label>
+                  Nom fournisseur
+                  <input
+                    name="nom_produit_origine"
+                    value={form.nom_produit_origine}
+                    onChange={handleChange}
+                    placeholder="Ex : Stylo Bic Réf"
+                  />
+                </label>
+              </div>
+
+              <div className="produitForm__row">
+                <label>
                   Catégorie
                   <Creatable
                     value={categorieOptions.find(o => o.value === form.id_categorie) ?? null}
@@ -171,6 +199,23 @@ function ProduitForm(): ReactElement {
                     min="0"
                     step="0.01"
                     placeholder="0.00"
+                  />
+                </label>
+              </div>
+
+              <div className="produitForm__row">
+                <label>
+                  Panier
+                  <Select
+                    value={panierOptions.find(o => o.value === form.id_panier) ?? null}
+                    onChange={(opt) => handleSelectChange('id_panier', opt?.value ?? '')}
+                    options={panierOptions}
+                    isClearable
+                    placeholder="— Sélectionner un panier —"
+                    noOptionsMessage={() => 'Aucun panier'}
+                    classNamePrefix="reactSelect"
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
                   />
                 </label>
               </div>

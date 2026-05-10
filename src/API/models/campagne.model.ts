@@ -25,7 +25,11 @@ export class CampagneModel implements Campagne {
   siret?: string | null;
   tva?: string | null;
   email_contact?: string | null;
+  email_bon_commande?: string | null;
   adresse?: string | null;
+  ville?: string | null;
+  telephone?: string | null;
+  pays?: string | null;
   footer_text?: string | null;
   modes_paiement?: ModePaiement[];
 
@@ -48,7 +52,11 @@ export class CampagneModel implements Campagne {
     this.siret = data.siret ?? null;
     this.tva = data.tva ?? null;
     this.email_contact = data.email_contact ?? null;
+    this.email_bon_commande = data.email_bon_commande ?? null;
     this.adresse = data.adresse ?? null;
+    this.ville = data.ville ?? null;
+    this.telephone = data.telephone ?? null;
+    this.pays = data.pays ?? null;
     this.footer_text = data.footer_text ?? null;
     this.modes_paiement = data.modes_paiement ?? [];
   }
@@ -85,7 +93,11 @@ export class CampagneModel implements Campagne {
       siret: this.siret,
       tva: this.tva,
       email_contact: this.email_contact,
+      email_bon_commande: this.email_bon_commande,
       adresse: this.adresse,
+      ville: this.ville,
+      telephone: this.telephone,
+      pays: this.pays,
       footer_text: this.footer_text,
       modes_paiement: this.modes_paiement,
     };
