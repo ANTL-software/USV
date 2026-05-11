@@ -70,7 +70,14 @@ export function getSalutation(prenom?: string, _heure?: number, _jour?: number):
   const now  = new Date();
   const h    = _heure !== undefined ? _heure : now.getHours();
   const jour = _jour  !== undefined ? _jour  : now.getDay();
+  const mois = now.getMonth();
+  const date = now.getDate();
   const p    = prenom ? ` ${prenom}` : "";
+
+  // Bon anniversaire Sonia le 11 mai
+  if (mois === 4 && date === 11) {
+    return "Bon anniversaire Sonia !";
+  }
 
   if (h < 5)  return `Vous êtes couché·e très tard${p} !`;
   if (h < 9)  return `Belle matinée${p}, on attaque !`;
