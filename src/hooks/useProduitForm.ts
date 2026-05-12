@@ -192,7 +192,7 @@ export function useProduitForm() {
         setSuccess('Produit créé et associé à la campagne.');
       }
 
-      setTimeout(() => navigate('/produits', { state: { campagneId, campagneNom } }), 1500);
+      setTimeout(() => navigate('/produits', { state: { campagneId, campagneNom, ...(isEdit && id && { highlightProductId: Number(id) }) } }), 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {

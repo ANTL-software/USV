@@ -228,7 +228,11 @@ function ProduitsList(): ReactElement {
                       const nomOrigine = p?.nom_produit_origine || "—";
 
                       return (
-                        <tr key={cp.id_campagne_produit}>
+                        <tr
+                          key={cp.id_campagne_produit}
+                          className="produitsList__row-clickable"
+                          onClick={() => handleEditProduct(cp.id_produit)}
+                        >
                           {/* Id antl */}
                           <td className="produitsList__id">
                             #{p?.id_produit || cp.id_produit}
@@ -302,16 +306,20 @@ function ProduitsList(): ReactElement {
                               <button
                                 className="produitsList__btn-edit"
                                 title="Modifier"
-                                onClick={() => handleEditProduct(cp.id_produit)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleEditProduct(cp.id_produit);
+                                }}
                               >
                                 <IoPencil />
                               </button>
                               <button
                                 className="produitsList__btn-delete"
                                 title="Retirer de la campagne"
-                                onClick={() =>
-                                  removeProduit(cp.id_produit, nomProduit)
-                                }
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeProduit(cp.id_produit, nomProduit);
+                                }}
                               >
                                 <IoTrash />
                               </button>

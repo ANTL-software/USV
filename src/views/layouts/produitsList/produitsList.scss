@@ -164,6 +164,16 @@
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #f8fafc; }
 
+    // Row cliquable
+    tbody tr.produitsList__row-clickable {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+
+      &:hover {
+        background-color: #e0f2fe;
+      }
+    }
+
     // Highlight animé pour le produit édité
     .produitsList__row-highlight {
       animation: highlightFade 2s ease-out;
