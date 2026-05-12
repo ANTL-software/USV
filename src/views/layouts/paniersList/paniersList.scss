@@ -126,47 +126,136 @@
     color: vars.$fontColorSecondary;
   }
 
-  // --- Tableau ---
-  .paniersList__table-wrapper {
-    overflow-x: auto;
-    @include mixins.card(12px, light);
+  // --- Dropdowns / Accordéons ---
+  .paniersList__dropdowns {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
   }
 
-  .paniersList__table {
+  .paniersList__dropdown {
+    @include mixins.card(8px, light);
+    overflow: hidden;
+  }
+
+  .paniersList__dropdown-header {
     width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1em;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: background vars.$transitionSmooth;
 
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
+    &:hover {
+      background: vars.$greyBackground;
     }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: #f8fafc; }
   }
 
-  .paniersList__label {
+  .paniersList__dropdown-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+    flex: 1;
+  }
+
+  .paniersList__dropdown-label {
     font-weight: 600;
+    color: vars.$fontColorPrimary;
+    font-size: 1rem;
+  }
+
+  .paniersList__dropdown-origine {
+    color: vars.$fontColorSecondary;
+    font-size: 0.85rem;
+  }
+
+  .paniersList__dropdown-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+  }
+
+  .paniersList__chevron {
+    color: vars.$fontColorSecondary;
+    transition: transform vars.$transitionSmooth;
+
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  .paniersList__dropdown-content {
+    border-top: 1px solid vars.$borderColor;
+    background: vars.$greyBackground;
+  }
+
+  .paniersList__produits-loading,
+  .paniersList__produits-empty {
+    padding: 2em;
+    text-align: center;
+    color: vars.$fontColorSecondary;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  .paniersList__produits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .paniersList__produit-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85em 1em;
+    border-bottom: 1px solid vars.$borderColor;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  .paniersList__produit-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+  }
+
+  .paniersList__produit-nom {
+    font-weight: 500;
     color: vars.$fontColorPrimary;
   }
 
-  .paniersList__origine {
+  .paniersList__produit-code {
+    font-size: 0.8rem;
     color: vars.$fontColorSecondary;
-    font-size: 0.88rem;
+  }
+
+  .paniersList__produit-details {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .paniersList__produit-type,
+  .paniersList__produit-conditionnement {
+    font-size: 0.8rem;
+    color: vars.$fontColorSecondary;
+    padding: 0.15em 0.5em;
+    background: #e5e7eb;
+    border-radius: 4px;
+  }
+
+  .paniersList__produit-prix {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #16a34a;
   }
 
   .paniersList__badge {

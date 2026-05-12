@@ -18,3 +18,12 @@ export interface UpdatePanierData {
   origine?: string;
   actif?: boolean;
 }
+
+export interface PanierProduit {
+  id_produit: number;
+  code_produit: string;
+  nom_produit: string;
+  type_produit: string | null;
+  conditionnement: string | null;
+  prix_unitaire: number | null;
+}
