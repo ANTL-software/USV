@@ -52,7 +52,6 @@ function PaniersList(): ReactElement {
   const {
     produits: expandedPanierProduits,
     isLoading: produitsLoading,
-    toggle: togglePanier,
   } = usePanierProduits({ panierId: expandedPanierId });
 
   const handleCreate = () => {
@@ -105,7 +104,6 @@ function PaniersList(): ReactElement {
       setExpandedPanierId(null);
     } else {
       setExpandedPanierId(panierId);
-      togglePanier();
     }
   };
 

@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { getPanierProduitsService } from '../API/services/panier.service';
 import type { PanierProduit } from '../utils/types/panier.types';
 
@@ -10,21 +10,18 @@ interface UsePanierProduitsReturn {
   produits: PanierProduit[];
   isLoading: boolean;
   error: string | null;
-  isExpanded: boolean;
-  toggle: () => void;
-  load: () => Promise<void>;
 }
 
 export const usePanierProduits = ({ panierId }: UsePanierProduitsOptions): UsePanierProduitsReturn => {
   const [produits, setProduits] = useState<PanierProduit[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isExpanded, setIsExpanded] = useState(false);
 
   const load = useCallback(async () => {
     if (!panierId) return;
     setIsLoading(true);
     setError(null);
+    setProduits([]); // Reset products when loading new ones
 
     try {
       const data = await getPanierProduitsService(panierId);
@@ -36,19 +33,20 @@ export const usePanierProduits = ({ panierId }: UsePanierProduitsOptions): UsePa
     }
   }, [panierId]);
 
-  const toggle = useCallback(() => {
-    if (!isExpanded && produits.length === 0 && panierId) {
+  // Charger les produits quand panierId change (un seul panier ouvert à la fois)
+  useEffect(() => {
+    if (panierId) {
       load();
+    } else {
+      // Reset quand aucun panier n'est sélectionné
+      setProduits([]);
+      setError(null);
     }
-    setIsExpanded(prev => !prev);
-  }, [isExpanded, produits.length, panierId, load]);
+  }, [panierId, load]);
 
   return {
     produits,
     isLoading,
     error,
-    isExpanded,
-    toggle,
-    load,
   };
 };

@@ -4,7 +4,7 @@ import './produitsList.scss';
 // hooks | library
 import { ReactElement, useEffect, useState, useRef } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { IoPencil, IoTrash, IoAdd, IoCloudUpload, IoClose, IoBasketOutline } from 'react-icons/io5';
+import { IoPencil, IoTrash, IoAdd, IoCloudUpload, IoClose, IoBasketOutline, IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -12,8 +12,6 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 // hooks
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { useCampagneProduitsPaginated } from '../../../hooks/useCampagneProduitsPaginated';
-import { useProduitImport } from '../../../hooks/useProduitImport';
-
 
 // components
 import Header from '../../components/header/Header';
@@ -37,6 +35,14 @@ function ProduitsList(): ReactElement {
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
   const [selectedCampagne, setSelectedCampagne] = useState<SelectOption | null>(null);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Import CSV states
+  const [showImportModal, setShowImportModal] = useState(false);
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importResult, setImportResult] = useState<{ created: number; skipped: number; errors: Array<{ ligne: number; message: string }> } | null>(null);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importLoading, setImportLoading] = useState(false);
 
   // Restaurer la campagne depuis le state de navigation
   useEffect(() => {
@@ -48,31 +54,16 @@ function ProduitsList(): ReactElement {
 
   const campagneId = selectedCampagne ? Number(selectedCampagne.value) : null;
 
-  const [showImportModal, setShowImportModal] = useState(false);
-
-  const {
-    importFile,
-    importResult,
-    importError,
-    importLoading,
-    fileInputRef,
-    handleImportFileChange,
-  } = useProduitImport({
-    onSuccess: async () => {
-      await loadProduits();
-    },
-  });
-
   const {
     produits: campagneProduits,
     pagination,
     isLoading: produitsLoading,
-    isLoadingMore,
     error: produitsError,
     search,
     setSearch,
     load: loadProduits,
-    loadUntilProductId,
+    setPage,
+    loadForScroll,
     removeProduit,
   } = useCampagneProduitsPaginated(campagneId, {
     tableScrollableRef: tableWrapperRef,
@@ -87,35 +78,61 @@ function ProduitsList(): ReactElement {
     label: `${c.nom_campagne}${c.statut === 'terminee' ? ' (terminée)' : ''}`,
   }));
 
-  // Scroll automatique vers le produit modifié au retour du formulaire
+  // Appeler loadForScroll quand on revient avec un produit à mettre en évidence
   useEffect(() => {
     const productId = state?.highlightProductId;
-    if (!productId || !tableWrapperRef.current) return;
+    if (productId) {
+      loadForScroll(productId);
+    }
+  }, [state?.highlightProductId, loadForScroll]);
 
-    const scrollToProduct = async () => {
-      // D'abord charger les pages jusqu'à trouver le produit
-      await loadUntilProductId(productId);
+  // Handler pour l'import CSV
+  const handleImportFileChange = async (campagneId: number) => {
+    return async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-      // Attendre que le DOM soit à jour après le chargement
-      requestAnimationFrame(() => {
-        const container = tableWrapperRef.current;
-        if (!container) return;
+      setImportFile(file);
+      setImportResult(null);
+      setImportError(null);
+      setImportLoading(true);
 
-        // Trouver la ligne du produit dans le tableau
-        const rows = container.querySelectorAll('tbody tr');
-        for (const row of rows) {
-          const idCell = row.querySelector('.produitsList__id');
-          if (idCell && idCell.textContent === `#${productId}`) {
-            // Scroller vers l'élément dans le container scrollable
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            break;
-          }
+      try {
+        const text = await file.text();
+        const separator = text.trim().split(/\r?\n/)[0].includes(';') ? ';' : ',';
+        const rows = text.trim().split(/\r?\n/).slice(1)
+          .filter(line => line.trim())
+          .map(line => {
+            const cells = line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
+            return {
+              code_produit_origine: cells[0] || '',
+              nom_produit_origine: cells[1] || '',
+              description: cells[2] || undefined,
+              prix_unitaire: cells[3] ? parseFloat(cells[3].replace(',', '.')) : undefined,
+              conditionnement: cells[4] || undefined,
+            };
+          })
+          .filter(row => row.code_produit_origine || row.nom_produit_origine);
+
+        const result = await fetch(`/api/campagnes/${campagneId}/import-produits`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ produits: rows }),
+          credentials: 'include'
+        }).then(res => res.json());
+
+        setImportResult(result);
+
+        if (result.created > 0) {
+          await loadProduits();
         }
-      });
+      } catch (err) {
+        setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
+      } finally {
+        setImportLoading(false);
+      }
     };
-
-    scrollToProduct();
-  }, [state?.highlightProductId, loadUntilProductId]);
+  };
 
   const handleEditProduct = (idProduit: number) => {
     navigate(`/produits/${idProduit}`, { state: navState });
@@ -332,15 +349,56 @@ function ProduitsList(): ReactElement {
                 </table>
               </div>
 
-              {/* Compteur de produits et indicateur de chargement */}
-              <div className="produitsList__counter">
-                {pagination && (
-                  <span>
-                    {campagneProduits.length} / {pagination.total} produits
-                    {isLoadingMore && ' - Chargement...'}
+              {/* Pagination classique */}
+              {pagination && pagination.totalPages > 1 && (
+                <div className="produitsList__pagination">
+                  <span className="produitsList__pagination-info">
+                    Page {pagination.page} / {pagination.totalPages} ({pagination.total} produits)
                   </span>
-                )}
-              </div>
+                  <div className="produitsList__pagination-buttons">
+                    <button
+                      className="produitsList__pagination-btn"
+                      onClick={() => setPage(pagination.page - 1)}
+                      disabled={pagination.page <= 1}
+                      title="Page précédente"
+                    >
+                      <IoChevronBack />
+                    </button>
+                    <span className="produitsList__pagination-pages">
+                      {Array.from({ length: Math.min(pagination.totalPages, 5) }, (_, i) => {
+                        let pageNum;
+                        if (pagination.totalPages <= 5) {
+                          pageNum = i + 1;
+                        } else if (pagination.page <= 3) {
+                          pageNum = i + 1;
+                        } else if (pagination.page >= pagination.totalPages - 2) {
+                          pageNum = pagination.totalPages - 4 + i;
+                        } else {
+                          pageNum = pagination.page - 2 + i;
+                        }
+
+                        return (
+                          <button
+                            key={pageNum}
+                            className={`produitsList__pagination-page ${pagination.page === pageNum ? 'active' : ''}`}
+                            onClick={() => setPage(pageNum)}
+                          >
+                            {pageNum}
+                          </button>
+                        );
+                      })}
+                    </span>
+                    <button
+                      className="produitsList__pagination-btn"
+                      onClick={() => setPage(pagination.page + 1)}
+                      disabled={pagination.page >= pagination.totalPages}
+                      title="Page suivante"
+                    >
+                      <IoChevronForward />
+                    </button>
+                  </div>
+                </div>
+              )}
             </>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { getCampagneProduitsPaginatedService } from '../API/services/produit.service';
 import { confirm, showError } from '../utils/services/alertService';
 import type { CampagneProduit, UpdateProduitCampagneData } from '../utils/types/produit.types';
@@ -18,14 +18,12 @@ interface UseCampagneProduitsPaginatedReturn {
   produits: CampagneProduit[];
   pagination: Pagination | null;
   isLoading: boolean;
-  isLoadingMore: boolean;
   error: string | null;
   search: string;
   setSearch: (s: string) => void;
   load: () => void;
-  loadMore: () => void;
-  loadUntilProductId: (productId: number) => Promise<void>;
-  hasMore: boolean;
+  setPage: (page: number) => void;
+  loadForScroll: (productId: number) => Promise<void>;
   addProduit: (data: { id_produit: number; argumentaire?: string; disponible?: boolean; stock_alloue?: number | null }) => Promise<void>;
   updateArgumentaire: (idProduit: number, data: UpdateProduitCampagneData) => Promise<void>;
   removeProduit: (idProduit: number, nom: string) => Promise<void>;
@@ -36,117 +34,212 @@ export const useCampagneProduitsPaginated = (
   options: UseCampagneProduitsPaginatedOptions
 ): UseCampagneProduitsPaginatedReturn => {
   const { tableScrollableRef } = options;
-  const [produits, setProduits] = useState<CampagneProduit[]>([]);
+  const [allProduits, setAllProduits] = useState<CampagneProduit[]>([]); // Tous les produits chargés
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
-  const limit = 50; // Plus grand pour le scroll infini
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 50;
+  const maxSearchLimit = 500; // Limite pour la recherche côté client
 
-  // Charger les données initiales ou recharger tout
-  const load = useCallback(async () => {
+  // Ref pour stabiliser search dans loadForScroll
+  const searchRef = useRef(search);
+
+  // Garder la ref à jour
+  useEffect(() => {
+    searchRef.current = search;
+  }, [search]);
+
+  // Filtrer les produits côté client (pour la recherche)
+  const filteredProduits = useMemo(() => {
+    if (!search.trim()) return allProduits;
+
+    const searchLower = search.toLowerCase();
+    return allProduits.filter(cp => {
+      const p = cp.produit;
+      if (!p) return false;
+
+      return (
+        (p.id_produit?.toString().includes(searchLower)) ||
+        (p.code_produit?.toLowerCase().includes(searchLower)) ||
+        (p.nom_produit?.toLowerCase().includes(searchLower)) ||
+        (p.type_produit?.toLowerCase().includes(searchLower)) ||
+        (p.conditionnement?.toLowerCase().includes(searchLower)) ||
+        (p.code_produit_origine?.toLowerCase().includes(searchLower)) ||
+        (p.nom_produit_origine?.toLowerCase().includes(searchLower)) ||
+        (p.panier?.label?.toLowerCase().includes(searchLower)) // Recherche dans le panier !
+      );
+    });
+  }, [allProduits, search]);
+
+  // Produits affichés (soit tous si recherche, soit la page courante)
+  const displayedProducts = useMemo(() => {
+    if (search.trim()) {
+      // En mode recherche, on affiche tous les produits filtrés (pas de pagination)
+      return filteredProduits;
+    }
+
+    // En mode normal, on affiche tous les produits chargés (la page courante)
+    return allProduits;
+  }, [allProduits, search, filteredProduits]);
+
+  // Charger les produits pour une page donnée
+  const load = useCallback(async (page: number) => {
     if (!idCampagne) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const result = await getCampagneProduitsPaginatedService(idCampagne, { page: 1, limit, search: search || undefined });
-      setProduits(result.data);
+      const result = await getCampagneProduitsPaginatedService(idCampagne, {
+        page,
+        limit: pageSize,
+        search: undefined // Toujours charger sans filtre côté serveur
+      });
+
+      // Remplacer les produits (pas d'accumulation)
+      setAllProduits(result.data);
       setPagination(result.pagination);
+      setCurrentPage(page);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors du chargement des produits');
-      setProduits([]);
+      setAllProduits([]);
       setPagination(null);
     } finally {
       setIsLoading(false);
     }
-  }, [idCampagne, search]);
+  }, [idCampagne, pageSize]);
 
-  // Charger plus de données (page suivante)
-  const loadMore = useCallback(async () => {
-    if (!idCampagne || !pagination || isLoadingMore) return;
-    if (pagination.page >= pagination.totalPages) return;
+  // Changer de page
+  const setPage = useCallback((page: number) => {
+    // Toujours charger depuis le serveur pour avoir les bonnes données
+    load(page);
+  }, [load]);
 
-    setIsLoadingMore(true);
-    const nextPage = pagination.page + 1;
-
-    try {
-      const result = await getCampagneProduitsPaginatedService(idCampagne, { page: nextPage, limit, search: search || undefined });
-      setProduits(prev => [...prev, ...result.data]);
-      setPagination(result.pagination);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Erreur lors du chargement des produits');
-    } finally {
-      setIsLoadingMore(false);
-    }
-  }, [idCampagne, pagination, isLoadingMore, search]);
-
-  // Charger jusqu'à trouver un produit spécifique (pour le scroll au retour du formulaire)
-  const loadUntilProductId = useCallback(async (productId: number) => {
-    if (!idCampagne) return;
-
-    // Vérifier si le produit est déjà chargé
-    if (produits.some(p => p.id_produit === productId)) {
-      return;
-    }
-
-    // Sinon, charger les pages une par une jusqu'à trouver le produit
-    let currentPage = pagination ? pagination.page + 1 : 1;
-    const maxPages = 20; // Limite pour éviter boucle infinie
-
-    while (currentPage <= maxPages) {
-      try {
-        const result = await getCampagneProduitsPaginatedService(idCampagne, { page: currentPage, limit, search: search || undefined });
-        setProduits(prev => [...prev, ...result.data]);
-        setPagination(result.pagination);
-
-        // Vérifier si le produit est dans cette page
-        if (result.data.some(p => p.id_produit === productId)) {
-          return; // Produit trouvé
-        }
-
-        // Si plus de pages, arrêter
-        if (result.pagination.page >= result.pagination.totalPages) {
-          return;
-        }
-
-        currentPage++;
-      } catch (err) {
-        console.error('Erreur lors du chargement des produits:', err);
-        return;
-      }
-    }
-  }, [idCampagne, pagination, produits, search]);
-
-  // Scroll infini : détecter quand on arrive en bas du tableau
-  useEffect(() => {
-    const container = tableScrollableRef?.current;
-    if (!container) return;
-
-    const handleScroll = () => {
-      const { scrollTop, scrollHeight, clientHeight } = container;
-      if (scrollHeight - scrollTop - clientHeight < 100) {
-        loadMore();
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [tableScrollableRef, loadMore]);
-
-  // Recharger quand la campagne ou la recherche change
+  // Recharger quand la campagne change
   useEffect(() => {
     if (idCampagne) {
-      load();
+      load(1);
+    } else {
+      setAllProduits([]);
+      setPagination(null);
     }
   }, [idCampagne, load]);
 
-  const hasMore = pagination ? pagination.page < pagination.totalPages : false;
+  // Quand la recherche change, charger plus de produits si nécessaire
+  useEffect(() => {
+    if (!idCampagne || !search.trim()) {
+      // Pas de recherche : une seule page suffit
+      return;
+    }
 
-  const handleSetSearch = useCallback((s: string) => {
-    setSearch(s);
-  }, []);
+    // Réinitialiser allProduits pour éviter les doublons
+    setAllProduits([]);
+
+    // En mode recherche, charger plusieurs pages pour avoir plus de résultats
+    const loadMoreForSearch = async () => {
+      // D'abord, récupérer les infos de pagination pour savoir combien de pages charger
+      const initialResult = await getCampagneProduitsPaginatedService(idCampagne, {
+        page: 1,
+        limit: pageSize,
+        search: undefined
+      });
+
+      const totalPagesToLoad = Math.min(10, initialResult.pagination.totalPages);
+      const products: CampagneProduit[] = [...initialResult.data];
+
+      // Charger les pages supplémentaires si nécessaire
+      for (let page = 2; page <= totalPagesToLoad; page++) {
+        try {
+          const result = await getCampagneProduitsPaginatedService(idCampagne, {
+            page,
+            limit: pageSize,
+            search: undefined
+          });
+          products.push(...result.data);
+        } catch (err) {
+          console.error('Erreur lors du chargement supplémentaire:', err);
+          break;
+        }
+      }
+
+      setAllProduits(products);
+      setPagination(initialResult.pagination);
+      setCurrentPage(1);
+    };
+
+    loadMoreForSearch();
+  }, [search, idCampagne, pageSize]);
+
+  // Charger les produits pour scroll vers un produit spécifique
+  const loadForScroll = useCallback(async (productId: number) => {
+    if (!idCampagne) return;
+
+    try {
+      // Réinitialiser la recherche si nécessaire
+      const currentSearch = searchRef.current;
+      if (currentSearch !== '') {
+        setSearch('');
+        // Attendre que le state soit à jour
+        await new Promise(resolve => setTimeout(resolve, 50));
+      }
+
+      // Charger plus de produits si nécessaire pour trouver celui qu'on cherche
+      let productFound = false;
+      let maxPages = 10;
+
+      for (let page = 1; page <= maxPages; page++) {
+        const result = await getCampagneProduitsPaginatedService(idCampagne, {
+          page,
+          limit: pageSize, // Utiliser pageSize standard pour éviter l'erreur 400
+          search: undefined
+        });
+
+        if (page === 1) {
+          setAllProduits(result.data);
+        } else {
+          setAllProduits(prev => [...prev, ...result.data]);
+        }
+
+        setPagination(result.pagination);
+        setCurrentPage(1);
+
+        if (result.data.some(p => p.id_produit === productId)) {
+          productFound = true;
+          break;
+        }
+
+        if (result.pagination.page >= result.pagination.totalPages) {
+          break;
+        }
+      }
+
+      if (!productFound) {
+        console.warn(`Produit ${productId} non trouvé`);
+        return;
+      }
+
+      // Scroller vers le produit après le chargement
+      setTimeout(() => {
+        const container = tableScrollableRef?.current;
+        if (!container) return;
+
+        const rows = container.querySelectorAll('tbody tr');
+        for (const row of rows) {
+          const idCell = row.querySelector('.produitsList__id');
+          if (idCell && idCell.textContent === `#${productId}`) {
+            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            row.classList.add('produitsList__row-highlight');
+            setTimeout(() => row.classList.remove('produitsList__row-highlight'), 2000);
+            break;
+          }
+        }
+      }, 300);
+    } catch (err) {
+      console.error('Erreur lors du chargement pour scroll:', err);
+    }
+  }, [idCampagne, pageSize, setSearch, tableScrollableRef]);
 
   const addProduit = useCallback(async (data: { id_produit: number; argumentaire?: string; disponible?: boolean; stock_alloue?: number | null }) => {
     if (!idCampagne) return;
@@ -157,11 +250,11 @@ export const useCampagneProduitsPaginated = (
         body: JSON.stringify(data),
         credentials: 'include'
       });
-      await load();
+      await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
     }
-  }, [idCampagne, load]);
+  }, [idCampagne, load, currentPage]);
 
   const updateArgumentaire = useCallback(async (idProduit: number, data: UpdateProduitCampagneData) => {
     if (!idCampagne) return;
@@ -172,11 +265,11 @@ export const useCampagneProduitsPaginated = (
         body: JSON.stringify(data),
         credentials: 'include'
       });
-      await load();
+      await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
     }
-  }, [idCampagne, load]);
+  }, [idCampagne, load, currentPage]);
 
   const removeProduit = useCallback(async (idProduit: number, nom: string) => {
     if (!idCampagne) return;
@@ -186,24 +279,22 @@ export const useCampagneProduitsPaginated = (
         method: 'DELETE',
         credentials: 'include'
       });
-      await load();
+      await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
     }
-  }, [idCampagne, load]);
+  }, [idCampagne, load, currentPage]);
 
   return {
-    produits,
+    produits: displayedProducts,
     pagination,
     isLoading,
-    isLoadingMore,
     error,
     search,
-    setSearch: handleSetSearch,
+    setSearch,
     load,
-    loadMore,
-    loadUntilProductId,
-    hasMore,
+    setPage,
+    loadForScroll,
     addProduit,
     updateArgumentaire,
     removeProduit,
