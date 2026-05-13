@@ -21,7 +21,7 @@ interface UseCampagneProduitsPaginatedReturn {
   error: string | null;
   search: string;
   setSearch: (s: string) => void;
-  load: () => void;
+  load: (page: number) => Promise<void>;
   setPage: (page: number) => void;
   loadForScroll: (productId: number) => Promise<void>;
   addProduit: (data: { id_produit: number; argumentaire?: string; disponible?: boolean; stock_alloue?: number | null }) => Promise<void>;
@@ -41,7 +41,6 @@ export const useCampagneProduitsPaginated = (
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
-  const maxSearchLimit = 500; // Limite pour la recherche côté client
 
   // Ref pour stabiliser search dans loadForScroll
   const searchRef = useRef(search);

@@ -87,51 +87,49 @@ function ProduitsList(): ReactElement {
   }, [state?.highlightProductId, loadForScroll]);
 
   // Handler pour l'import CSV
-  const handleImportFileChange = async (campagneId: number) => {
-    return async (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (!file) return;
+  const handleImportFileChange = (campagneId: number) => async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-      setImportFile(file);
-      setImportResult(null);
-      setImportError(null);
-      setImportLoading(true);
+    setImportFile(file);
+    setImportResult(null);
+    setImportError(null);
+    setImportLoading(true);
 
-      try {
-        const text = await file.text();
-        const separator = text.trim().split(/\r?\n/)[0].includes(';') ? ';' : ',';
-        const rows = text.trim().split(/\r?\n/).slice(1)
-          .filter(line => line.trim())
-          .map(line => {
-            const cells = line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
-            return {
-              code_produit_origine: cells[0] || '',
-              nom_produit_origine: cells[1] || '',
-              description: cells[2] || undefined,
-              prix_unitaire: cells[3] ? parseFloat(cells[3].replace(',', '.')) : undefined,
-              conditionnement: cells[4] || undefined,
-            };
-          })
-          .filter(row => row.code_produit_origine || row.nom_produit_origine);
+    try {
+      const text = await file.text();
+      const separator = text.trim().split(/\r?\n/)[0].includes(';') ? ';' : ',';
+      const rows = text.trim().split(/\r?\n/).slice(1)
+        .filter(line => line.trim())
+        .map(line => {
+          const cells = line.split(separator).map(c => c.trim().replace(/^["']|["']$/g, ''));
+          return {
+            code_produit_origine: cells[0] || '',
+            nom_produit_origine: cells[1] || '',
+            description: cells[2] || undefined,
+            prix_unitaire: cells[3] ? parseFloat(cells[3].replace(',', '.')) : undefined,
+            conditionnement: cells[4] || undefined,
+          };
+        })
+        .filter(row => row.code_produit_origine || row.nom_produit_origine);
 
-        const result = await fetch(`/api/campagnes/${campagneId}/import-produits`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ produits: rows }),
-          credentials: 'include'
-        }).then(res => res.json());
+      const result = await fetch(`/api/campagnes/${campagneId}/import-produits`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ produits: rows }),
+        credentials: 'include'
+      }).then(res => res.json());
 
-        setImportResult(result);
+      setImportResult(result);
 
-        if (result.created > 0) {
-          await loadProduits();
-        }
-      } catch (err) {
-        setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
-      } finally {
-        setImportLoading(false);
+      if (result.created > 0) {
+        await loadProduits();
       }
-    };
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
+    } finally {
+      setImportLoading(false);
+    }
   };
 
   const handleEditProduct = (idProduit: number) => {
