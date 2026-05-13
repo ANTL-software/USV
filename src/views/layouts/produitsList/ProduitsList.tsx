@@ -123,7 +123,7 @@ function ProduitsList(): ReactElement {
       setImportResult(result);
 
       if (result.created > 0) {
-        await loadProduits();
+        await loadProduits(1);
       }
     } catch (err) {
       setImportError(err instanceof Error ? err.message : 'Erreur lors de l\'import');
