@@ -4,7 +4,7 @@ import './paniersList.scss';
 // hooks | library
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPencil, IoTrash, IoAdd, IoChevronDown } from 'react-icons/io5';
+import { IoPencil, IoTrash, IoAdd, IoChevronDown, IoList } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -204,6 +204,16 @@ function PaniersList(): ReactElement {
                     </div>
                     <div className="paniersList__dropdown-actions">
                       <IoChevronDown className={`paniersList__chevron ${expandedPanierId === p.id_panier ? 'paniersList__chevron--open' : ''}`} />
+                      <button
+                        className="paniersList__btn-products"
+                        title="Gérer les produits"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate(`/paniers/${p.id_panier}/produits`);
+                        }}
+                      >
+                        <IoList />
+                      </button>
                       <button
                         className="paniersList__btn-edit"
                         title="Modifier"

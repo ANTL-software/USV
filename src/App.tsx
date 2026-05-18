@@ -43,6 +43,7 @@ import ProspectInjectionWithAuth from "./views/layouts/prospectInjection/Prospec
 import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
 import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
 import PaniersListWithAuth from "./views/layouts/paniersList/PaniersList";
+import PanierProduitsListWithAuth from "./views/layouts/panierProduitsList/PanierProduitsList";
 import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
 import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
 import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
@@ -133,6 +134,7 @@ function App(): ReactElement {
         <Route path={"produits/new"} element={<ProduitFormWithAuth />}></Route>
         <Route path={"produits/:id"} element={<ProduitFormWithAuth />}></Route>
         <Route path={"paniers"} element={<PaniersListWithAuth />}></Route>
+	      <Route path={"paniers/:idPanier/produits"} element={<PanierProduitsListWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       

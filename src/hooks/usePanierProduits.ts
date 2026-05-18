@@ -1,19 +1,20 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getPanierProduitsService } from '../API/services/panier.service';
-import type { PanierProduit } from '../utils/types/panier.types';
+import { getPanierProduitsService } from '../API/services/panierProduit.service';
+import type { ProduitInPanier } from '../utils/types/panier.types';
 
 interface UsePanierProduitsOptions {
   panierId: number | null;
 }
 
 interface UsePanierProduitsReturn {
-  produits: PanierProduit[];
+  produits: ProduitInPanier[];
   isLoading: boolean;
   error: string | null;
+  load: () => Promise<void>;
 }
 
 export const usePanierProduits = ({ panierId }: UsePanierProduitsOptions): UsePanierProduitsReturn => {
-  const [produits, setProduits] = useState<PanierProduit[]>([]);
+  const [produits, setProduits] = useState<ProduitInPanier[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -48,5 +49,6 @@ export const usePanierProduits = ({ panierId }: UsePanierProduitsOptions): UsePa
     produits,
     isLoading,
     error,
+    load,
   };
 };

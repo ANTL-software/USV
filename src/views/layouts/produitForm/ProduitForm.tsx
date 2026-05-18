@@ -1,8 +1,9 @@
 // styles
 import './produitForm.scss';
+import './panierSelectComponents.scss';
 
 // hooks | library
-import { ReactElement, useMemo } from 'react';
+import { ReactElement, useMemo, useEffect, useCallback } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import { MdArrowBack } from 'react-icons/md';
 import Creatable from 'react-select/creatable';
@@ -13,6 +14,7 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { useProduitForm } from '../../../hooks';
 import { useCategories } from '../../../hooks';
 import { useCampagnes } from '../../../hooks';
+import { useProduitPaniers } from '../../../hooks';
 
 // utils
 import { toSelectOptions } from '../../../utils/scripts/utils';
@@ -22,6 +24,13 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+
+// composants select personnalisé
+import { PanierMultiValue, PanierOption } from './PanierSelectComponents';
+import type { PanierOption as PanierOptionType } from './PanierSelectComponents';
+
+// services
+import { addProduitToPanierService, removeProduitFromPanierService } from '../../../API/services/panierProduit.service';
 
 function ProduitForm(): ReactElement {
   const navigate = useNavigate();
@@ -37,14 +46,34 @@ function ProduitForm(): ReactElement {
   const { categories, handleCategorieChange } = useCategories();
   const { campagnes } = useCampagnes();
 
+  // Hook pour récupérer les paniers du produit (multi-paniers)
+  const { paniersDuProduit, refresh: refreshPaniers } = useProduitPaniers({
+    produitId: id ? Number(id) : null
+  });
+
   const categorieOptions = useMemo(() =>
     toSelectOptions(categories, c => c.id_categorie, c => c.nom_categorie),
     [categories]
   );
 
+  // Options enrichies pour le select multi-paniers
   const panierOptions = useMemo(() =>
-    paniers.map(p => ({ value: String(p.id_panier), label: p.label })),
-    [paniers]
+    paniers
+      .filter(p => p.actif)  // Uniquement les paniers actifs
+      .sort((a, b) => a.label.localeCompare(b.label))  // Ordre alphabétique
+      .map(p => ({
+        value: String(p.id_panier),
+        label: p.label,
+        isSelected: paniersDuProduit.some(pp => pp.id_panier === p.id_panier),
+        panier: p
+      } as PanierOptionType)),
+    [paniers, paniersDuProduit]
+  );
+
+  // Valeur affichée dans le select (paniers sélectionnés)
+  const selectedPaniers = useMemo(() =>
+    panierOptions.filter(o => o.isSelected),
+    [panierOptions]
   );
 
   const campagneOptions = useMemo(() =>
@@ -58,6 +87,65 @@ function ProduitForm(): ReactElement {
   const selectedCampagneOpt = campagneId
     ? (campagneOptions.find(o => o.value === String(campagneId)) ?? (campagneNom ? { value: String(campagneId), label: campagneNom } : null))
     : null;
+
+  // ─── Handlers pour la gestion multi-paniers ───────────────────────
+
+  // Gérer l'ajout/retrait de produits dans les paniers
+  const handlePaniersChange = useCallback(async (newValue: readonly PanierOptionType[]) => {
+    if (!id) return;
+
+    const selectedIds = new Set(newValue.map(o => Number(o.value)));
+    const currentIds = new Set(paniersDuProduit.map(p => p.id_panier));
+
+    // À ajouter
+    const toAdd = panierOptions
+      .filter(o => selectedIds.has(Number(o.value)) && !currentIds.has(Number(o.value)))
+      .map(o => o.panier);
+
+    // À retirer
+    const toRemove = paniersDuProduit.filter(p => !selectedIds.has(p.id_panier));
+
+    try {
+      // Ajouter les nouveaux
+      for (const panier of toAdd) {
+        await addProduitToPanierService(panier.id_panier, Number(id), {
+          ordre_affichage: 0
+        });
+      }
+
+      // Retirer les anciens
+      for (const panier of toRemove) {
+        await removeProduitFromPanierService(panier.id_panier, Number(id));
+      }
+
+      // Rafraîchir la liste
+      await refreshPaniers();
+    } catch (err) {
+      console.error('Erreur lors de la mise à jour des paniers:', err);
+    }
+  }, [id, panierOptions, paniersDuProduit, refreshPaniers]);
+
+  // Gérer l'événement custom de la corbeille (retrait)
+  useEffect(() => {
+    const handleRemoveEvent = async (e: Event) => {
+      const customEvent = e as CustomEvent<number>;
+      const panierId = customEvent.detail;
+
+      if (!id) return;
+
+      try {
+        await removeProduitFromPanierService(panierId, Number(id));
+        await refreshPaniers();
+      } catch (err) {
+        console.error('Erreur lors du retrait du panier:', err);
+      }
+    };
+
+    window.addEventListener('remove-panier', handleRemoveEvent);
+    return () => window.removeEventListener('remove-panier', handleRemoveEvent);
+  }, [id, refreshPaniers]);
+
+  // ────────────────────────────────────────────────────────────────
 
   // Préserver les informations de retour depuis location.state
   const backState = campagneId ? {
@@ -214,17 +302,27 @@ function ProduitForm(): ReactElement {
 
               <div className="produitForm__row">
                 <label>
-                  Panier
-                  <Select
-                    value={panierOptions.find(o => o.value === form.id_panier) ?? null}
-                    onChange={(opt) => handleSelectChange('id_panier', opt?.value ?? '')}
+                  Paniers
+                  <Select<PanierOptionType, true>
+                    isMulti
+                    value={selectedPaniers}
                     options={panierOptions}
-                    isClearable
-                    placeholder="— Sélectionner un panier —"
+                    onChange={handlePaniersChange}
+                    isSearchable
+                    placeholder="— Sélectionner des paniers —"
                     noOptionsMessage={() => 'Aucun panier'}
                     classNamePrefix="reactSelect"
                     menuPortalTarget={document.body}
                     menuPosition="fixed"
+                    closeMenuOnSelect={false}
+                    components={{
+                      MultiValue: PanierMultiValue,
+                      Option: PanierOption,
+                    }}
+                    styles={{
+                      multiValue: (base) => ({ ...base, background: 'transparent', padding: 0 }),
+                      multiValueLabel: (base) => ({ ...base, padding: 0 }),
+                    }}
                   />
                 </label>
               </div>

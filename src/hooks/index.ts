@@ -10,6 +10,7 @@ export { useCategories, createCategorieIfNotExists } from './useProduits.ts';
 export { useProduitForm } from './useProduitForm.ts';
 export { usePaniers } from './usePaniers.ts';
 export { usePanierProduits } from './usePanierProduits.ts';
+export { useProduitPaniers } from './useProduitPaniers.ts';
 export { useVentes } from './useVentes.ts';
 export { useCourrierSelection } from './useCourrierSelection.ts';
 export { useCourrierActions } from './useCourrierActions.ts';
