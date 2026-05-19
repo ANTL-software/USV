@@ -52,7 +52,7 @@ function ProspectsSignales(): ReactElement {
       <main>
         <div className="prospectsSignales__container">
           <div className="prospectsSignales__header">
-            <Button style="back" onClick={() => navigate('/operations')}>
+            <Button style="back" onClick={() => navigate('/operations/qualite')}>
               <MdArrowBack />
               <span>Retour</span>
             </Button>

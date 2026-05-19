@@ -6,6 +6,16 @@ export interface Categorie {
   niveau: number;
 }
 
+export interface TypeProduit {
+  id_type_produit: number;
+  id_categorie: number;
+  libelle_type: string;
+  actif: boolean;
+  created_at: string;
+  updated_at: string;
+  categorie?: Categorie;
+}
+
 export interface Panier {
   id_panier: number;
   label: string;
@@ -21,8 +31,8 @@ export interface Produit {
   nom_produit_origine?: string | null;
   description: string | null;
   id_categorie: number | null;
+  id_type_produit: number | null;
   id_panier: number | null;
-  type_produit: string | null;
   actif: boolean;
   format: string | null;
   grammage: string | null;
@@ -34,6 +44,7 @@ export interface Produit {
   created_at: string;
   updated_at: string;
   categorie?: Categorie;
+  typeProduit?: TypeProduit;
   panier?: Panier;
 }
 
@@ -44,8 +55,8 @@ export interface CreateProduitData {
   nom_produit_origine?: string;
   description?: string;
   id_categorie?: number | null;
+  id_type_produit?: number | null;
   id_panier?: number | null;
-  type_produit?: string;
   actif?: boolean;
   format?: string;
   grammage?: string;

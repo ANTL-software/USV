@@ -63,7 +63,7 @@ export const useCampagneProduitsPaginated = (
         (p.id_produit?.toString().includes(searchLower)) ||
         (p.code_produit?.toLowerCase().includes(searchLower)) ||
         (p.nom_produit?.toLowerCase().includes(searchLower)) ||
-        (p.type_produit?.toLowerCase().includes(searchLower)) ||
+        (p.typeProduit?.libelle_type?.toLowerCase().includes(searchLower)) ||
         (p.conditionnement?.toLowerCase().includes(searchLower)) ||
         (p.code_produit_origine?.toLowerCase().includes(searchLower)) ||
         (p.nom_produit_origine?.toLowerCase().includes(searchLower)) ||

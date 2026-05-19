@@ -24,8 +24,8 @@ interface ProduitFormState {
   nom_produit_origine: string;
   description: string;
   id_categorie: string;
+  id_type_produit: string;
   id_panier: string;
-  type_produit: string;
   format: string;
   grammage: string;
   couleur: string;
@@ -45,8 +45,8 @@ const INITIAL_FORM: ProduitFormState = {
   nom_produit_origine: '',
   description: '',
   id_categorie: '',
+  id_type_produit: '',
   id_panier: '',
-  type_produit: '',
   format: '',
   grammage: '',
   couleur: '',
@@ -100,8 +100,8 @@ export function useProduitForm() {
           nom_produit_origine: p.nom_produit_origine || '',
           description: p.description || '',
           id_categorie: p.id_categorie != null ? String(p.id_categorie) : '',
+          id_type_produit: p.id_type_produit != null ? String(p.id_type_produit) : '',
           id_panier: p.id_panier != null ? String(p.id_panier) : '',
-          type_produit: p.type_produit || '',
           format: p.format || '',
           grammage: p.grammage || '',
           couleur: p.couleur || '',
@@ -160,8 +160,8 @@ export function useProduitForm() {
         nom_produit_origine: form.nom_produit_origine.trim() || undefined,
         description: form.description.trim() || undefined,
         id_categorie: form.id_categorie ? Number(form.id_categorie) : null,
+        id_type_produit: form.id_type_produit ? Number(form.id_type_produit) : null,
         id_panier: form.id_panier ? Number(form.id_panier) : null,
-        type_produit: form.type_produit || undefined,
         format: form.format || undefined,
         grammage: form.grammage || undefined,
         couleur: form.couleur || undefined,

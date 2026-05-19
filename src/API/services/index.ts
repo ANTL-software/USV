@@ -50,6 +50,13 @@ export {
 } from './produit.service.ts';
 
 export {
+  typeProduitService,
+  getTypesByCategorieService,
+  getTypeByIdService,
+  getOrCreateTypeService,
+} from './typeProduit.service.ts';
+
+export {
   uploadCourrierService,
   getAllCourriersService,
   getCourrierByIdService,

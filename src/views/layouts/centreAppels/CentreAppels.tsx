@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoWarning, IoPersonCircleOutline } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoPersonCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
@@ -72,12 +72,12 @@ function CentreAppels(): ReactElement {
               <p>Gérer le catalogue produits et les catégories disponibles à la vente.</p>
             </section>
 
-            <section className="centreAppels__card" onClick={() => navigate('/operations/signalements')}>
+            <section className="centreAppels__card" onClick={() => navigate('/operations/qualite')}>
               <div className="centreAppels__card-icon">
-                <IoWarning />
+                <IoCheckmarkCircleOutline />
               </div>
-              <h2>Signalements</h2>
-              <p>Contrôle humain des prospects signalés en doublon ou opt-out.</p>
+              <h2>Qualité</h2>
+              <p>Gérer les signalements, écoutes et statistiques de qualité.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/employes')}>

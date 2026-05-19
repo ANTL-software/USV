@@ -8,6 +8,7 @@ export { useCampagnes, useCampagneAgents, useCampagneProduits } from './useCampa
 export { useCampagneForm } from './useCampagneForm.ts';
 export { useCategories, createCategorieIfNotExists } from './useProduits.ts';
 export { useProduitForm } from './useProduitForm.ts';
+export { useTypesProduits } from './useTypesProduits.ts';
 export { usePaniers } from './usePaniers.ts';
 export { usePanierProduits } from './usePanierProduits.ts';
 export { useProduitPaniers } from './useProduitPaniers.ts';

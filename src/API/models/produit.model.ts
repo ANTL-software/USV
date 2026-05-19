@@ -1,4 +1,4 @@
-import type { Produit, Categorie } from '../../utils/types/produit.types';
+import type { Produit, Categorie, TypeProduit } from '../../utils/types/produit.types';
 
 export class ProduitModel implements Produit {
   id_produit: number;
@@ -6,8 +6,8 @@ export class ProduitModel implements Produit {
   nom_produit: string;
   description: string | null;
   id_categorie: number | null;
+  id_type_produit: number | null;
   id_panier: number | null;
-  type_produit: string | null;
   actif: boolean;
   format: string | null;
   grammage: string | null;
@@ -19,6 +19,7 @@ export class ProduitModel implements Produit {
   created_at: string;
   updated_at: string;
   categorie?: Categorie;
+  typeProduit?: TypeProduit;
 
   constructor(data: Produit) {
     this.id_produit = data.id_produit;
@@ -26,8 +27,8 @@ export class ProduitModel implements Produit {
     this.nom_produit = data.nom_produit;
     this.description = data.description ?? null;
     this.id_categorie = data.id_categorie ?? null;
+    this.id_type_produit = data.id_type_produit ?? null;
     this.id_panier = data.id_panier ?? null;
-    this.type_produit = data.type_produit ?? null;
     this.actif = data.actif;
     this.format = data.format ?? null;
     this.grammage = data.grammage ?? null;
@@ -39,6 +40,7 @@ export class ProduitModel implements Produit {
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
     this.categorie = data.categorie;
+    this.typeProduit = data.typeProduit;
   }
 
   public get prixFormate(): string {
@@ -57,8 +59,8 @@ export class ProduitModel implements Produit {
       nom_produit: this.nom_produit,
       description: this.description,
       id_categorie: this.id_categorie,
+      id_type_produit: this.id_type_produit,
       id_panier: this.id_panier,
-      type_produit: this.type_produit,
       actif: this.actif,
       format: this.format,
       grammage: this.grammage,
@@ -70,6 +72,7 @@ export class ProduitModel implements Produit {
       created_at: this.created_at,
       updated_at: this.updated_at,
       categorie: this.categorie,
+      typeProduit: this.typeProduit,
     };
   }
 

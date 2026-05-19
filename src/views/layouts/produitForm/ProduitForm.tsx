@@ -15,6 +15,7 @@ import { useProduitForm } from '../../../hooks';
 import { useCategories } from '../../../hooks';
 import { useCampagnes } from '../../../hooks';
 import { useProduitPaniers } from '../../../hooks';
+import { useTypesProduits } from '../../../hooks';
 
 // utils
 import { toSelectOptions } from '../../../utils/scripts/utils';
@@ -45,6 +46,10 @@ function ProduitForm(): ReactElement {
 
   const { categories, handleCategorieChange } = useCategories();
   const { campagnes } = useCampagnes();
+
+  // Hook pour récupérer les types de produits dépendants de la catégorie
+  const categorieId = form.id_categorie ? Number(form.id_categorie) : null;
+  const { types, isLoading: typesLoading, getOrCreate: getOrCreateType } = useTypesProduits({ categorieId });
 
   // Hook pour récupérer les paniers du produit (multi-paniers)
   const { paniersDuProduit, refresh: refreshPaniers } = useProduitPaniers({
@@ -87,6 +92,34 @@ function ProduitForm(): ReactElement {
   const selectedCampagneOpt = campagneId
     ? (campagneOptions.find(o => o.value === String(campagneId)) ?? (campagneNom ? { value: String(campagneId), label: campagneNom } : null))
     : null;
+
+  // Options pour le select des types de produits
+  const typeOptions = useMemo(() =>
+    types.map(t => ({ value: String(t.id_type_produit), label: t.libelle_type })),
+    [types]
+  );
+
+  const selectedTypeOpt = typeOptions.find(o => o.value === form.id_type_produit) ?? null;
+
+  // Handler pour le changement de type (avec création à la volée)
+  const handleTypeChange = useCallback(async (newValue: { value: string; label: string; __created__?: boolean } | null) => {
+    if (!newValue) {
+      handleSelectChange('id_type_produit', '');
+      return;
+    }
+
+    if (newValue.__created__) {
+      // Nouveau type créé à la volée
+      try {
+        const newType = await getOrCreateType(newValue.label);
+        handleSelectChange('id_type_produit', String(newType.id_type_produit));
+      } catch (err) {
+        console.error('Erreur lors de la création du type:', err);
+      }
+    } else {
+      handleSelectChange('id_type_produit', newValue.value);
+    }
+  }, [getOrCreateType, handleSelectChange]);
 
   // ─── Handlers pour la gestion multi-paniers ───────────────────────
 
@@ -278,11 +311,24 @@ function ProduitForm(): ReactElement {
 
                 <label>
                   Type de produit
-                  <input
-                    name="type_produit"
-                    value={form.type_produit}
-                    onChange={handleChange}
-                    placeholder="Ex : Menuiserie, Énergie..."
+                  <Creatable
+                    value={selectedTypeOpt}
+                    onChange={handleTypeChange}
+                    options={typeOptions}
+                    isClearable
+                    isDisabled={!form.id_categorie || typesLoading}
+                    placeholder={
+                      !form.id_categorie
+                        ? '— Sélectionnez d\'abord une catégorie —'
+                        : typesLoading
+                        ? 'Chargement...'
+                        : '— Sélectionner ou créer un type —'
+                    }
+                    noOptionsMessage={() => 'Aucun type pour cette catégorie'}
+                    formatCreateLabel={(inputValue) => `Créer "${inputValue}"`}
+                    classNamePrefix="reactSelect"
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
                   />
                 </label>
 

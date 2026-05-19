@@ -270,7 +270,7 @@ function ProduitsList(): ReactElement {
                           </td>
 
                           {/* Type */}
-                          <td>{p?.type_produit || "—"}</td>
+                          <td>{p?.typeProduit?.libelle_type || "—"}</td>
 
                           {/* Conditionnement */}
                           <td>{p?.conditionnement || "—"}</td>
