@@ -27,7 +27,7 @@ function BookingPage(): ReactElement {
             <MdArrowBack />
             <span>Retour</span>
           </Button>
-          <h1>Booking salle de production</h1>
+          <h1>Agenda ANTL</h1>
         </div>
         <div className="calendarWrapper">
           <BookingCalendar />

@@ -20,6 +20,7 @@ interface AgentFormState {
   id_rang_commercial:  string;
   password:            string;
   password_confirm:    string;
+  couleur:             string | null;
 }
 
 const INITIAL_FORM: AgentFormState = {
@@ -32,6 +33,7 @@ const INITIAL_FORM: AgentFormState = {
   id_rang_commercial: '',
   password:           '',
   password_confirm:   '',
+  couleur:            null,
 };
 
 export function useAgentForm() {
@@ -73,6 +75,7 @@ export function useAgentForm() {
           id_rang_commercial: data.id_rang_commercial ? String(data.id_rang_commercial) : '',
           password:           '',
           password_confirm:   '',
+          couleur:            data.couleur || '',
         });
         setSipUri(data.sip_uri || '');
       } catch (err) {
@@ -144,6 +147,8 @@ export function useAgentForm() {
         if (form.id_poste)  updateData.id_poste  = Number(form.id_poste);
         updateData.id_rang_commercial = form.id_rang_commercial ? Number(form.id_rang_commercial) : null;
         if (form.password)  updateData.password  = form.password;
+        if (form.couleur)   updateData.couleur   = form.couleur;
+        else updateData.couleur = null;
         await updateEmployeService(Number(id), updateData);
         agentId = Number(id);
         setSuccess('Agent mis à jour avec succès.');
@@ -158,6 +163,7 @@ export function useAgentForm() {
           date_embauche:      form.date_embauche || undefined,
           id_poste:           form.id_poste ? Number(form.id_poste) : undefined,
           id_rang_commercial: form.id_rang_commercial ? Number(form.id_rang_commercial) : undefined,
+          couleur:            form.couleur || undefined,
         });
         agentId = (result.employe.toJSON ? result.employe.toJSON() : result.employe as unknown as Employe).id_employe;
 

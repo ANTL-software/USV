@@ -25,15 +25,13 @@ export default function BookingDetailModal({
   const [isConfirming, setIsConfirming] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
 
-  // booking.date est DATEONLY (YYYY-MM-DD) — on ajoute T12:00 pour éviter le décalage UTC
-  const dateLabel = format(new Date(`${booking.date}T12:00:00`), "EEEE d MMMM yyyy", { locale: fr });
+  // booking.debut est un timestamp ISO complet
+  const debutDate = new Date(booking.debut);
+  const dateLabel = format(debutDate, "EEEE d MMMM yyyy", { locale: fr });
+  const heureLabel = format(debutDate, "HH:mm");
 
-  const beneficiaireLabel = booking.beneficiaire
+  const employeLabel = booking.beneficiaire
     ? `${booking.beneficiaire.prenom} ${booking.beneficiaire.nom.toUpperCase()}`
-    : `Bénéficiaire #${booking.id_beneficiaire}`;
-
-  const organisateurLabel = booking.organisateur
-    ? `${booking.organisateur.prenom} ${booking.organisateur.nom.toUpperCase()}`
     : null;
 
   const handleConfirmCancel = async () => {
@@ -49,23 +47,22 @@ export default function BookingDetailModal({
     <div id="bookingDetailOverlay" onClick={onClose}>
       <div id="bookingDetailModal" onClick={e => e.stopPropagation()}>
         <div className="modalHeader">
-          <h2>Détail de la réservation</h2>
+          <h2>Détail du rendez-vous</h2>
           <button className="closeBtn" onClick={onClose} aria-label="Fermer">✕</button>
         </div>
 
         <div className="modalBody">
           <div className="detailRow">
-            <span className="detailLabel">Bénéficiaire</span>
+            <span className="detailLabel">Employé ANTL</span>
             <span className="detailValue">
-              {beneficiaireLabel}
-              <span className="matricule">Matricule {booking.id_beneficiaire}</span>
+              #{booking.id_beneficiaire} {employeLabel || ''}
             </span>
           </div>
 
-          {organisateurLabel && (
+          {booking.personne_externe && (
             <div className="detailRow">
-              <span className="detailLabel">Organisateur</span>
-              <span className="detailValue">{organisateurLabel}</span>
+              <span className="detailLabel">Personne externe</span>
+              <span className="detailValue">{booking.personne_externe}</span>
             </div>
           )}
 
@@ -73,6 +70,18 @@ export default function BookingDetailModal({
             <span className="detailLabel">Date</span>
             <span className="detailValue capitalize">{dateLabel}</span>
           </div>
+
+          <div className="detailRow">
+            <span className="detailLabel">Heure</span>
+            <span className="detailValue">{heureLabel}</span>
+          </div>
+
+          {booking.description && (
+            <div className="detailRow">
+              <span className="detailLabel">Description</span>
+              <span className="detailValue">{booking.description}</span>
+            </div>
+          )}
 
           {isConfirming && (
             <div className="confirmZone">

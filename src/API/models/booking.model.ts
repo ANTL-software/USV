@@ -1,20 +1,25 @@
 import type { Booking, EmployeBasic } from '../../utils/types/booking.types.ts';
+import { getRoleColor } from '../../utils/scripts/bookingUtils.ts';
 
 export interface CalendarEvent {
   id: number;
   title: string;
   start: Date;
   end: Date;
-  allDay: true;
+  allDay: false;
   id_beneficiaire: number;
   role: 'confirme' | 'debutant' | null;
+  couleur?: string;
 }
 
 export class BookingModel implements Booking {
   id_booking: number;
-  id_organisateur: number;
+  id_employe: number;
   id_beneficiaire: number;
-  date: string;
+  debut: string;
+  fin?: string;
+  personne_externe?: string;
+  description?: string;
   statut: 'confirme' | 'annule' | 'en_attente';
   created_at?: string;
   updated_at?: string;
@@ -23,9 +28,12 @@ export class BookingModel implements Booking {
 
   constructor(data: Booking) {
     this.id_booking = data.id_booking;
-    this.id_organisateur = data.id_organisateur;
+    this.id_employe = data.id_employe;
     this.id_beneficiaire = data.id_beneficiaire;
-    this.date = data.date;
+    this.debut = data.debut;
+    this.fin = data.fin;
+    this.personne_externe = data.personne_externe;
+    this.description = data.description;
     this.statut = data.statut;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
@@ -38,18 +46,32 @@ export class BookingModel implements Booking {
   }
 
   public toCalendarEvent(): CalendarEvent {
-    const label = this.beneficiaire
-      ? `${this.beneficiaire.prenom} ${this.beneficiaire.nom.toUpperCase()}`
-      : `Réservation #${this.id_booking}`;
+    const employeColor = this.beneficiaire?.couleur;
+    const defaultColor = getRoleColor(this.beneficiaire?.role);
 
-    return {
+    const label = this.personne_externe
+      ? `${this.personne_externe}`
+      : this.beneficiaire
+      ? `${this.beneficiaire.prenom} ${this.beneficiaire.nom.toUpperCase()}`
+      : `RDV #${this.id_booking}`;
+
+    // Le backend renvoie déjà du ISO 8601, on peut utiliser new Date() directement
+    const startDate = new Date(this.debut);
+    const endDate = this.fin
+      ? new Date(this.fin)
+      : new Date(new Date(this.debut).getTime() + 30 * 60 * 1000);
+
+    const event: CalendarEvent = {
       id: this.id_booking,
       title: label,
-      start: new Date(this.date),
-      end: new Date(this.date),
-      allDay: true,
+      start: startDate,
+      end: endDate,
+      allDay: false,
       id_beneficiaire: this.id_beneficiaire,
       role: this.beneficiaire?.role ?? null,
+      couleur: employeColor || defaultColor.bg,
     };
+
+    return event;
   }
 }

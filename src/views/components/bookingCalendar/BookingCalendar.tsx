@@ -1,11 +1,8 @@
 // styles
 import "./bookingCalendar.scss";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 
 // hooks | libraries
 import { ReactElement, useEffect, useCallback, useState } from "react";
-import { Calendar } from "react-big-calendar";
-import type { View, SlotInfo } from "react-big-calendar";
 import { format } from "date-fns";
 
 import { IoAdd } from "react-icons/io5";
@@ -17,105 +14,19 @@ import { useBookingContext } from "../../../hooks/useBookingContext.ts";
 import type { BookingModel } from "../../../API/models/booking.model.ts";
 import type { CalendarEvent } from "../../../API/models/booking.model.ts";
 
-// utils
-import { calendarLocalizer, CALENDAR_MESSAGES, getRoleColor, getInitials } from "../../../utils/scripts/bookingUtils.ts";
-
 // components
 import BookingForm from "../bookingForm/BookingForm.tsx";
 import type { BookingFormData } from "../bookingForm/BookingForm.tsx";
 import BookingDetailModal from "../bookingDetailModal/BookingDetailModal.tsx";
 import BookingMoveModal from "../bookingMoveModal/BookingMoveModal.tsx";
-
-// ============================================
-// Bulle (vue mois grille) + rectangle (popup +X) — CSS toggle
-// ============================================
-function BookingMonthEvent({ event }: { event: CalendarEvent }): ReactElement {
-  const { bg } = getRoleColor(event.role);
-  const initials = getInitials(event.title);
-  const parts = event.title.trim().split(' ');
-  const prenom = parts[0];
-  const nom = parts.slice(1).join(' ');
-  const label = `${event.id_beneficiaire} - ${prenom} ${nom}`;
-  return (
-    <>
-      <div className="bookingBubble" style={{ backgroundColor: bg }} title={event.title}>
-        {initials}
-      </div>
-      <div className="bookingWeekEvent bookingPopupEvent" style={{ backgroundColor: bg }} title={event.title}>
-        {label}
-      </div>
-    </>
-  );
-}
-
-// ============================================
-// Rectangle de réservation (vue semaine)
-// ============================================
-function BookingWeekEvent({ event }: { event: CalendarEvent }): ReactElement {
-  const { bg } = getRoleColor(event.role);
-  const parts = event.title.trim().split(' ');
-  const prenom = parts[0];
-  const nom = parts.slice(1).join(' ');
-  const label = `${event.id_beneficiaire} - ${prenom} ${nom}`;
-  return (
-    <div
-      className="bookingWeekEvent"
-      style={{ backgroundColor: bg }}
-      title={event.title}
-    >
-      {label}
-    </div>
-  );
-}
-
-// ============================================
-// Compteur de capacité par jour (mois + semaine)
-// ============================================
-function DayCapacityBadge({ date, bookings, capacite }: {
-  date: Date;
-  bookings: BookingModel[];
-  capacite: number;
-}): ReactElement {
-  const dateStr = format(date, 'yyyy-MM-dd');
-  const count = bookings.filter(b => b.date === dateStr && b.statut !== 'annule').length;
-  const full = count >= capacite;
-  return (
-    <span className={`capacityBadge ${full ? 'full' : ''}`}>
-      {count}/{capacite}
-    </span>
-  );
-}
-
-// ============================================
-// Header de colonne semaine (label + capacité)
-// ============================================
-function WeekDayHeader({ date, label, bookings, capacite }: {
-  date: Date;
-  label: string;
-  bookings: BookingModel[];
-  capacite: number;
-}): ReactElement {
-  return (
-    <div className="weekDayHeader">
-      <span>{label}</span>
-      <DayCapacityBadge date={date} bookings={bookings} capacite={capacite} />
-    </div>
-  );
-}
+import SimpleWeekCalendar from "./SimpleWeekCalendar.tsx";
+import SimpleMonthCalendar from "./SimpleMonthCalendar.tsx";
 
 export default function BookingCalendar(): ReactElement {
-  const { bookings, isLoading, fetchBookings, createBooking, cancelBooking, config, fetchConfig } = useBookingContext();
-  const capacite = config?.capacite_journaliere ?? 6;
-
-  // Charger la config au montage si pas déjà disponible
-  useEffect(() => {
-    if (!config) {
-      fetchConfig();
-    }
-  }, [config, fetchConfig]);
+  const { bookings, isLoading, fetchBookings, createBooking, cancelBooking } = useBookingContext();
 
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentView, setCurrentView] = useState<View>("week");
+  const [currentView, setCurrentView] = useState<"week" | "month">("week");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [preselectedDate, setPreselectedDate] = useState<string>("");
   const [selectedBooking, setSelectedBooking] = useState<BookingModel | null>(null);
@@ -137,18 +48,34 @@ export default function BookingCalendar(): ReactElement {
     setCurrentDate(newDate);
   }, []);
 
-  const handleViewChange = useCallback((view: View) => {
+  const handleDateJump = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value) {
+      const newDate = new Date(e.target.value);
+      if (!isNaN(newDate.getTime())) {
+        setCurrentDate(newDate);
+      }
+    }
+  }, []);
+
+  const handleViewChange = useCallback((view: "week" | "month") => {
     setCurrentView(view);
   }, []);
 
-  // Clic sur une cellule vide → ouvrir le formulaire avec la date pré-remplie
-  const handleSelectSlot = useCallback((slot: SlotInfo) => {
-    const dateStr = format(slot.start, 'yyyy-MM-dd');
-    setPreselectedDate(dateStr);
+  // Handler pour SimpleWeekCalendar (date + heure)
+  const handleWeekSlotSelect = useCallback((date: Date, hour: number) => {
+    const dateWithHour = new Date(date);
+    dateWithHour.setHours(hour, 0, 0, 0);
+    setPreselectedDate(format(dateWithHour, 'yyyy-MM-dd HH:mm'));
     setIsFormOpen(true);
   }, []);
 
-  // Clic sur une bulle → ouvrir le détail
+  // Handler pour SimpleMonthCalendar (date)
+  const handleMonthDaySelect = useCallback((date: Date) => {
+    setPreselectedDate(format(date, 'yyyy-MM-dd'));
+    setIsFormOpen(true);
+  }, []);
+
+  // Clic sur un événement → ouvrir le détail
   const handleSelectEvent = useCallback((event: CalendarEvent) => {
     const booking = bookings.find(b => b.id_booking === event.id) ?? null;
     setSelectedBooking(booking);
@@ -157,7 +84,7 @@ export default function BookingCalendar(): ReactElement {
 
   const handleFormSubmit = useCallback(async (data: BookingFormData) => {
     try {
-      await createBooking({ id_beneficiaire: data.id_beneficiaire, date: data.date });
+      await createBooking(data);
       setIsFormOpen(false);
     } catch {
       // Erreur affichée via alertService
@@ -175,60 +102,57 @@ export default function BookingCalendar(): ReactElement {
     setSelectedBooking(null);
   }, []);
 
-  const calendarEvents = bookings.map(b => b.toCalendarEvent());
-
-  // Custom event components par vue
-  const components = {
-    month: {
-      event: BookingMonthEvent,
-      dateHeader: ({ date, label }: { date: Date; label: string }) => (
-        <div className="monthDateHeader">
-          <span>{label}</span>
-          <DayCapacityBadge date={date} bookings={bookings} capacite={capacite} />
-        </div>
-      ),
-    },
-    week: {
-      event: BookingWeekEvent,
-      header: ({ date, label }: { date: Date; label: string }) => (
-        <WeekDayHeader date={date} label={label} bookings={bookings} capacite={capacite} />
-      ),
-    },
-  };
-
   return (
     <div id="bookingCalendar">
       <div className="calendarToolbar">
+        <div className="viewSwitcher">
+          <button
+            className={`viewButton ${currentView === "week" ? "isActive" : ""}`}
+            onClick={() => handleViewChange("week")}
+          >
+            Semaine
+          </button>
+          <button
+            className={`viewButton ${currentView === "month" ? "isActive" : ""}`}
+            onClick={() => handleViewChange("month")}
+          >
+            Mois
+          </button>
+        </div>
+        <input
+          type="date"
+          className="dateJumpInput"
+          value={format(currentDate, 'yyyy-MM-dd')}
+          onChange={handleDateJump}
+        />
         <button
           className="btnNewBooking"
           onClick={() => { setPreselectedDate(""); setIsFormOpen(true); }}
           disabled={isLoading}
         >
           <IoAdd />
-          Nouvelle réservation
+          Nouveau rendez-vous
         </button>
       </div>
 
       <div className="calendarBody">
-        <Calendar
-          localizer={calendarLocalizer}
-          events={calendarEvents}
-          startAccessor="start"
-          endAccessor="end"
-          messages={CALENDAR_MESSAGES}
-          culture="fr"
-          view={currentView}
-          onView={handleViewChange}
-          views={["month", "week"]}
-          date={currentDate}
-          onNavigate={handleNavigate}
-          style={{ height: "100%" }}
-          selectable
-          onSelectSlot={handleSelectSlot}
-          onSelectEvent={handleSelectEvent}
-          components={components}
-          popup
-        />
+        {currentView === "week" ? (
+          <SimpleWeekCalendar
+            bookings={bookings}
+            currentDate={currentDate}
+            onNavigate={handleNavigate}
+            onSelectSlot={handleWeekSlotSelect}
+            onSelectEvent={handleSelectEvent}
+          />
+        ) : (
+          <SimpleMonthCalendar
+            bookings={bookings}
+            currentDate={currentDate}
+            onNavigate={handleNavigate}
+            onSelectDay={handleMonthDaySelect}
+            onSelectEvent={handleSelectEvent}
+          />
+        )}
       </div>
 
       {isFormOpen && (

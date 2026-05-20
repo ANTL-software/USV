@@ -18,6 +18,7 @@ export interface BookingContextType {
   createBooking: (payload: CreateBookingPayload) => Promise<void>;
   updateBooking: (id: number, payload: UpdateBookingPayload) => Promise<void>;
   cancelBooking: (id: number) => Promise<void>;
+  createEmployeOption: (employe: { id_employe: number; nom: string; prenom: string; }) => EmployeOption;
 }
 
 export const BookingContext = createContext<BookingContextType | undefined>(undefined);

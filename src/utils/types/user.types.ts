@@ -38,6 +38,7 @@ export interface Employe {
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
   sip_uri?: string | null;
+  couleur?: string | null;
   created_at?: string;
   updated_at?: string;
   poste?: Poste;
@@ -53,6 +54,7 @@ export interface CreateEmployeData {
   date_embauche?: string;
   id_poste?: number;
   id_rang_commercial?: number;
+  couleur?: string;
 }
 
 export interface UpdateSipData {

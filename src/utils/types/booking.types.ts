@@ -4,13 +4,17 @@ export interface EmployeBasic {
   prenom: string;
   email?: string;
   role?: 'confirme' | 'debutant' | null;
+  couleur?: string | null;
 }
 
 export interface Booking {
   id_booking: number;
-  id_organisateur: number;
+  id_employe: number;
   id_beneficiaire: number;
-  date: string; // YYYY-MM-DD
+  debut: string; // ISO 8601 timestamp
+  fin?: string; // ISO 8601 timestamp (optionnel)
+  personne_externe?: string;
+  description?: string;
   statut: 'confirme' | 'annule' | 'en_attente';
   created_at?: string;
   updated_at?: string;
@@ -19,18 +23,26 @@ export interface Booking {
 }
 
 export interface CreateBookingPayload {
+  id_employe: number;
   id_beneficiaire: number;
-  date: string; // YYYY-MM-DD
+  debut: string; // ISO 8601 timestamp
+  fin?: string; // ISO 8601 timestamp (optionnel)
+  personne_externe?: string;
+  description?: string;
 }
 
 export interface UpdateBookingPayload {
-  date: string; // YYYY-MM-DD
+  debut?: string; // ISO 8601 timestamp
+  fin?: string; // ISO 8601 timestamp
+  personne_externe?: string;
+  description?: string;
+  statut?: 'confirme' | 'annule' | 'en_attente';
 }
 
 export interface BookingFilters {
   statut?: 'confirme' | 'annule' | 'en_attente';
   id_beneficiaire?: number;
-  id_organisateur?: number;
+  id_employe?: number;
   date_debut?: string;
   date_fin?: string;
 }

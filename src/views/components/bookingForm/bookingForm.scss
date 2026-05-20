@@ -119,6 +119,33 @@
       resize: vertical;
       min-height: 6em;
     }
+
+    &--heure {
+      .heureSelects {
+        display: flex;
+        align-items: center;
+        gap: 0.5em;
+      }
+
+      .heureSelects > div {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .heureSeparator {
+        font-weight: 600;
+        color: #374151;
+        font-size: 1.1em;
+      }
+
+      small {
+        display: block;
+        margin-top: 0.25em;
+        font-size: 0.75em;
+        color: #6b7280;
+        font-style: italic;
+      }
+    }
   }
 
   .fieldRow {

@@ -21,7 +21,7 @@ export const getEmployeByIdService = async (id: number): Promise<UserModel> => {
 
 export const updateEmployeService = async (
   id: number,
-  data: Partial<Pick<Employe, 'email' | 'nom' | 'prenom' | 'telephone'>>
+  data: Partial<Pick<Employe, 'email' | 'nom' | 'prenom' | 'telephone' | 'couleur'>>
 ): Promise<UserModel> => {
   const response: AxiosResponse<ApiResponse<Employe>> = await patchRequest(`/employes/${id}`, data);
   if (response.data.success && response.data.data) {

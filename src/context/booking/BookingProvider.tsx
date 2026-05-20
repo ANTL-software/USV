@@ -127,8 +127,17 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
     }
   }, []);
 
+  const createEmployeOption = useCallback((employe: { id_employe: number; nom: string; prenom: string; }): EmployeOption => {
+    return {
+      value: employe.id_employe,
+      label: `${employe.prenom} ${employe.nom.toUpperCase()} (Matricule: ${employe.id_employe})`,
+    };
+  }, []);
+
+  const contextValue = { bookings, employes, config, isLoading, loadingEmployes, fetchBookings, fetchConfig, createBooking, updateBooking, cancelBooking, createEmployeOption };
+
   return (
-    <BookingContext.Provider value={{ bookings, employes, config, isLoading, loadingEmployes, fetchBookings, fetchConfig, createBooking, updateBooking, cancelBooking }}>
+    <BookingContext.Provider value={contextValue}>
       {children}
     </BookingContext.Provider>
   );

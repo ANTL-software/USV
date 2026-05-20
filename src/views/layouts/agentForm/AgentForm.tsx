@@ -17,6 +17,7 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import PasswordStrengthIndicator from '../../components/passwordStrengthIndicator/PasswordStrengthIndicator';
+import ColorPicker from '../../../components/colorPicker/ColorPicker';
 
 function AgentForm(): ReactElement {
   const navigate = useNavigate();
@@ -151,6 +152,20 @@ function AgentForm(): ReactElement {
                     <p className="agentForm__field-error">Les mots de passe ne correspondent pas</p>
                   )}
                 </div>
+              </div>
+            </fieldset>
+
+            <fieldset className="agentForm__fieldset">
+              <legend>Agenda ANTL</legend>
+              <p className="agentForm__fieldset-hint">
+                Couleur pour les rendez-vous dans l'agenda (optionnel)
+              </p>
+              <div className="agentForm__field">
+                <ColorPicker
+                  color={form.couleur || null}
+                  onChange={(color: string | null) => setForm(prev => ({ ...prev, couleur: color }))}
+                  label="Couleur"
+                />
               </div>
             </fieldset>
 

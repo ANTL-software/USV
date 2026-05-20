@@ -1,0 +1,179 @@
+@use "../../../utils/styles/variables" as vars;
+
+.simpleMonthCalendar {
+  & {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    background: white;
+    border-radius: 8px;
+  }
+
+  .smcHeader {
+    & {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1em;
+      border-bottom: 1px solid #e5e7eb;
+      background: #f9fafb;
+    }
+
+    .smcTitle {
+      font-size: 1.25em;
+      font-weight: 700;
+      color: #1f2937;
+      text-transform: capitalize;
+    }
+
+    .smcNavButton {
+      & {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.5em;
+        height: 2.5em;
+        border-radius: 6px;
+        border: 1px solid #d1d5db;
+        background: white;
+        color: #374151;
+        font-size: 1.25em;
+        cursor: pointer;
+        transition: all vars.$transitionFast;
+      }
+
+      &:hover {
+        background: vars.$utilsPrimary;
+        color: white;
+        border-color: vars.$utilsPrimary;
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  .smcWeekdays {
+    & {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      padding: 0.5em 1em;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    .smcWeekday {
+      text-align: center;
+      font-size: 0.75em;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      padding: 0.5em;
+    }
+  }
+
+  .smcGrid {
+    & {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .smcDay {
+      & {
+        display: flex;
+        flex-direction: column;
+        min-height: 80px;
+        padding: 0.5em;
+        border: 1px solid #f3f4f6;
+        cursor: pointer;
+        transition: background-color vars.$transitionFast;
+        gap: 0.25em;
+
+        &:hover {
+          background-color: rgba(vars.$utilsPrimary, 0.05);
+        }
+      }
+
+      &.isToday {
+        background-color: rgba(vars.$utilsPrimary, 0.1);
+        border-color: vars.$utilsPrimary;
+      }
+
+      &.isToday:hover {
+        background-color: rgba(vars.$utilsPrimary, 0.15);
+      }
+
+      &.smcDayPadding {
+        background-color: #f9fafb;
+        cursor: default;
+
+        &:hover {
+          background-color: #f9fafb;
+        }
+      }
+
+      .smcDayNumber {
+        font-size: 0.875em;
+        font-weight: 600;
+        color: #374151;
+        text-align: right;
+      }
+
+      .isToday & .smcDayNumber {
+        color: vars.$utilsPrimary;
+        font-weight: 700;
+      }
+
+      .smcEvents {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25em;
+      }
+
+      .smcEvent {
+        & {
+          padding: 0.25em 0.5em;
+          border-radius: 4px;
+          font-size: 0.7em;
+          font-weight: 600;
+          color: white;
+          cursor: pointer;
+          transition: opacity vars.$transitionFast, transform vars.$transitionFast;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        &:hover {
+          opacity: 0.9;
+          transform: translateY(-1px);
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+      }
+
+      .smcMoreEvents {
+        font-size: 0.7em;
+        color: vars.$utilsPrimary;
+        font-weight: 500;
+        cursor: pointer;
+        text-align: center;
+        padding: 0.25em;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Responsive
+@media (min-width: vars.$tabletWidth) {
+  .simpleMonthCalendar {
+    .smcGrid .smcDay {
+      min-height: 100px;
+    }
+  }
+}
