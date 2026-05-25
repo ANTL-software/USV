@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import { ProjetContext } from './ProjetContext.tsx';
+import { ProjetContext, ProjetContextType } from './ProjetContext.tsx';
 import {
   listProjetsService,
   getProjetByIdService,

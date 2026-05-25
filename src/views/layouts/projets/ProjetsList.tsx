@@ -1,7 +1,7 @@
 import './projetsList.scss';
 import { ReactElement, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoAdd, IoSearch, IoFilterList, IoArrowBack, IoEye, IoEdit, IoFolderOpen } from 'react-icons/io5';
+import { IoAdd, IoSearch, IoFilter, IoArrowBack, IoEye, IoCreate, IoFolderOpen } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 import Header from '../../../components/header/Header';
@@ -25,6 +25,7 @@ function ProjetsList(): ReactElement {
 
   const [filters, setFilters] = useState<ListProjetsFilters>({});
   const [page, setPage] = useState(1);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadProjets(filters, page);
@@ -96,7 +97,7 @@ function ProjetsList(): ReactElement {
               <span>Retour</span>
             </Button>
             <h1>Projets</h1>
-            <Button style="primary" onClick={() => navigate('/projets/new')}>
+            <Button style="gradient" onClick={() => navigate('/projets/new')}>
               <IoAdd />
               <span>Nouveau Projet</span>
             </Button>
@@ -155,7 +156,7 @@ function ProjetsList(): ReactElement {
 
             {(filters.statut || filters.type_projet || filters.priorite || filters.search) && (
               <Button
-                style="secondary"
+                style="white"
                 onClick={() => {
                   setFilters({});
                   setSearchTerm('');
@@ -163,7 +164,7 @@ function ProjetsList(): ReactElement {
                   loadProjets({}, 1);
                 }}
               >
-                <IoFilterList />
+                <IoFilter />
                 <span>Réinitialiser</span>
               </Button>
             )}
@@ -181,7 +182,7 @@ function ProjetsList(): ReactElement {
           {error && (
             <div className="projetsList__error">
               <p>{error}</p>
-              <Button onClick={() => refreshProjets()}>Réessayer</Button>
+              <Button style="gradient" onClick={() => refreshProjets()}>Réessayer</Button>
             </div>
           )}
 
@@ -280,7 +281,7 @@ function ProjetsList(): ReactElement {
                             onClick={() => navigate(`/projets/${projet.id_projet}/edit`)}
                             title="Modifier"
                           >
-                            <IoEdit />
+                            <IoCreate />
                           </button>
                         </td>
                       </tr>

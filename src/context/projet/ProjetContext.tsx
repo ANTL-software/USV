@@ -6,11 +6,9 @@ import type {
   ProjetMembre,
   AddMembreData,
   ListProjetsFilters,
-  ListProjetsResponse,
   ProjetDashboard,
   ProjetStats,
   StatutProjet,
-  EmployeMini,
 } from '../../utils/types/projet.types';
 
 export interface ProjetContextType {

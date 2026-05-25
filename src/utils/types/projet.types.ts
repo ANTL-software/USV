@@ -2,7 +2,7 @@
 // TYPES PROJETS
 // =============================================================================
 
-export type TypeProjet = 'developpement' | 'commercial' | 'administratif' | 'marketing' | 'rh' | 'technique';
+export type TypeProjet = 'developpement' | 'commercial' | 'administratif' | 'marketing' | 'rh' | 'technique' | 'autre';
 
 export type StatutProjet = 'brouillon' | 'actif' | 'en_pause' | 'termine' | 'annule';
 
@@ -43,6 +43,7 @@ export interface CreateProjetData {
   titre: string;
   description?: string;
   type_projet: TypeProjet;
+  statut?: StatutProjet;
   id_pilote: number;
   date_debut?: string;
   date_fin?: string;

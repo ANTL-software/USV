@@ -1,15 +1,15 @@
-#import '../../../utils/styles/variables';
-#import '../../../utils/styles/mixins';
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
 
 #projetsList {
-  @include mainView;
+  @include mixins.mainView;
 
   main {
     padding: 1.5em 1em;
   }
 
   .projetsList__container {
-    @include centeredContainer(1400px);
+    @include mixins.centeredContainer(1400px);
   }
 
   // Header
@@ -44,7 +44,7 @@
       min-width: 250px;
 
       input {
-        @include formInput;
+        @include mixins.formInput;
         flex: 1;
       }
     }
@@ -55,7 +55,7 @@
       flex-wrap: wrap;
 
       select {
-        @include formInput;
+        @include mixins.formInput;
         min-width: 150px;
       }
     }
@@ -88,7 +88,7 @@
 
   // Erreur
   .projetsList__error {
-    @include card(12px, light);
+    @include mixins.card(12px, light);
     padding: 2em;
     text-align: center;
     background: vars.$errorColor;
@@ -98,7 +98,7 @@
 
   // Liste vide
   .projetsList__empty {
-    @include card(12px, light);
+    @include mixins.card(12px, light);
     padding: 3em;
     text-align: center;
     color: vars.$fontColorSecondary;
@@ -115,7 +115,7 @@
 
   // Tableau
   .projetsList__table-wrapper {
-    @include card(12px, light);
+    @include mixins.card(12px, light);
     overflow-x: auto;
   }
 
@@ -342,7 +342,7 @@
     padding: 1em;
 
     button {
-      @include actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
+      @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
 
       &:disabled {
         opacity: 0.5;

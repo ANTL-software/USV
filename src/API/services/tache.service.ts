@@ -15,7 +15,6 @@ import type {
   ListTachesFilters,
   ListTachesResponse,
   StatutTache,
-  TypeDependance,
 } from '../../utils/types/projet.types';
 
 interface ApiResponse<T> {
@@ -71,7 +70,11 @@ export const listTachesService = async (
   }
   if (filters.priorite) queryParams.append('priorite', filters.priorite);
   if (filters.id_tache_parent !== undefined) {
-    queryParams.append('id_tache_parent', filters.id_tache_parent.toString());
+    if (filters.id_tache_parent === null) {
+      queryParams.append('id_tache_parent', 'null');
+    } else {
+      queryParams.append('id_tache_parent', filters.id_tache_parent.toString());
+    }
   }
   if (filters.tags && filters.tags.length > 0) {
     filters.tags.forEach(tagId => queryParams.append('tags', tagId.toString()));
@@ -80,7 +83,7 @@ export const listTachesService = async (
   queryParams.append('limit', limit.toString());
 
   const response: AxiosResponse<PaginatedApiResponse<Tache>> =
-    await getRequest(`/projets/${projetId}/taches?${queryParams.toString()}`);
+    await getRequest(`/taches/projet/${projetId}?${queryParams.toString()}`);
 
   if (response.data.success && response.data.data) {
     return {
@@ -98,7 +101,7 @@ export const listTachesService = async (
  * Crée une nouvelle tâche
  */
 export const createTacheService = async (data: CreateTacheData): Promise<Tache> => {
-  const response: AxiosResponse<ApiResponse<Tache>> = await postRequest(`/projets/${data.id_projet}/taches`, data);
+  const response: AxiosResponse<ApiResponse<Tache>> = await postRequest(`/taches/projet/${data.id_projet}`, data);
 
   if (response.data.success && response.data.data) {
     return response.data.data;
@@ -316,7 +319,7 @@ export const createTagService = async (data: CreateTagData): Promise<TacheTag> =
  * Associe un tag à une tâche
  */
 export const addTagToTacheService = async (id: number, idTag: number): Promise<void> => {
-  const response: AxiosResponse<ApiResponse<void>> = await postRequest(`/taches/${id}/tags/${idTag}`);
+  const response: AxiosResponse<ApiResponse<void>> = await postRequest(`/taches/${id}/tags/${idTag}`, {});
 
   if (!response.data.success) {
     throw new Error(response.data.message || 'Impossible d\'associer le tag à la tâche');

@@ -4,16 +4,12 @@ import type {
   CreateTacheData,
   UpdateTacheData,
   ListTachesFilters,
-  ListTachesResponse,
   StatutTache,
-  TacheDependance,
-  CreateDependanceData,
   TacheCommentaire,
   CreateCommentaireData,
   TacheTemps,
   CreateTempsData,
   TacheTag,
-  Priorite,
 } from '../utils/types/projet.types';
 
 /**

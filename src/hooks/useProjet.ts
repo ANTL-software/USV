@@ -5,8 +5,6 @@ import type {
   Projet,
   CreateProjetData,
   UpdateProjetData,
-  ListProjetsFilters,
-  StatutProjet,
   ProjetDashboard,
   ProjetMembre,
   AddMembreData,
@@ -53,7 +51,7 @@ export function useProjet(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getProjetById } = await import('../API/services/projet.service');
+      const { getProjetByIdService } = await import('../API/services/projet.service');
       const data = await getProjetByIdService(id);
       setProjet(data);
     } catch (err) {
