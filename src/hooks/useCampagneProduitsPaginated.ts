@@ -14,6 +14,11 @@ interface UseCampagneProduitsPaginatedOptions {
   tableScrollableRef?: React.RefObject<HTMLDivElement | null>;
 }
 
+interface FilterOption {
+  value: number;
+  label: string;
+}
+
 interface UseCampagneProduitsPaginatedReturn {
   produits: CampagneProduit[];
   pagination: Pagination | null;
@@ -21,6 +26,10 @@ interface UseCampagneProduitsPaginatedReturn {
   error: string | null;
   search: string;
   setSearch: (s: string) => void;
+  categorieFilter: FilterOption | null;
+  setCategorieFilter: (f: FilterOption | null) => void;
+  typeFilter: FilterOption | null;
+  setTypeFilter: (f: FilterOption | null) => void;
   load: (page: number) => Promise<void>;
   setPage: (page: number) => void;
   loadForScroll: (productId: number) => Promise<void>;
@@ -34,11 +43,13 @@ export const useCampagneProduitsPaginated = (
   options: UseCampagneProduitsPaginatedOptions
 ): UseCampagneProduitsPaginatedReturn => {
   const { tableScrollableRef } = options;
-  const [allProduits, setAllProduits] = useState<CampagneProduit[]>([]); // Tous les produits chargés
+  const [allProduits, setAllProduits] = useState<CampagneProduit[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
+  const [categorieFilter, setCategorieFilter] = useState<FilterOption | null>(null);
+  const [typeFilter, setTypeFilter] = useState<FilterOption | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 50;
 
@@ -50,38 +61,54 @@ export const useCampagneProduitsPaginated = (
     searchRef.current = search;
   }, [search]);
 
-  // Filtrer les produits côté client (pour la recherche)
+  // Filtrer les produits côté client (pour la recherche et les filtres)
   const filteredProduits = useMemo(() => {
-    if (!search.trim()) return allProduits;
-
-    const searchLower = search.toLowerCase();
     return allProduits.filter(cp => {
       const p = cp.produit;
       if (!p) return false;
 
-      return (
-        (p.id_produit?.toString().includes(searchLower)) ||
-        (p.code_produit?.toLowerCase().includes(searchLower)) ||
-        (p.nom_produit?.toLowerCase().includes(searchLower)) ||
-        (p.typeProduit?.libelle_type?.toLowerCase().includes(searchLower)) ||
-        (p.conditionnement?.toLowerCase().includes(searchLower)) ||
-        (p.code_produit_origine?.toLowerCase().includes(searchLower)) ||
-        (p.nom_produit_origine?.toLowerCase().includes(searchLower)) ||
-        (p.panier?.label?.toLowerCase().includes(searchLower)) // Recherche dans le panier !
-      );
+      // Filtre par recherche textuelle
+      if (search.trim()) {
+        const searchLower = search.toLowerCase();
+        const matchSearch =
+          (p.id_produit?.toString().includes(searchLower)) ||
+          (p.code_produit?.toLowerCase().includes(searchLower)) ||
+          (p.nom_produit?.toLowerCase().includes(searchLower)) ||
+          (p.typeProduit?.libelle_type?.toLowerCase().includes(searchLower)) ||
+          (p.conditionnement?.toLowerCase().includes(searchLower)) ||
+          (p.code_produit_origine?.toLowerCase().includes(searchLower)) ||
+          (p.nom_produit_origine?.toLowerCase().includes(searchLower)) ||
+          (p.panier?.label?.toLowerCase().includes(searchLower));
+
+        if (!matchSearch) return false;
+      }
+
+      // Filtre par catégorie
+      if (categorieFilter && p.categorie?.id_categorie !== categorieFilter.value) {
+        return false;
+      }
+
+      // Filtre par type
+      if (typeFilter && p.typeProduit?.id_type_produit !== typeFilter.value) {
+        return false;
+      }
+
+      return true;
     });
-  }, [allProduits, search]);
+  }, [allProduits, search, categorieFilter, typeFilter]);
 
   // Produits affichés (soit tous si recherche, soit la page courante)
   const displayedProducts = useMemo(() => {
-    if (search.trim()) {
-      // En mode recherche, on affiche tous les produits filtrés (pas de pagination)
+    const hasFilters = search.trim() || categorieFilter || typeFilter;
+
+    if (hasFilters) {
+      // En mode recherche ou filtre, on affiche tous les produits filtrés (pas de pagination)
       return filteredProduits;
     }
 
     // En mode normal, on affiche tous les produits chargés (la page courante)
     return allProduits;
-  }, [allProduits, search, filteredProduits]);
+  }, [allProduits, search, categorieFilter, typeFilter, filteredProduits]);
 
   // Charger les produits pour une page donnée
   const load = useCallback(async (page: number) => {
@@ -126,50 +153,64 @@ export const useCampagneProduitsPaginated = (
     }
   }, [idCampagne, load]);
 
-  // Quand la recherche change, charger plus de produits si nécessaire
+  // Quand la recherche ou les filtres changent, charger plus de produits si nécessaire
   useEffect(() => {
-    if (!idCampagne || !search.trim()) {
-      // Pas de recherche : une seule page suffit
+    if (!idCampagne) return;
+
+    const hasFilters = search.trim() || categorieFilter || typeFilter;
+
+    if (!hasFilters) {
+      // Pas de recherche/filtre : recharger une seule page proprement
+      load(1);
       return;
     }
 
     // Réinitialiser allProduits pour éviter les doublons
     setAllProduits([]);
+    setIsLoading(true);
 
-    // En mode recherche, charger plusieurs pages pour avoir plus de résultats
-    const loadMoreForSearch = async () => {
-      // D'abord, récupérer les infos de pagination pour savoir combien de pages charger
-      const initialResult = await getCampagneProduitsPaginatedService(idCampagne, {
-        page: 1,
-        limit: pageSize,
-        search: undefined
-      });
+    // En mode recherche/filtre, charger plusieurs pages pour avoir plus de résultats
+    const loadMoreForFilters = async () => {
+      try {
+        // D'abord, récupérer les infos de pagination pour savoir combien de pages charger
+        const initialResult = await getCampagneProduitsPaginatedService(idCampagne, {
+          page: 1,
+          limit: pageSize,
+          search: undefined
+        });
 
-      const totalPagesToLoad = Math.min(10, initialResult.pagination.totalPages);
-      const products: CampagneProduit[] = [...initialResult.data];
+        const totalPagesToLoad = Math.min(10, initialResult.pagination.totalPages);
+        const products: CampagneProduit[] = [...initialResult.data];
 
-      // Charger les pages supplémentaires si nécessaire
-      for (let page = 2; page <= totalPagesToLoad; page++) {
-        try {
-          const result = await getCampagneProduitsPaginatedService(idCampagne, {
-            page,
-            limit: pageSize,
-            search: undefined
-          });
-          products.push(...result.data);
-        } catch (err) {
-          console.error('Erreur lors du chargement supplémentaire:', err);
-          break;
+        // Charger les pages supplémentaires si nécessaire
+        for (let page = 2; page <= totalPagesToLoad; page++) {
+          try {
+            const result = await getCampagneProduitsPaginatedService(idCampagne, {
+              page,
+              limit: pageSize,
+              search: undefined
+            });
+            products.push(...result.data);
+          } catch (err) {
+            console.error('Erreur lors du chargement supplémentaire:', err);
+            break;
+          }
         }
-      }
 
-      setAllProduits(products);
-      setPagination(initialResult.pagination);
-      setCurrentPage(1);
+        setAllProduits(products);
+        setPagination(initialResult.pagination);
+        setCurrentPage(1);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Erreur lors du chargement des produits');
+        setAllProduits([]);
+        setPagination(null);
+      } finally {
+        setIsLoading(false);
+      }
     };
 
-    loadMoreForSearch();
-  }, [search, idCampagne, pageSize]);
+    loadMoreForFilters();
+  }, [search, categorieFilter, typeFilter, idCampagne, pageSize, load]);
 
   // Charger les produits pour scroll vers un produit spécifique
   const loadForScroll = useCallback(async (productId: number) => {
@@ -291,6 +332,10 @@ export const useCampagneProduitsPaginated = (
     error,
     search,
     setSearch,
+    categorieFilter,
+    setCategorieFilter,
+    typeFilter,
+    setTypeFilter,
     load,
     setPage,
     loadForScroll,

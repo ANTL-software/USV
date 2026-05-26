@@ -12,12 +12,14 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 // hooks
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { useCampagneProduitsPaginated } from '../../../hooks/useCampagneProduitsPaginated';
+import { useCategoriesAndTypes } from '../../../hooks/useCategoriesAndTypes';
 
 // components
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import Loader from '../../../components/loader/Loader';
 
 type SelectOption = { value: string; label: string };
 
@@ -33,6 +35,7 @@ function ProduitsList(): ReactElement {
   const state = location.state as LocationState | null;
 
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
+  const { categorieOptions, typeOptions, isLoading: categoriesTypesLoading } = useCategoriesAndTypes();
   const [selectedCampagne, setSelectedCampagne] = useState<SelectOption | null>(null);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +64,10 @@ function ProduitsList(): ReactElement {
     error: produitsError,
     search,
     setSearch,
+    categorieFilter,
+    setCategorieFilter,
+    typeFilter,
+    setTypeFilter,
     load: loadProduits,
     setPage,
     loadForScroll,
@@ -192,15 +199,45 @@ function ProduitsList(): ReactElement {
           </div>
 
           {selectedCampagne && (
-            <div className="produitsList__search">
-              <label className="produitsList__label">Recherche</label>
-              <input
-                type="text"
-                className="produitsList__search-input"
-                placeholder="Rechercher (code, nom, fournisseur...)"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
+            <div className="produitsList__filters">
+              <div className="produitsList__search">
+                <label className="produitsList__label">Recherche</label>
+                <input
+                  type="text"
+                  className="produitsList__search-input"
+                  placeholder="Rechercher (code, nom, fournisseur...)"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+
+              <div className="produitsList__filter">
+                <label className="produitsList__label">Catégorie</label>
+                <Select
+                  value={categorieFilter}
+                  onChange={setCategorieFilter}
+                  options={categorieOptions}
+                  isLoading={categoriesTypesLoading}
+                  isClearable
+                  placeholder="Toutes catégories"
+                  noOptionsMessage={() => "Aucune catégorie"}
+                  classNamePrefix="reactSelect"
+                />
+              </div>
+
+              <div className="produitsList__filter">
+                <label className="produitsList__label">Type</label>
+                <Select
+                  value={typeFilter}
+                  onChange={setTypeFilter}
+                  options={typeOptions}
+                  isLoading={categoriesTypesLoading}
+                  isClearable
+                  placeholder="Tous types"
+                  noOptionsMessage={() => "Aucun type"}
+                  classNamePrefix="reactSelect"
+                />
+              </div>
             </div>
           )}
 
@@ -211,7 +248,9 @@ function ProduitsList(): ReactElement {
           ) : produitsError ? (
             <div className="produitsList__error">{produitsError}</div>
           ) : produitsLoading ? (
-            <div className="produitsList__loading">Chargement...</div>
+            <div className="produitsList__loading">
+              <Loader size="large" message="Chargement des produits..." />
+            </div>
           ) : campagneProduits.length === 0 ? (
             <div className="produitsList__empty">
               Aucun produit pour cette campagne.
