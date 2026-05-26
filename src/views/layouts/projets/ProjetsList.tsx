@@ -214,7 +214,11 @@ function ProjetsList(): ReactElement {
                   </thead>
                   <tbody>
                     {projets.map((projet) => (
-                      <tr key={projet.id_projet}>
+                      <tr
+                        key={projet.id_projet}
+                        onClick={() => navigate(`/projets/${projet.id_projet}`)}
+                        className="projetsList__row-clickable"
+                      >
                         <td>
                           <div className="projetsList__title">
                             <strong>{projet.titre}</strong>
@@ -271,14 +275,20 @@ function ProjetsList(): ReactElement {
                         <td className="projetsList__actions-cell">
                           <button
                             className="projetsList__btn-view"
-                            onClick={() => navigate(`/projets/${projet.id_projet}`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/projets/${projet.id_projet}`);
+                            }}
                             title="Voir les détails"
                           >
                             <IoEye />
                           </button>
                           <button
                             className="projetsList__btn-edit"
-                            onClick={() => navigate(`/projets/${projet.id_projet}/edit`)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/projets/${projet.id_projet}/edit`);
+                            }}
                             title="Modifier"
                           >
                             <IoCreate />

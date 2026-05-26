@@ -145,6 +145,10 @@
     tbody tr {
       transition: background vars.$transitionSmooth;
 
+      &.projetsList__row-clickable {
+        cursor: pointer;
+      }
+
       &:hover {
         background: vars.$greyBackground;
       }

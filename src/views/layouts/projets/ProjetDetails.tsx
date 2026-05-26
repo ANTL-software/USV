@@ -273,7 +273,7 @@ function ProjetDetails(): ReactElement {
                     >
                       <option value="">Sélectionner un employé...</option>
                       {employes
-                        .filter(emp => !membres.some(m => m.id_employe === emp.id_employe))
+                        .filter(emp => !membres.some(m => m.id_employe === emp.id_employe) && emp.id_employe !== projet?.pilote?.id_employe)
                         .map((employe) => (
                           <option key={employe.id_employe} value={employe.id_employe}>
                             {employe.prenom} {employe.nom} - {employe.poste?.libelle_poste || 'Sans poste'}
