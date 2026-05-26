@@ -442,6 +442,96 @@ export function useTacheForm(projetId: number, tacheId: number | null = null) {
 }
 
 /**
+ * Hook pour la vue Kanban des tâches de l'employé connecté (tous projets)
+ */
+export function useMesTachesKanban() {
+  const [columns, setColumns] = useState<Record<StatutTache, Tache[]>>({
+    a_faire: [],
+    en_cours: [],
+    en_attente: [],
+    termine: [],
+    annule: [],
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const { listTachesByEmployeService } = await import('../API/services/tache.service');
+      const response = await listTachesByEmployeService({}, 1, 100);
+
+      // Répartir les tâches par statut
+      const tachesParStatut: Record<StatutTache, Tache[]> = {
+        a_faire: [],
+        en_cours: [],
+        en_attente: [],
+        termine: [],
+        annule: [],
+      };
+
+      response.taches.forEach(tache => {
+        if (tachesParStatut[tache.statut]) {
+          tachesParStatut[tache.statut].push(tache);
+        }
+      });
+
+      setColumns(tachesParStatut);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des tâches';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const moveTache = useCallback(async (tacheId: number, nouveauStatut: StatutTache) => {
+    try {
+      const { updateStatutTacheService } = await import('../API/services/tache.service');
+      await updateStatutTacheService(tacheId, nouveauStatut);
+
+      // Mettre à jour localement
+      setColumns(prev => {
+        const newColumns = { ...prev };
+
+        // Retirer la tâche de toutes les colonnes
+        Object.keys(newColumns).forEach(key => {
+          newColumns[key as StatutTache] = newColumns[key as StatutTache].filter(
+            t => t.id_tache !== tacheId
+          );
+        });
+
+        // Ajouter à la nouvelle colonne
+        const tache = Object.values(prev).flat().find(t => t.id_tache === tacheId);
+        if (tache) {
+          newColumns[nouveauStatut].push({ ...tache, statut: nouveauStatut });
+        }
+
+        return newColumns;
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors du déplacement de la tâche';
+      setError(errorMessage);
+      throw err;
+    }
+  }, []);
+
+  return {
+    columns,
+    isLoading,
+    error,
+    load,
+    moveTache,
+  };
+}
+
+/**
  * Hook pour la vue Kanban des tâches
  */
 export function useKanban(projetId: number | null) {

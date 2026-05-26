@@ -98,6 +98,39 @@ export const listTachesService = async (
 };
 
 /**
+ * Liste toutes les tâches de l'employé connecté avec filtres
+ */
+export const listTachesByEmployeService = async (
+  filters: ListTachesFilters = {},
+  page = 1,
+  limit = 50
+): Promise<ListTachesResponse> => {
+  const queryParams = new URLSearchParams();
+
+  if (filters.statut) queryParams.append('statut', filters.statut);
+  if (filters.priorite) queryParams.append('priorite', filters.priorite);
+  if (filters.tags && filters.tags.length > 0) {
+    filters.tags.forEach(tagId => queryParams.append('tags', tagId.toString()));
+  }
+  queryParams.append('page', page.toString());
+  queryParams.append('limit', limit.toString());
+
+  const response: AxiosResponse<PaginatedApiResponse<Tache>> =
+    await getRequest(`/taches/mes_taches?${queryParams.toString()}`);
+
+  if (response.data.success && response.data.data) {
+    return {
+      taches: response.data.data,
+      total: response.data.total || 0,
+      pages: response.data.pages || 1,
+      currentPage: response.data.currentPage || 1,
+    };
+  }
+
+  throw new Error(response.data.message || 'Impossible de récupérer les tâches');
+};
+
+/**
  * Crée une nouvelle tâche
  */
 export const createTacheService = async (data: CreateTacheData): Promise<Tache> => {

@@ -1,7 +1,7 @@
 import './projetsList.scss';
 import { ReactElement, useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoAdd, IoSearch, IoFilter, IoArrowBack, IoEye, IoCreate, IoFolderOpen } from 'react-icons/io5';
+import { IoAdd, IoSearch, IoFilter, IoArrowBack, IoEye, IoCreate, IoFolderOpen, IoCheckmarkDone } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 import Header from '../../../components/header/Header';
@@ -97,10 +97,16 @@ function ProjetsList(): ReactElement {
               <span>Retour</span>
             </Button>
             <h1>Projets</h1>
-            <Button style="gradient" onClick={() => navigate('/projets/new')}>
-              <IoAdd />
-              <span>Nouveau Projet</span>
-            </Button>
+            <div className="projetsList__header-actions">
+              <Button style="secondary" onClick={() => navigate('/projets/mes_taches')}>
+                <IoCheckmarkDone />
+                <span>Mes tâches</span>
+              </Button>
+              <Button style="gradient" onClick={() => navigate('/projets/new')}>
+                <IoAdd />
+                <span>Nouveau Projet</span>
+              </Button>
+            </div>
           </div>
 
           {/* Filtres et recherche */}

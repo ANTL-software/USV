@@ -1,0 +1,287 @@
+import './mesTaches.scss';
+import { ReactElement, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  IoArrowBack,
+  IoChevronBack,
+  IoChevronForward,
+  IoPerson,
+  IoTime,
+  IoFlag,
+  IoOptions,
+  IoFolder,
+} from 'react-icons/io5';
+import WithAuth from '../../../utils/middleware/WithAuth';
+
+import Header from '../../../components/header/Header';
+import SubNav from '../../../components/subNav/SubNav';
+import BackToTop from '../../../components/backToTop/BackToTop';
+import Button from '../../../components/button/Button';
+
+import { useMesTachesKanban } from '../../../hooks/useTache';
+import type { Tache, StatutTache } from '../../../utils/types/projet.types';
+
+interface KanbanColumn {
+  id: StatutTache;
+  title: string;
+  color: string;
+}
+
+const COLUMNS: KanbanColumn[] = [
+  { id: 'a_faire', title: 'À faire', color: '#e5e7eb' },
+  { id: 'en_cours', title: 'En cours', color: '#dbeafe' },
+  { id: 'en_attente', title: 'En attente', color: '#fef9c3' },
+  { id: 'termine', title: 'Terminé', color: '#dcfce7' },
+];
+
+function MesTaches(): ReactElement {
+  const navigate = useNavigate();
+
+  const { columns, isLoading, error, load, moveTache } = useMesTachesKanban();
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const handleMoveTache = useCallback(async (tache: Tache, nouveauStatut: StatutTache) => {
+    try {
+      await moveTache(tache.id_tache, nouveauStatut);
+    } catch (err) {
+      console.error('Erreur lors du déplacement de la tâche:', err);
+    }
+  }, [moveTache]);
+
+  const getPrioriteBadgeClass = (priorite: string): string => {
+    const baseClass = 'mesTaches__badge';
+    switch (priorite) {
+      case 'critique': return `${baseClass}--critique`;
+      case 'haute': return `${baseClass}--haute`;
+      case 'basse': return `${baseClass}--basse`;
+      default: return `${baseClass}--normale`;
+    }
+  };
+
+  const getStatutIcon = (statut: StatutTache): string => {
+    switch (statut) {
+      case 'a_faire': return '⏳';
+      case 'en_cours': return '▶️';
+      case 'en_attente': return '⏸️';
+      case 'termine': return '✅';
+      default: return '📋';
+    }
+  };
+
+  const getProjetBadgeClass = (statut: string): string => {
+    const baseClass = 'mesTaches__projet-badge';
+    switch (statut) {
+      case 'actif': return `${baseClass}--actif`;
+      case 'termine': return `${baseClass}--termine`;
+      case 'en_pause': return `${baseClass}--pause`;
+      case 'annule': return `${baseClass}--annule`;
+      default: return `${baseClass}--brouillon`;
+    }
+  };
+
+  return (
+    <div id="mesTaches">
+      <Header />
+      <SubNav />
+      <main>
+        <div className="mesTaches__container">
+          {/* Header */}
+          <div className="mesTaches__header">
+            <Button style="back" onClick={() => navigate('/projets')}>
+              <IoArrowBack />
+              <span>Retour aux projets</span>
+            </Button>
+            <h1>Mes Tâches</h1>
+            <div className="mesTaches__header-spacer" />
+          </div>
+
+          {/* Loading */}
+          {isLoading && (
+            <div className="mesTaches__loading">
+              <div className="spinner" />
+              <p>Chargement des tâches...</p>
+            </div>
+          )}
+
+          {/* Erreur */}
+          {error && (
+            <div className="mesTaches__error">
+              <p>{error}</p>
+              <Button style="gradient" onClick={() => load()}>Réessayer</Button>
+            </div>
+          )}
+
+          {/* Kanban Board */}
+          {!isLoading && !error && (
+            <div className="mesTaches__board">
+              {COLUMNS.map((column) => (
+                <div
+                  key={column.id}
+                  className="mesTaches__column"
+                  style={{ backgroundColor: column.color }}
+                >
+                  <div className="mesTaches__column-header">
+                    <span className="mesTaches__column-icon">
+                      {getStatutIcon(column.id)}
+                    </span>
+                    <h2 className="mesTaches__column-title">{column.title}</h2>
+                    <span className="mesTaches__column-count">
+                      {columns[column.id]?.length || 0}
+                    </span>
+                  </div>
+
+                  <div className="mesTaches__tasks">
+                    {columns[column.id]?.map((tache) => (
+                      <div
+                        key={tache.id_tache}
+                        className="mesTaches__task"
+                        onClick={() => navigate(`/projets/${tache.id_projet}/taches/${tache.id_tache}`)}
+                      >
+                        {/* Header */}
+                        <div className="mesTaches__task-header">
+                          <span className={getPrioriteBadgeClass(tache.priorite)}>
+                            <IoFlag />
+                          </span>
+                          {tache.progression > 0 && (
+                            <span className="mesTaches__task-progress">
+                              {tache.progression}%
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Project badge */}
+                        {tache.projet && (
+                          <div className="mesTaches__task-project">
+                            <IoFolder />
+                            <span className={getProjetBadgeClass(tache.projet.statut)}>
+                              {tache.projet.titre}
+                            </span>
+                          </div>
+                        )}
+
+                        {/* Title */}
+                        <h3 className="mesTaches__task-title">{tache.titre}</h3>
+
+                        {/* Description */}
+                        {tache.description && (
+                          <p className="mesTaches__task-description">
+                            {tache.description}
+                          </p>
+                        )}
+
+                        {/* Footer */}
+                        <div className="mesTaches__task-footer">
+                          {tache.assigne && (
+                            <div className="mesTaches__task-assignee">
+                              <IoPerson />
+                              <span>
+                                {tache.assigne.prenom} {tache.assigne.nom}
+                              </span>
+                            </div>
+                          )}
+
+                          {tache.temps_esthe && tache.temps_esthe > 0 && (
+                            <div className="mesTaches__task-time">
+                              <IoTime />
+                              <span>{tache.temps_esthe}h</span>
+                            </div>
+                          )}
+
+                          {tache.tags && tache.tags.length > 0 && (
+                            <div className="mesTaches__task-tags">
+                              {tache.tags.slice(0, 2).map((tag) => (
+                                <span
+                                  key={tag.id_tag}
+                                  className="mesTaches__tag"
+                                  style={{
+                                    backgroundColor: tag.couleur || '#e5e7eb',
+                                    color: '#374151',
+                                  }}
+                                >
+                                  {tag.libelle}
+                                </span>
+                              ))}
+                              {tache.tags.length > 2 && (
+                                <span className="mesTaches__tag-more">
+                                  +{tache.tags.length - 2}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Actions */}
+                        <div className="mesTaches__task-actions">
+                          {/* Bouton gauche - statut précédent */}
+                          {column.id !== 'a_faire' && (
+                            <Button
+                              style="white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const columnIndex = COLUMNS.findIndex(c => c.id === column.id);
+                                const prevColumn = COLUMNS[columnIndex - 1];
+                                if (prevColumn) {
+                                  handleMoveTache(tache, prevColumn.id);
+                                }
+                              }}
+                              className="mesTaches__task-btn"
+                            >
+                              <IoChevronBack />
+                            </Button>
+                          )}
+
+                          {/* Bouton droit - statut suivant */}
+                          {column.id !== 'termine' && (
+                            <Button
+                              style="gradient"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                const columnIndex = COLUMNS.findIndex(c => c.id === column.id);
+                                const nextColumn = COLUMNS[columnIndex + 1];
+                                if (nextColumn) {
+                                  handleMoveTache(tache, nextColumn.id);
+                                }
+                              }}
+                              className="mesTaches__task-btn"
+                            >
+                              <IoChevronForward />
+                            </Button>
+                          )}
+
+                          {/* Bouton options - détails */}
+                          <Button
+                            style="white"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              navigate(`/projets/${tache.id_projet}/taches/${tache.id_tache}`);
+                            }}
+                            className="mesTaches__task-btn"
+                          >
+                            <IoOptions />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+
+                    {(!columns[column.id] || columns[column.id].length === 0) && (
+                      <div className="mesTaches__empty">
+                        <p>Aucune tâche</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </main>
+      <BackToTop />
+    </div>
+  );
+}
+
+const MesTachesWithAuth = WithAuth(MesTaches);
+export default MesTachesWithAuth;

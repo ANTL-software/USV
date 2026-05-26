@@ -57,6 +57,7 @@ import ProjetFormWithAuth from "./views/layouts/projets/ProjetForm";
 import ProjetDetailsWithAuth from "./views/layouts/projets/ProjetDetails";
 import TacheFormWithAuth from "./views/layouts/projets/TacheForm";
 import TachesKanbanWithAuth from "./views/layouts/projets/TachesKanban";
+import MesTachesWithAuth from "./views/layouts/projets/MesTaches";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -143,6 +144,7 @@ function App(): ReactElement {
         <Route path={"paniers"} element={<PaniersListWithAuth />}></Route>
         <Route path={"paniers/:idPanier/produits"} element={<PanierProduitsListWithAuth />}></Route>
         <Route path={"projets/new"} element={<ProjetFormWithAuth />}></Route>
+        <Route path={"projets/mes_taches"} element={<MesTachesWithAuth />}></Route>
         <Route path={"projets/:id/edit"} element={<ProjetFormWithAuth />}></Route>
         <Route path={"projets/:id/taches/new"} element={<TacheFormWithAuth />}></Route>
         <Route path={"projets/:id/taches/:tacheId"} element={<TacheFormWithAuth />}></Route>
