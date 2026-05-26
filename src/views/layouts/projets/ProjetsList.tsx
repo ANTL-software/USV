@@ -98,7 +98,7 @@ function ProjetsList(): ReactElement {
             </Button>
             <h1>Projets</h1>
             <div className="projetsList__header-actions">
-              <Button style="secondary" onClick={() => navigate('/projets/mes_taches')}>
+              <Button style="white" onClick={() => navigate('/projets/mes_taches')}>
                 <IoCheckmarkDone />
                 <span>Mes tâches</span>
               </Button>
