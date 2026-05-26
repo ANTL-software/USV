@@ -6,6 +6,8 @@ import {
   IoAdd,
   IoChevronBack,
   IoChevronForward,
+  IoChevronUp,
+  IoChevronDown,
   IoPerson,
   IoTime,
   IoFlag,
@@ -39,7 +41,7 @@ function TachesKanban(): ReactElement {
   const navigate = useNavigate();
   const projectId = id ? parseInt(id, 10) : null;
 
-  const { columns, isLoading, error, load, moveTache } = useKanban(projectId);
+  const { columns, isLoading, error, load, moveTache, moveTacheUp, moveTacheDown } = useKanban(projectId);
 
   useEffect(() => {
     load();
@@ -131,7 +133,20 @@ function TachesKanban(): ReactElement {
                   </div>
 
                   <div className="tachesKanban__tasks">
-                    {columns[column.id]?.map((tache) => (
+                    {columns[column.id]
+                      ?.sort((a, b) => {
+                        // Tri par ordre, puis par ID pour stabilité
+                        if (a.ordre !== b.ordre) {
+                          return a.ordre - b.ordre;
+                        }
+                        return a.id_tache - b.id_tache;
+                      })
+                      .map((tache, index, taskArray) => {
+                        // Vérifier si c'est la première ou dernière tâche en termes d'ordre
+                        const isFirst = index === 0;
+                        const isLast = index === taskArray.length - 1;
+
+                        return (
                       <div
                         key={tache.id_tache}
                         className="tachesKanban__task"
@@ -202,6 +217,7 @@ function TachesKanban(): ReactElement {
 
                         {/* Actions */}
                         <div className="tachesKanban__task-actions">
+                          {/* Bouton gauche - statut précédent */}
                           {column.id !== 'a_faire' && (
                             <Button
                               style="white"
@@ -219,6 +235,34 @@ function TachesKanban(): ReactElement {
                             </Button>
                           )}
 
+                          {/* Boutons monter/descendre - ordre dans la colonne */}
+                          {!isFirst && (
+                            <Button
+                              style="white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveTacheUp(tache.id_tache, tache.ordre);
+                              }}
+                              className="tachesKanban__task-btn"
+                            >
+                              <IoChevronUp />
+                            </Button>
+                          )}
+
+                          {!isLast && (
+                            <Button
+                              style="white"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                moveTacheDown(tache.id_tache, tache.ordre);
+                              }}
+                              className="tachesKanban__task-btn"
+                            >
+                              <IoChevronDown />
+                            </Button>
+                          )}
+
+                          {/* Bouton droit - statut suivant */}
                           {column.id !== 'termine' && (
                             <Button
                               style="gradient"
@@ -236,6 +280,7 @@ function TachesKanban(): ReactElement {
                             </Button>
                           )}
 
+                          {/* Bouton options - détails */}
                           <Button
                             style="white"
                             onClick={(e) => {
@@ -248,7 +293,8 @@ function TachesKanban(): ReactElement {
                           </Button>
                         </div>
                       </div>
-                    ))}
+                        );
+                      })}
 
                     {(!columns[column.id] || columns[column.id].length === 0) && (
                       <div className="tachesKanban__empty">

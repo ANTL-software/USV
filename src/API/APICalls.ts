@@ -9,6 +9,11 @@ axios.defaults.timeout = 300000; // 5 minutes pour supporter les imports CSV vol
 axios.defaults.baseURL = getApiBaseUrl();
 axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 
+// Initialiser le token CSRF dès le chargement de l'application
+csrfService.getToken().catch((error) => {
+  console.warn('Impossible d\'initialiser le token CSRF:', error);
+});
+
 // Interceptor pour ajouter le token CSRF automatiquement (JWT dans cookies httpOnly cross-domain)
 axios.interceptors.request.use(async (config) => {
   // Les cookies JWT httpOnly sont automatiquement envoyés avec withCredentials: true

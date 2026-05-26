@@ -124,6 +124,19 @@ export const updateTacheService = async (id: number, data: UpdateTacheData): Pro
 };
 
 /**
+ * Met à jour l'ordre d'une tâche (monter ou descendre)
+ */
+export const updateOrdreTacheService = async (id: number, ordre: number): Promise<Tache> => {
+  const response: AxiosResponse<ApiResponse<Tache>> = await patchRequest(`/taches/${id}/ordre`, { ordre });
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de mettre à jour l\'ordre de la tâche');
+};
+
+/**
  * Supprime une tâche
  */
 export const deleteTacheService = async (id: number): Promise<void> => {

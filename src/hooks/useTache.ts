@@ -524,11 +524,93 @@ export function useKanban(projetId: number | null) {
     }
   }, []);
 
+  const moveTacheUp = useCallback(async (tacheId: number, currentOrdre: number) => {
+    if (currentOrdre <= 0) return;
+
+    try {
+      const { updateOrdreTacheService } = await import('../API/services/tache.service');
+      const updatedTache = await updateOrdreTacheService(tacheId, currentOrdre - 1);
+
+      // Mettre à jour localement
+      setColumns(prev => {
+        const newColumns = { ...prev };
+
+        // Trouver et mettre à jour la tâche
+        Object.keys(newColumns).forEach(key => {
+          const columnIndex = key as StatutTache;
+          newColumns[columnIndex] = newColumns[columnIndex].map(t => {
+            if (t.id_tache === tacheId) {
+              return updatedTache;
+            }
+            // Si c'est la tâche qui était juste avant, incrémenter son ordre
+            if (t.ordre === currentOrdre - 1) {
+              return { ...t, ordre: currentOrdre };
+            }
+            return t;
+          });
+        });
+
+        // Trier par ordre
+        Object.keys(newColumns).forEach(key => {
+          const columnIndex = key as StatutTache;
+          newColumns[columnIndex].sort((a, b) => a.ordre - b.ordre);
+        });
+
+        return newColumns;
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la montée de la tâche';
+      setError(errorMessage);
+      throw err;
+    }
+  }, []);
+
+  const moveTacheDown = useCallback(async (tacheId: number, currentOrdre: number) => {
+    try {
+      const { updateOrdreTacheService } = await import('../API/services/tache.service');
+      const updatedTache = await updateOrdreTacheService(tacheId, currentOrdre + 1);
+
+      // Mettre à jour localement
+      setColumns(prev => {
+        const newColumns = { ...prev };
+
+        // Trouver et mettre à jour la tâche
+        Object.keys(newColumns).forEach(key => {
+          const columnIndex = key as StatutTache;
+          newColumns[columnIndex] = newColumns[columnIndex].map(t => {
+            if (t.id_tache === tacheId) {
+              return updatedTache;
+            }
+            // Si c'est la tâche qui était juste après, décrémenter son ordre
+            if (t.ordre === currentOrdre + 1) {
+              return { ...t, ordre: currentOrdre };
+            }
+            return t;
+          });
+        });
+
+        // Trier par ordre
+        Object.keys(newColumns).forEach(key => {
+          const columnIndex = key as StatutTache;
+          newColumns[columnIndex].sort((a, b) => a.ordre - b.ordre);
+        });
+
+        return newColumns;
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la descente de la tâche';
+      setError(errorMessage);
+      throw err;
+    }
+  }, []);
+
   return {
     columns,
     isLoading,
     error,
     load,
     moveTache,
+    moveTacheUp,
+    moveTacheDown,
   };
 }

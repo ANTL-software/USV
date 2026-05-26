@@ -1,7 +1,7 @@
 import './tacheForm.scss';
 import { ReactElement, useEffect, useState, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { IoArrowBack, IoSave } from 'react-icons/io5';
+import { IoArrowBack, IoSave, IoTrash } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 import Header from '../../../components/header/Header';
@@ -11,6 +11,7 @@ import Button from '../../../components/button/Button';
 
 import { useTache } from '../../../hooks/useTache';
 import { useEmployes } from '../../../hooks/useEmployes';
+import { useAlert } from '../../../context/alert/AlertContext';
 import type { StatutTache, Priorite } from '../../../utils/types/projet.types';
 
 function TacheForm(): ReactElement {
@@ -20,6 +21,7 @@ function TacheForm(): ReactElement {
 
   const { employes } = useEmployes();
   const { tache } = useTache(tacheId ? parseInt(tacheId) : null);
+  const { showConfirm } = useAlert();
 
   const [formData, setFormData] = useState({
     titre: '',
@@ -96,6 +98,29 @@ function TacheForm(): ReactElement {
     }
   }, [formData, isEditing, tacheId, projectId, navigate]);
 
+  const handleDelete = useCallback(async () => {
+    const confirmed = await showConfirm(
+      'Êtes-vous sûr de vouloir supprimer cette tâche ?',
+      'Confirmation de suppression'
+    );
+
+    if (!confirmed) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const { deleteTacheService } = await import('../../../API/services/tache.service');
+      await deleteTacheService(parseInt(tacheId!));
+      navigate(`/projets/${projectId}/taches`);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur lors de la suppression';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [tacheId, projectId, navigate, showConfirm]);
+
   const statutOptions: { value: StatutTache; label: string }[] = [
     { value: 'a_faire', label: 'À faire' },
     { value: 'en_cours', label: 'En cours' },
@@ -124,6 +149,12 @@ function TacheForm(): ReactElement {
               <span>Retour</span>
             </Button>
             <h1>{isEditing ? 'Modifier la tâche' : 'Nouvelle tâche'}</h1>
+            {isEditing && (
+              <Button style="red" onClick={handleDelete}>
+                <IoTrash />
+                <span>Supprimer</span>
+              </Button>
+            )}
           </div>
 
           {/* Formulaire */}

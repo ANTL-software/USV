@@ -11,6 +11,7 @@ import Button from '../../../components/button/Button';
 
 import { useProjet } from '../../../hooks/useProjet';
 import { useEmployes } from '../../../hooks/useEmployes';
+import { useAlert } from '../../../context/alert/AlertContext';
 import type { TypeProjet, StatutProjet, Priorite, CreateProjetData, UpdateProjetData } from '../../../utils/types/projet.types';
 
 function ProjetForm(): ReactElement {
@@ -20,6 +21,7 @@ function ProjetForm(): ReactElement {
 
   const { employes } = useEmployes();
   const { projet } = useProjet(isEditing ? parseInt(id!) : null);
+  const { showConfirm } = useAlert();
 
   const [formData, setFormData] = useState<Partial<CreateProjetData>>({
     titre: '',
@@ -86,7 +88,12 @@ function ProjetForm(): ReactElement {
   }, [formData, isEditing, id, navigate]);
 
   const handleDelete = useCallback(async () => {
-    if (!confirm('Êtes-vous sûr de vouloir supprimer ce projet ?')) return;
+    const confirmed = await showConfirm(
+      'Êtes-vous sûr de vouloir supprimer ce projet ?',
+      'Confirmation de suppression'
+    );
+
+    if (!confirmed) return;
 
     setIsLoading(true);
     setError(null);
@@ -101,7 +108,7 @@ function ProjetForm(): ReactElement {
     } finally {
       setIsLoading(false);
     }
-  }, [id, navigate]);
+  }, [id, navigate, showConfirm]);
 
   const typeProjetOptions: { value: TypeProjet; label: string }[] = [
     { value: 'developpement', label: 'Développement' },

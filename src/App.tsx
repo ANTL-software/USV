@@ -145,10 +145,11 @@ function App(): ReactElement {
         <Route path={"projets/new"} element={<ProjetFormWithAuth />}></Route>
         <Route path={"projets/:id/edit"} element={<ProjetFormWithAuth />}></Route>
         <Route path={"projets/:id/taches/new"} element={<TacheFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches/:tacheId"} element={<TacheFormWithAuth />}></Route>
         <Route path={"projets/:id/taches/:tacheId/edit"} element={<TacheFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches"} element={<TachesKanbanWithAuth />}></Route>
         <Route path={"projets"} element={<ProjetsListWithAuth />}></Route>
         <Route path={"projets/:id"} element={<ProjetDetailsWithAuth />}></Route>
-        <Route path={"projets/:id/taches"} element={<TachesKanbanWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
