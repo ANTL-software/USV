@@ -52,6 +52,11 @@ import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
 import QualiteWithAuth from "./views/layouts/qualite/Qualite";
 import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 import ProspectsViewWithAuth from "./views/layouts/prospectsView/ProspectsView";
+import ProjetsListWithAuth from "./views/layouts/projets/ProjetsList";
+import ProjetFormWithAuth from "./views/layouts/projets/ProjetForm";
+import ProjetDetailsWithAuth from "./views/layouts/projets/ProjetDetails";
+import TacheFormWithAuth from "./views/layouts/projets/TacheForm";
+import TachesKanbanWithAuth from "./views/layouts/projets/TachesKanban";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -68,7 +73,7 @@ function BodyClassManager(): ReactElement | null {
       document.body.classList.add('section-webdev');
     } else if (location.pathname.includes('/utils')) {
       document.body.classList.add('section-utils');
-      
+
       // Add subnav class if we're in a sub-application
       if (location.pathname !== '/utils') {
         document.body.classList.add('hasSubnav');
@@ -88,10 +93,10 @@ function App(): ReactElement {
       once: true,
       offset: 100
     });
-    
+
     // Log environment information on app start
     logEnvironmentInfo();
-    
+
     // Test environment configuration in development
     if (import.meta.env.DEV) {
       testEnvironmentConfig();
@@ -136,10 +141,18 @@ function App(): ReactElement {
         <Route path={"produits/new"} element={<ProduitFormWithAuth />}></Route>
         <Route path={"produits/:id"} element={<ProduitFormWithAuth />}></Route>
         <Route path={"paniers"} element={<PaniersListWithAuth />}></Route>
-	      <Route path={"paniers/:idPanier/produits"} element={<PanierProduitsListWithAuth />}></Route>
+        <Route path={"paniers/:idPanier/produits"} element={<PanierProduitsListWithAuth />}></Route>
+        <Route path={"projets/new"} element={<ProjetFormWithAuth />}></Route>
+        <Route path={"projets/:id/edit"} element={<ProjetFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches/new"} element={<TacheFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches/:tacheId"} element={<TacheFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches/:tacheId/edit"} element={<TacheFormWithAuth />}></Route>
+        <Route path={"projets/:id/taches"} element={<TachesKanbanWithAuth />}></Route>
+        <Route path={"projets"} element={<ProjetsListWithAuth />}></Route>
+        <Route path={"projets/:id"} element={<ProjetDetailsWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-      
+
       {/* Notification hors ligne globale */}
       <div className="offline-notice">
         📱 Mode hors ligne - Fonctionnalités limitées

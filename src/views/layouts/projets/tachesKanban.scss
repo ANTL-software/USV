@@ -1,0 +1,314 @@
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
+
+#tachesKanban {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .tachesKanban__container {
+    @include mixins.centeredContainer(1800px);
+  }
+
+  // Loading
+  .tachesKanban__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+    padding: 3em;
+    text-align: center;
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid vars.$greyBackground;
+      border-top-color: vars.$utilsPrimary;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  }
+
+  // Erreur
+  .tachesKanban__error {
+    @include mixins.card(12px, light);
+    padding: 2em;
+    text-align: center;
+    background: vars.$errorColor;
+    color: white;
+    border-radius: 8px;
+  }
+
+  // Header
+  .tachesKanban__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1em;
+    margin-bottom: 2em;
+    flex-wrap: wrap;
+
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+      color: vars.$utilsPrimary;
+    }
+  }
+
+  // Kanban Board
+  .tachesKanban__board {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
+    overflow-x: auto;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (min-width: vars.$laptopWidth) {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.5em;
+    }
+  }
+
+  // Column
+  .tachesKanban__column {
+    @include mixins.card(12px, light);
+    display: flex;
+    flex-direction: column;
+    min-height: 500px;
+    max-height: calc(100vh - 200px);
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .tachesKanban__column-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 1em;
+    background: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid vars.$borderColor;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .tachesKanban__column-icon {
+    font-size: 1.2rem;
+    flex-shrink: 0;
+  }
+
+  .tachesKanban__column-title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: vars.$fontColorPrimary;
+    flex: 1;
+  }
+
+  .tachesKanban__column-count {
+    padding: 0.25em 0.5em;
+    background: vars.$utilsPrimary;
+    color: white;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  // Tasks container
+  .tachesKanban__tasks {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+      border-radius: 3px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: vars.$utilsPrimary;
+      border-radius: 3px;
+    }
+  }
+
+  // Empty state
+  .tachesKanban__empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100px;
+    color: vars.$fontColorSecondary;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  // Task card
+  .tachesKanban__task {
+    @include mixins.card(8px, light);
+    padding: 1em;
+    background: white;
+    cursor: pointer;
+    transition: all vars.$transitionMedium;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: vars.$shadowMedium;
+    }
+  }
+
+  .tachesKanban__task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.5em;
+  }
+
+  .tachesKanban__task-progress {
+    padding: 0.25em 0.5em;
+    background: linear-gradient(135deg, vars.$utilsPrimary 0%, vars.$utilsSecondary 100%);
+    color: white;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+
+  .tachesKanban__task-title {
+    margin: 0 0 0.5em;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: vars.$fontColorPrimary;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tachesKanban__task-description {
+    margin: 0 0 0.75em;
+    font-size: 0.85rem;
+    color: vars.$fontColorSecondary;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .tachesKanban__task-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    margin-bottom: 0.75em;
+  }
+
+  .tachesKanban__task-assignee,
+  .tachesKanban__task-time {
+    display: flex;
+    align-items: center;
+    gap: 0.35em;
+    font-size: 0.8rem;
+    color: vars.$fontColorSecondary;
+  }
+
+  .tachesKanban__task-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35em;
+  }
+
+  .tachesKanban__tag {
+    padding: 0.2em 0.5em;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .tachesKanban__tag-more {
+    padding: 0.2em 0.5em;
+    background: vars.$greyBackground;
+    color: vars.$fontColorSecondary;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 500;
+  }
+
+  .tachesKanban__task-actions {
+    display: flex;
+    gap: 0.35em;
+    padding-top: 0.5em;
+    border-top: 1px solid vars.$borderColor;
+  }
+
+  .tachesKanban__task-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.35em;
+    font-size: 0.9rem;
+  }
+
+  // Badges
+  .tachesKanban__badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 4px;
+    font-size: 0.75rem;
+
+    &--critique {
+      background: #fecaca;
+      color: #991b1b;
+    }
+
+    &--haute {
+      background: #fed7aa;
+      color: #9a3412;
+    }
+
+    &--normale {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    &--basse {
+      background: #dbeafe;
+      color: #1e40af;
+    }
+  }
+
+  // Responsive
+  @media (min-width: vars.$tabletWidth) {
+    .tachesKanban__task-footer {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tachesKanban__task-assignee,
+    .tachesKanban__task-time {
+      flex: 1;
+    }
+  }
+}

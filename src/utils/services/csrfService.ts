@@ -21,6 +21,7 @@ class CSRFService {
   async fetchToken(): Promise<string> {
     try {
       // Avec les cookies httpOnly, l'authentification est transparente
+      // L'URL de base contient déjà /api, donc on utilise juste /csrf-token
       const response = await getRequest('/csrf-token') as { data: CSRFTokenResponse };
       
       if (response.data.success && response.data.csrfToken) {

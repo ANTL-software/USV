@@ -5,6 +5,7 @@ import "./home.scss";
 import mailBackground from "../../../assets/background/mailSectionBckground.webp";
 import calendarBackground from "../../../assets/background/calendar.webp";
 import callCenterBackground from "../../../assets/background/utilsSection.webp";
+import projetsBackground from "../../../assets/background/projetSection.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -45,6 +46,14 @@ function Home(): ReactElement {
                 <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
               </figure>
               <h2>Gestion opérationnelle</h2>
+            </Link>
+          </section>
+          <section className={"projetsSection"}>
+            <Link to={"/projets"}>
+              <figure>
+                <img src={projetsBackground} alt={"Gestion de projets"} />
+              </figure>
+              <h2>Gestion de projets</h2>
             </Link>
           </section>
         </div>
