@@ -4,6 +4,7 @@ import Select from 'react-select';
 import { useSupervision } from '../../../hooks/useSupervision';
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { useGraphiques } from '../../../hooks/useGraphiques';
+import { getRequest } from '../../../API/APICalls';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
@@ -15,6 +16,9 @@ import AppelsParHeureChart from '../../../components/appelsParHeureChart/AppelsP
 import TauxAboutiChart from '../../../components/tauxAboutiChart/TauxAboutiChart';
 import DureeMoyenneChart from '../../../components/dureeMoyenneChart/DureeMoyenneChart';
 import TopRaisonsChart from '../../../components/topRaisonsChart/TopRaisonsChart';
+import StatutsAppelsChart from '../../../components/statutsAppelsChart/StatutsAppelsChart';
+import StatutsParHeureChart from '../../../components/statutsParHeureChart/StatutsParHeureChart';
+import AppelsParOrigineChart from '../../../components/appelsParOrigineChart/AppelsParOrigineChart';
 import FilterPanel, { DateFilters } from '../../../components/filterPanel/FilterPanel';
 import ExportButton from '../../../components/exportButton/ExportButton';
 import PrintButton from '../../../components/printButton/PrintButton';
@@ -238,14 +242,24 @@ const SummaryCards = ({ counts, agents, calls }: {
 const SupervisionView = () => {
   const navigate = useNavigate();
   const [selectedCampagne, setSelectedCampagne] = useState<number | null>(null);
+  const [selectedEmploye, setSelectedEmploye] = useState<number | null>(null);
   const [showGraphiques, setShowGraphiques] = useState<boolean>(true);
   const [dateFilters, setDateFilters] = useState<DateFilters>({ dateDebut: null, dateFin: null });
+  const [agentsList, setAgentsList] = useState<Array<{id_employe: number, nom: string, prenom: string, identifiant: string}>>([]);
+  const [agentsLoading, setAgentsLoading] = useState<boolean>(false);
   const { queueState, isLoading, error } = useSupervision(selectedCampagne);
+  
+  // Utiliser useGraphiques seulement quand une campagne est sélectionnée et aucun employé
+  // Pas besoin de condition complexe : si selectedCampagne existe, on passe les paramètres
   const { stats: graphiquesStats, isLoading: graphiquesLoading } = useGraphiques(
-    selectedCampagne || undefined,
-    dateFilters.dateDebut || undefined,
-    dateFilters.dateFin || undefined
+    selectedCampagne && !selectedEmploye ? selectedCampagne : undefined,
+    selectedCampagne && !selectedEmploye ? dateFilters.dateDebut || undefined : undefined,
+    selectedCampagne && !selectedEmploye ? dateFilters.dateFin || undefined : undefined,
+    selectedCampagne && !selectedEmploye ? 60000 : 0
   );
+  
+  const [employeStats, setEmployeStats] = useState<any>(null);
+  const [employeStatsLoading, setEmployeStatsLoading] = useState<boolean>(false);
 
   // Tick chaque seconde pour animer les chronomètres (durées statuts, etc.)
   const [now, setNow] = useState(() => Date.now());
@@ -262,9 +276,75 @@ const SupervisionView = () => {
     label: c.nom_campagne
   }));
 
+  // Charger les agents de la campagne sélectionnée
+  useEffect(() => {
+    if (!selectedCampagne) {
+      setAgentsList([]);
+      setSelectedEmploye(null);
+      return;
+    }
+
+    const fetchAgents = async () => {
+      try {
+        setAgentsLoading(true);
+        const response = await getRequest(`/supervision/campagne/${selectedCampagne}/agents`);
+        setAgentsList(response.data.data || []);
+      } catch (err) {
+        console.error('[SupervisionView] Erreur chargement agents:', err);
+        setAgentsList([]);
+      } finally {
+        setAgentsLoading(false);
+      }
+    };
+
+    fetchAgents();
+  }, [selectedCampagne]);
+
+  // Charger les stats par employé si un employé est sélectionné
+  useEffect(() => {
+    if (!selectedEmploye || !selectedCampagne) {
+      setEmployeStats(null);
+      return;
+    }
+
+    const fetchEmployeStats = async () => {
+      try {
+        setEmployeStatsLoading(true);
+        const params: Record<string, string> = {
+          id_campagne: String(selectedCampagne),
+          id_employe: String(selectedEmploye)
+        };
+        if (dateFilters.dateDebut) params.date_debut = dateFilters.dateDebut;
+        if (dateFilters.dateFin) params.date_fin = dateFilters.dateFin;
+
+        const response = await getRequest('/supervision/graphiques/employe', params);
+        setEmployeStats(response.data.data);
+      } catch (err) {
+        console.error('[SupervisionView] Erreur chargement stats employé:', err);
+        setEmployeStats(null);
+      } finally {
+        setEmployeStatsLoading(false);
+      }
+    };
+
+    fetchEmployeStats();
+  }, [selectedEmploye, selectedCampagne, dateFilters.dateDebut, dateFilters.dateFin]);
+
   const counts = queueState?.queueCounts || [];
   const agents = queueState?.agents || [];
   const calls = queueState?.callsInProgress || [];
+
+  // Options pour le select des employés
+  const employeOptions = [
+    { value: 'all', label: 'Tous les agents' },
+    ...agentsList.map(a => ({
+      value: String(a.id_employe),
+      label: `${a.nom} ${a.prenom} (${a.identifiant})`
+    }))
+  ];
+
+  // Stats à afficher (soit globales, soit par employé)
+  const displayStats = selectedEmploye ? employeStats : graphiquesStats;
 
   // Agents en appel = ceux présents dans callsInProgress → ne pas afficher dans "Agents affectés"
   const inCallAgentIds = new Set(calls.map(c => c.id_agent));
@@ -327,29 +407,53 @@ const SupervisionView = () => {
                   </section>
 
                   <section className="supervisionView__graphiques">
-                    <FilterPanel
-                      filters={dateFilters}
-                      onFiltersChange={setDateFilters}
-                    />
+                    <div className="supervisionView__filters">
+                      <div className="supervisionView__selector supervisionView__selector--inline">
+                        <label>Filtrer par agent (optionnel)</label>
+                        <Select
+                          options={employeOptions}
+                          value={selectedEmploye ? employeOptions.find((o: { value: string }) => o.value === String(selectedEmploye)) : employeOptions[0]}
+                          onChange={(option) => {
+                            if (option && (option as { value: string }).value === 'all') {
+                              setSelectedEmploye(null);
+                            } else {
+                              setSelectedEmploye(option ? Number((option as { value: string }).value) : null);
+                            }
+                          }}
+                          styles={reactSelectStyles}
+                          placeholder={agentsLoading ? "Chargement..." : "Choisir un agent..."}
+                          isClearable
+                          isDisabled={agentsLoading}
+                        />
+                      </div>
+
+                      <div className="supervisionView__filter-dates">
+                        <FilterPanel
+                          filters={dateFilters}
+                          onFiltersChange={setDateFilters}
+                        />
+                      </div>
+                    </div>
                     <div className="supervisionView__section-header supervisionView__section-header--toggle">
-                      <h3>Graphiques de performance</h3>
+                      <h3>Graphiques de performance{selectedEmploye && agentsList.find(a => a.id_employe === selectedEmploye) ? ` - ${agentsList.find(a => a.id_employe === selectedEmploye)?.nom} ${agentsList.find(a => a.id_employe === selectedEmploye)?.prenom}` : ''}</h3>
                       <div className="supervisionView__header-actions">
                         <ExportButton
                           data={{
                             campagne: campagneOptions.find((o: { value: string }) => o.value === String(selectedCampagne))?.label,
+                            employe: selectedEmploye ? agentsList.find(a => a.id_employe === selectedEmploye)?.nom + ' ' + agentsList.find(a => a.id_employe === selectedEmploye)?.prenom : 'Tous',
                             dateDebut: dateFilters.dateDebut || undefined,
                             dateFin: dateFilters.dateFin || undefined,
-                            stats: graphiquesStats || {
+                            stats: displayStats || {
                               appelsParHeure: [],
                               tauxAbouti: { aboutis: 0, non_aboutis: 0, taux_abouti: 0 },
                               dureeMoyenne7j: [],
                               topRaisons: []
                             }
                           }}
-                          disabled={!graphiquesStats || graphiquesLoading}
+                          disabled={!displayStats || (graphiquesLoading || employeStatsLoading)}
                         />
                         <PrintButton
-                          disabled={!graphiquesStats || graphiquesLoading}
+                          disabled={!displayStats || (graphiquesLoading || employeStatsLoading)}
                         />
                         <button
                           className="supervisionView__toggle-btn"
@@ -363,24 +467,36 @@ const SupervisionView = () => {
 
                     {showGraphiques && (
                       <>
-                        {graphiquesLoading && <Loader message="Chargement des graphiques..." />}
+                        {(graphiquesLoading || employeStatsLoading) && <Loader message="Chargement des graphiques..." />}
 
-                        {!graphiquesLoading && (
+                        {!(graphiquesLoading || employeStatsLoading) && displayStats && (
                           <div className="supervisionView__graphiques-grid">
                             <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <AppelsParHeureChart data={graphiquesStats?.appelsParHeure || []} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <TauxAboutiChart data={graphiquesStats?.tauxAbouti || { aboutis: 0, non_aboutis: 0, taux_abouti: 0 }} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <DureeMoyenneChart data={graphiquesStats?.dureeMoyenne7j || []} />
+                              <StatutsAppelsChart data={displayStats?.appelsParStatut || []} />
                             </div>
 
                             <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <TopRaisonsChart data={graphiquesStats?.topRaisons || []} />
+                              <AppelsParHeureChart data={displayStats?.appelsParHeure || []} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <TauxAboutiChart data={displayStats?.tauxAbouti || { aboutis: 0, non_aboutis: 0, taux_abouti: 0 }} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <DureeMoyenneChart data={displayStats?.dureeMoyenne7j || []} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <AppelsParOrigineChart data={displayStats?.appelsParOrigine || []} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--half">
+                              <TopRaisonsChart data={displayStats?.topRaisons || []} />
+                            </div>
+
+                            <div className="supervisionView__graphique supervisionView__graphique--full">
+                              <StatutsParHeureChart data={displayStats?.statutsParHeure || []} />
                             </div>
                           </div>
                         )}

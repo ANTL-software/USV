@@ -36,6 +36,27 @@
       font-size: 0.9em;
       color: vars.$fontColorSecondary;
     }
+
+    &--inline {
+      margin-bottom: 0;
+      max-width: 20em;
+      flex: 1;
+      min-width: 15em;
+    }
+  }
+
+  // Filters area
+  .supervisionView__filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1em;
+    margin-bottom: 1.5em;
+    align-items: flex-start;
+  }
+
+  .supervisionView__filter-dates {
+    flex: 1;
+    min-width: 20em;
   }
 
   .supervisionView__content {
