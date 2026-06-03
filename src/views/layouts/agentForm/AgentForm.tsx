@@ -169,7 +169,7 @@ function AgentForm(): ReactElement {
               </div>
             </fieldset>
 
-            {isEdit ? (
+            {isEdit && (
               <fieldset className="agentForm__fieldset agentForm__fieldset--sip">
                 <legend>Configuration SIP</legend>
                 {(existing?.sip_uri || sipUri) ? (
