@@ -53,3 +53,19 @@ export const STATUT_COLORS: Record<string, string> = {
   rdv_pris: '#9b59b6',
   vente_conclue: '#2ecc71',
 };
+
+// Types supplémentaires pour les graphiques
+export interface StatutAppelCount {
+  statut: string;
+  nombre: number;
+}
+
+export interface StatutAppelParHeure {
+  heure: number;
+  statuts: Record<string, number>;
+}
+
+export interface AppelsParOrigine {
+  origine: string;
+  nombre: number;
+}

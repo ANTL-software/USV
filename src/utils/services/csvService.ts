@@ -8,6 +8,7 @@ import type {
 
 export interface SupervisionExportData {
   campagne?: string;
+  employe?: string;
   dateDebut?: string;
   dateFin?: string;
   stats: AllGraphiquesStats;
