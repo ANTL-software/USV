@@ -191,10 +191,6 @@ function AgentForm(): ReactElement {
                   </div>
                 )}
               </fieldset>
-            ) : (
-              <div className="agentForm__sip-info">
-                Les credentials SIP seront provisionnés automatiquement sur SignalWire à la création.
-              </div>
             )}
 
             <div className="agentForm__actions">
