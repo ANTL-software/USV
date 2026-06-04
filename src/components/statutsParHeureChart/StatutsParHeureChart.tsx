@@ -13,10 +13,28 @@ interface StatutsParHeureChartProps {
  * Affiche l'évolution des statuts d'appels heure par heure
  */
 function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement {
+  // Protection contre data undefined ou vide
+  if (!data || !Array.isArray(data) || data.length === 0) {
+    return (
+      <div id="statutsParHeureChart">
+        <div className="statutsParHeureChart__container">
+          <div className="statutsParHeureChart__header">
+            <h3>Statuts d'appels par heure (24h)</h3>
+          </div>
+          <div className="statutsParHeureChart__chart">
+            <p className="statutsParHeureChart__empty">Aucune donnée disponible</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Obtenir tous les statuts uniques présents dans les données
   const allStatuts = new Set<string>();
   data.forEach(hourData => {
-    Object.keys(hourData.statuts).forEach(statut => allStatuts.add(statut));
+    if (hourData && hourData.statuts && typeof hourData.statuts === 'object') {
+      Object.keys(hourData.statuts).forEach(statut => allStatuts.add(statut));
+    }
   });
 
   // Filtrer pour ne garder que les statuts les plus importants
@@ -25,10 +43,12 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
 
   // Formatter les données pour le graphique (stacked bar chart)
   const chartData = data.map(hourData => {
-    const hourObj: Record<string, number | string> = { heure: `${hourData.heure}h` };
-    displayStatuts.forEach(statut => {
-      hourObj[statut] = hourData.statuts[statut] || 0;
-    });
+    const hourObj: Record<string, number | string> = { heure: `${hourData?.heure || 0}h` };
+    if (hourData && hourData.statuts && typeof hourData.statuts === 'object') {
+      displayStatuts.forEach(statut => {
+        hourObj[statut] = hourData.statuts[statut] || 0;
+      });
+    }
     return hourObj;
   });
 
@@ -43,7 +63,7 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
           <span className="statutsParHeureChart__tooltip-hour">Heure: {label}h</span>
           <div className="statutsParHeureChart__tooltip-statuts">
             {displayStatuts.map(statut => {
-              const count = hourData.statuts[statut] || 0;
+              const count = hourData?.statuts?.[statut] ?? 0;
               if (count === 0) return null;
               return (
                 <div key={statut} className="statutsParHeureChart__tooltip-statut">
@@ -62,7 +82,7 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
             })}
           </div>
           <span className="statutsParHeureChart__tooltip-total">
-            Total: {Object.values(hourData.statuts).reduce((a, b) => a + b, 0).toLocaleString('fr-FR')}
+            Total: {Object.values(hourData?.statuts || {}).reduce((a, b) => a + b, 0).toLocaleString('fr-FR')}
           </span>
         </div>
       );
