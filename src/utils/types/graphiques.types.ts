@@ -28,6 +28,9 @@ export interface AllGraphiquesStats {
   tauxAbouti: TauxAbouti;
   dureeMoyenne7j: DureeMoyenneParJour[];
   topRaisons: RaisonEchec[];
+  appelsParStatut: StatutAppelCount[];
+  statutsParHeure: StatutAppelParHeure[];
+  appelsParOrigine: AppelsParOrigine[];
 }
 
 // Labels pour les statuts d'appels
