@@ -26,15 +26,15 @@ interface AppelsParOrigineChartProps {
  */
 function AppelsParOrigineChart({ data }: AppelsParOrigineChartProps): ReactElement {
   // Calculer le total
-  const total = data.reduce((sum, item) => sum + item.nombre, 0);
+  const total = data.reduce((sum, item) => sum + (item.nombre ?? 0), 0);
 
   // Formatter les données pour le graphique
   const chartData = data.map((item) => ({
     name: ORIGINE_LABELS[item.origine] || item.origine,
-    value: item.nombre,
+    value: item.nombre ?? 0, // Protection contre undefined/null
     color: ORIGINE_COLORS[item.origine] || '#95a5a6',
     origine: item.origine,
-    percentage: total > 0 ? (item.nombre / total) * 100 : 0
+    percentage: total > 0 ? ((item.nombre ?? 0) / total) * 100 : 0
   }));
 
   // Custom tooltip pour afficher le nombre et le pourcentage
@@ -45,7 +45,7 @@ function AppelsParOrigineChart({ data }: AppelsParOrigineChartProps): ReactEleme
         <div className="appelsParOrigineChart__tooltip">
           <span className="appelsParOrigineChart__tooltip-label">{entry.name}</span>
           <span className="appelsParOrigineChart__tooltip-value">
-            {entry.value.toLocaleString('fr-FR')} appels
+            {entry.value != null ? entry.value.toLocaleString('fr-FR') : '0'} appels
           </span>
           <span className="appelsParOrigineChart__tooltip-percentage">
             ({entry.percentage.toFixed(1)}%)
@@ -109,7 +109,7 @@ function AppelsParOrigineChart({ data }: AppelsParOrigineChartProps): ReactEleme
                 {entry.name}
               </span>
               <span className="appelsParOrigineChart__detail-value">
-                {entry.value.toLocaleString('fr-FR')} ({entry.percentage.toFixed(1)}%)
+                {entry.value != null ? entry.value.toLocaleString('fr-FR') : '0'} ({entry.percentage.toFixed(1)}%)
               </span>
             </div>
           ))}

@@ -92,6 +92,14 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   }
 );
+/**
+ * Détection simplifiée : si l'objet contient des clés config Axios,
+ * c'est un config, sinon ce sont des query parameters
+ */
+const isAxiosConfig = (obj: Record<string, unknown>): boolean => {
+  const axiosConfigKeys = ['params', 'headers', 'timeout', 'withCredentials', 'auth', 'responseType', 'transformRequest', 'transformResponse', 'adapter'];
+  return Object.keys(obj).some(key => axiosConfigKeys.includes(key));
+};
 
 export const getRequest: (url: string, config?: Record<string, unknown>) => Promise<AxiosResponse> = async (
   url: string,
@@ -101,15 +109,6 @@ export const getRequest: (url: string, config?: Record<string, unknown>) => Prom
   // l'envelopper dans { params: ... } pour les query parameters
   const axiosConfig = config && !isAxiosConfig(config) ? { params: config } : config;
   return await axios.get(url, axiosConfig);
-};
-
-/**
- * Détection simplifiée : si l'objet contient des clés config Axios,
- * c'est un config, sinon ce sont des query parameters
- */
-const isAxiosConfig = (obj: Record<string, unknown>): boolean => {
-  const axiosConfigKeys = ['params', 'headers', 'timeout', 'withCredentials', 'auth', 'responseType', 'transformRequest', 'transformResponse', 'adapter'];
-  return Object.keys(obj).some(key => axiosConfigKeys.includes(key));
 };
 
 export const postRequest = async <T, R>(
