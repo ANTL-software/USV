@@ -211,4 +211,93 @@
     font-weight: 600;
     font-variant-numeric: tabular-nums;
   }
+
+  .commandesList__delete-btn {
+    background: none;
+    border: none;
+    color: vars.$errorColor;
+    font-size: 1.25rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25em;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    margin: 0 auto;
+
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+      transform: scale(1.1);
+    }
+  }
+
+  .commandesList__restore-btn {
+    background: none;
+    border: none;
+    color: #16a34a;
+    font-size: 1.35rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25em;
+    border-radius: 4px;
+    transition: all 0.15s ease;
+    margin: 0 auto;
+
+    &:hover {
+      background: rgba(22, 163, 74, 0.1);
+      transform: scale(1.1);
+    }
+  }
+
+  .commandesList__actions-cell {
+    text-align: center;
+  }
+
+  // Ligne soft-deleted : fond rouge pastel
+  .commandesList__row--deleted {
+    background-color: #fff1f2 !important;
+    color: #9f1239;
+    opacity: 0.85;
+
+    td {
+      color: #9f1239;
+    }
+
+    &:hover {
+      background-color: #ffe4e6 !important;
+    }
+  }
+
+  // Badge "Mode Corbeille" dans le header
+  .commandesList__corbeille-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    background: #fff1f2;
+    border: 1px solid #fca5a5;
+    color: #be123c;
+    font-size: 0.8em;
+    font-weight: 600;
+    padding: 0.3em 0.75em;
+    border-radius: 20px;
+    margin-left: 0.5em;
+  }
+
+  // Bannière info corbeille
+  .commandesList__corbeille-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    background: #fff1f2;
+    border: 1px solid #fca5a5;
+    border-radius: 8px;
+    padding: 0.75em 1em;
+    margin-bottom: 1em;
+    color: #be123c;
+    font-size: 0.9em;
+    font-weight: 500;
+  }
 }

@@ -34,9 +34,9 @@ export const alert = async (message: string, title?: string): Promise<void> => {
 };
 
 // Remplace window.confirm()
-export const confirm = async (message: string, title?: string): Promise<boolean> => {
+export const confirm = async (message: string, title?: string, confirmText?: string, cancelText?: string): Promise<boolean> => {
   const service = ensureServiceInitialized();
-  return await service.showConfirm(message, title);
+  return await service.showConfirm(message, title, confirmText, cancelText);
 };
 
 // Notifications de succès

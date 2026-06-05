@@ -37,11 +37,13 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
     });
   }, []);
 
-  const showConfirm = useCallback((message: string, title?: string): Promise<boolean> => {
+  const showConfirm = useCallback((message: string, title?: string, confirmText?: string, cancelText?: string): Promise<boolean> => {
     return showAlert({
       type: 'confirm',
       title: title || 'Confirmation',
-      message
+      message,
+      confirmText,
+      cancelText
     });
   }, [showAlert]);
 

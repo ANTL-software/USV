@@ -1,17 +1,18 @@
 import { ReactElement, useState, useEffect, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
-import { MdArrowBack } from 'react-icons/md';
+import { MdArrowBack, MdDelete, MdRestore } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
+import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import { VenteContext } from '../../../context/vente/VenteContext.tsx';
 import { useCampagnes } from '../../../hooks/useCampagnes';
-import { getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
+import { getVenteDocumentUrl, deleteVenteService, restoreVenteService } from '../../../API/services/vente.service.ts';
 import {
   STATUT_VENTE_OPTIONS,
   STATUT_VENTE_LABELS,
@@ -44,6 +45,11 @@ function agentName(v: Vente): string {
   return `${v.agent.prenom} ${v.agent.nom.toUpperCase()}`;
 }
 
+const VUE_OPTIONS = [
+  { value: 'actives', label: 'Commandes actives' },
+  { value: 'corbeille', label: '🗑️ Corbeille (supprimées)' },
+];
+
 function CommandesList(): ReactElement {
   const navigate = useNavigate();
   const venteCtx = useContext(VenteContext);
@@ -56,6 +62,70 @@ function CommandesList(): ReactElement {
   const [localStatut, setLocalStatut] = useState<StatutVente | ''>('');
   const [localDateDebut, setLocalDateDebut] = useState('');
   const [localDateFin, setLocalDateFin] = useState('');
+  const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
+
+  const isCorbeille = vueMode === 'corbeille';
+
+  // Quand le mode vue change, on recharge
+  const handleVueModeChange = useCallback((mode: 'actives' | 'corbeille') => {
+    setVueMode(mode);
+    setFilters({
+      soft_deleted: mode === 'corbeille',
+      statut: undefined,
+      page: 1,
+    });
+    setLocalStatut('');
+  }, [setFilters]);
+
+  const handleDeleteClick = useCallback(async (v: Vente, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    // Étape 1 : Confirmation de base de la suppression
+    const confirmed = await confirm(
+      `Êtes-vous sûr de vouloir supprimer la commande ${v.reference_doc ?? `#${v.id_vente}`} ?`,
+      "Supprimer la commande",
+      "Supprimer",
+      "Annuler"
+    );
+    if (!confirmed) return;
+
+    // Étape 2 : Choix du niveau de suppression (purge ou suppression simple)
+    const purge = await confirm(
+      "Souhaitez-vous également supprimer l'enregistrement de cette vente au niveau du commercial (CA mensuel, objectif, commission) ?\n\n- OUI (Purge totale) : Supprime définitivement la commande et la retire des statistiques du commercial.\n- NON (Suppression simple) : Retire la commande de cette vue mais la conserve pour le commercial.",
+      "Niveau de suppression",
+      "Oui (Purge totale)",
+      "Non (Suppression simple)"
+    );
+
+    try {
+      await deleteVenteService(v.id_vente, purge);
+      await load();
+    } catch (err) {
+      console.error('Erreur lors de la suppression de la vente:', err);
+      await showError('Impossible de supprimer la commande.', 'Erreur');
+    }
+  }, [load]);
+
+  const handleRestoreClick = useCallback(async (v: Vente, e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    const confirmed = await confirm(
+      `Souhaitez-vous restaurer la commande ${v.reference_doc ?? `#${v.id_vente}`} ?\n\nElle réapparaîtra dans la liste des commandes actives.`,
+      "Restaurer la commande",
+      "Restaurer",
+      "Annuler"
+    );
+    if (!confirmed) return;
+
+    try {
+      await restoreVenteService(v.id_vente);
+      await showSuccess(`Commande ${v.reference_doc ?? `#${v.id_vente}`} restaurée avec succès.`, 'Restauration');
+      await load();
+    } catch (err) {
+      console.error('Erreur lors de la restauration de la vente:', err);
+      await showError('Impossible de restaurer la commande.', 'Erreur');
+    }
+  }, [load]);
 
   useEffect(() => {
     if (filters.campagne) {
@@ -64,18 +134,19 @@ function CommandesList(): ReactElement {
   }, [filters.campagne, load]);
 
   const handleCampagneChange = useCallback((campagneId: number | null) => {
-    setFilters({ campagne: campagneId ?? undefined, page: 1 });
-  }, [setFilters]);
+    setFilters({ campagne: campagneId ?? undefined, soft_deleted: isCorbeille, page: 1 });
+  }, [setFilters, isCorbeille]);
 
   const handleSearch = useCallback(() => {
     setFilters({
       statut: localStatut || undefined,
       date_debut: localDateDebut || undefined,
       date_fin: localDateFin || undefined,
+      soft_deleted: isCorbeille,
       page: 1,
     });
     load();
-  }, [localStatut, localDateDebut, localDateFin, setFilters, load]);
+  }, [localStatut, localDateDebut, localDateFin, setFilters, load, isCorbeille]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setFilters({ page: newPage });
@@ -83,6 +154,7 @@ function CommandesList(): ReactElement {
   }, [setFilters, load]);
 
   const handleRowClick = useCallback((v: Vente) => {
+    if (v.soft_deleted) return; // Pas de PDF pour les commandes en corbeille
     const url = getVenteDocumentUrl(v.id_vente);
     window.open(url, '_blank');
   }, []);
@@ -117,6 +189,9 @@ function CommandesList(): ReactElement {
               <MdArrowBack /> Retour
             </Button>
             <h2>Commandes</h2>
+            {isCorbeille && (
+              <span className="commandesList__corbeille-badge">🗑️ Mode Corbeille</span>
+            )}
           </div>
 
           {/* Filtres */}
@@ -134,19 +209,34 @@ function CommandesList(): ReactElement {
             </div>
 
             <div className="commandesList__filter-group">
-              <label>Statut</label>
+              <label>Vue</label>
               <Select
-                options={statutOptions}
-                value={statutOptions.find(o => o.value === localStatut) ?? statutOptions[0]}
+                options={VUE_OPTIONS}
+                value={VUE_OPTIONS.find(o => o.value === vueMode) ?? VUE_OPTIONS[0]}
                 onChange={opt => {
-                  const val = (opt as typeof statutOptions[number] | null)?.value as StatutVente | '' | undefined;
-                  setLocalStatut(val ?? '');
+                  if (opt) handleVueModeChange((opt as typeof VUE_OPTIONS[number]).value as 'actives' | 'corbeille');
                 }}
                 styles={reactSelectStyles}
-                placeholder="Tous les statuts"
                 isSearchable={false}
               />
             </div>
+
+            {!isCorbeille && (
+              <div className="commandesList__filter-group">
+                <label>Statut</label>
+                <Select
+                  options={statutOptions}
+                  value={statutOptions.find(o => o.value === localStatut) ?? statutOptions[0]}
+                  onChange={opt => {
+                    const val = (opt as typeof statutOptions[number] | null)?.value as StatutVente | '' | undefined;
+                    setLocalStatut(val ?? '');
+                  }}
+                  styles={reactSelectStyles}
+                  placeholder="Tous les statuts"
+                  isSearchable={false}
+                />
+              </div>
+            )}
 
             <div className="commandesList__filter-group">
               <label>Du</label>
@@ -167,8 +257,8 @@ function CommandesList(): ReactElement {
 
           {error && <div className="commandesList__error">{error}</div>}
 
-          {/* Cards récapitulatives */}
-          {ventes.length > 0 && (
+          {/* Cards récapitulatives — masquées en mode corbeille */}
+          {ventes.length > 0 && !isCorbeille && (
             <div className="commandesList__summary">
               <div className="summary-card summary-card--total">
                 <span className="summary-card__value">{totalVentes}</span>
@@ -193,6 +283,13 @@ function CommandesList(): ReactElement {
             </div>
           )}
 
+          {/* Compteur corbeille */}
+          {ventes.length > 0 && isCorbeille && (
+            <div className="commandesList__corbeille-info">
+              <span>{totalVentes} commande{totalVentes > 1 ? 's' : ''} supprimée{totalVentes > 1 ? 's' : ''} (soft delete)</span>
+            </div>
+          )}
+
           {/* Contenu */}
           {!filters.campagne && (
             <div className="empty">Sélectionnez une campagne pour voir les commandes.</div>
@@ -203,7 +300,11 @@ function CommandesList(): ReactElement {
           )}
 
           {filters.campagne && !isLoading && ventes.length === 0 && !error && (
-            <div className="empty">Aucune commande trouvée pour cette campagne.</div>
+            <div className="empty">
+              {isCorbeille
+                ? 'Aucune commande supprimée pour cette campagne.'
+                : 'Aucune commande trouvée pour cette campagne.'}
+            </div>
           )}
 
           {ventes.length > 0 && (
@@ -217,27 +318,58 @@ function CommandesList(): ReactElement {
                       <th>Prospect</th>
                       <th>Agent</th>
                       <th>Montant</th>
-                      <th>Statut</th>
-                      <th>Paiement</th>
+                      {!isCorbeille && <th>Statut</th>}
+                      {!isCorbeille && <th>Paiement</th>}
+                      <th style={{ textAlign: 'center' }}>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
                     {ventes.map(v => (
-                      <tr key={v.id_vente} onClick={() => handleRowClick(v)} className="commandesList__row--clickable">
+                      <tr
+                        key={v.id_vente}
+                        onClick={() => handleRowClick(v)}
+                        className={[
+                          !isCorbeille ? 'commandesList__row--clickable' : '',
+                          v.soft_deleted ? 'commandesList__row--deleted' : '',
+                        ].filter(Boolean).join(' ')}
+                      >
                         <td>{v.reference_doc ?? `#${v.id_vente}`}</td>
                         <td>{formatDate(v.date_vente)}</td>
                         <td>{prospectName(v)}</td>
                         <td>{agentName(v)}</td>
                         <td className="commandesList__montant">{formatMontant(v.montant_total)}</td>
-                        <td>
-                          <span
-                            className={`statut-badge statut-badge--${v.statut_vente}`}
-                            style={{ backgroundColor: STATUT_VENTE_COLORS[v.statut_vente as StatutVente] }}
-                          >
-                            {STATUT_VENTE_LABELS[v.statut_vente as StatutVente]}
-                          </span>
+                        {!isCorbeille && (
+                          <td>
+                            <span
+                              className={`statut-badge statut-badge--${v.statut_vente}`}
+                              style={{ backgroundColor: STATUT_VENTE_COLORS[v.statut_vente as StatutVente] }}
+                            >
+                              {STATUT_VENTE_LABELS[v.statut_vente as StatutVente]}
+                            </span>
+                          </td>
+                        )}
+                        {!isCorbeille && (
+                          <td>{v.mode_paiement ? MODE_PAIEMENT_LABELS[v.mode_paiement as ModePaiement] ?? v.mode_paiement : '—'}</td>
+                        )}
+                        <td className="commandesList__actions-cell" onClick={e => e.stopPropagation()}>
+                          {isCorbeille ? (
+                            <button
+                              className="commandesList__restore-btn"
+                              onClick={(e) => handleRestoreClick(v, e)}
+                              title="Restaurer la commande"
+                            >
+                              <MdRestore />
+                            </button>
+                          ) : (
+                            <button
+                              className="commandesList__delete-btn"
+                              onClick={(e) => handleDeleteClick(v, e)}
+                              title="Supprimer la commande"
+                            >
+                              <MdDelete />
+                            </button>
+                          )}
                         </td>
-                        <td>{v.mode_paiement ? MODE_PAIEMENT_LABELS[v.mode_paiement as ModePaiement] ?? v.mode_paiement : '—'}</td>
                       </tr>
                     ))}
                   </tbody>

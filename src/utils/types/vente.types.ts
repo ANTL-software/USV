@@ -33,6 +33,7 @@ export interface Vente {
   prospect?: VenteProspect;
   agent?: VenteAgent;
   campagne?: VenteCampagne;
+  soft_deleted?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -62,6 +63,7 @@ export interface VenteListParams {
   statut?: StatutVente;
   date_debut?: string;
   date_fin?: string;
+  soft_deleted?: boolean;
   page?: number;
   limit?: number;
 }

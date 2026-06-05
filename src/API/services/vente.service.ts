@@ -1,4 +1,4 @@
-import { getRequest } from '../APICalls.ts';
+import { getRequest, deleteRequest, postRequest } from '../APICalls.ts';
 import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
 import type { AxiosResponse } from 'axios';
 import type { Vente, VenteListParams } from '../../utils/types/vente.types.ts';
@@ -31,6 +31,7 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
   if (params?.statut) qs.set('statut', params.statut);
   if (params?.date_debut) qs.set('date_debut', params.date_debut);
   if (params?.date_fin) qs.set('date_fin', params.date_fin);
+  if (params?.soft_deleted !== undefined) qs.set('soft_deleted', String(params.soft_deleted));
   if (params?.page) qs.set('page', String(params.page));
   if (params?.limit) qs.set('limit', String(params.limit));
 
@@ -56,4 +57,22 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
 
 export const getVenteDocumentUrl = (idVente: number): string => {
   return `${getApiBaseUrl()}/ventes/${idVente}/document.pdf`;
+};
+
+export const deleteVenteService = async (idVente: number, purge: boolean = false): Promise<void> => {
+  const url = `/ventes/${idVente}?purge=${purge}`;
+  const response: AxiosResponse<ApiResponse<null>> = await deleteRequest(url);
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Impossible de supprimer la vente');
+  }
+};
+
+export const restoreVenteService = async (idVente: number): Promise<void> => {
+  const url = `/ventes/${idVente}/restore`;
+  const response: AxiosResponse<ApiResponse<Vente>> = await postRequest(url, {});
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Impossible de restaurer la vente');
+  }
 };

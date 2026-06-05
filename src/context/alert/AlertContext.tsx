@@ -12,7 +12,7 @@ export interface ShowAlertOptions {
 
 export interface AlertContextType {
   showAlert: (options: ShowAlertOptions) => Promise<boolean>;
-  showConfirm: (message: string, title?: string) => Promise<boolean>;
+  showConfirm: (message: string, title?: string, confirmText?: string, cancelText?: string) => Promise<boolean>;
   showInfo: (message: string, title?: string, autoClose?: number) => Promise<boolean>;
   showSuccess: (message: string, title?: string, autoClose?: number) => Promise<boolean>;
   showWarning: (message: string, title?: string, autoClose?: number) => Promise<boolean>;
