@@ -61,11 +61,19 @@ const ProspectionInjection = () => {
 
   const handleCount = () => {
     if (!campagneId) return;
+    if (!filters.code_postal || !/^\d{5}$/.test(filters.code_postal)) {
+      showError('Un code postal de départ valide (5 chiffres) est requis.');
+      return;
+    }
     loadCount(campagneId);
   };
 
   const handleInject = async () => {
     if (!campagneId) return;
+    if (!filters.code_postal || !/^\d{5}$/.test(filters.code_postal)) {
+      showError('Un code postal de départ valide (5 chiffres) est requis.');
+      return;
+    }
     const confirmed = await showConfirm(
       `Injecter les prospects correspondants aux filtres dans cette campagne ?`,
       'Confirmer l\'injection'
@@ -76,11 +84,11 @@ const ProspectionInjection = () => {
   };
 
   const updateFilter = (key: keyof InjectionFilters, value: string) => {
-    if (key === 'limit') {
+    if (['limit', 'nb_commandes_min'].includes(key)) {
       const parsed = value ? parseInt(value, 10) : undefined;
       setFilters({ ...filters, [key]: parsed });
     } else {
-      setFilters({ ...filters, [key]: value || undefined });
+      setFilters({ ...filters, [key]: value === '' ? undefined : value });
     }
     setHasInjected(false);
   };
@@ -91,10 +99,31 @@ const ProspectionInjection = () => {
     { value: 'Entreprise', label: 'Entreprise' },
   ];
 
-  const statutOptions: { value: string; label: string }[] = [
-    { value: 'nouveau', label: 'Nouveau' },
-    { value: 'contacte', label: 'Contacté' },
-    { value: 'rappel', label: 'Rappel' },
+  const maturiteOptions: { value: string; label: string }[] = [
+    { value: '', label: 'Tous' },
+    { value: 'prospect', label: 'Prospect' },
+    { value: 'client', label: 'Client' },
+  ];
+
+  const sourceOptions: { value: string; label: string }[] = [
+    { value: '', label: 'Tous' },
+    { value: 'import_csv', label: 'import_csv' },
+    { value: 'import_legacy', label: 'import_legacy' },
+    { value: 'manuel', label: 'manuel' },
+  ];
+
+  const repliOptions: { value: string; label: string }[] = [
+    { value: '', label: 'Aucune zone de repli' },
+    { value: '75001', label: 'Paris (75000)' },
+    { value: '13001', label: 'Marseille (13000)' },
+    { value: '69001', label: 'Lyon (69000)' },
+    { value: '31000', label: 'Toulouse (31000)' },
+    { value: '06000', label: 'Nice (06000)' },
+    { value: '44000', label: 'Nantes (44000)' },
+    { value: '67000', label: 'Strasbourg (67000)' },
+    { value: '34000', label: 'Montpellier (34000)' },
+    { value: '33000', label: 'Bordeaux (33000)' },
+    { value: '59000', label: 'Lille (59000)' }
   ];
 
   return (
@@ -117,34 +146,16 @@ const ProspectionInjection = () => {
               <div className="formGrid">
                 <div className="formRow">
                   <div className="formGroup">
-                    <label>Code postal / Département</label>
+                    <label>Code postal de départ</label>
                     <input
                       type="text"
-                      placeholder="ex: 75 ou 75001"
+                      placeholder="ex: 13300"
                       value={filters.code_postal || ''}
                       onChange={(e) => updateFilter('code_postal', e.target.value)}
                     />
-                  </div>
-                  <div className="formGroup">
-                    <label>Ville</label>
-                    <input
-                      type="text"
-                      placeholder="Recherche ville..."
-                      value={filters.ville || ''}
-                      onChange={(e) => updateFilter('ville', e.target.value)}
-                    />
-                  </div>
-                </div>
-
-                <div className="formRow">
-                  <div className="formGroup">
-                    <label>Région</label>
-                    <input
-                      type="text"
-                      placeholder="Recherche région..."
-                      value={filters.region || ''}
-                      onChange={(e) => updateFilter('region', e.target.value)}
-                    />
+                    <span className="helperText" style={{ fontSize: '0.8em', color: '#66b', marginTop: '0.25em', display: 'block', lineHeight: 1.4 }}>
+                      Requis (5 chiffres). Point de départ pour l'injection par rayon progressif (jusqu'à 150km) avec tri en "porte-à-porte" (ville, rue, numéro).
+                    </span>
                   </div>
                   <div className="formGroup">
                     <label>Secteur d'activité</label>
@@ -170,13 +181,13 @@ const ProspectionInjection = () => {
                     />
                   </div>
                   <div className="formGroup">
-                    <label>Statut prospect</label>
+                    <label>Maturité commerciale</label>
                     <Select
-                      options={statutOptions}
-                      value={statutOptions.find(o => o.value === (filters.statut || 'nouveau')) || statutOptions[0]}
-                      onChange={(option) => updateFilter('statut', (option as typeof statutOptions[number] | null)?.value || '')}
+                      options={maturiteOptions}
+                      value={maturiteOptions.find(o => o.value === (filters.maturite_commerciale || '')) || maturiteOptions[0]}
+                      onChange={(option) => updateFilter('maturite_commerciale', (option as typeof maturiteOptions[number] | null)?.value || '')}
                       styles={reactSelectStyles}
-                      placeholder="Nouveau"
+                      placeholder="Tous"
                       isSearchable={false}
                     />
                   </div>
@@ -184,19 +195,50 @@ const ProspectionInjection = () => {
 
                 <div className="formRow">
                   <div className="formGroup">
-                    <label>Date de création (min)</label>
-                    <input
-                      type="date"
-                      value={filters.date_creation_min || ''}
-                      onChange={(e) => updateFilter('date_creation_min', e.target.value)}
+                    <label>Source de prospect</label>
+                    <Select
+                      options={sourceOptions}
+                      value={sourceOptions.find(o => o.value === (filters.source || '')) || sourceOptions[0]}
+                      onChange={(option) => updateFilter('source', (option as typeof sourceOptions[number] | null)?.value || '')}
+                      styles={reactSelectStyles}
+                      placeholder="Tous"
+                      isSearchable={false}
                     />
                   </div>
                   <div className="formGroup">
-                    <label>Date de création (max)</label>
+                    <label>Code NAF</label>
                     <input
-                      type="date"
-                      value={filters.date_creation_max || ''}
-                      onChange={(e) => updateFilter('date_creation_max', e.target.value)}
+                      type="text"
+                      placeholder="ex: 7120B ou 71"
+                      value={filters.code_naf || ''}
+                      onChange={(e) => updateFilter('code_naf', e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="formRow">
+                  <div className="formGroup">
+                    <label>Zone de repli métropolitaine (Optionnel)</label>
+                    <Select
+                      options={repliOptions}
+                      value={repliOptions.find(o => o.value === (filters.code_postal_repli || '')) || repliOptions[0]}
+                      onChange={(option) => updateFilter('code_postal_repli', (option as typeof repliOptions[number] | null)?.value || '')}
+                      styles={reactSelectStyles}
+                      placeholder="Aucune zone de repli"
+                      isSearchable={false}
+                    />
+                    <span className="helperText" style={{ fontSize: '0.8em', color: '#66b', marginTop: '0.25em', display: 'block', lineHeight: 1.4 }}>
+                      Si sélectionnée, le système basculera sur cette métropole si le rayon initial de 150km est épuisé.
+                    </span>
+                  </div>
+                  <div className="formGroup">
+                    <label>Nombre de commandes min</label>
+                    <input
+                      type="number"
+                      min={0}
+                      placeholder="ex: 2"
+                      value={filters.nb_commandes_min !== undefined ? filters.nb_commandes_min : ''}
+                      onChange={(e) => updateFilter('nb_commandes_min', e.target.value)}
                     />
                   </div>
                 </div>

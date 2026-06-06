@@ -47,14 +47,14 @@ export interface InjectionResult {
 
 export interface InjectionFilters {
   code_postal?: string;
-  ville?: string;
-  region?: string;
   secteur?: string;
   type_prospect?: 'Particulier' | 'Entreprise';
-  statut?: string;
-  date_creation_min?: string;
-  date_creation_max?: string;
   limit?: number;
+  source?: string;
+  maturite_commerciale?: 'prospect' | 'client';
+  code_naf?: string;
+  code_postal_repli?: string;
+  nb_commandes_min?: number;
 }
 
 export interface ProspectCampagneRow {
