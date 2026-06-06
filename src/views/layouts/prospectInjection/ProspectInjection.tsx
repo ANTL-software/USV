@@ -84,7 +84,7 @@ const ProspectionInjection = () => {
   };
 
   const updateFilter = (key: keyof InjectionFilters, value: string) => {
-    if (['limit', 'nb_commandes_min'].includes(key)) {
+    if (['limit'].includes(key)) {
       const parsed = value ? parseInt(value, 10) : undefined;
       setFilters({ ...filters, [key]: parsed });
     } else {
@@ -230,16 +230,6 @@ const ProspectionInjection = () => {
                     <span className="helperText" style={{ fontSize: '0.8em', color: '#66b', marginTop: '0.25em', display: 'block', lineHeight: 1.4 }}>
                       Si sélectionnée, le système basculera sur cette métropole si le rayon initial de 150km est épuisé.
                     </span>
-                  </div>
-                  <div className="formGroup">
-                    <label>Nombre de commandes min</label>
-                    <input
-                      type="number"
-                      min={0}
-                      placeholder="ex: 2"
-                      value={filters.nb_commandes_min !== undefined ? filters.nb_commandes_min : ''}
-                      onChange={(e) => updateFilter('nb_commandes_min', e.target.value)}
-                    />
                   </div>
                 </div>
 

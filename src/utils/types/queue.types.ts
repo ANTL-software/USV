@@ -54,7 +54,6 @@ export interface InjectionFilters {
   maturite_commerciale?: 'prospect' | 'client';
   code_naf?: string;
   code_postal_repli?: string;
-  nb_commandes_min?: number;
 }
 
 export interface ProspectCampagneRow {
