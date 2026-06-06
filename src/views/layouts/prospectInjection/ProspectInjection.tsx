@@ -18,7 +18,7 @@ import './prospectInjection.scss';
 const ProspectionInjection = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { showConfirm } = useAlert();
+  const { showConfirm, showError } = useAlert();
   const { filters, setFilters, count, result, isLoading, loadCount, inject, reset } = useInjection();
   const campagneId = id ? parseInt(id, 10) : null;
   const [campagneNom, setCampagneNom] = useState<string>('');

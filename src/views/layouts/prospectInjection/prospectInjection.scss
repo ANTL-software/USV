@@ -73,7 +73,7 @@
     }
 
     > input:disabled {
-      background-color: vars.$borderColorLight;
+      background-color: vars.$greyBackground;
       color: vars.$fontColorSecondary;
       cursor: not-allowed;
       opacity: 0.6;
