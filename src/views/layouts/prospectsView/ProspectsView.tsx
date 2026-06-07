@@ -2,7 +2,7 @@ import './prospectsView.scss';
 
 import { ReactElement, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoChevronBack, IoChevronForward, IoAddCircleOutline } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward, IoAddCircleOutline, IoTrashOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -15,6 +15,8 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import { useAlert } from '../../../context/alert/AlertContext';
+import { purgeProspectsService } from '../../../API/services/queue.service';
 
 function ProspectsView(): ReactElement {
   const navigate = useNavigate();
@@ -35,6 +37,36 @@ function ProspectsView(): ReactElement {
 
   const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
   const [jumpToPage, setJumpToPage] = useState<string>('');
+  const [isPurging, setIsPurging] = useState(false);
+  const { showConfirm, showSuccess, showError } = useAlert();
+
+  const handlePurge = async () => {
+    if (!selectedCampagne) return;
+
+    const confirm = await showConfirm(
+      `Êtes-vous sûr de vouloir vider la table d'appel pour la campagne "${selectedCampagne.nom_campagne}" ? Tous les prospects seront retirés de la file d'appels. Cette action est irréversible.\n\n⚠️ Note : Les rendez-vous déjà pris avec ces prospects resteront visibles dans les calendriers et pourront toujours être honorés.`,
+      "Vider la table d'appel"
+    );
+
+    if (confirm) {
+      setIsPurging(true);
+      try {
+        await purgeProspectsService(selectedCampagne.id_campagne);
+        await showSuccess(
+          "Tous les prospects ont été retirés de la file d'appels.",
+          "File d'appels vidée"
+        );
+        refresh();
+      } catch (err: any) {
+        await showError(
+          err.message || "Impossible de vider la file d'appels.",
+          "Erreur"
+        );
+      } finally {
+        setIsPurging(false);
+      }
+    }
+  };
 
   const campagneOptions = [
     { value: null, label: 'Tous' },
@@ -101,10 +133,16 @@ function ProspectsView(): ReactElement {
             <div className="prospectsView__title-section">
               <h1>Prospects</h1>
               {selectedCampagne && (
-                <Button style="gradient" onClick={() => navigate(`/operations/prospect/${selectedCampagne.id_campagne}/inject`)}>
-                  <IoAddCircleOutline />
-                  <span>Injecter des prospects</span>
-                </Button>
+                <>
+                  <Button style="gradient" onClick={() => navigate(`/operations/prospect/${selectedCampagne.id_campagne}/inject`)}>
+                    <IoAddCircleOutline />
+                    <span>Injecter des prospects</span>
+                  </Button>
+                  <Button style="red" onClick={handlePurge} disabled={isPurging}>
+                    <IoTrashOutline style={{ color: '#ffffff' }} />
+                    <span style={{ color: '#ffffff' }}>Vider la table d'appel</span>
+                  </Button>
+                </>
               )}
             </div>
             <div className="prospectsView__filters">
