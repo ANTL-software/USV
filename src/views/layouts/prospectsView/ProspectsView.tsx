@@ -10,6 +10,7 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { useCampagnes, useProspects } from '../../../hooks';
 import type { Prospect } from '../../../utils/types/prospect.types';
 import { ProspectDetailModal } from '../../../components/prospectDetailModal';
+import { QueuePreview } from '../../../components/queuePreview/QueuePreview';
 
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
@@ -38,7 +39,13 @@ function ProspectsView(): ReactElement {
   const [selectedProspect, setSelectedProspect] = useState<Prospect | null>(null);
   const [jumpToPage, setJumpToPage] = useState<string>('');
   const [isPurging, setIsPurging] = useState(false);
+  const [queueRefreshKey, setQueueRefreshKey] = useState(0);
   const { showConfirm, showSuccess, showError } = useAlert();
+
+  const handleRefreshAll = () => {
+    refresh();
+    setQueueRefreshKey(prev => prev + 1);
+  };
 
   const handlePurge = async () => {
     if (!selectedCampagne) return;
@@ -56,7 +63,7 @@ function ProspectsView(): ReactElement {
           "Tous les prospects ont été retirés de la file d'appels.",
           "File d'appels vidée"
         );
-        refresh();
+        handleRefreshAll();
       } catch (err: any) {
         await showError(
           err.message || "Impossible de vider la file d'appels.",
@@ -170,6 +177,14 @@ function ProspectsView(): ReactElement {
           </div>
 
           {error && <div className="prospectsView__error">{error}</div>}
+
+          {selectedCampagne && (
+            <QueuePreview
+              idCampagne={selectedCampagne.id_campagne}
+              onOpenProspect={setSelectedProspect}
+              refreshKey={queueRefreshKey}
+            />
+          )}
 
           <div className="prospectsView__table-wrapper">
             {isLoading ? (
@@ -309,7 +324,7 @@ function ProspectsView(): ReactElement {
         <ProspectDetailModal
           prospect={selectedProspect}
           onClose={() => setSelectedProspect(null)}
-          onProspectUpdated={refresh}
+          onProspectUpdated={handleRefreshAll}
         />
       )}
     </div>

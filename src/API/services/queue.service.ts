@@ -60,16 +60,16 @@ export const getInjectionCountService = async (
 
 export const getProspectsCampagneService = async (
   idCampagne: number,
-  params?: { page?: number; limit?: number; statut?: string; search?: string }
+  params?: { page?: number; limit?: number; statut?: string; search?: string; sort?: string; order?: string }
 ): Promise<PaginatedResponse<ProspectCampagneRow>> => {
   const queryParams = new URLSearchParams();
   if (params?.page) queryParams.set('page', String(params.page));
   if (params?.limit) queryParams.set('limit', String(params.limit));
   if (params?.statut) queryParams.set('statut', params.statut);
   if (params?.search) queryParams.set('search', params.search);
-  // Tri par défaut par ID croissant
-  queryParams.set('sort', 'id_prospect');
-  queryParams.set('order', 'ASC');
+  // Tri par défaut par ID croissant ou tri personnalisé
+  queryParams.set('sort', params?.sort || 'id_prospect');
+  queryParams.set('order', params?.order || 'ASC');
 
   const qs = queryParams.toString();
   const url = `/campagnes/${idCampagne}/prospects${qs ? `?${qs}` : ''}`;
