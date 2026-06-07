@@ -35,6 +35,8 @@ function formatDate(dateStr: string): string {
 
 function prospectName(v: Vente): string {
   if (!v.prospect) return '—';
+  const raisonSociale = v.prospect.raison_sociale?.trim();
+  if (raisonSociale) return raisonSociale;
   const parts = [v.prospect.nom.toUpperCase()];
   if (v.prospect.prenom) parts.push(v.prospect.prenom);
   return parts.join(' ');
@@ -315,7 +317,7 @@ function CommandesList(): ReactElement {
                     <tr>
                       <th>Réf.</th>
                       <th>Date</th>
-                      <th>Prospect</th>
+                      <th>Client</th>
                       <th>Agent</th>
                       <th>Montant</th>
                       {!isCorbeille && <th>Statut</th>}

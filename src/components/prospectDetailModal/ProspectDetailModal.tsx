@@ -179,6 +179,12 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
               </div>
             )}
             <div className="detailRow">
+              <span className="detailLabel">Civilité</span>
+              <span className="detailValue">
+                {isEditing ? renderInput('civilite', prospect.civilite) : (prospect.civilite || '—')}
+              </span>
+            </div>
+            <div className="detailRow">
               <span className="detailLabel">Nom <span className="required">*</span></span>
               <span className="detailValue">
                 {isEditing ? renderInput('nom', prospect.nom) : prospect.nom.toUpperCase()}
@@ -188,12 +194,6 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
               <span className="detailLabel">Prénom</span>
               <span className="detailValue">
                 {isEditing ? renderInput('prenom', prospect.prenom) : (prospect.prenom || '—')}
-              </span>
-            </div>
-            <div className="detailRow">
-              <span className="detailLabel">Civilité</span>
-              <span className="detailValue">
-                {isEditing ? renderInput('civilite', prospect.civilite) : (prospect.civilite || '—')}
               </span>
             </div>
           </div>
