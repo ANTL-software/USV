@@ -32,6 +32,8 @@ export interface CallInProgress {
   agent_prenom: string;
   duree_secondes: number;
   origine_appel: string;
+  twilio_call_sid?: string;
+  prospect_call_sid?: string;
 }
 
 export interface QueueState {

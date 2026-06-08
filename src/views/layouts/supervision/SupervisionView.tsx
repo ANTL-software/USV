@@ -4,6 +4,8 @@ import Select from 'react-select';
 import { useSupervision } from '../../../hooks/useSupervision';
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { useGraphiques } from '../../../hooks/useGraphiques';
+import { useWhisper } from '../../../hooks/useWhisper';
+import WhisperPanel from '../../components/whisperPanel/WhisperPanel';
 import { getRequest } from '../../../API/APICalls';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
@@ -148,7 +150,17 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
   );
 };
 
-const CallsTable = ({ calls }: { calls: CallInProgress[] }) => (
+const CallsTable = ({ 
+  calls,
+  onWhisper,
+  activeAppelId,
+  isAnyWhisperActive
+}: { 
+  calls: CallInProgress[]; 
+  onWhisper: (call: CallInProgress) => void;
+  activeAppelId: number | null;
+  isAnyWhisperActive: boolean;
+}) => (
   <div className="supervisionView__calls">
     {calls.length === 0 ? (
       <p className="empty">Aucun appel en cours</p>
@@ -161,25 +173,50 @@ const CallsTable = ({ calls }: { calls: CallInProgress[] }) => (
             <th>Téléphone</th>
             <th>Origine</th>
             <th>Durée</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {calls.map(c => (
-            <tr key={c.id_appel}>
-              <td>{c.agent_nom} {c.agent_prenom}</td>
-              <td>{c.prospect_nom} {c.prospect_prenom}</td>
-              <td>{c.telephone}</td>
-              <td>
-                <span
-                  className="origin-badge"
-                  style={{ backgroundColor: ORIGINE_COLORS[c.origine_appel] || '#95a5a6' }}
-                >
-                  {ORIGINE_LABELS[c.origine_appel] || c.origine_appel}
-                </span>
-              </td>
-              <td className="calls-duration">{formatCallDuration(c.duree_secondes)}</td>
-            </tr>
-          ))}
+          {calls.map(c => {
+            const isCurrentWhisper = activeAppelId === c.id_appel;
+            return (
+              <tr key={c.id_appel}>
+                <td>{c.agent_nom} {c.agent_prenom}</td>
+                <td>{c.prospect_nom} {c.prospect_prenom}</td>
+                <td>{c.telephone}</td>
+                <td>
+                  <span
+                    className="origin-badge"
+                    style={{ backgroundColor: ORIGINE_COLORS[c.origine_appel] || '#95a5a6' }}
+                  >
+                    {ORIGINE_LABELS[c.origine_appel] || c.origine_appel}
+                  </span>
+                </td>
+                <td className="calls-duration">{formatCallDuration(c.duree_secondes)}</td>
+                <td>
+                  {!c.twilio_call_sid ? (
+                    <span className="no-whisper-badge" title="Identifiant d'appel Twilio non disponible">Non connectable</span>
+                  ) : !c.prospect_call_sid ? (
+                    <button
+                      className="whisper-btn pending"
+                      disabled={true}
+                      title="En attente que le prospect décroche"
+                    >
+                      ⏳ En attente décroché
+                    </button>
+                  ) : (
+                    <button
+                      className={`whisper-btn ${isCurrentWhisper ? 'active' : ''}`}
+                      onClick={() => onWhisper(c)}
+                      disabled={isAnyWhisperActive && !isCurrentWhisper}
+                    >
+                      {isCurrentWhisper ? '🎧 En coaching' : '🎙️ Souffler'}
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
     )}
@@ -248,6 +285,20 @@ const SupervisionView = () => {
   const [agentsList, setAgentsList] = useState<Array<{id_employe: number, nom: string, prenom: string, identifiant: string}>>([]);
   const [agentsLoading, setAgentsLoading] = useState<boolean>(false);
   const { queueState, isLoading, error } = useSupervision(selectedCampagne);
+  
+  // Custom hook pour le soufflé superviseur
+  const {
+    startWhisper,
+    disconnectWhisper,
+    toggleMute,
+    isConnecting,
+    isConnected,
+    isMuted,
+    duration,
+    agentName,
+    activeAppelId,
+    error: whisperError
+  } = useWhisper();
   
   // Utiliser useGraphiques seulement quand une campagne est sélectionnée et aucun employé
   // Pas besoin de condition complexe : si selectedCampagne existe, on passe les paramètres
@@ -403,7 +454,12 @@ const SupervisionView = () => {
                     <div className="supervisionView__section-header">
                       <h3>Appels en cours ({calls.length})</h3>
                     </div>
-                    <CallsTable calls={calls} />
+                    <CallsTable 
+                      calls={calls} 
+                      onWhisper={(c) => startWhisper(c.id_appel, `${c.agent_nom} ${c.agent_prenom}`)}
+                      activeAppelId={activeAppelId}
+                      isAnyWhisperActive={isConnecting || isConnected}
+                    />
                   </section>
 
                   <section className="supervisionView__graphiques">
@@ -510,6 +566,16 @@ const SupervisionView = () => {
         </div>
       </main>
       <BackToTop />
+      <WhisperPanel
+        isConnected={isConnected}
+        isConnecting={isConnecting}
+        isMuted={isMuted}
+        duration={duration}
+        agentName={agentName}
+        error={whisperError}
+        onMuteToggle={toggleMute}
+        onDisconnect={disconnectWhisper}
+      />
     </div>
   );
 };

@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-pdf-viewer/core": "^3.12.0",
     "@react-pdf-viewer/default-layout": "^3.12.0",
+    "@twilio/voice-sdk": "^2.18.3",
     "@types/react-color": "^3.0.13",
     "aos": "^2.3.4",
     "axios": "^1.7.9",
