@@ -8,7 +8,7 @@ interface TauxAboutiChartProps {
 }
 
 const COLORS = {
-  aboutis: '#27ae60',
+  aboutis: '#a78bfa',
   nonAboutis: '#e74c3c'
 };
 

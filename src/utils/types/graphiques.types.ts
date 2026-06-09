@@ -52,7 +52,7 @@ export const STATUT_COLORS: Record<string, string> = {
   pas_de_reponse: '#e67e22',
   messagerie: '#3498db',
   refus_definitif: '#e74c3c',
-  abouti: '#27ae60',
+  abouti: '#a78bfa',
   rdv_pris: '#9b59b6',
   vente_conclue: '#2ecc71',
 };
