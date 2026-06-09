@@ -1,0 +1,539 @@
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
+
+#commandeDetails {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
+
+  .commandeDetails__loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50vh;
+  }
+
+  .commandeDetails__container {
+    @include mixins.centeredContainer;
+  }
+
+  .commandeDetails__header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1em;
+    margin-bottom: 2em;
+
+    h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    .statut-badge {
+      font-size: 0.85em;
+      font-weight: 600;
+      padding: 0.35em 0.85em;
+      border-radius: 20px;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+  }
+
+  .commandeDetails__error {
+    text-align: center;
+    padding: 3em 1.5em;
+    background: #fee2e2;
+    border: 1px solid #fca5a5;
+    border-radius: 12px;
+    color: #dc2626;
+    max-width: 32em;
+    margin: 2em auto;
+
+    h3 {
+      margin: 0 0 0.5em 0;
+      font-size: 1.3em;
+    }
+
+    p {
+      margin: 0 0 1.5em 0;
+    }
+  }
+
+  // Layout 2 colonnes
+  .commandeDetails__content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+    align-items: start;
+
+    @media (min-width: 1024px) {
+      grid-template-columns: 2.2fr 1fr;
+    }
+  }
+
+  // Cards
+  .card-style {
+    background: white;
+    border: 1px solid vars.$borderColor;
+    border-radius: 12px;
+    padding: 1.5em;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    margin-bottom: 1.5em;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .section-title {
+    margin: 0 0 1.25em 0;
+    font-size: 1.15em;
+    font-weight: 700;
+    color: vars.$fontColorPrimary;
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    border-bottom: 2px solid vars.$greyBackground;
+    padding-bottom: 0.5em;
+
+    svg {
+      color: vars.$utilsPrimary;
+      font-size: 1.25em;
+    }
+  }
+
+  // Grilles d'information
+  .details-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1em;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .grid-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    &.full-width {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .grid-label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: vars.$fontColorSecondary;
+  }
+
+  .grid-value {
+    font-size: 0.95rem;
+    color: vars.$fontColorPrimary;
+    display: flex;
+    align-items: center;
+
+    &--bold {
+      font-weight: 700;
+      color: vars.$utilsPrimary;
+      font-size: 1.1em;
+    }
+  }
+
+  .address-text {
+    line-height: 1.5;
+    font-style: normal;
+  }
+
+  .notes-text {
+    padding: 0.85em 1em;
+    background: vars.$greyBackground;
+    border-radius: 8px;
+    border-left: 4px solid vars.$utilsPrimary;
+    font-size: 0.9em;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    margin: 0.5em 0 0 0;
+    color: vars.$fontColorPrimary;
+  }
+
+  // Adresses
+  .addresses-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5em;
+    margin-top: 1.5em;
+    padding-top: 1.5em;
+    border-top: 1px dashed vars.$borderColor;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .address-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    background: vars.$greyBackground;
+    padding: 1em;
+    border-radius: 8px;
+    border: 1px dashed vars.$borderColor;
+  }
+
+  // Produits
+  .products-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid vars.$borderColor;
+    border-radius: 8px;
+    margin-bottom: 1.5em;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9em;
+      min-width: 40em;
+
+      th, td {
+        padding: 0.8em 1em;
+        border-bottom: 1px solid vars.$borderColor;
+      }
+
+      th {
+        background: vars.$greyBackground;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+        text-align: left;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+
+      .code-cell {
+        font-family: monospace;
+        font-weight: bold;
+        color: vars.$fontColorSecondary;
+      }
+
+      .name-cell {
+        font-weight: 500;
+        color: vars.$fontColorPrimary;
+      }
+    }
+  }
+
+  .order-total-block {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5em;
+    padding: 0.5em 1em;
+
+    .total-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2em;
+      width: 100%;
+      max-width: 18em;
+      font-size: 0.95em;
+      color: vars.$fontColorSecondary;
+
+      &--grand {
+        font-size: 1.25em;
+        font-weight: 800;
+        color: vars.$successColor;
+        border-top: 2px solid vars.$borderColor;
+        padding-top: 0.5em;
+        margin-top: 0.25em;
+      }
+    }
+  }
+
+  // ASIDE - Actions
+  .commandeDetails__right {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5em;
+
+    h3 {
+      margin: 0 0 0.25em 0;
+      font-size: 1.1em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    h4 {
+      margin: 0 0 0.75em 0;
+      font-size: 0.95em;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+
+    h5 {
+      margin: 0 0 0.5em 0;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+    }
+
+    .aside-hint {
+      font-size: 0.85em;
+      color: vars.$fontColorSecondary;
+      margin: 0 0 1.25em 0;
+    }
+  }
+
+  // Qualification
+  .qualification-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
+  .qualif-btn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75em;
+    padding: 0.75em 1em;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+    cursor: pointer;
+    background: vars.$greyBackground;
+    border: 1px solid vars.$borderColor;
+    color: vars.$fontColorSecondary;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    svg {
+      font-size: 1.25em;
+    }
+
+    &:hover:not(.active) {
+      transform: translateX(4px);
+    }
+
+    &.active {
+      color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    &--validee {
+      &:hover:not(.active) {
+        border-color: vars.$successColor;
+        color: vars.$successColor;
+        background: rgba(34, 197, 94, 0.05);
+      }
+      &.active {
+        background: vars.$successColor;
+        border-color: vars.$successColor;
+      }
+    }
+
+    &--attente {
+      &:hover:not(.active) {
+        border-color: vars.$warningColor;
+        color: vars.$warningColor;
+        background: rgba(245, 158, 11, 0.05);
+      }
+      &.active {
+        background: vars.$warningColor;
+        border-color: vars.$warningColor;
+      }
+    }
+
+    &--annulee {
+      &:hover:not(.active) {
+        border-color: vars.$errorColor;
+        color: vars.$errorColor;
+        background: rgba(239, 68, 68, 0.05);
+      }
+      &.active {
+        background: vars.$errorColor;
+        border-color: vars.$errorColor;
+      }
+    }
+  }
+
+  // Document Actions
+  .aside-actions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+
+    .action-btn-aside {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+      font-weight: 600;
+      height: 42px;
+    }
+  }
+
+  .aside-divider {
+    height: 1px;
+    background: vars.$borderColor;
+    margin: 1.5em 0;
+  }
+
+  // Upload Zone
+  .upload-zone {
+    border: 2px dashed vars.$borderColor;
+    border-radius: 8px;
+    padding: 1.5em 1em;
+    text-align: center;
+    cursor: pointer;
+    background: vars.$greyBackground;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.35em;
+
+    &:hover, &.dragging {
+      border-color: vars.$utilsPrimary;
+      background: rgba(124, 58, 237, 0.03);
+      transform: scale(1.01);
+    }
+
+    .upload-icon {
+      font-size: 2em;
+      color: vars.$utilsPrimary;
+    }
+
+    .upload-title {
+      font-weight: 600;
+      font-size: 0.9em;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+    }
+
+    .upload-hint {
+      font-size: 0.7em;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .upload-zone-disabled {
+    background: #f8fafc;
+    border: 1px solid vars.$borderColor;
+    border-radius: 8px;
+    padding: 1em;
+    text-align: center;
+    color: vars.$fontColorSecondary;
+    font-size: 0.8em;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+
+    .info-icon {
+      font-size: 1.5em;
+      color: #94a3b8;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.4;
+    }
+  }
+
+  // Upload progress
+  .upload-progress-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5em;
+
+    .progress-bar {
+      height: 6px;
+      background: vars.$utilsPrimary;
+      border-radius: 3px;
+      transition: width 0.1s ease;
+    }
+
+    span {
+      font-size: 0.8em;
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  // Files List
+  .signed-docs-list {
+    margin-top: 1.25em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .signed-doc-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5em 0.75em;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 6px;
+    font-size: 0.85em;
+
+    .doc-info {
+      display: flex;
+      align-items: center;
+      gap: 0.35em;
+      overflow: hidden;
+      flex: 1;
+      margin-right: 0.5em;
+    }
+
+    .doc-icon {
+      color: #16a34a;
+      font-size: 1.15em;
+      flex-shrink: 0;
+    }
+
+    .doc-name {
+      color: #14532d;
+      font-weight: 500;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .doc-size {
+      color: #166534;
+      font-size: 0.85em;
+      flex-shrink: 0;
+    }
+
+    .doc-delete-btn {
+      background: none;
+      border: none;
+      color: vars.$errorColor;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0.25em;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+
+      &:hover {
+        background: rgba(239, 68, 68, 0.08);
+      }
+    }
+  }
+}

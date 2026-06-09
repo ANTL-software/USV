@@ -92,3 +92,16 @@ export const STATUT_VENTE_OPTIONS: { value: StatutVente; label: string }[] = [
   { value: 'validee', label: 'Validée' },
   { value: 'annulee', label: 'Annulée' },
 ];
+
+export interface VenteStatusStats {
+  count: number;
+  total_montant: number;
+}
+
+export interface VenteStats {
+  validees: VenteStatusStats;
+  enAttente: VenteStatusStats;
+  annulees: VenteStatusStats;
+  total: VenteStatusStats;
+}
+

@@ -59,7 +59,7 @@ function CommandesList(): ReactElement {
 
   if (!venteCtx) throw new Error('CommandesList must be used within a VenteProvider');
 
-  const { ventes, pagination, isLoading, error, filters, setFilters, load } = venteCtx;
+  const { ventes, pagination, isLoading, error, filters, setFilters, load, stats } = venteCtx;
 
   const [localStatut, setLocalStatut] = useState<StatutVente | ''>('');
   const [localDateDebut, setLocalDateDebut] = useState('');
@@ -156,10 +156,9 @@ function CommandesList(): ReactElement {
   }, [setFilters, load]);
 
   const handleRowClick = useCallback((v: Vente) => {
-    if (v.soft_deleted) return; // Pas de PDF pour les commandes en corbeille
-    const url = getVenteDocumentUrl(v.id_vente);
-    window.open(url, '_blank');
-  }, []);
+    if (v.soft_deleted) return;
+    navigate(`/operations/commandes/details/${v.id_vente}`);
+  }, [navigate]);
 
   const campagneOptions = campagnes.map(c => ({
     value: String(c.id_campagne),
@@ -171,12 +170,17 @@ function CommandesList(): ReactElement {
     ...STATUT_VENTE_OPTIONS,
   ];
 
-  // Stats calculées
-  const totalVentes = ventes.length;
-  const montantTotal = ventes.reduce((sum, v) => sum + parseFloat(v.montant_total || '0'), 0);
-  const validees = ventes.filter(v => v.statut_vente === 'validee').length;
-  const enAttente = ventes.filter(v => v.statut_vente === 'en_attente').length;
-  const annulees = ventes.filter(v => v.statut_vente === 'annulee').length;
+  // Stats calculées issues du back-end (pour toute la campagne/filtres actifs)
+  const statsValideesCount = stats?.validees.count ?? 0;
+  const statsValideesAmount = stats?.validees.total_montant ?? 0;
+  const statsEnAttenteCount = stats?.enAttente.count ?? 0;
+  const statsEnAttenteAmount = stats?.enAttente.total_montant ?? 0;
+  const statsAnnuleesCount = stats?.annulees.count ?? 0;
+  const statsAnnuleesAmount = stats?.annulees.total_montant ?? 0;
+
+  const totalVentesCount = stats?.total.count ?? 0;
+  const averageValidatedAmount = statsValideesCount > 0 ? (statsValideesAmount / statsValideesCount) : 0;
+
   const page = filters.page ?? 1;
 
   return (
@@ -260,26 +264,32 @@ function CommandesList(): ReactElement {
           {error && <div className="commandesList__error">{error}</div>}
 
           {/* Cards récapitulatives — masquées en mode corbeille */}
-          {ventes.length > 0 && !isCorbeille && (
+          {totalVentesCount > 0 && !isCorbeille && (
             <div className="commandesList__summary">
               <div className="summary-card summary-card--total">
-                <span className="summary-card__value">{totalVentes}</span>
-                <span className="summary-card__label">Commandes</span>
+                <span className="summary-card__value">{totalVentesCount}</span>
+                <span className="summary-card__label">Nbre de CDE</span>
               </div>
               <div className="summary-card summary-card--amount">
-                <span className="summary-card__value">{formatMontant(String(montantTotal))}</span>
-                <span className="summary-card__label">Montant total</span>
+                <span className="summary-card__value">{formatMontant(String(averageValidatedAmount))}</span>
+                <span className="summary-card__label">Moyenne</span>
               </div>
               <div className="summary-card summary-card--validee">
-                <span className="summary-card__value">{validees}</span>
+                <span className="summary-card__value">
+                  {statsValideesCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsValideesAmount))})</span>
+                </span>
                 <span className="summary-card__label">Validées</span>
               </div>
               <div className="summary-card summary-card--attente">
-                <span className="summary-card__value">{enAttente}</span>
+                <span className="summary-card__value">
+                  {statsEnAttenteCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsEnAttenteAmount))})</span>
+                </span>
                 <span className="summary-card__label">En attente</span>
               </div>
               <div className="summary-card summary-card--annulee">
-                <span className="summary-card__value">{annulees}</span>
+                <span className="summary-card__value">
+                  {statsAnnuleesCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsAnnuleesAmount))})</span>
+                </span>
                 <span className="summary-card__label">Annulées</span>
               </div>
             </div>
@@ -288,7 +298,7 @@ function CommandesList(): ReactElement {
           {/* Compteur corbeille */}
           {ventes.length > 0 && isCorbeille && (
             <div className="commandesList__corbeille-info">
-              <span>{totalVentes} commande{totalVentes > 1 ? 's' : ''} supprimée{totalVentes > 1 ? 's' : ''} (soft delete)</span>
+              <span>{ventes.length} commande{ventes.length > 1 ? 's' : ''} supprimée{ventes.length > 1 ? 's' : ''} (soft delete)</span>
             </div>
           )}
 

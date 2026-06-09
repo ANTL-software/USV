@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import type { Vente, VenteListParams } from '../../utils/types/vente.types.ts';
+import type { Vente, VenteListParams, VenteStats } from '../../utils/types/vente.types.ts';
 
 export interface VentePagination {
   page: number;
@@ -17,6 +17,8 @@ export interface VenteContextType {
   setFilters: (filters: Partial<VenteListParams>) => void;
   load: () => void;
   resetFilters: () => void;
+  stats: VenteStats | null;
 }
 
 export const VenteContext = createContext<VenteContextType | undefined>(undefined);
+

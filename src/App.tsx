@@ -49,6 +49,7 @@ import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView
 import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
 import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHistoryView";
 import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
+import CommandeDetailsWithAuth from "./views/layouts/commandeDetails/CommandeDetails";
 import QualiteWithAuth from "./views/layouts/qualite/Qualite";
 import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 import ProspectsViewWithAuth from "./views/layouts/prospectsView/ProspectsView";
@@ -127,6 +128,7 @@ function App(): ReactElement {
         <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/materiel"} element={<MaterielListWithAuth />}></Route>
         <Route path={"operations/commandes"} element={<CommandesListWithAuth />}></Route>
+        <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>

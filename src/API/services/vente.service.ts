@@ -1,7 +1,7 @@
-import { getRequest, deleteRequest, postRequest } from '../APICalls.ts';
+import { getRequest, deleteRequest, postRequest, putRequest } from '../APICalls.ts';
 import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
 import type { AxiosResponse } from 'axios';
-import type { Vente, VenteListParams } from '../../utils/types/vente.types.ts';
+import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement } from '../../utils/types/vente.types.ts';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -13,6 +13,7 @@ interface ApiResponse<T> {
     total: number;
     totalPages: number;
   };
+  stats?: any;
 }
 
 interface VentesResponse {
@@ -23,6 +24,7 @@ interface VentesResponse {
     total: number;
     totalPages: number;
   };
+  stats?: any;
 }
 
 export const getVentesService = async (params?: VenteListParams): Promise<VentesResponse> => {
@@ -49,10 +51,40 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
         total: response.data.data.length,
         totalPages: 1,
       },
+      stats: response.data.stats,
     };
   }
 
   throw new Error(response.data.message || 'Impossible de récupérer les ventes');
+};
+
+export const getVenteByIdService = async (idVente: number): Promise<VenteComplete> => {
+  const url = `/ventes/${idVente}`;
+  const response: AxiosResponse<ApiResponse<VenteComplete>> = await getRequest(url);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de récupérer la commande');
+};
+
+export const updateVenteStatutService = async (
+  idVente: number,
+  statutVente: StatutVente,
+  modePaiement?: ModePaiement
+): Promise<Vente> => {
+  const url = `/ventes/${idVente}/statut`;
+  const response: AxiosResponse<ApiResponse<Vente>> = await putRequest(url, {
+    statut_vente: statutVente,
+    mode_paiement: modePaiement
+  });
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de mettre à jour le statut de la commande');
 };
 
 export const getVenteDocumentUrl = (idVente: number): string => {

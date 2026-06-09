@@ -26,6 +26,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
 
   const [ventes, setVentes] = useState<Vente[]>([]);
   const [pagination, setPagination] = useState<VenteContextType['pagination']>(null);
+  const [stats, setStats] = useState<VenteContextType['stats']>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFiltersState] = useState<VenteListParams>(DEFAULT_FILTERS);
@@ -39,6 +40,32 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
       const result = await getVentesService(filters);
       setVentes(result.ventes);
       setPagination(result.pagination);
+
+      // Transformer les stats reçues en objet structuré
+      const statsObj = {
+        validees: { count: 0, total_montant: 0 },
+        enAttente: { count: 0, total_montant: 0 },
+        annulees: { count: 0, total_montant: 0 },
+        total: { count: 0, total_montant: 0 }
+      };
+
+      if (result.stats && Array.isArray(result.stats)) {
+        result.stats.forEach((s: any) => {
+          const count = Number(s.count || 0);
+          const amount = parseFloat(s.total_montant || '0');
+          statsObj.total.count += count;
+          statsObj.total.total_montant += amount;
+
+          if (s.statut_vente === 'validee') {
+            statsObj.validees = { count, total_montant: amount };
+          } else if (s.statut_vente === 'en_attente') {
+            statsObj.enAttente = { count, total_montant: amount };
+          } else if (s.statut_vente === 'annulee') {
+            statsObj.annulees = { count, total_montant: amount };
+          }
+        });
+      }
+      setStats(statsObj);
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur lors du chargement des ventes';
       setError(msg);
@@ -55,11 +82,12 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
     setFiltersState(DEFAULT_FILTERS);
     setVentes([]);
     setPagination(null);
+    setStats(null);
     setError(null);
   }, []);
 
   return (
-    <VenteContext.Provider value={{ ventes, pagination, isLoading, error, filters, setFilters, load, resetFilters }}>
+    <VenteContext.Provider value={{ ventes, pagination, isLoading, error, filters, setFilters, load, resetFilters, stats }}>
       {children}
     </VenteContext.Provider>
   );
