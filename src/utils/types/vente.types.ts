@@ -14,6 +14,7 @@ export interface VenteProspect {
   code_postal?: string;
   ville?: string;
   pays?: string;
+  civilite?: string;
 }
 
 export interface VenteAgent {
@@ -49,6 +50,9 @@ export interface Vente {
   code_postal_livraison?: string;
   ville_livraison?: string;
   pays_livraison?: string;
+  delais_livraison?: number;
+  livraison_offerte?: boolean;
+  plage_horaire_livraison?: string;
 }
 
 export interface VenteDetailProduit {

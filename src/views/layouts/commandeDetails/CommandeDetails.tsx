@@ -192,6 +192,7 @@ function CommandeDetails(): ReactElement {
   const prospectName = () => {
     if (!commande?.prospect) return '—';
     const parts = [];
+    if (commande.prospect.civilite) parts.push(commande.prospect.civilite);
     if (commande.prospect.nom) parts.push(commande.prospect.nom.toUpperCase());
     if (commande.prospect.prenom) parts.push(commande.prospect.prenom);
     return parts.join(' ');
@@ -239,8 +240,12 @@ function CommandeDetails(): ReactElement {
     );
   }
 
-  // Calcul du montant total HT
+  // Calcul du montant total HT et frais de livraison
   const montantTotalHT = commande.details?.reduce((sum, det) => sum + parseFloat(det.montant_ligne || '0'), 0) || 0;
+  const livraisonOfferte = !!commande.livraison_offerte;
+  const fraisLivraisonHT = (montantTotalHT >= 300 || livraisonOfferte) ? 0 : 30;
+  const totalHTFinal = montantTotalHT + fraisLivraisonHT;
+  const totalTTCFinal = totalHTFinal * 1.2;
 
   return (
     <div id="commandeDetails">
@@ -342,6 +347,24 @@ function CommandeDetails(): ReactElement {
                       {commande.mode_paiement ? MODE_PAIEMENT_LABELS[commande.mode_paiement] ?? commande.mode_paiement : '—'}
                     </span>
                   </div>
+                  <div className="grid-item">
+                    <span className="grid-label">Délai de livraison</span>
+                    <span className="grid-value">
+                      {commande.delais_livraison !== undefined ? `${commande.delais_livraison} semaines` : '2 semaines'}
+                    </span>
+                  </div>
+                  <div className="grid-item">
+                    <span className="grid-label">Livraison offerte (Geste)</span>
+                    <span className="grid-value">
+                      {commande.livraison_offerte ? 'Oui' : 'Non'}
+                    </span>
+                  </div>
+                  <div className="grid-item full-width">
+                    <span className="grid-label">Plage horaire de livraison</span>
+                    <span className="grid-value">
+                      {commande.plage_horaire_livraison || '—'}
+                    </span>
+                  </div>
                   {commande.notes && (
                     <div className="grid-item full-width">
                       <span className="grid-label">Notes de la commande</span>
@@ -393,12 +416,22 @@ function CommandeDetails(): ReactElement {
 
                 <div className="order-total-block">
                   <div className="total-row">
-                    <span>Total HT :</span>
+                    <span>Total Articles HT :</span>
                     <span>{formatMontant(montantTotalHT)}</span>
                   </div>
+                  <div className="total-row">
+                    <span>Frais de livraison HT :</span>
+                    <span>{fraisLivraisonHT === 0 ? (livraisonOfferte ? 'Offerts (Geste)' : 'Offerts') : formatMontant(fraisLivraisonHT)}</span>
+                  </div>
+                  {fraisLivraisonHT > 0 && (
+                    <div className="total-row total-row--accent">
+                      <span>Total HT final :</span>
+                      <span>{formatMontant(totalHTFinal)}</span>
+                    </div>
+                  )}
                   <div className="total-row total-row--grand">
                     <span>Total TTC :</span>
-                    <span>{formatMontant(commande.montant_total)}</span>
+                    <span>{formatMontant(totalTTCFinal)}</span>
                   </div>
                 </div>
               </section>
