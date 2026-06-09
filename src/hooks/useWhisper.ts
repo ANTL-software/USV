@@ -90,8 +90,13 @@ export const useWhisper = () => {
 
       // 3. Configurer les event handlers sur le Device
       device.on('registered', async () => {
-        console.log('✅ [WHISPER] Device registered, lancement de l\'appel');
+        console.log('✅ [WHISPER] Device registered, attente de la transition des lignes...');
         try {
+          // Attendre 2.5 secondes pour s'assurer que l'agent et le prospect ont rejoint la conférence
+          // afin d'éviter l'erreur Twilio 16028 (coached participant not in conference) qui coupe l'appel.
+          await new Promise((resolve) => setTimeout(resolve, 2500));
+          console.log('[WHISPER] Fin d\'attente, lancement de l\'appel superviseur...');
+
           // 4. Établir la connexion avec les paramètres de conférence
           const call = await device.connect({
             params: {
