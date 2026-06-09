@@ -297,7 +297,8 @@ const SupervisionView = () => {
     duration,
     agentName,
     activeAppelId,
-    error: whisperError
+    error: whisperError,
+    clearError
   } = useWhisper();
   
   // Utiliser useGraphiques seulement quand une campagne est sélectionnée et aucun employé
@@ -575,6 +576,7 @@ const SupervisionView = () => {
         error={whisperError}
         onMuteToggle={toggleMute}
         onDisconnect={disconnectWhisper}
+        onCloseError={clearError}
       />
     </div>
   );

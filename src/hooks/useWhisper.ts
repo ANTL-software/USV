@@ -172,6 +172,10 @@ export const useWhisper = () => {
     };
   }, []);
 
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
+
   return {
     startWhisper,
     disconnectWhisper,
@@ -182,6 +186,7 @@ export const useWhisper = () => {
     duration,
     agentName,
     activeAppelId,
-    error
+    error,
+    clearError
   };
 };

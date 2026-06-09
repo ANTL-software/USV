@@ -12,6 +12,7 @@ interface WhisperPanelProps {
   error: string | null;
   onMuteToggle: () => void;
   onDisconnect: () => void;
+  onCloseError?: () => void;
 }
 
 export const WhisperPanel: React.FC<WhisperPanelProps> = ({
@@ -22,7 +23,8 @@ export const WhisperPanel: React.FC<WhisperPanelProps> = ({
   agentName,
   error,
   onMuteToggle,
-  onDisconnect
+  onDisconnect,
+  onCloseError
 }) => {
   if (!isConnecting && !isConnected && !error) return null;
 
@@ -45,7 +47,7 @@ export const WhisperPanel: React.FC<WhisperPanelProps> = ({
       {error ? (
         <div className="whisperPanel__body">
           <p className="whisperPanel__error-text">{error}</p>
-          <button className="whisperPanel__close-btn" onClick={onDisconnect}>
+          <button className="whisperPanel__close-btn" onClick={onCloseError || onDisconnect}>
             Fermer
           </button>
         </div>
