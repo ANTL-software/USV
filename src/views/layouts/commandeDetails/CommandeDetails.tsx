@@ -23,7 +23,7 @@ import Loader from '../../components/loader/Loader';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { getVenteByIdService, updateVenteStatutService, getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
 import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
-import type { VenteComplete, StatutVente, ModePaiement } from '../../../utils/types/vente.types';
+import type { VenteComplete, StatutVente } from '../../../utils/types/vente.types';
 import { STATUT_VENTE_LABELS, STATUT_VENTE_COLORS, MODE_PAIEMENT_LABELS } from '../../../utils/types/vente.types';
 import './commandeDetails.scss';
 

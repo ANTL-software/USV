@@ -12,7 +12,7 @@ import { confirm, showSuccess, showError } from '../../../utils/services/alertSe
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import { VenteContext } from '../../../context/vente/VenteContext.tsx';
 import { useCampagnes } from '../../../hooks/useCampagnes';
-import { getVenteDocumentUrl, deleteVenteService, restoreVenteService } from '../../../API/services/vente.service.ts';
+import { deleteVenteService, restoreVenteService } from '../../../API/services/vente.service.ts';
 import {
   STATUT_VENTE_OPTIONS,
   STATUT_VENTE_LABELS,
