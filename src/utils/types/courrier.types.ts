@@ -86,7 +86,7 @@ export interface ICourrierStats {
   thisYear: number;
 }
 
-export type CourrierSortColumn = 'fileName' | 'direction' | 'kind' | 'department' | 'emitter' | 'courrierDate' | 'description';
+export type CourrierSortColumn = 'fileName' | 'direction' | 'kind' | 'department' | 'emitter' | 'recipient' | 'courrierDate' | 'description';
 
 export type SortOrder = 'ASC' | 'DESC';
 
@@ -112,4 +112,18 @@ export interface IColumnFilters {
   direction: string;
   dateMin: string;
   dateMax: string;
+}
+
+export interface ICourrierAnalysisResult {
+  direction: "entrant" | "sortant" | "interne" | null;
+  emitter: string | null;
+  recipient: string | null;
+  receptionDate: string | null;
+  courrierDate: string | null;
+  priority: "normal" | "urgent" | "bas" | null;
+  department: string | null;
+  kind: string | null;
+  description: string | null;
+  customFileName: string | null;
+  confidence: number;
 }

@@ -46,7 +46,6 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl }) => {
           <p>Chargement du PDF...</p>
         </div>
       )}
-      
       <div style={{ height: '80vh', minHeight: '600px' }}>
         <Worker workerUrl="/pdf.worker.min.js">
           <Viewer

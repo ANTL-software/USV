@@ -2,26 +2,26 @@
 import "./courriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext, useEffect } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { MdAdd, MdList, MdPhotoCamera } from "react-icons/md";
 import { IoMail, IoMailOpen } from "react-icons/io5";
 import { FiCalendar, FiFileText } from "react-icons/fi";
 
 // components
-import WithAuth from "../../../utils/middleware/WithAuth";
-import Header from "../../components/header/Header";
-import SubNav from "../../components/subNav/SubNav";
+import WithAuth from "../../../utils/middleware/WithAuth.tsx";
+import Header from "../../../components/header/Header.tsx";
+import SubNav from "../../../components/subNav/SubNav.tsx";
 
-// context
-import { CourrierContext } from "../../../context/courrierContext/CourrierContext";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 function Courriers(): ReactElement {
   const navigate = useNavigate();
-  const { stats, getCourrierStats } = useContext(CourrierContext);
+  const { stats, getCourrierStats } = useCourrier();
   const [activeAction, setActiveAction] = useState<string>("");
   const [statsLoading, setStatsLoading] = useState<boolean>(true);
-
+  
   useEffect(() => {
     // Charger les statistiques au montage du composant
     const loadStats = async () => {
@@ -33,7 +33,7 @@ function Courriers(): ReactElement {
         setStatsLoading(false);
       }
     };
-
+    
     loadStats();
   }, [getCourrierStats]);
 

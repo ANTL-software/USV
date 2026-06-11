@@ -1,8 +1,9 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
 import { AxiosResponse } from "axios";
 import axios from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
 import { courrierModel } from "../models/courrier.model.ts";
+import { csrfService } from "../../utils/services/csrfService.ts";
 
 export const uploadCourrierService = async (
   file: File,
@@ -218,4 +219,32 @@ export const sendBulkCourrierEmailService = async (
   }
 
   throw new Error(response.data.message || "Failed to send bulk courrier email");
+};
+
+export const analyzeCourrierService = async (
+  file: File
+): Promise<ICourrierAnalysisResult> => {
+  const formData = new FormData();
+  formData.append("courrier", file);
+
+  const config = {
+    headers: {} as Record<string, string>,
+    withCredentials: true,
+    timeout: 90000,
+  };
+
+  try {
+    const csrfHeaders = await csrfService.getCSRFHeaders();
+    Object.assign(config.headers, csrfHeaders);
+  } catch (error) {
+    console.warn("Unable to attach CSRF token:", error);
+  }
+
+  const response: AxiosResponse<IApiResponse<ICourrierAnalysisResult>> = await axios.post("/courriers/analyze", formData, config);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || "Failed to analyze courrier");
 };

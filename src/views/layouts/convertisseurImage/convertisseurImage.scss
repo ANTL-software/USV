@@ -43,7 +43,7 @@
 
       svg {
         font-size: 1.8em;
-        color: vars.$utilsPrimary;
+        color: vars.$courrierPrimary;
       }
 
       h1 {
@@ -51,7 +51,7 @@
           font-size: 1.8em;
           font-weight: 700;
           margin: 0;
-          background: vars.$utilsGradient;
+          background: vars.$courrierGradient;
           -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
@@ -97,9 +97,9 @@
         opacity: 1;
 
         .stepCircle {
-          background: vars.$utilsGradient;
+          background: vars.$courrierGradient;
           color: white;
-          box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+          box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
         }
       }
 
@@ -107,7 +107,7 @@
         opacity: 0.8;
 
         .stepCircle {
-          background: vars.$utilsPrimary;
+          background: vars.$courrierPrimary;
           color: white;
         }
       }
@@ -178,20 +178,20 @@
     }
 
     &:hover {
-      border-color: vars.$utilsPrimary;
-      background: rgba(124, 58, 237, 0.04);
+      border-color: vars.$courrierPrimary;
+      background: rgba(38, 208, 206, 0.04);
     }
 
     &.dragActive {
-      border-color: vars.$utilsPrimary;
-      background: rgba(124, 58, 237, 0.1);
+      border-color: vars.$courrierPrimary;
+      background: rgba(38, 208, 206, 0.1);
       transform: scale(1.01);
     }
 
     .uploadIcon {
       & {
         font-size: 3em;
-        color: vars.$utilsPrimary;
+        color: vars.$courrierPrimary;
         opacity: 0.7;
       }
 
@@ -261,13 +261,13 @@
       }
 
       &:hover {
-        border-color: vars.$utilsPrimary;
-        color: vars.$utilsPrimary;
+        border-color: vars.$courrierPrimary;
+        color: vars.$courrierPrimary;
       }
 
       &.active {
-        border-color: vars.$utilsPrimary;
-        background: vars.$utilsPrimary;
+        border-color: vars.$courrierPrimary;
+        background: vars.$courrierPrimary;
         color: white;
       }
     }
@@ -355,21 +355,21 @@
     }
 
     &:hover:not(:disabled) {
-      border-color: vars.$utilsPrimary;
-      color: vars.$utilsPrimary;
+      border-color: vars.$courrierPrimary;
+      color: vars.$courrierPrimary;
     }
   }
 
   .btnPrimary {
     & {
-      background: vars.$utilsGradient;
+      background: vars.$courrierGradient;
       color: white;
       border: none;
     }
 
     &:hover:not(:disabled) {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.4);
+      box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
     }
   }
 
@@ -398,7 +398,7 @@
 
     .convertIcon {
       font-size: 3em;
-      color: vars.$utilsPrimary;
+      color: vars.$courrierPrimary;
       opacity: 0.8;
     }
 
@@ -450,7 +450,7 @@
       }
 
       &:focus-within {
-        border-color: vars.$utilsPrimary;
+        border-color: vars.$courrierPrimary;
       }
 
       input {

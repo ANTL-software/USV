@@ -2,21 +2,22 @@
 import "./nouveauCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useContext } from "react";
+import { ReactElement, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdUploadFile, MdSave, MdCancel } from "react-icons/md";
 import { FiMail, FiUser, FiCalendar, FiFileText, FiTag } from "react-icons/fi";
+import { MdAutoAwesome } from "react-icons/md";
 
-// context
-import { CourrierContext } from "../../../context/courrierContext/CourrierContext";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../components/header/Header.tsx";
-import SubNav from "../../components/subNav/SubNav.tsx";
-import Button from "../../components/button/Button.tsx";
-import CreatableSelectComponent from "../../components/creatableSelect/CreatableSelect.tsx";
+import Header from "../../../components/header/Header.tsx";
+import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
+import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
@@ -25,24 +26,24 @@ import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
 import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
 import { DIRECTION_OPTIONS, PRIORITY_OPTIONS } from "../../../utils/constants/courrierOptions.ts";
 import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.ts";
-import { useCourrierFieldOptions } from "../../../hooks/useCourrierFieldOptions.ts";
+import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
 function NouveauCourrier(): ReactElement {
   const navigate = useNavigate();
-  const { uploadCourrier, isLoading } = useContext(CourrierContext);
-
+  const { uploadCourrier, isLoading, analyzeCourrier } = useCourrier();
+  
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
   const departmentOptions = useCourrierFieldOptions('department');
   const emitterOptions = useCourrierFieldOptions('emitter');
   const recipientOptions = useCourrierFieldOptions('recipient');
-
+  
   const [formData, setFormData] = useState<ICourrierFormData>({
     direction: "entrant",
     emitter: "",
     recipient: "",
     receptionDate: new Date().toISOString().split('T')[0],
-    courrierDate: new Date().toISOString().split('T')[0],
+    courrierDate: "",
     priority: "normal",
     department: "",
     kind: "",
@@ -50,6 +51,7 @@ function NouveauCourrier(): ReactElement {
     customFileName: ""
   });
   const [dragActive, setDragActive] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -82,8 +84,84 @@ function NouveauCourrier(): ReactElement {
     setFormData(prev => ({
       ...prev,
       fichierJoint: file,
-      customFileName: prev.customFileName || nameWithoutExt // Ne remplace que si vide
+      customFileName: prev.customFileName || nameWithoutExt
     }));
+
+    // Lancer l'analyse LLM automatiquement
+    analyzeDocument(file);
+  };
+
+  /**
+   * Cherche la meilleure correspondance parmi les options existantes.
+   * Retourne l'option existante si similarité suffisante, sinon la valeur brute.
+   */
+  const matchExistingOption = (geminiValue: string | null, existingOptions: string[]): string | null => {
+    if (!geminiValue) return null;
+
+    const normalized = geminiValue.toLowerCase().trim();
+
+    // 1. Match exact insensible à la casse
+    const exactMatch = existingOptions.find(opt => opt.toLowerCase() === normalized);
+    if (exactMatch) return exactMatch;
+
+    // 2. Inclusion : l'option existante contient la valeur Gemini ou inversement
+    const inclusiveMatch = existingOptions.find(opt => {
+      const optLower = opt.toLowerCase();
+      return optLower.includes(normalized) || normalized.includes(optLower);
+    });
+    if (inclusiveMatch) return inclusiveMatch;
+
+    // 3. Similarité par mots clés : au moins 60% des mots en commun
+    const geminiWords = normalized.split(/[\s\-_]+/).filter(w => w.length > 2);
+    if (geminiWords.length > 0) {
+      let bestMatch: string | null = null;
+      let bestScore = 0;
+
+      for (const opt of existingOptions) {
+        const optWords = opt.toLowerCase().split(/[\s\-_]+/).filter(w => w.length > 2);
+        const matchCount = geminiWords.filter(gw => optWords.some(ow => ow.includes(gw) || gw.includes(ow))).length;
+        const score = matchCount / Math.max(geminiWords.length, optWords.length);
+        if (score > bestScore && score >= 0.6) {
+          bestScore = score;
+          bestMatch = opt;
+        }
+      }
+
+      if (bestMatch) return bestMatch;
+    }
+
+    // Aucun match : garder la valeur Gemini (nouvelle option légitime)
+    return geminiValue;
+  };
+
+  const analyzeDocument = async (file: File) => {
+    setIsAnalyzing(true);
+    try {
+      const result = await analyzeCourrier(file);
+
+      setFormData(prev => ({
+        ...prev,
+        direction: result.direction || prev.direction,
+        emitter: matchExistingOption(result.emitter, emitterOptions.options) || prev.emitter,
+        recipient: matchExistingOption(result.recipient, recipientOptions.options) || prev.recipient,
+        receptionDate: result.receptionDate || prev.receptionDate,
+        courrierDate: result.courrierDate || prev.courrierDate,
+        priority: result.priority || prev.priority,
+        department: matchExistingOption(result.department, departmentOptions.options) || prev.department,
+        kind: matchExistingOption(result.kind, kindOptions.options) || prev.kind,
+        description: result.description || prev.description,
+        customFileName: result.customFileName || prev.customFileName,
+      }));
+
+      if (result.confidence > 0) {
+        showErrorNotification(`Document analysé (${result.confidence}% de confiance)`, 'info');
+      }
+    } catch (error: unknown) {
+      logError('analyzeDocument', error);
+      // L'analyse échoue silencieusement — l'utilisateur remplit manuellement
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const handleDrag = (e: React.DragEvent) => {
@@ -100,7 +178,7 @@ function NouveauCourrier(): ReactElement {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-
+    
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       handleFileUpload(e.dataTransfer.files[0]);
     }
@@ -114,21 +192,21 @@ function NouveauCourrier(): ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     // Validation
     const validation = validateCourrierForm(formData);
     if (!validation.isValid) {
       showErrorNotification(validation.errorMessage, 'warning');
       return;
     }
-
+    
     try {
       const uploadData = {
         direction: formData.direction,
         emitter: formData.emitter?.trim() || undefined,
         recipient: formData.recipient?.trim() || undefined,
         receptionDate: formData.receptionDate || undefined,
-        courrierDate: formData.courrierDate,
+        courrierDate: formData.courrierDate || undefined,
         priority: formData.priority,
         department: formData.department?.trim() || undefined,
         kind: formData.kind?.trim() || undefined,
@@ -138,7 +216,7 @@ function NouveauCourrier(): ReactElement {
 
       await uploadCourrier(formData.fichierJoint!, uploadData);
       showErrorNotification('Courrier créé avec succès', 'info');
-      navigate("/utils/mail");
+      navigate("/mail/list");
     } catch (error: unknown) {
       logError('handleSubmit - uploadCourrier', error);
       const errorMessage = handleCourrierUploadError(error);
@@ -173,6 +251,84 @@ function NouveauCourrier(): ReactElement {
             data-aos-delay="100"
           >
             <div className="formGrid">
+              {/* Upload de fichier */}
+              <section className="formSection fullWidth">
+                <h2 className="sectionTitle">
+                  <MdUploadFile />
+                  Document joint
+                </h2>
+
+                <div
+                  className={`uploadZone ${dragActive ? "dragActive" : ""} ${
+                    formData.fichierJoint ? "hasFile" : ""
+                  }`}
+                  onDragEnter={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDragOver={handleDrag}
+                  onDrop={handleDrop}
+                  onClick={() => document.getElementById("file-input")?.click()}
+                >
+                  <input
+                    type="file"
+                    id="file-input"
+                    onChange={handleFileInput}
+                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                    hidden
+                  />
+
+                  {formData.fichierJoint ? (
+                    <div className="fileInfo">
+                      <MdUploadFile className="fileIcon" />
+                      <div className="fileDetails">
+                        <span className="fileName">
+                          {formData.fichierJoint.name}
+                        </span>
+                        <span className="fileSize">
+                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(
+                            2
+                          )}{" "}
+                          MB
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        className="removeFile"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData((prev) => ({
+                            ...prev,
+                            fichierJoint: undefined,
+                          }));
+                        }}
+                      >
+                        <MdCancel />
+                      </button>
+                      {isAnalyzing && (
+                        <div className="analyzingBadge">
+                          <MdAutoAwesome className="analyzingIcon" />
+                          <span>Analyse IA en cours...</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="uploadPrompt">
+                      <MdUploadFile className="uploadIcon" />
+                      <div className="uploadText">
+                        <span className="primaryText">
+                          Cliquez pour sélectionner
+                        </span>
+                        <span className="secondaryText">
+                          ou glissez-déposez votre fichier ici
+                        </span>
+                        <span className="formatText">
+                          PDF, DOC, DOCX, JPG, PNG (max 10MB)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+
               {/* Informations principales */}
               <section className="formSection">
                 <h2 className="sectionTitle">
@@ -329,14 +485,13 @@ function NouveauCourrier(): ReactElement {
                     />
                   </div>
                   <div className="formGroup">
-                    <label htmlFor="courrierDate">Date du courrier *</label>
+                    <label htmlFor="courrierDate">Date du courrier</label>
                     <input
                       type="date"
                       id="courrierDate"
                       name="courrierDate"
                       value={formData.courrierDate}
                       onChange={handleInputChange}
-                      required
                     />
                   </div>
                 </div>
@@ -362,78 +517,6 @@ function NouveauCourrier(): ReactElement {
                   />
                 </div>
               </section>
-
-              {/* Upload de fichier */}
-              <section className="formSection fullWidth">
-                <h2 className="sectionTitle">
-                  <MdUploadFile />
-                  Document joint
-                </h2>
-
-                <div
-                  className={`uploadZone ${dragActive ? "dragActive" : ""} ${
-                    formData.fichierJoint ? "hasFile" : ""
-                  }`}
-                  onDragEnter={handleDrag}
-                  onDragLeave={handleDrag}
-                  onDragOver={handleDrag}
-                  onDrop={handleDrop}
-                  onClick={() => document.getElementById("file-input")?.click()}
-                >
-                  <input
-                    type="file"
-                    id="file-input"
-                    onChange={handleFileInput}
-                    accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                    hidden
-                  />
-
-                  {formData.fichierJoint ? (
-                    <div className="fileInfo">
-                      <MdUploadFile className="fileIcon" />
-                      <div className="fileDetails">
-                        <span className="fileName">
-                          {formData.fichierJoint.name}
-                        </span>
-                        <span className="fileSize">
-                          {(formData.fichierJoint.size / 1024 / 1024).toFixed(
-                            2
-                          )}{" "}
-                          MB
-                        </span>
-                      </div>
-                      <button
-                        type="button"
-                        className="removeFile"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFormData((prev) => ({
-                            ...prev,
-                            fichierJoint: undefined,
-                          }));
-                        }}
-                      >
-                        <MdCancel />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="uploadPrompt">
-                      <MdUploadFile className="uploadIcon" />
-                      <div className="uploadText">
-                        <span className="primaryText">
-                          Cliquez pour sélectionner
-                        </span>
-                        <span className="secondaryText">
-                          ou glissez-déposez votre fichier ici
-                        </span>
-                        <span className="formatText">
-                          PDF, DOC, DOCX, JPG, PNG (max 10MB)
-                        </span>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </section>
             </div>
 
             {/* Actions */}
@@ -457,8 +540,7 @@ function NouveauCourrier(): ReactElement {
                   !formData.fichierJoint ||
                   !formData.customFileName.trim() ||
                   !formData.kind.trim() ||
-                  !formData.department.trim() ||
-                  !formData.courrierDate
+                  !formData.department.trim()
                 }
               >
                 <MdSave />

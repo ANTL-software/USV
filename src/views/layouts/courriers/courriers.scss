@@ -3,7 +3,7 @@
 
 #courriers {
   @include mixins.mainView;
-  @include mixins.responsivePadding(1em, 1.5em, 2em);
+  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
 
   .courriersContainer {
     @include mixins.centeredContainer;
@@ -26,7 +26,7 @@
     .courriersTitle {
       font-size: 2em;
       font-weight: 700;
-      background: vars.$utilsGradient;
+      background: vars.$courrierGradient;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -65,9 +65,9 @@
 
       .actionBtn {
         @include mixins.card(10px, light);
-        @include mixins.flexContainer(column, 0.75em);
-        
+
         & {
+          @include mixins.flexContainer(column, 0.75em);
           align-items: center;
           padding: 1.5em 1em;
           cursor: pointer;
@@ -95,18 +95,18 @@
         }
         
         &.primary {
-          background: vars.$utilsGradient;
+          background: vars.$courrierGradient;
           color: white;
         }
         
         &.active {
-          background: vars.$utilsGradientReverse;
+          background: vars.$courrierGradientReverse;
           color: white;
         }
 
         .actionIcon {
           font-size: 1.75em;
-          color: vars.$utilsPrimary;
+          color: vars.$courrierPrimary;
 
           @media (min-width: vars.$tabletWidth) {
             font-size: 2em;
@@ -159,9 +159,9 @@
 
       .statCard {
         @include mixins.card(10px, light);
-        @include mixins.flexContainer(row, 1em);
-        
+
         & {
+          @include mixins.flexContainer(row, 1em);
           align-items: center;
           padding: 1.5em 1em;
           transition: transform vars.$transitionMedium;
@@ -193,7 +193,7 @@
           font-size: 1.25em;
           color: white;
           flex-shrink: 0;
-          background: vars.$utilsGradient;
+          background: vars.$courrierGradient;
 
           @media (min-width: vars.$tabletWidth) {
             width: 60px;
@@ -247,7 +247,7 @@
       }
       
       h3 {
-        color: vars.$utilsPrimary;
+        color: vars.$courrierPrimary;
         margin: 0 0 1em;
       }
       

@@ -2,23 +2,23 @@
 import "./updateCourrier.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useContext } from "react";
+import { ReactElement, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Select from "react-select";
 import { MdArrowBack, MdSave, MdCancel } from "react-icons/md";
-import { FiMail, FiUser, FiCalendar, FiFileText, FiTag, FiEye } from "react-icons/fi";
+import { FiMail, FiUser, FiCalendar, FiFileText, FiTag, FiEye, FiFile } from "react-icons/fi";
 
-// context
-import { CourrierContext } from "../../../context/courrierContext/CourrierContext";
+// hooks
+import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../components/header/Header.tsx";
-import SubNav from "../../components/subNav/SubNav.tsx";
-import Button from "../../components/button/Button.tsx";
-import CreatableSelectComponent from "../../components/creatableSelect/CreatableSelect.tsx";
-import Loader from "../../components/loader/Loader.tsx";
-import ModernPDFViewer from "../../components/modernPdfViewer/ModernPDFViewer.tsx";
+import Header from "../../../components/header/Header.tsx";
+import SubNav from "../../../components/subNav/SubNav.tsx";
+import Button from "../../../components/button/Button.tsx";
+import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
+import Loader from "../../../components/loader/Loader.tsx";
+import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
@@ -29,8 +29,8 @@ import {
   logError,
 } from "../../../utils/scripts/errorHandling.ts";
 import { validateCourrierUpdateForm } from "../../../utils/scripts/courrierValidation.ts";
-import { useCourrierFieldOptions } from "../../../hooks/useCourrierFieldOptions.ts";
-import { useCourrierEditPreview } from "../../../hooks/useCourrierEditPreview.ts";
+import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
+import { useCourrierEditPreview } from "../../../utils/hooks/useCourrierEditPreview.ts";
 import { DIRECTION_OPTIONS, PRIORITY_OPTIONS } from "../../../utils/constants/courrierOptions.ts";
 
 // Alert service
@@ -39,7 +39,7 @@ import { showError, showSuccess } from "../../../utils/services/alertService";
 function UpdateCourrier(): ReactElement {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const { updateCourrier, isLoading } = useContext(CourrierContext);
+  const { updateCourrier, isLoading } = useCourrier();
 
   const { courrier, formDefaults, pdfUrl, fileType, loadingCourrier } =
     useCourrierEditPreview(id);
@@ -65,7 +65,7 @@ function UpdateCourrier(): ReactElement {
 
   // Peupler le formulaire dès que le courrier est chargé
   useEffect(() => {
-    if (formDefaults) queueMicrotask(() => setFormData(formDefaults));
+    if (formDefaults) setFormData(formDefaults);
   }, [formDefaults]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -95,7 +95,7 @@ function UpdateCourrier(): ReactElement {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    
     if (!courrier) return;
 
     // Validation
@@ -104,7 +104,7 @@ function UpdateCourrier(): ReactElement {
       await showError(validation.errorMessage, 'Erreur de validation');
       return;
     }
-
+    
     try {
       const updateData = {
         direction: formData.direction,
@@ -116,6 +116,7 @@ function UpdateCourrier(): ReactElement {
         department: formData.department?.trim() || undefined,
         kind: formData.kind?.trim() || undefined,
         description: formData.description?.trim() || undefined,
+        customFileName: formData.customFileName?.trim() || undefined,
       };
 
       await updateCourrier(courrier.id, updateData);
@@ -140,7 +141,7 @@ function UpdateCourrier(): ReactElement {
         <main id="updateCourrier" className="updateCourrierMain">
           <div className="updateCourrierContainer">
             <div className="loadingState">
-              <Loader message="Chargement du courrier..." />
+              <Loader size="large" message="Chargement du courrier..." />
             </div>
           </div>
         </main>
@@ -224,6 +225,24 @@ function UpdateCourrier(): ReactElement {
                           options={kindOptions.options}
                           placeholder="Sélectionner ou créer un type de courrier..."
                           isLoading={kindOptions.isLoading}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="formRow">
+                      <div className="formGroup">
+                        <label htmlFor="customFileName">
+                          <FiFile />
+                          Nom du fichier *
+                        </label>
+                        <input
+                          type="text"
+                          id="customFileName"
+                          name="customFileName"
+                          value={formData.customFileName}
+                          onChange={handleInputChange}
+                          onBlur={handleInputBlur}
+                          placeholder="Nom du document (sans extension)"
                         />
                       </div>
                     </div>
@@ -403,7 +422,7 @@ function UpdateCourrier(): ReactElement {
                       className="imagePreview"
                     />
                   ) : (
-                    <ModernPDFViewer
+                    <ModernPDFViewer 
                       pdfUrl={pdfUrl}
                       fileName={courrier?.fileName || 'document.pdf'}
                     />

@@ -46,7 +46,7 @@
         justify-content: space-between;
         padding: 1.5em;
         border-bottom: 1px solid vars.$borderColor;
-        background: vars.$utilsGradient;
+        background: vars.$courrierGradient;
         color: white;
         border-radius: 16px 16px 0 0;
 
@@ -91,7 +91,7 @@
 
         .courrierIcon {
           font-size: 1.5em;
-          color: vars.$utilsPrimary;
+          color: vars.$courrierPrimary;
           flex-shrink: 0;
         }
 
@@ -147,7 +147,7 @@
 
             .labelIcon {
               font-size: 1em;
-              color: vars.$utilsPrimary;
+              color: vars.$courrierPrimary;
             }
           }
 
@@ -160,8 +160,8 @@
             @include mixins.inputBase;
 
             &:focus {
-              border-color: vars.$utilsPrimary !important;
-              box-shadow: 0 0 0 3px rgba(vars.$utilsPrimary, 0.1) !important;
+              border-color: vars.$courrierPrimary !important;
+              box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
             }
 
             &::placeholder {
@@ -181,8 +181,8 @@
             @include mixins.inputBase;
 
             &:focus {
-              border-color: vars.$utilsPrimary !important;
-              box-shadow: 0 0 0 3px rgba(vars.$utilsPrimary, 0.1) !important;
+              border-color: vars.$courrierPrimary !important;
+              box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
             }
 
             &::placeholder {

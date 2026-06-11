@@ -1,4 +1,4 @@
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams } from "../../utils/types/courrier.types.ts";
+import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
 import { createContext, Context } from "react";
 
 interface ICourrierContext {
@@ -18,6 +18,7 @@ interface ICourrierContext {
   downloadCourrier: (id: number) => Promise<Blob>;
   sendCourrierEmail: (id: number, emailData: { to: string; subject: string; message: string }) => Promise<void>;
   getCourrierStats: () => Promise<void>;
+  analyzeCourrier: (file: File) => Promise<ICourrierAnalysisResult>;
 }
 
 export const CourrierContext: Context<ICourrierContext> = createContext<ICourrierContext>({
@@ -37,4 +38,5 @@ export const CourrierContext: Context<ICourrierContext> = createContext<ICourrie
   downloadCourrier: async (): Promise<Blob> => { throw new Error("Context not initialized"); },
   sendCourrierEmail: async (): Promise<void> => {},
   getCourrierStats: async (): Promise<void> => {},
+  analyzeCourrier: async (): Promise<ICourrierAnalysisResult> => { throw new Error("Context not initialized"); },
 });

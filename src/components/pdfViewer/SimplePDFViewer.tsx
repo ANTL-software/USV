@@ -13,11 +13,9 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
 
   useEffect(() => {
     console.log('SimplePDFViewer - pdfUrl:', pdfUrl);
-    queueMicrotask(() => {
-      setIframeSrc(pdfUrl);
-      setLoading(true);
-      setError('');
-    });
+    setIframeSrc(pdfUrl);
+    setLoading(true);
+    setError('');
     
     // Détecter les erreurs CSP plus rapidement
     cspTimeoutRef.current = setTimeout(() => {
