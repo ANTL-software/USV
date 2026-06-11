@@ -32,7 +32,7 @@ export const WhisperPanel: React.FC<WhisperPanelProps> = ({
     <div className={`whisperPanel ${error ? 'whisperPanel--error' : ''}`}>
       <div className="whisperPanel__header">
         <span className={`whisperPanel__badge ${isConnecting ? 'connecting' : isMuted ? 'listening' : 'whispering'}`}>
-          {isConnecting ? 'Connexion...' : isMuted ? 'Écoute silencieuse' : 'Soufflé actif'}
+          {isConnecting ? 'Connexion...' : isMuted ? 'Écoute seule' : 'Micro vers agent actif'}
         </span>
         <div className="whisperPanel__title">
           {agentName || 'Agent'}
@@ -57,10 +57,10 @@ export const WhisperPanel: React.FC<WhisperPanelProps> = ({
             className={`whisperPanel__action-btn whisperPanel__action-btn--mute ${isMuted ? 'muted' : 'active'}`}
             onClick={onMuteToggle}
             disabled={!isConnected}
-            title={isMuted ? "Parler à l'agent (souffler)" : "Couper le micro (double écoute silencieuse)"}
+            title={isMuted ? "Activer le micro pour parler au commercial uniquement" : "Couper le micro et revenir en écoute seule"}
           >
             {isMuted ? <MdMicOff size={20} /> : <MdMic size={20} />}
-            <span>{isMuted ? "Parler" : "Muter"}</span>
+            <span>{isMuted ? "Parler à l'agent" : "Revenir en écoute"}</span>
           </button>
           
           <button
