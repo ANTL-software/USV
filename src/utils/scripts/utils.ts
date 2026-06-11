@@ -18,7 +18,7 @@ export const getApiBaseUrl = (): string => {
     return "http://localhost:8800/api";
   }
 
-  return `${window.location.origin.replace(/\/+$/, '')}/api`;
+  return "https://api.antl.fr/api";
 };
 
 /**
