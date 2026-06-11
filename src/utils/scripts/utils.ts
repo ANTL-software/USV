@@ -5,20 +5,20 @@ export const isOnProduction = (): boolean => {
 };
 
 export const getApiBaseUrl = (): string => {
+  const configuredUrl = import.meta.env.VITE_API_BASE_URL?.trim();
+
+  if (configuredUrl) {
+    return configuredUrl.replace(/\/+$/, '');
+  }
+
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-  const isDevPort = ["5173", "5174", "5175"].includes(window.location.port); // Ports de développement Vite
+  const isDevPort = ["5173", "5174", "5175"].includes(window.location.port);
 
   if (isDev && isDevPort) {
-    // Environnement de développement - utiliser le backend local
-    const devUrl = "http://localhost:8800/api";
-    console.log('🔧 Mode développement détecté - Backend:', devUrl);
-    return devUrl;
-  } else {
-    // Production - utiliser le backend de production
-    const prodUrl = "https://api.antl.fr/api";
-    console.log('🚀 Mode production détecté - Backend:', prodUrl);
-    return prodUrl;
+    return "http://localhost:8800/api";
   }
+
+  return `${window.location.origin.replace(/\/+$/, '')}/api`;
 };
 
 /**

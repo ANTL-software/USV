@@ -8,7 +8,7 @@ interface WhisperResponse {
   data: {
     token: string;
     conference_name: string;
-    agent_call_sid: string;
+    call_sid_to_coach: string;
   };
 }
 
@@ -24,6 +24,18 @@ export const useWhisper = () => {
   const deviceRef = useRef<Device | null>(null);
   const callRef = useRef<Call | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const getErrorMessage = useCallback((value: unknown): string => {
+    if (value instanceof Error) {
+      return value.message;
+    }
+
+    if (typeof value === 'object' && value !== null && 'message' in value && typeof value.message === 'string') {
+      return value.message;
+    }
+
+    return 'Erreur inconnue';
+  }, []);
 
   const startTimer = useCallback(() => {
     setDuration(0);
@@ -77,11 +89,11 @@ export const useWhisper = () => {
     try {
       // 1. Demander le token et la redirection de l'appel au backend Olympe
       console.log(`[WHISPER] Envoi POST /supervision/whisper pour l'appel #${idAppel}`);
-      const response = await postRequest<any, WhisperResponse>('/supervision/whisper', {
+      const response = await postRequest<{ id_appel: number }, WhisperResponse>('/supervision/whisper', {
         id_appel: idAppel
       });
 
-      const { token, conference_name, agent_call_sid } = response.data.data;
+      const { token, conference_name, call_sid_to_coach } = response.data.data;
 
       // 2. Initialiser le Twilio Device
       console.log('[WHISPER] Initialisation du Twilio Device superviseur');
@@ -92,16 +104,11 @@ export const useWhisper = () => {
       device.on('registered', async () => {
         console.log('✅ [WHISPER] Device registered, attente de la transition des lignes...');
         try {
-          // Attendre 2.5 secondes pour s'assurer que l'agent et le prospect ont rejoint la conférence
-          // afin d'éviter l'erreur Twilio 16028 (coached participant not in conference) qui coupe l'appel.
-          await new Promise((resolve) => setTimeout(resolve, 2500));
-          console.log('[WHISPER] Fin d\'attente, lancement de l\'appel superviseur...');
-
-          // 4. Établir la connexion avec les paramètres de conférence
           const call = await device.connect({
             params: {
+              mode: 'coach',
               conferenceName: conference_name,
-              agentCallSid: agent_call_sid
+              callSidToCoach: call_sid_to_coach
             }
           });
 
@@ -135,9 +142,9 @@ export const useWhisper = () => {
             disconnectWhisper();
           });
 
-        } catch (connErr: any) {
+        } catch (connErr: unknown) {
           console.error('[WHISPER] Erreur lors de device.connect:', connErr);
-          setError(`Impossible de se connecter au canal audio : ${connErr.message}`);
+          setError(`Impossible de se connecter au canal audio : ${getErrorMessage(connErr)}`);
           disconnectWhisper();
         }
       });
@@ -151,14 +158,27 @@ export const useWhisper = () => {
       // Lancer l'enregistrement
       await device.register();
 
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('[WHISPER] Échec initialisation soufflé:', err);
-      const msg = err.response?.data?.message || err.message || 'Erreur inconnue';
+      const apiMessage = (
+        typeof err === 'object' &&
+        err !== null &&
+        'response' in err &&
+        typeof err.response === 'object' &&
+        err.response !== null &&
+        'data' in err.response &&
+        typeof err.response.data === 'object' &&
+        err.response.data !== null &&
+        'message' in err.response.data &&
+        typeof err.response.data.message === 'string'
+      ) ? err.response.data.message : null;
+      const msg = apiMessage || getErrorMessage(err);
       setError(`Impossible d'initier le soufflé : ${msg}`);
       setIsConnecting(false);
       setAgentName(null);
+      setActiveAppelId(null);
     }
-  }, [isConnecting, isConnected, disconnectWhisper, startTimer]);
+  }, [getErrorMessage, isConnecting, isConnected, disconnectWhisper, startTimer]);
 
   const toggleMute = useCallback(() => {
     if (!callRef.current || !isConnected) return;
