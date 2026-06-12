@@ -2,7 +2,7 @@
 import "./listeCourriers.scss";
 
 // hooks | libraries
-import { ReactElement, useState, useEffect, useRef, useCallback } from "react";
+import { ReactElement, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   MdArrowBack,
@@ -98,8 +98,6 @@ function ListeCourriers(): ReactElement {
   const [columnFilters, setColumnFilters] = useState<IColumnFilters>({ kind: '', department: '', emitter: '', recipient: '', direction: '', dateMin: '', dateMax: '' });
   const [showFilters, setShowFilters] = useState<boolean>(false);
   const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
-  const actionMenuTriggerRef = useRef<HTMLButtonElement | null>(null);
-  const [actionMenuStyle, setActionMenuStyle] = useState<React.CSSProperties>({});
 
   // Charger les options pour les filtres
   const kindOptions = useCourrierFieldOptions('kind');
@@ -126,36 +124,10 @@ function ListeCourriers(): ReactElement {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Calculer la position du menu d'actions en fixed pour éviter le clipping
-  useEffect(() => {
-    if (openActionMenu !== null && actionMenuTriggerRef.current) {
-      const rect = actionMenuTriggerRef.current.getBoundingClientRect();
-      const menuHeight = 44;
-      const viewportHeight = window.innerHeight;
-
-      if (rect.bottom + menuHeight > viewportHeight) {
-        setActionMenuStyle({
-          position: 'fixed',
-          bottom: `${viewportHeight - rect.top + 4}px`,
-          right: `${window.innerWidth - rect.right}px`,
-        });
-      } else {
-        setActionMenuStyle({
-          position: 'fixed',
-          top: `${rect.bottom + 4}px`,
-          right: `${window.innerWidth - rect.right}px`,
-        });
-      }
-    } else {
-      setActionMenuStyle({});
-    }
-  }, [openActionMenu]);
-
-  const handleActionMenuToggle = useCallback((courrierId: number, triggerEl: HTMLButtonElement) => {
+  const handleActionMenuToggle = useCallback((courrierId: number) => {
     if (openActionMenu === courrierId) {
       setOpenActionMenu(null);
     } else {
-      actionMenuTriggerRef.current = triggerEl;
       setOpenActionMenu(courrierId);
     }
   }, [openActionMenu]);
@@ -1050,13 +1022,14 @@ function ListeCourriers(): ReactElement {
                             <div className="actionMenuWrapper">
                               <button
                                 className="actionMenuTrigger"
-                                onClick={(e) => handleActionMenuToggle(courrier.id, e.currentTarget)}
+                                onClick={() => handleActionMenuToggle(courrier.id)}
                                 title="Actions"
+                                type="button"
                               >
                                 <MdMoreVert />
                               </button>
                               {openActionMenu === courrier.id && (
-                                <div className="actionMenu" style={actionMenuStyle}>
+                                <div className="actionMenu">
                                   <button
                                     className={`actionBtn view ${selectedCourriers.size > 0 ? 'disabled' : ''}`}
                                     onClick={() => { setOpenActionMenu(null); selectedCourriers.size === 0 && handleViewPdf(courrier); }}
