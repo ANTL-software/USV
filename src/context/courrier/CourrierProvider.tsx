@@ -166,8 +166,14 @@ export const CourrierProvider = ({
     }
   }, []);
 
-  const analyzeCourrier = useCallback(async (file: File): Promise<ICourrierAnalysisResult> => {
-    return await analyzeCourrierService(file);
+  const analyzeCourrier = useCallback(async (
+    file: File,
+    options?: {
+      kindOptions?: string[];
+      departmentOptions?: string[];
+    }
+  ): Promise<ICourrierAnalysisResult> => {
+    return await analyzeCourrierService(file, options);
   }, []);
 
   const contextValue = useMemo(

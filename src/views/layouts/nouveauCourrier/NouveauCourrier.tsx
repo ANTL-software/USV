@@ -20,7 +20,7 @@ import Button from "../../../components/button/Button.tsx";
 import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
 
 // types
-import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";
+import { ICourrierFormData, ICourrierSelectSuggestion } from "../../../utils/types/courrier.types.ts";
 
 // utils
 import { handleCourrierUploadError, logError, showErrorNotification } from "../../../utils/scripts/errorHandling.ts";
@@ -29,6 +29,7 @@ import { validateCourrierForm } from "../../../utils/scripts/courrierValidation.
 import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOptions.ts";
 
 function NouveauCourrier(): ReactElement {
+  const SELECT_AUTOFILL_THRESHOLD = 85;
   const navigate = useNavigate();
   const { uploadCourrier, isLoading, analyzeCourrier } = useCourrier();
   
@@ -52,6 +53,13 @@ function NouveauCourrier(): ReactElement {
   });
   const [dragActive, setDragActive] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [analysisHints, setAnalysisHints] = useState<{
+    kind: ICourrierSelectSuggestion | null;
+    department: ICourrierSelectSuggestion | null;
+  }>({
+    kind: null,
+    department: null
+  });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -91,64 +99,53 @@ function NouveauCourrier(): ReactElement {
     analyzeDocument(file);
   };
 
-  /**
-   * Cherche la meilleure correspondance parmi les options existantes.
-   * Retourne l'option existante si similarité suffisante, sinon la valeur brute.
-   */
-  const matchExistingOption = (geminiValue: string | null, existingOptions: string[]): string | null => {
-    if (!geminiValue) return null;
-
-    const normalized = geminiValue.toLowerCase().trim();
-
-    // 1. Match exact insensible à la casse
-    const exactMatch = existingOptions.find(opt => opt.toLowerCase() === normalized);
-    if (exactMatch) return exactMatch;
-
-    // 2. Inclusion : l'option existante contient la valeur Gemini ou inversement
-    const inclusiveMatch = existingOptions.find(opt => {
-      const optLower = opt.toLowerCase();
-      return optLower.includes(normalized) || normalized.includes(optLower);
-    });
-    if (inclusiveMatch) return inclusiveMatch;
-
-    // 3. Similarité par mots clés : au moins 60% des mots en commun
-    const geminiWords = normalized.split(/[\s\-_]+/).filter(w => w.length > 2);
-    if (geminiWords.length > 0) {
-      let bestMatch: string | null = null;
-      let bestScore = 0;
-
-      for (const opt of existingOptions) {
-        const optWords = opt.toLowerCase().split(/[\s\-_]+/).filter(w => w.length > 2);
-        const matchCount = geminiWords.filter(gw => optWords.some(ow => ow.includes(gw) || gw.includes(ow))).length;
-        const score = matchCount / Math.max(geminiWords.length, optWords.length);
-        if (score > bestScore && score >= 0.6) {
-          bestScore = score;
-          bestMatch = opt;
-        }
-      }
-
-      if (bestMatch) return bestMatch;
+  const resolveSelectValue = (
+    suggestion: ICourrierSelectSuggestion | null,
+    fallbackValue: string | null,
+    previousValue: string
+  ): string => {
+    if (suggestion?.matchedOption && suggestion.matchConfidence >= SELECT_AUTOFILL_THRESHOLD) {
+      return suggestion.matchedOption;
     }
 
-    // Aucun match : garder la valeur Gemini (nouvelle option légitime)
-    return geminiValue;
+    if (!suggestion?.matchedOption && (suggestion?.confidence || 0) >= 75 && fallbackValue) {
+      return fallbackValue;
+    }
+
+    return previousValue;
+  };
+
+  const getSuggestionMessage = (label: string, suggestion: ICourrierSelectSuggestion | null): string | null => {
+    if (!suggestion?.matchedOption || !suggestion.shouldSuggest || suggestion.shouldAutofill) {
+      return null;
+    }
+
+    return `${label} suggéré : ${suggestion.matchedOption} (${suggestion.matchConfidence}% de confiance)`;
   };
 
   const analyzeDocument = async (file: File) => {
     setIsAnalyzing(true);
     try {
-      const result = await analyzeCourrier(file);
+      const result = await analyzeCourrier(file, {
+        kindOptions: kindOptions.options,
+        departmentOptions: departmentOptions.options
+      });
+
+      setAnalysisHints({
+        kind: result.selectSuggestions.kind,
+        department: result.selectSuggestions.department
+      });
 
       setFormData(prev => ({
         ...prev,
         direction: result.direction || prev.direction,
-        emitter: matchExistingOption(result.emitter, emitterOptions.options) || prev.emitter,
-        recipient: matchExistingOption(result.recipient, recipientOptions.options) || prev.recipient,
+        emitter: result.emitter || prev.emitter,
+        recipient: result.recipient || prev.recipient,
         receptionDate: result.receptionDate || prev.receptionDate,
         courrierDate: result.courrierDate || prev.courrierDate,
         priority: result.priority || prev.priority,
-        department: matchExistingOption(result.department, departmentOptions.options) || prev.department,
-        kind: matchExistingOption(result.kind, kindOptions.options) || prev.kind,
+        department: resolveSelectValue(result.selectSuggestions.department, result.department, prev.department),
+        kind: resolveSelectValue(result.selectSuggestions.kind, result.kind, prev.kind),
         description: result.description || prev.description,
         customFileName: result.customFileName || prev.customFileName,
       }));
@@ -299,6 +296,10 @@ function NouveauCourrier(): ReactElement {
                             ...prev,
                             fichierJoint: undefined,
                           }));
+                          setAnalysisHints({
+                            kind: null,
+                            department: null
+                          });
                         }}
                       >
                         <MdCancel />
@@ -367,6 +368,11 @@ function NouveauCourrier(): ReactElement {
                       placeholder="Sélectionner ou créer un type de courrier..."
                       isLoading={kindOptions.isLoading}
                     />
+                    {getSuggestionMessage("Type", analysisHints.kind) && (
+                      <span className="analysisHint">
+                        {getSuggestionMessage("Type", analysisHints.kind)}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -442,6 +448,11 @@ function NouveauCourrier(): ReactElement {
                       placeholder="Sélectionner ou créer un service/département..."
                       isLoading={departmentOptions.isLoading}
                     />
+                    {getSuggestionMessage("Service", analysisHints.department) && (
+                      <span className="analysisHint">
+                        {getSuggestionMessage("Service", analysisHints.department)}
+                      </span>
+                    )}
                   </div>
                   <div className="formGroup">
                     <label htmlFor="priority">

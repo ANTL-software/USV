@@ -126,4 +126,30 @@ export interface ICourrierAnalysisResult {
   description: string | null;
   customFileName: string | null;
   confidence: number;
+  fieldConfidence: {
+    direction: number;
+    emitter: number;
+    recipient: number;
+    receptionDate: number;
+    courrierDate: number;
+    priority: number;
+    department: number;
+    kind: number;
+    description: number;
+    customFileName: number;
+  };
+  selectSuggestions: {
+    kind: ICourrierSelectSuggestion;
+    department: ICourrierSelectSuggestion;
+  };
+}
+
+export interface ICourrierSelectSuggestion {
+  extractedValue: string | null;
+  confidence: number;
+  matchedOption: string | null;
+  matchConfidence: number;
+  reason: string | null;
+  shouldAutofill: boolean;
+  shouldSuggest: boolean;
 }

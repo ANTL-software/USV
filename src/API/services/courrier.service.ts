@@ -222,10 +222,16 @@ export const sendBulkCourrierEmailService = async (
 };
 
 export const analyzeCourrierService = async (
-  file: File
+  file: File,
+  options?: {
+    kindOptions?: string[];
+    departmentOptions?: string[];
+  }
 ): Promise<ICourrierAnalysisResult> => {
   const formData = new FormData();
   formData.append("courrier", file);
+  formData.append("kindOptions", JSON.stringify(options?.kindOptions || []));
+  formData.append("departmentOptions", JSON.stringify(options?.departmentOptions || []));
 
   const config = {
     headers: {} as Record<string, string>,

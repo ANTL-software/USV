@@ -18,7 +18,13 @@ interface ICourrierContext {
   downloadCourrier: (id: number) => Promise<Blob>;
   sendCourrierEmail: (id: number, emailData: { to: string; subject: string; message: string }) => Promise<void>;
   getCourrierStats: () => Promise<void>;
-  analyzeCourrier: (file: File) => Promise<ICourrierAnalysisResult>;
+  analyzeCourrier: (
+    file: File,
+    options?: {
+      kindOptions?: string[];
+      departmentOptions?: string[];
+    }
+  ) => Promise<ICourrierAnalysisResult>;
 }
 
 export const CourrierContext: Context<ICourrierContext> = createContext<ICourrierContext>({

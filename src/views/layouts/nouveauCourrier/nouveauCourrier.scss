@@ -154,6 +154,16 @@
         @include mixins.reactSelect;
       }
 
+      .analysisHint {
+        font-size: 0.8rem;
+        line-height: 1.4;
+        color: vars.$fontColorSecondary;
+        background: rgba(38, 208, 206, 0.08);
+        border: 1px solid rgba(38, 208, 206, 0.16);
+        border-radius: 8px;
+        padding: 0.5rem 0.65rem;
+      }
+
       textarea {
         resize: vertical;
         min-height: 100px;
