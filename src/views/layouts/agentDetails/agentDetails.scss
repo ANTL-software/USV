@@ -237,6 +237,113 @@
     padding-left: 0.25em;
   }
 
+  .agentDetails__planning-modal {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .agentDetails__planning-current {
+    padding: 0.9rem 1rem;
+    border-radius: 12px;
+    background: rgba(vars.$utilsPrimary, 0.08);
+    border: 1px solid rgba(vars.$utilsPrimary, 0.18);
+
+    p,
+    strong {
+      margin: 0;
+    }
+
+    p {
+      color: vars.$fontColorSecondary;
+      font-size: 0.85rem;
+      margin-bottom: 0.2rem;
+    }
+  }
+
+  .agentDetails__planning-list {
+    display: grid;
+    gap: 1rem;
+    padding-bottom: 0.25rem;
+  }
+
+  .agentDetails__planning-card {
+    border: 1px solid vars.$borderColor;
+    border-radius: 14px;
+    padding: 1rem;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+
+    &--current {
+      border-color: rgba(vars.$utilsPrimary, 0.28);
+      box-shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+    }
+
+    h4,
+    p {
+      margin: 0;
+    }
+  }
+
+  .agentDetails__planning-cardHeader {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+
+    p {
+      margin-top: 0.2rem;
+      color: vars.$fontColorSecondary;
+      font-size: 0.9rem;
+    }
+  }
+
+  .agentDetails__planning-badge {
+    padding: 0.3rem 0.65rem;
+    border-radius: 999px;
+    background: rgba(vars.$utilsPrimary, 0.12);
+    color: vars.$utilsPrimary;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .agentDetails__planning-slots {
+    display: grid;
+    gap: 0.45rem;
+
+    p {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    span {
+      color: vars.$fontColorSecondary;
+      min-width: 6rem;
+    }
+
+    strong {
+      text-align: right;
+      white-space: pre-wrap;
+    }
+  }
+
+  .agentDetails__planning-empty {
+    margin: 0;
+    color: vars.$fontColorSecondary;
+
+    &--error {
+      color: vars.$errorColor;
+    }
+  }
+
   // Modale upload
   .agentDetails__modal-backdrop {
     position: fixed;

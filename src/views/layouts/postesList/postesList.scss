@@ -16,9 +16,17 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 1rem;
     margin-bottom: 1.5em;
 
     h1 { margin: 0 0 0.25em; font-size: 1.6rem; font-weight: 700; }
+  }
+
+  .postesList__headerActions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.75rem;
   }
 
   .postesList__subtitle {
@@ -26,7 +34,6 @@
     color: vars.$fontColorSecondary;
     font-size: 0.9rem;
   }
-
 
   .postesList__error {
     padding: 1em;
@@ -132,5 +139,236 @@
     background: #fee2e2;
     color: #dc2626;
     &:hover { background: #fecaca; }
+  }
+
+  .postesList__planningModal {
+    display: grid;
+    grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+    gap: 1rem;
+    min-height: 100%;
+    height: 100%;
+
+    @media (max-width: 900px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .postesList__planningSidebar,
+  .postesList__planningEditor {
+    border: 1px solid vars.$borderColor;
+    border-radius: 14px;
+    background: #fff;
+  }
+
+  .postesList__planningSidebar {
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .postesList__planningSidebarHeader,
+  .postesList__planningEditorHeader,
+  .postesList__planningSlotsHeader,
+  .postesList__planningFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .postesList__planningSidebarHeader {
+    margin-bottom: 1rem;
+
+    h3, p {
+      margin: 0;
+    }
+
+    p {
+      color: vars.$fontColorSecondary;
+      font-size: 0.85rem;
+    }
+  }
+
+  .postesList__planningCards {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .postesList__planningCard {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+    width: 100%;
+    border: 1px solid vars.$borderColor;
+    border-radius: 12px;
+    background: #fff;
+    padding: 0.9rem 1rem;
+    cursor: pointer;
+    transition: vars.$transitionMedium;
+
+    &:hover,
+    &--active {
+      border-color: rgba(vars.$utilsPrimary, 0.3);
+      background: #faf7ff;
+    }
+
+    span {
+      color: vars.$fontColorSecondary;
+      font-size: 0.85rem;
+    }
+  }
+
+  .postesList__planningEditor {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+  }
+
+  .postesList__planningFeedback {
+    padding: 0.85rem 1rem;
+    border-radius: 10px;
+    background: #ecfdf5;
+    color: #047857;
+    border: 1px solid #a7f3d0;
+
+    &--error {
+      background: #fee2e2;
+      color: #b91c1c;
+      border-color: #fecaca;
+    }
+  }
+
+  .postesList__planningEditorHeader {
+    h3, p {
+      margin: 0;
+    }
+
+    p {
+      color: vars.$fontColorSecondary;
+      font-size: 0.9rem;
+      margin-top: 0.2rem;
+    }
+  }
+
+  .postesList__planningGrid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+
+    label {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+  }
+
+  .postesList__planningCheckbox {
+    align-self: end;
+    flex-direction: row !important;
+    align-items: center;
+    gap: 0.6rem !important;
+    min-height: 44px;
+  }
+
+  .postesList__planningTextarea {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .postesList__planningGrid input,
+  .postesList__planningTextarea textarea,
+  .postesList__planningSlot input {
+    width: 100%;
+    border: 1px solid vars.$borderColor;
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    font: inherit;
+  }
+
+  .postesList__planningSlotsHeader {
+    align-items: flex-start;
+    flex-wrap: wrap;
+
+    h4 {
+      margin: 0;
+    }
+  }
+
+  .postesList__planningSlotsActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+
+    button {
+      border: 1px solid vars.$borderColor;
+      background: #fff;
+      border-radius: 999px;
+      padding: 0.45rem 0.75rem;
+      cursor: pointer;
+      transition: vars.$transitionFast;
+
+      &:hover {
+        background: #f8fafc;
+      }
+    }
+  }
+
+  .postesList__planningSlots {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .postesList__planningSlot {
+    display: grid;
+    grid-template-columns: minmax(150px, 1.1fr) 1fr 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .postesList__planningSlotRemove {
+    width: 42px;
+    height: 42px;
+    border: none;
+    border-radius: 10px;
+    background: #fee2e2;
+    color: #dc2626;
+    cursor: pointer;
+  }
+
+  .postesList__planningState {
+    margin: 0;
+    color: vars.$fontColorSecondary;
+  }
+
+  .postesList__planningSlot {
+    .reactSelect__control {
+      min-height: 44px;
+      border-radius: 10px;
+      border-color: vars.$borderColor;
+      box-shadow: none;
+    }
+
+    .reactSelect__control--is-focused {
+      border-color: vars.$utilsPrimary;
+      box-shadow: 0 0 0 1px vars.$utilsPrimary;
+    }
+
+    .reactSelect__value-container,
+    .reactSelect__input-container,
+    .reactSelect__single-value,
+    .reactSelect__option {
+      font-size: 0.95rem;
+    }
   }
 }

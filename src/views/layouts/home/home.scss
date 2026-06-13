@@ -31,9 +31,10 @@
     @media (min-width: vars.$desktopWidth) {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 1.5em;
+      gap: 1.25em;
       padding-left: 1em;
       padding-right: 1em;
+      max-width: 1360px;
     }
   }
 
@@ -41,6 +42,7 @@
   .webDevSection,
   .projetsSection,
   .callCenterSection,
+  .commerciauxSection,
   .bookingSection {
     flex: 1;
     min-width: 250px;
@@ -94,7 +96,7 @@
         }
 
         @media (min-width: vars.$desktopWidth) {
-          height: 18.75em;
+          height: 14.5em;
         }
       }
     }
@@ -113,7 +115,8 @@
       }
 
       @media (min-width: vars.$desktopWidth) {
-        font-size: 1.8rem;
+        font-size: 1.45rem;
+        padding: 1.35em 1.1em;
       }
     }
   }
@@ -147,6 +150,13 @@
   }
 
   .callCenterSection h2 {
+    background: vars.$utilsGradient;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .commerciauxSection h2 {
     background: vars.$utilsGradient;
     -webkit-background-clip: text;
     background-clip: text;

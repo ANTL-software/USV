@@ -10,11 +10,17 @@ import {
   downloadDocumentService,
   generateDocumentViewUrlService,
 } from '../API/services/document.service';
+import {
+  getPlanningsService,
+  getEmployePlanningAssignationService,
+  assignPlanningToEmployeService,
+} from '../API/services/planning.service';
 
 // Models
 import { DocumentModel } from '../API/models/document.model';
 // Types
 import { PdfModalState } from '../utils/types/document.types';
+import type { Planning, PlanningAssignation } from '../utils/types/planning.types';
 
 /**
  * Hook pour gérer les détails d'un employé et ses documents
@@ -37,6 +43,12 @@ export const useEmployeeDetails = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState<string | null>(null);
+  const [isPlanningModalOpen, setIsPlanningModalOpen] = useState<boolean>(false);
+  const [plannings, setPlannings] = useState<Planning[]>([]);
+  const [planningsLoading, setPlanningsLoading] = useState<boolean>(false);
+  const [planningError, setPlanningError] = useState<string | null>(null);
+  const [currentPlanningAssignation, setCurrentPlanningAssignation] = useState<PlanningAssignation | null>(null);
+  const [isAssigningPlanning, setIsAssigningPlanning] = useState<boolean>(false);
 
   // State pour la modale de visualisation PDF/Image (comme courrier)
   const [pdfModal, setPdfModal] = useState<PdfModalState>({
@@ -125,6 +137,55 @@ export const useEmployeeDetails = () => {
     setUploadError(null);
     setUploadSuccess(null);
   }, []);
+
+  const openPlanningModal = useCallback(async () => {
+    if (!id) return;
+
+    setIsPlanningModalOpen(true);
+    setPlanningsLoading(true);
+    setPlanningError(null);
+
+    try {
+      const idNum = parseInt(id, 10);
+      const [planningList, assignation] = await Promise.all([
+        getPlanningsService(),
+        getEmployePlanningAssignationService(idNum),
+      ]);
+
+      setPlannings(planningList);
+      setCurrentPlanningAssignation(assignation);
+    } catch (error) {
+      console.error('Erreur lors du chargement des plannings:', error);
+      setPlanningError('Impossible de charger les plannings');
+      setPlannings([]);
+      setCurrentPlanningAssignation(null);
+    } finally {
+      setPlanningsLoading(false);
+    }
+  }, [id]);
+
+  const closePlanningModal = useCallback(() => {
+    setIsPlanningModalOpen(false);
+    setPlanningError(null);
+  }, []);
+
+  const handleAssignPlanning = useCallback(async (planningId: number) => {
+    if (!id) return;
+
+    setIsAssigningPlanning(true);
+    setPlanningError(null);
+
+    try {
+      const idNum = parseInt(id, 10);
+      const assignation = await assignPlanningToEmployeService(idNum, planningId);
+      setCurrentPlanningAssignation(assignation);
+    } catch (error) {
+      console.error('Erreur lors de l\'assignation du planning:', error);
+      setPlanningError('Impossible d\'assigner ce planning');
+    } finally {
+      setIsAssigningPlanning(false);
+    }
+  }, [id]);
 
   const handleCloseUploadModal = useCallback(() => {
     setIsUploadModalOpen(false);
@@ -262,6 +323,12 @@ export const useEmployeeDetails = () => {
     isUploading,
     uploadError,
     uploadSuccess,
+    isPlanningModalOpen,
+    plannings,
+    planningsLoading,
+    planningError,
+    currentPlanningAssignation,
+    isAssigningPlanning,
     fileInputRef,
 
     // Modal PDF/Image
@@ -273,6 +340,9 @@ export const useEmployeeDetails = () => {
 
     // Handlers
     handleAddDocument,
+    openPlanningModal,
+    closePlanningModal,
+    handleAssignPlanning,
     handleCloseUploadModal,
     handleDragOver,
     handleDragLeave,

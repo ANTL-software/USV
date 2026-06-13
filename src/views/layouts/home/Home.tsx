@@ -6,6 +6,7 @@ import mailBackground from "../../../assets/background/mailSectionBckground.webp
 import calendarBackground from "../../../assets/background/calendar.webp";
 import callCenterBackground from "../../../assets/background/utilsSection.webp";
 import projetsBackground from "../../../assets/background/projetSection.webp";
+import commerciauxBackground from "../../../assets/background/gestionCommerciaux.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -37,7 +38,7 @@ function Home(): ReactElement {
               <figure>
                 <img src={calendarBackground} alt={"Salle de production"} />
               </figure>
-              <h2>Booking salle de production</h2>
+              <h2>Agenda</h2>
             </Link>
           </section>
           <section className={"callCenterSection"}>
@@ -46,6 +47,14 @@ function Home(): ReactElement {
                 <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
               </figure>
               <h2>Gestion opérationnelle</h2>
+            </Link>
+          </section>
+          <section className={"commerciauxSection"}>
+            <Link to={"/commerciaux"}>
+              <figure>
+                <img src={commerciauxBackground} alt={"Gestion commerciaux"} />
+              </figure>
+              <h2>Gestion commerciaux</h2>
             </Link>
           </section>
           <section className={"projetsSection"}>

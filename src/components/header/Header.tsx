@@ -11,7 +11,7 @@ import { getSalutation } from "../../utils/scripts/utils.ts";
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList, IoCalendar } from "react-icons/io5";
+import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { useUserContext } from "../../hooks/useUserContext.ts";
 
@@ -135,13 +135,40 @@ export default function Header(): ReactElement {
                   <span className="mobileNavText">Liste des courriers</span>
                 </button>
 
-                <h3 className="mobileSectionTitle">Booking</h3>
+                <h3 className="mobileSectionTitle">Agenda</h3>
                 <button
                   className={`mobileNavItem ${location.pathname === "/booking" ? "active" : ""}`}
                   onClick={() => handleNavigate("/booking")}
                 >
                   <IoCalendar className="mobileNavIcon" />
-                  <span className="mobileNavText">Salle de production</span>
+                  <span className="mobileNavText">Agenda</span>
+                </button>
+
+                <h3 className="mobileSectionTitle">Gestion opérationnelle</h3>
+                <button
+                  className={`mobileNavItem ${location.pathname.startsWith("/operations") || location.pathname.startsWith("/campagnes") || location.pathname.startsWith("/prospects") || location.pathname.startsWith("/produits") ? "active" : ""}`}
+                  onClick={() => handleNavigate("/operations")}
+                >
+                  <IoCallOutline className="mobileNavIcon" />
+                  <span className="mobileNavText">Gestion opérationnelle</span>
+                </button>
+
+                <h3 className="mobileSectionTitle">Gestion commerciaux</h3>
+                <button
+                  className={`mobileNavItem ${location.pathname.startsWith("/commerciaux") ? "active" : ""}`}
+                  onClick={() => handleNavigate("/commerciaux")}
+                >
+                  <IoPeopleCircle className="mobileNavIcon" />
+                  <span className="mobileNavText">Gestion commerciaux</span>
+                </button>
+
+                <h3 className="mobileSectionTitle">Gestion de projets</h3>
+                <button
+                  className={`mobileNavItem ${location.pathname.startsWith("/projets") ? "active" : ""}`}
+                  onClick={() => handleNavigate("/projets")}
+                >
+                  <IoFolder className="mobileNavIcon" />
+                  <span className="mobileNavText">Gestion de projets</span>
                 </button>
               </div>
             </div>

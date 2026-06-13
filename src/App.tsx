@@ -31,6 +31,9 @@ import UpdateCourrierWithAuth from "./views/layouts/updateCourrier/UpdateCourrie
 import ConvertisseurImageWithAuth from "./views/layouts/convertisseurImage/ConvertisseurImage";
 import BookingPageWithAuth from "./views/layouts/booking/BookingPage";
 import CentreAppelsWithAuth from "./views/layouts/centreAppels/CentreAppels";
+import CommerciauxWithAuth from "./views/layouts/commerciaux/Commerciaux";
+import NotesDirectionWithAuth from "./views/layouts/commerciaux/NotesDirection";
+import MonPlanningWithAuth from "./views/layouts/commerciaux/MonPlanning";
 import AgentsListWithAuth from "./views/layouts/agentsList/AgentsList";
 import AgentDetailsWithAuth from "./views/layouts/agentDetails/AgentDetails";
 import AgentFormWithAuth from "./views/layouts/agentForm/AgentForm";
@@ -118,6 +121,9 @@ function App(): ReactElement {
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
         <Route path={"mail/convert"} element={<ConvertisseurImageWithAuth />}></Route>
         <Route path={"booking"} element={<BookingPageWithAuth />}></Route>
+        <Route path={"commerciaux"} element={<CommerciauxWithAuth />}></Route>
+        <Route path={"commerciaux/notes-direction"} element={<NotesDirectionWithAuth />}></Route>
+        <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
         <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>
