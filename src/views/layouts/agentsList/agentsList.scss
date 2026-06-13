@@ -183,4 +183,45 @@
     color: #dc2626;
     &:hover { background: #fecaca; }
   }
+
+  .agentsList__photo-tooltip {
+    background: white;
+    border: 1px solid vars.$borderColor;
+    border-radius: 12px;
+    padding: 6px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
+    animation: tooltipFadeIn 0.15s ease-out;
+
+    @keyframes tooltipFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  }
+
+  .agentsList__tooltip-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+  }
+
+  .agentsList__tooltip-placeholder {
+    color: vars.$fontColorSecondary;
+    font-size: 0.8rem;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px dashed vars.$borderColor;
+  }
 }

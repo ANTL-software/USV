@@ -9,9 +9,10 @@ import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
-// hooks
 import { useEmployes } from '../../../hooks/useEmployes';
 import type { EmployeFilter } from '../../../hooks/useEmployes';
+import type { Employe } from '../../../utils/types/user.types';
+import { getEmployePhotoUrl } from '../../../utils/scripts/utils';
 
 // constants
 import { getPosteBadgeStyle } from '../../../utils/constants/poste.constants';
@@ -32,6 +33,8 @@ function AgentsList(): ReactElement {
   const navigate = useNavigate();
   const { employes, isLoading, error, deactivate, filter } = useEmployes();
   const [filterOption, setFilterOption] = useState(FILTER_OPTIONS[0]);
+  const [hoveredAgent, setHoveredAgent] = useState<Employe | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const filtered = employes.filter(a => filter(a, filterOption.value));
 
@@ -93,6 +96,9 @@ function AgentsList(): ReactElement {
                       key={agent.id_employe}
                       className={!agent.actif ? 'agentsList__row--inactive' : ''}
                       onClick={() => navigate(`/operations/employes/details/${agent.id_employe}`)}
+                      onMouseEnter={() => setHoveredAgent(agent)}
+                      onMouseLeave={() => setHoveredAgent(null)}
+                      onMouseMove={(e) => setMousePos({ x: e.clientX, y: e.clientY })}
                       style={{ cursor: 'pointer' }}
                     >
                       <td style={{ textAlign: 'center' }}><code>{agent.id_employe}</code></td>
@@ -156,6 +162,30 @@ function AgentsList(): ReactElement {
           )}
         </div>
       </main>
+      {hoveredAgent && (
+        <div
+          className="agentsList__photo-tooltip"
+          style={{
+            position: 'fixed',
+            left: mousePos.x + 15,
+            top: mousePos.y + 15,
+            zIndex: 1000,
+            pointerEvents: 'none'
+          }}
+        >
+          {hoveredAgent.photo_path ? (
+            <img
+              src={getEmployePhotoUrl(hoveredAgent.photo_path) || ''}
+              alt={`${hoveredAgent.prenom} ${hoveredAgent.nom}`}
+              className="agentsList__tooltip-img"
+            />
+          ) : (
+            <div className="agentsList__tooltip-placeholder">
+              <span>Aucune photo</span>
+            </div>
+          )}
+        </div>
+      )}
       <BackToTop />
     </div>
   );

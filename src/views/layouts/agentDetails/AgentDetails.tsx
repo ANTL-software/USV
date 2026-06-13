@@ -2,11 +2,12 @@
 import './agentDetails.scss';
 
 // hooks | library
-import { ReactElement } from 'react';
+import { ReactElement, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoArrowBack, IoCalendar, IoDocumentText, IoCloudUpload, IoClose } from 'react-icons/io5';
+import { IoArrowBack, IoCalendar, IoDocumentText, IoCloudUpload, IoClose, IoPencil } from 'react-icons/io5';
 import { MdVisibility, MdDownload, MdDelete } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
+import { getEmployePhotoUrl } from '../../../utils/scripts/utils';
 
 // hooks
 import { useEmployeeDetails } from '../../../hooks/useEmployeeDetails';
@@ -71,8 +72,12 @@ const buildPlanningSlotsByDay = (
 function AgentDetails(): ReactElement {
   const navigate = useNavigate();
 
-  // Hook personnalisé pour gérer les détails de l'employé et ses documents
   const {
+    currentEmploye,
+    isPhotoUploading,
+    photoError,
+    handlePhotoFileChange,
+    handlePhotoDelete,
     pageTitle,
     documents,
     documentsLoading,
@@ -108,6 +113,8 @@ function AgentDetails(): ReactElement {
     handleViewDocument,
     closePdfModal,
   } = useEmployeeDetails();
+
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
   // Map des actions
   const actionMap: Record<number, () => void> = {
@@ -190,21 +197,90 @@ function AgentDetails(): ReactElement {
 
             {/* Aside avec actions - côté droit */}
             <aside className="agentDetails__aside">
-              <h2>Actions</h2>
-              <div className="agentDetails__actions-list">
-                {ACTIONS.map(action => (
-                  <div key={action.id} className="agentDetails__action-item">
-                    <Button 
-                      style="grey" 
-                      className="agentDetails__action-btn"
-                      onClick={actionMap[action.id]}
+              {/* Photo de l'employé */}
+              <div className="agentDetails__photo-section">
+                <h2>Photo de l'employé</h2>
+                <div className="agentDetails__photo-container">
+                  {currentEmploye?.photo_path ? (
+                    <div className="agentDetails__photo-wrapper">
+                      <img
+                        src={getEmployePhotoUrl(currentEmploye.photo_path) || ''}
+                        alt={`${currentEmploye.prenom} ${currentEmploye.nom}`}
+                        className="agentDetails__photo-img"
+                      />
+                      <div className="agentDetails__photo-overlay">
+                        <button
+                          type="button"
+                          className="photoBtn edit"
+                          onClick={() => photoInputRef.current?.click()}
+                          title="Modifier la photo"
+                          disabled={isPhotoUploading}
+                        >
+                          <IoPencil />
+                        </button>
+                        <button
+                          type="button"
+                          className="photoBtn delete"
+                          onClick={handlePhotoDelete}
+                          title="Supprimer la photo"
+                          disabled={isPhotoUploading}
+                        >
+                          <MdDelete />
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className="agentDetails__photo-placeholder"
+                      onClick={() => photoInputRef.current?.click()}
                     >
-                      <span className="agentDetails__action-icon">{action.icon}</span>
-                      <span className="agentDetails__action-label">{action.label}</span>
-                    </Button>
-                    <p className="agentDetails__action-description">{action.description}</p>
-                  </div>
-                ))}
+                      <div className="placeholder-icon">
+                        <IoCloudUpload />
+                      </div>
+                      <span>Ajouter une photo</span>
+                    </div>
+                  )}
+
+                  {isPhotoUploading && (
+                    <div className="agentDetails__photo-status">
+                      <span>Téléchargement...</span>
+                    </div>
+                  )}
+                  {photoError && (
+                    <div className="agentDetails__photo-error">
+                      {photoError}
+                    </div>
+                  )}
+
+                  <input
+                    ref={photoInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoFileChange}
+                    style={{ display: 'none' }}
+                    disabled={isPhotoUploading}
+                  />
+                </div>
+              </div>
+
+              {/* Actions de l'employé */}
+              <div className="agentDetails__actions-section">
+                <h2>Actions</h2>
+                <div className="agentDetails__actions-list">
+                  {ACTIONS.map(action => (
+                    <div key={action.id} className="agentDetails__action-item">
+                      <Button 
+                        style="grey" 
+                        className="agentDetails__action-btn"
+                        onClick={actionMap[action.id]}
+                      >
+                        <span className="agentDetails__action-icon">{action.icon}</span>
+                        <span className="agentDetails__action-label">{action.label}</span>
+                      </Button>
+                      <p className="agentDetails__action-description">{action.description}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
             </aside>
           </div>

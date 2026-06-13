@@ -1,4 +1,4 @@
-import { getRequest, postRequest, patchRequest, deleteRequest } from '../APICalls.ts';
+import { getRequest, postRequest, patchRequest, deleteRequest, postFormDataRequest } from '../APICalls.ts';
 import { AxiosResponse } from 'axios';
 import { UserModel } from '../models/user.model.ts';
 import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, UpdateSipData, CreateEmployeResponse } from '../../utils/types/user.types.ts';
@@ -105,5 +105,39 @@ export const deactivateEmployeService = async (id: number): Promise<void> => {
   const response: AxiosResponse<ApiResponse> = await patchRequest(`/employes/${id}/deactivate`, {});
   if (!response.data.success) {
     throw new Error(response.data.message || 'Impossible de désactiver l\'agent');
+  }
+};
+
+export const uploadEmployePhotoService = async (
+  id: number,
+  file: File,
+  customName?: string
+): Promise<{ success: boolean; message: string; data: { photo_path: string; photo_file_name: string } }> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  if (customName) {
+    formData.append("customName", customName);
+  }
+
+  const response: AxiosResponse<ApiResponse<{ photo_path: string; photo_file_name: string }>> = await postFormDataRequest(
+    `/employes/${id}/photo`,
+    formData
+  );
+
+  if (response.data.success && response.data.data) {
+    return {
+      success: true,
+      message: response.data.message,
+      data: response.data.data,
+    };
+  }
+  throw new Error(response.data.message || "Impossible d'uploader la photo");
+};
+
+export const deleteEmployePhotoService = async (id: number): Promise<void> => {
+  const response: AxiosResponse<ApiResponse> = await deleteRequest(`/employes/${id}/photo`);
+  if (!response.data.success) {
+    throw new Error(response.data.message || "Impossible de supprimer la photo");
   }
 };

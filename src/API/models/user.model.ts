@@ -20,6 +20,8 @@ export class UserModel implements Employe {
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
+  photo_path?: string | null;
+  photo_file_name?: string | null;
 
   constructor(data: Employe) {
     this.id_employe = data.id_employe;
@@ -39,6 +41,8 @@ export class UserModel implements Employe {
     this.updated_at = data.updated_at;
     this.poste = data.poste;
     this.departement = data.departement;
+    this.photo_path = data.photo_path ?? null;
+    this.photo_file_name = data.photo_file_name ?? null;
   }
 
   public get fullName(): string {
@@ -71,6 +75,8 @@ export class UserModel implements Employe {
       updated_at: this.updated_at,
       poste: this.poste,
       departement: this.departement,
+      photo_path: this.photo_path,
+      photo_file_name: this.photo_file_name,
     };
   }
 

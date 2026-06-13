@@ -44,6 +44,8 @@ export interface Employe {
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
+  photo_path?: string | null;
+  photo_file_name?: string | null;
 }
 
 export interface CreateEmployeData {

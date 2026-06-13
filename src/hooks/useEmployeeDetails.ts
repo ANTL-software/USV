@@ -21,6 +21,10 @@ import { DocumentModel } from '../API/models/document.model';
 // Types
 import { PdfModalState } from '../utils/types/document.types';
 import type { Planning, PlanningAssignation } from '../utils/types/planning.types';
+import {
+  uploadEmployePhotoService,
+  deleteEmployePhotoService,
+} from '../API/services/user.service';
 
 /**
  * Hook pour gérer les détails d'un employé et ses documents
@@ -28,7 +32,11 @@ import type { Planning, PlanningAssignation } from '../utils/types/planning.type
  */
 export const useEmployeeDetails = () => {
   const { id } = useParams<{ id: string }>();
-  const { employes, isLoading: employesLoading } = useEmployes();
+  const { employes, isLoading: employesLoading, load: reloadEmployes } = useEmployes();
+
+  // State pour la photo de l'employé
+  const [isPhotoUploading, setIsPhotoUploading] = useState<boolean>(false);
+  const [photoError, setPhotoError] = useState<string | null>(null);
 
   // State pour les documents de l'employé
   const [documents, setDocuments] = useState<DocumentModel[]>([]);
@@ -247,6 +255,59 @@ export const useEmployeeDetails = () => {
     }
   }, [selectedFile, fileName, id, handleCloseUploadModal, refetchDocuments]);
 
+  // Photo handlers
+  const handlePhotoFileChange = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.[0] && id) {
+      const file = e.target.files[0];
+      
+      const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+      const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp'];
+
+      if (file.size > MAX_SIZE) {
+        setPhotoError('La photo dépasse 2 Mo');
+        return;
+      }
+
+      if (!ALLOWED_TYPES.includes(file.type)) {
+        setPhotoError('Format non autorisé. PNG, JPG, JPEG, WEBP uniquement.');
+        return;
+      }
+
+      setIsPhotoUploading(true);
+      setPhotoError(null);
+
+      try {
+        const idNum = parseInt(id, 10);
+        await uploadEmployePhotoService(idNum, file);
+        await reloadEmployes();
+      } catch (err) {
+        console.error('Erreur upload photo:', err);
+        setPhotoError(err instanceof Error ? err.message : "Erreur lors de l'upload");
+      } finally {
+        setIsPhotoUploading(false);
+      }
+    }
+  }, [id, reloadEmployes]);
+
+  const handlePhotoDelete = useCallback(async () => {
+    if (!id) return;
+    if (!window.confirm('Supprimer la photo de cet employé ?')) return;
+    
+    setIsPhotoUploading(true);
+    setPhotoError(null);
+
+    try {
+      const idNum = parseInt(id, 10);
+      await deleteEmployePhotoService(idNum);
+      await reloadEmployes();
+    } catch (err) {
+      console.error('Erreur suppression photo:', err);
+      setPhotoError(err instanceof Error ? err.message : "Erreur lors de la suppression");
+    } finally {
+      setIsPhotoUploading(false);
+    }
+  }, [id, reloadEmployes]);
+
   // Suppression d'un document via service
   const handleDeleteDocument = useCallback(async (documentId: number) => {
     if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) return;
@@ -337,6 +398,12 @@ export const useEmployeeDetails = () => {
     // Setters
     setFileName,
     setSelectedFile,
+
+    // Photo
+    isPhotoUploading,
+    photoError,
+    handlePhotoFileChange,
+    handlePhotoDelete,
 
     // Handlers
     handleAddDocument,

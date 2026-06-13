@@ -55,6 +55,29 @@ export const getCampagneLogoUrl = (logoPath: string | null | undefined): string 
 };
 
 /**
+ * Construit l'URL complète pour une photo d'un employé
+ * @param photoPath - Chemin relatif de la photo (ex: /uploads/employe_photos/filename.png)
+ * @returns URL complète de l'image (ex: http://localhost:8800/uploads/employe_photos/filename.png)
+ */
+export const getEmployePhotoUrl = (photoPath: string | null | undefined): string | null => {
+  if (!photoPath) {
+    return null;
+  }
+
+  if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
+    return photoPath;
+  }
+
+  if (photoPath.startsWith('/uploads/')) {
+    const apiBaseUrl = getApiBaseUrl();
+    const serverUrl = apiBaseUrl.replace('/api', '');
+    return `${serverUrl}${photoPath}`;
+  }
+
+  return photoPath;
+};
+
+/**
  * Détermine l'environnement actuel de l'application
  */
 export const getEnvironment = (): 'development' | 'production' => {
