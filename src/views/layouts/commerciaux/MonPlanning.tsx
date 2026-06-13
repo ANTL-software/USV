@@ -22,8 +22,9 @@ type PlanningEvent = {
   title: string;
   start: Date;
   end: Date;
-  event_type?: 'work' | 'holiday';
+  event_type?: 'work' | 'holiday' | 'absence';
   holiday_name?: string | null;
+  absence_label?: string | null;
 };
 
 const pad = (value: number): string => String(value).padStart(2, '0');
@@ -75,14 +76,16 @@ const formatHoursLabel = (hours: number): string => {
 };
 
 const buildMonthEvents = (events: CalendarPlanningEvent[]): PlanningEvent[] => {
-  const grouped = new Map<string, { start: Date; holidayName: string | null; workHours: number }>();
+  const grouped = new Map<string, { start: Date; holidayName: string | null; absenceLabel: string | null; workHours: number }>();
 
   events.forEach((event) => {
     const key = getDateKey(event.start);
-    const existing = grouped.get(key) || { start: event.start, holidayName: null, workHours: 0 };
+    const existing = grouped.get(key) || { start: event.start, holidayName: null, absenceLabel: null, workHours: 0 };
 
     if (event.event_type === 'holiday' && event.holiday_name) {
       existing.holidayName = event.holiday_name;
+    } else if (event.event_type === 'absence' && event.absence_label) {
+      existing.absenceLabel = event.absence_label;
     } else if (event.event_type === 'work') {
       existing.workHours += getDurationHours(event.start, event.end);
     }
@@ -91,13 +94,14 @@ const buildMonthEvents = (events: CalendarPlanningEvent[]): PlanningEvent[] => {
   });
 
   return Array.from(grouped.values())
-    .filter((entry) => entry.holidayName || entry.workHours > 0)
+    .filter((entry) => entry.holidayName || entry.absenceLabel || entry.workHours > 0)
     .map((entry) => ({
-      title: entry.holidayName || formatHoursLabel(entry.workHours),
+      title: entry.holidayName || entry.absenceLabel || formatHoursLabel(entry.workHours),
       start: entry.start,
       end: addHours(entry.start, 1),
-      event_type: entry.holidayName ? 'holiday' : 'work',
+      event_type: entry.holidayName ? 'holiday' : entry.absenceLabel ? 'absence' : 'work',
       holiday_name: entry.holidayName,
+      absence_label: entry.absenceLabel,
     }));
 };
 
@@ -115,6 +119,7 @@ const splitWorkEventByHour = (event: CalendarPlanningEvent): PlanningEvent[] => 
       end: segmentEnd,
       event_type: 'work',
       holiday_name: null,
+      absence_label: null,
     });
 
     cursor = next;
@@ -132,6 +137,18 @@ const buildDetailedEvents = (events: CalendarPlanningEvent[]): PlanningEvent[] =
         end: event.end,
         event_type: 'holiday',
         holiday_name: event.holiday_name,
+        absence_label: null,
+      }];
+    }
+
+    if (event.event_type === 'absence') {
+      return [{
+        title: event.absence_label || event.title,
+        start: event.start,
+        end: event.end,
+        event_type: 'absence',
+        holiday_name: null,
+        absence_label: event.absence_label,
       }];
     }
 
@@ -222,6 +239,16 @@ function MonPlanning(): ReactElement {
       return {
         style: {
           background: '#f59e0b',
+          color: '#ffffff',
+          border: 'none',
+        },
+      };
+    }
+
+    if (event.event_type === 'absence') {
+      return {
+        style: {
+          background: '#ef4444',
           color: '#ffffff',
           border: 'none',
         },

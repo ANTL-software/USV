@@ -1,6 +1,8 @@
 import type { AbsenceMotifOption, AbsenceRequestStatus } from '../types/absence.types';
 
 export const ABSENCE_MOTIFS: AbsenceMotifOption[] = [
+  { value: 'demande_conges', label: 'Demande de congés', justificatif_requis: false },
+  { value: 'demande_conges_anticipee', label: 'Demande de congés anticipée', justificatif_requis: false },
   { value: 'rendez_vous_medical', label: 'Rendez-vous médical (justificatif demandé)', justificatif_requis: true },
   { value: 'maladie', label: 'Maladie / incapacité temporaire (justificatif demandé)', justificatif_requis: true },
   { value: 'enfant_malade', label: 'Enfant malade (justificatif demandé)', justificatif_requis: true },

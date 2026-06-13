@@ -35,8 +35,9 @@ export interface PlanningCalendarEvent {
   planning_name: string;
   heure_debut: string;
   heure_fin: string;
-  event_type: 'work' | 'holiday';
+  event_type: 'work' | 'holiday' | 'absence';
   holiday_name: string | null;
+  absence_label: string | null;
 }
 
 export interface PlanningPayload {
