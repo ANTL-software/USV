@@ -92,7 +92,7 @@ function CentreAppels(): ReactElement {
               <div className="centreAppels__card-icon">
                 <IoBriefcase />
               </div>
-              <h2>Postes</h2>
+              <h2>Postes & planning</h2>
               <p>Gérer les intitulés de postes, catégories et niveaux hiérarchiques.</p>
             </section>
 

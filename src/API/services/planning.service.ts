@@ -23,10 +23,18 @@ export type CalendarPlanningEvent = Omit<PlanningCalendarEvent, 'start' | 'end'>
   end: Date;
 };
 
+const parseLocalDateTime = (dateTime: string, time: string): Date => {
+  const [year, month, day] = dateTime.slice(0, 10).split('-').map(Number);
+  const [hours, minutes, seconds] = time.slice(0, 8).split(':').map(Number);
+  return new Date(year, (month || 1) - 1, day || 1, hours || 0, minutes || 0, seconds || 0, 0);
+};
+
+// Les plannings doivent rester en "heure locale métier" :
+// une saisie 14:00 doit s'afficher 14:00, sans conversion implicite.
 const toCalendarEvent = (event: PlanningCalendarEvent): CalendarPlanningEvent => ({
   ...event,
-  start: new Date(event.start),
-  end: new Date(event.end),
+  start: parseLocalDateTime(event.start, event.heure_debut),
+  end: parseLocalDateTime(event.end, event.heure_fin),
 });
 
 export const getPlanningsService = async (): Promise<Planning[]> => {
