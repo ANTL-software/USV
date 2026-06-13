@@ -70,20 +70,13 @@
     }
 
     h2 {
-      margin: 0 0 0.75em;
+      margin: 0;
       font-size: 1.5rem;
       font-weight: 700;
       background: vars.$utilsGradient;
       -webkit-background-clip: text;
       background-clip: text;
       -webkit-text-fill-color: transparent;
-    }
-
-    p {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      font-size: 0.95rem;
-      line-height: 1.5;
     }
   }
 }

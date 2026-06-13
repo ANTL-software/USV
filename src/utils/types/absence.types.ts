@@ -24,6 +24,11 @@ export interface AbsenceRequest {
   date_traitement?: string | null;
   created_at: string;
   updated_at: string;
+  employe?: {
+    id_employe: number;
+    nom: string;
+    prenom: string;
+  } | null;
 }
 
 export interface CreateAbsenceRequestPayload {

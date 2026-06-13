@@ -34,6 +34,7 @@ import CentreAppelsWithAuth from "./views/layouts/centreAppels/CentreAppels";
 import CommerciauxWithAuth from "./views/layouts/commerciaux/Commerciaux";
 import NotesDirectionWithAuth from "./views/layouts/commerciaux/NotesDirection";
 import MonPlanningWithAuth from "./views/layouts/commerciaux/MonPlanning";
+import AbsenceDemandesWithAuth from "./views/layouts/absenceDemandes/AbsenceDemandes";
 import AgentsListWithAuth from "./views/layouts/agentsList/AgentsList";
 import AgentDetailsWithAuth from "./views/layouts/agentDetails/AgentDetails";
 import AgentFormWithAuth from "./views/layouts/agentForm/AgentForm";
@@ -125,6 +126,7 @@ function App(): ReactElement {
         <Route path={"commerciaux/notes-direction"} element={<NotesDirectionWithAuth />}></Route>
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
+        <Route path={"operations/demandes-absence"} element={<AbsenceDemandesWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
         <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>
         <Route path={"operations/employes/details/:id"} element={<AgentDetailsWithAuth />}></Route>

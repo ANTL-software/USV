@@ -1,0 +1,195 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#absenceDemandes {
+  @include mixins.mainView;
+
+  main { padding: 1.5em 1em; }
+
+  .absenceDemandes__container {
+    @include mixins.centeredContainer(1200px);
+  }
+
+  .absenceDemandes__back {
+    margin-bottom: 1rem;
+  }
+
+  .absenceDemandes__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+
+    h1,
+    p {
+      margin: 0;
+    }
+
+    p {
+      margin-top: 0.25rem;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  .absenceDemandes__tabs {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+
+    button {
+      border: 1px solid vars.$borderColor;
+      border-radius: 999px;
+      background: #fff;
+      padding: 0.7rem 1rem;
+      cursor: pointer;
+      transition: vars.$transitionFast;
+    }
+
+    .is-active {
+      background: vars.$utilsGradient;
+      border-color: transparent;
+      color: #fff;
+    }
+  }
+
+  .absenceDemandes__filters {
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+
+    @media (max-width: vars.$tabletWidth) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .absenceDemandes__filter {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+
+    span {
+      font-weight: 600;
+      color: vars.$fontColorPrimary;
+    }
+
+    input,
+    select {
+      width: 100%;
+      border: 1px solid vars.$borderColor;
+      border-radius: 10px;
+      height: 50px;
+      padding: 0 0.9rem;
+      font: inherit;
+      background: #fff;
+    }
+
+    .reactSelect__control {
+      min-height: 50px;
+      height: 50px;
+      border-radius: 10px;
+      border-color: vars.$borderColor;
+      box-shadow: none;
+    }
+
+    .reactSelect__value-container {
+      height: 50px;
+      padding: 0 0.9rem;
+    }
+
+    .reactSelect__indicators {
+      height: 50px;
+    }
+
+    .reactSelect__single-value,
+    .reactSelect__placeholder {
+      margin: 0;
+    }
+
+    .reactSelect__control--is-focused {
+      border-color: vars.$utilsPrimary;
+      box-shadow: 0 0 0 1px vars.$utilsPrimary;
+    }
+  }
+
+  .absenceDemandes__state {
+    @include mixins.card(14px, light);
+    padding: 2rem;
+    color: vars.$fontColorSecondary;
+  }
+
+  .absenceDemandes__tableWrapper {
+    @include mixins.card(14px, light);
+    overflow-x: auto;
+  }
+
+  .absenceDemandes__table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.94rem;
+
+    th {
+      text-align: left;
+      padding: 0.9rem 1rem;
+      color: vars.$fontColorSecondary;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid vars.$borderColor;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 1rem;
+      vertical-align: top;
+      border-bottom: 1px solid vars.$borderColor;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+  }
+
+  .absenceDemandes__motif {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    span {
+      color: vars.$fontColorSecondary;
+      line-height: 1.45;
+    }
+  }
+
+  .absenceDemandes__actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+  }
+
+  .absenceDemandes__status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.35rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 700;
+
+    &--demandee {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    &--validee {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    &--refusee {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+  }
+}

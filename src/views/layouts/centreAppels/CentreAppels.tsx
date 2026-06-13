@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoPersonCircleOutline, IoCheckmarkCircleOutline } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoPersonCircleOutline, IoCheckmarkCircleOutline, IoCalendarClear } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
@@ -35,7 +35,6 @@ function CentreAppels(): ReactElement {
                 <IoEyeOutline />
               </div>
               <h2>Supervision</h2>
-              <p>Superviser les files d'appels, agents et appels en cours en temps réel.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/commandes')}>
@@ -43,7 +42,6 @@ function CentreAppels(): ReactElement {
                 <IoReceipt />
               </div>
               <h2>Commandes</h2>
-              <p>Consulter les commandes passées depuis le script vendeur.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/campagnes')}>
@@ -51,7 +49,6 @@ function CentreAppels(): ReactElement {
                 <IoCallOutline />
               </div>
               <h2>Campagnes</h2>
-              <p>Créer et gérer les campagnes commerciales, affecter les agents.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/prospects')}>
@@ -59,7 +56,6 @@ function CentreAppels(): ReactElement {
                 <IoPersonCircleOutline />
               </div>
               <h2>Prospects</h2>
-              <p>Gérer et consulter la base de données des prospects.</p>
             </section>
           </div>
 
@@ -69,7 +65,6 @@ function CentreAppels(): ReactElement {
                 <IoPricetag />
               </div>
               <h2>Produits</h2>
-              <p>Gérer le catalogue produits et les catégories disponibles à la vente.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/qualite')}>
@@ -77,7 +72,13 @@ function CentreAppels(): ReactElement {
                 <IoCheckmarkCircleOutline />
               </div>
               <h2>Qualité</h2>
-              <p>Gérer les signalements, écoutes et statistiques de qualité.</p>
+            </section>
+
+            <section className="centreAppels__card" onClick={() => navigate('/operations/demandes-absence')}>
+              <div className="centreAppels__card-icon">
+                <IoCalendarClear />
+              </div>
+              <h2>Demande d&apos;absence</h2>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/employes')}>
@@ -85,7 +86,6 @@ function CentreAppels(): ReactElement {
                 <IoPeople />
               </div>
               <h2>Employés</h2>
-              <p>Créer, modifier et configurer les employés de antl.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/postes')}>
@@ -93,7 +93,6 @@ function CentreAppels(): ReactElement {
                 <IoBriefcase />
               </div>
               <h2>Postes & planning</h2>
-              <p>Gérer les intitulés de postes, catégories et niveaux hiérarchiques.</p>
             </section>
 
             <section className="centreAppels__card" onClick={() => navigate('/operations/materiel')}>
@@ -101,7 +100,6 @@ function CentreAppels(): ReactElement {
                 <IoLaptopOutline />
               </div>
               <h2>Matériel</h2>
-              <p>Gérer et assigner le matériel informatique aux employés.</p>
             </section>
           </div>
         </div>
