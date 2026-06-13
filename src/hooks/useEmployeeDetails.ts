@@ -8,6 +8,7 @@ import {
   uploadDocumentService,
   deleteDocumentService,
   downloadDocumentService,
+  generateDocumentViewUrlService,
 } from '../API/services/document.service';
 
 // Models
@@ -215,18 +216,17 @@ export const useEmployeeDetails = () => {
   }, []);
 
   // Visualisation d'un document (PDF ou Image) - inspiré de useCourrierActions
-  const handleViewDocument = useCallback(async (documentId: number, fileName: string) => {
+  const handleViewDocument = useCallback(async (document: DocumentModel) => {
     try {
-      const blob = await downloadDocumentService(documentId);
-      const isImage = fileName.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
+      const isImage = document.filename.toLowerCase().match(/\.(jpg|jpeg|png|gif|bmp|webp)$/);
       
       if (isImage) {
+        const blob = await downloadDocumentService(document.id);
         const url = window.URL.createObjectURL(blob);
-        setPdfModal({ visible: true, pdfUrl: url, fileName, fileType: 'image' });
+        setPdfModal({ visible: true, pdfUrl: url, fileName: document.filename, fileType: 'image' });
       } else {
-        // Pour les PDF, on utilise aussi une blob URL avec ModernPDFViewer
-        const url = window.URL.createObjectURL(blob);
-        setPdfModal({ visible: true, pdfUrl: url, fileName, fileType: 'pdf' });
+        const viewUrlData = await generateDocumentViewUrlService(document.id, 10);
+        setPdfModal({ visible: true, pdfUrl: viewUrlData.viewUrl, fileName: document.filename, fileType: 'pdf' });
       }
     } catch (error) {
       console.error('Erreur lors de la visualisation:', error);

@@ -10,6 +10,7 @@ import {
   DocumentDeleteResult,
 } from "../../utils/types/document.types";
 import { DocumentModel } from "../models/document.model";
+import { IViewUrlResponse } from "./viewUrl.service";
 
 /**
  * Récupère la liste des documents d'un employé
@@ -83,7 +84,7 @@ export const downloadDocumentService = async (
 ): Promise<Blob> => {
   try {
     const response: AxiosResponse<Blob> = await getRequest(
-      `/documents/${documentId}/download`,
+      `/employes/documents/${documentId}/download`,
       {
         responseType: 'blob',
       }
@@ -94,6 +95,26 @@ export const downloadDocumentService = async (
     console.error("Erreur lors du téléchargement du document:", error);
     throw error;
   }
+};
+
+/**
+ * Génère une URL signée temporaire pour visualiser un document employé
+ * @param documentId - ID du document
+ * @param expiresInMinutes - Durée de validité en minutes (1-60, défaut: 10)
+ */
+export const generateDocumentViewUrlService = async (
+  documentId: number,
+  expiresInMinutes: number = 10
+): Promise<IViewUrlResponse> => {
+  const response: AxiosResponse<{ success: boolean; message: string; data: IViewUrlResponse }> = await getRequest(
+    `/employes/documents/${documentId}/view-url?expires=${expiresInMinutes}`
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || "Failed to generate signed URL");
 };
 
 /**
@@ -148,6 +169,7 @@ export default {
   getDocumentsByEmployeService,
   uploadDocumentService,
   downloadDocumentService,
+  generateDocumentViewUrlService,
   deleteDocumentService,
   getDocumentByIdService,
 };
