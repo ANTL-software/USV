@@ -43,7 +43,7 @@ export const getCampagneLogoUrl = (logoPath: string | null | undefined): string 
   // Pour les chemins relatifs commençant par /uploads/, construire l'URL complète
   if (logoPath.startsWith('/uploads/')) {
     const apiBaseUrl = getApiBaseUrl();
-    const serverUrl = apiBaseUrl.replace('/api', '');
+    const serverUrl = apiBaseUrl.replace(/\/api$/, '');
     const fullUrl = `${serverUrl}${logoPath}`;
     console.log('🔧 [DEBUG] Constructing URL:', { apiBaseUrl, serverUrl, fullUrl });
     return fullUrl;
@@ -70,7 +70,7 @@ export const getEmployePhotoUrl = (photoPath: string | null | undefined): string
 
   if (photoPath.startsWith('/uploads/')) {
     const apiBaseUrl = getApiBaseUrl();
-    const serverUrl = apiBaseUrl.replace('/api', '');
+    const serverUrl = apiBaseUrl.replace(/\/api$/, '');
     return `${serverUrl}${photoPath}`;
   }
 
