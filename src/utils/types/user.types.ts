@@ -9,6 +9,7 @@ export interface Poste {
   salaire_base?: number | null;
   type_poste?: TypePoste | null;
   couleur?: string | null;
+  permissions?: Record<string, any> | null;
 }
 
 export interface Departement {

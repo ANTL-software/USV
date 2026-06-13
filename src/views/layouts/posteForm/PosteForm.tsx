@@ -13,6 +13,7 @@ import { usePosteForm } from '../../../hooks/usePosteForm';
 
 // constants
 import { TYPE_OPTIONS, COLOR_PALETTE } from '../../../utils/constants/poste.constants';
+import { SECTIONS_CONFIG } from '../../../utils/scripts/permissions';
 
 // components
 import Header from '../../components/header/Header';
@@ -24,7 +25,8 @@ function PosteForm(): ReactElement {
   const navigate = useNavigate();
   const {
     form, setForm, isEdit, isLoading, isFetching,
-    error, success, handleChange, handleSelectChange, handleSubmit,
+    error, success, handleChange, handleSelectChange,
+    togglePermissionSection, togglePermissionSubsection, handleSubmit,
   } = usePosteForm();
 
   if (isFetching) {
@@ -114,6 +116,65 @@ function PosteForm(): ReactElement {
                 rows={3} disabled={isLoading}
                 placeholder="Description du poste..."
               />
+            </div>
+
+            <div className="posteForm__field permissions-section">
+              <label>Permissions et accès aux menus</label>
+              <div className="permissions-grid">
+                {SECTIONS_CONFIG.map(section => {
+                  const hasSubsections = section.subsections.length > 0;
+                  const isSectionEnabled = !!form.permissions[section.id]?.enabled;
+                  const allowedSubsections = form.permissions[section.id]?.subsections || [];
+
+                  return (
+                    <div 
+                      key={section.id} 
+                      className={`permission-card ${isSectionEnabled ? 'permission-card--enabled' : ''}`}
+                    >
+                      <div className="permission-card-header">
+                        <span className="permission-card-name">{section.name}</span>
+                        <label className="permission-toggle">
+                          <input
+                            type="checkbox"
+                            checked={isSectionEnabled}
+                            onChange={() => togglePermissionSection(section.id)}
+                            disabled={isLoading}
+                          />
+                          <span className="permission-toggle-slider"></span>
+                        </label>
+                      </div>
+
+                      {hasSubsections && isSectionEnabled && (
+                        <div className="permission-card-body">
+                          <span className="permission-sub-label">Sous-applications accessibles :</span>
+                          <div className="permission-pills">
+                            {section.subsections.map(sub => {
+                              const isSubEnabled = allowedSubsections.includes(sub.id);
+                              return (
+                                <button
+                                  key={sub.id}
+                                  type="button"
+                                  className={`permission-pill ${isSubEnabled ? 'permission-pill--active' : ''}`}
+                                  onClick={() => togglePermissionSubsection(section.id, sub.id)}
+                                  disabled={isLoading}
+                                >
+                                  {sub.name}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+
+                      {!hasSubsections && isSectionEnabled && (
+                        <div className="permission-card-body">
+                          <span className="permission-full-access">Accès complet à la section</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="posteForm__actions">

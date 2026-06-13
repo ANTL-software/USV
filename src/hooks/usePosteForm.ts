@@ -9,7 +9,16 @@ interface PosteFormState {
   salaire_base: string;
   type_poste: TypePoste | '';
   couleur: string;
+  permissions: Record<string, { enabled: boolean; subsections?: string[] }>;
 }
+
+const INITIAL_PERMISSIONS = {
+  mail: { enabled: false, subsections: [] },
+  booking: { enabled: false },
+  operations: { enabled: false, subsections: [] },
+  commerciaux: { enabled: false, subsections: [] },
+  projets: { enabled: false }
+};
 
 const INITIAL_FORM: PosteFormState = {
   libelle_poste: '',
@@ -17,6 +26,7 @@ const INITIAL_FORM: PosteFormState = {
   salaire_base: '',
   type_poste: '',
   couleur: '',
+  permissions: INITIAL_PERMISSIONS,
 };
 
 export function usePosteForm() {
@@ -39,6 +49,7 @@ export function usePosteForm() {
         salaire_base:  p.salaire_base != null ? String(p.salaire_base) : '',
         type_poste:    (p.type_poste as TypePoste) || '',
         couleur:       p.couleur || '',
+        permissions:   (p.permissions as Record<string, { enabled: boolean; subsections?: string[] }>) || INITIAL_PERMISSIONS,
       }))
       .catch(err => setError(err instanceof Error ? err.message : 'Erreur de chargement'))
       .finally(() => setIsFetching(false));
@@ -50,9 +61,56 @@ export function usePosteForm() {
     setError(null);
   };
 
-  const handleSelectChange = (field: keyof PosteFormState, value: string) => {
+  const handleSelectChange = (field: keyof Omit<PosteFormState, 'permissions'>, value: string) => {
     setForm(prev => ({ ...prev, [field]: value }));
     setError(null);
+  };
+
+  const togglePermissionSection = (sectionId: string) => {
+    setForm(prev => {
+      const perms = { ...prev.permissions };
+      const current = perms[sectionId] || { enabled: false };
+      const nextEnabled = !current.enabled;
+      
+      perms[sectionId] = {
+        ...current,
+        enabled: nextEnabled,
+        ...(nextEnabled && sectionId === 'operations' && {
+          subsections: ['supervision', 'commandes', 'campagnes', 'prospects', 'produits', 'qualite', 'demandes-absence', 'employes', 'postes', 'materiel']
+        }),
+        ...(nextEnabled && sectionId === 'mail' && {
+          subsections: ['mail_new', 'mail_list', 'mail_convert']
+        }),
+        ...(nextEnabled && sectionId === 'commerciaux' && {
+          subsections: ['notes-direction', 'mon_planning']
+        })
+      };
+      
+      return { ...prev, permissions: perms };
+    });
+  };
+
+  const togglePermissionSubsection = (sectionId: string, subsectionId: string) => {
+    setForm(prev => {
+      const perms = { ...prev.permissions };
+      const current = perms[sectionId] || { enabled: false, subsections: [] };
+      if (!current.enabled) return prev;
+      
+      const subs = current.subsections ? [...current.subsections] : [];
+      const index = subs.indexOf(subsectionId);
+      if (index > -1) {
+        subs.splice(index, 1);
+      } else {
+        subs.push(subsectionId);
+      }
+      
+      perms[sectionId] = {
+        ...current,
+        subsections: subs
+      };
+      
+      return { ...prev, permissions: perms };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -67,6 +125,7 @@ export function usePosteForm() {
         salaire_base:  form.salaire_base ? Number(form.salaire_base) : null,
         type_poste:    (form.type_poste as TypePoste) || null,
         couleur:       form.couleur || null,
+        permissions:   form.permissions,
       };
       if (isEdit) {
         await updatePosteService(Number(id), payload);
@@ -83,5 +142,5 @@ export function usePosteForm() {
     }
   };
 
-  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, handleSubmit };
+  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, togglePermissionSection, togglePermissionSubsection, handleSubmit };
 }
