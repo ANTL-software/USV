@@ -207,7 +207,11 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
+      display: block;
       box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+      background-clip: padding-box;
       border: 1px solid vars.$borderColor;
       border-radius: 10px;
       padding: 0.8rem 0.9rem;
@@ -229,6 +233,13 @@
     .reactSelect__control--is-focused {
       border-color: vars.$utilsPrimary;
       box-shadow: 0 0 0 1px vars.$utilsPrimary;
+    }
+
+    input[type="date"],
+    input[type="time"] {
+      inline-size: 100%;
+      block-size: 48px;
+      line-height: 1.2;
     }
   }
 

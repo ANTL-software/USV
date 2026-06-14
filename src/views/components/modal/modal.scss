@@ -16,6 +16,9 @@
     align-items: center;
     justify-content: center;
     padding: 2em;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     
     .modalContainer {
       background: white;
@@ -68,7 +71,11 @@
       
       .modalContent {
         flex: 1;
-        overflow: hidden;
+        overflow-y: auto;
+        min-height: 0;
+        padding: 1rem;
+        overscroll-behavior: contain;
+        -webkit-overflow-scrolling: touch;
         
         iframe, embed, object {
           width: 100%;
