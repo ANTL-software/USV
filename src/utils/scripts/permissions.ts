@@ -54,7 +54,9 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
     name: 'Gestion commerciaux',
     path: '/commerciaux',
     subsections: [
-      { id: 'notes-direction', name: 'Notes de direction', path: '/commerciaux/notes-direction' },
+      { id: 'notes-direction', name: 'Notes de direction (Lecture)', path: '/commerciaux/notes-direction' },
+      { id: 'notes-direction-create', name: 'Notes de direction (Création)', path: '/commerciaux/notes-direction' },
+      { id: 'notes-direction-delete', name: 'Notes de direction (Suppression)', path: '/commerciaux/notes-direction' },
       { id: 'mon_planning', name: 'Mon planning', path: '/commerciaux/mon_planning' }
     ]
   },
@@ -119,7 +121,9 @@ export function hasAccessToSubsection(user: Employe | null, sectionId: string, s
   
   const commercialRoles = ['Sales Expert', 'Sales Junior', 'Sales Senior'];
   if (commercialRoles.some(role => title.toLowerCase() === role.toLowerCase())) {
-    return sectionId === 'commerciaux';
+    if (sectionId === 'commerciaux') {
+      return ['notes-direction', 'mon_planning'].includes(subsectionId);
+    }
   }
   
   return false;

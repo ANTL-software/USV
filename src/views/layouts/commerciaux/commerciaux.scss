@@ -343,4 +343,296 @@
       color: #b91c1c;
     }
   }
+
+  // NOTES DIRECTION
+  .commerciauxPlaceholder__notes-table-wrapper {
+    @include mixins.card(12px, light);
+    overflow-x: auto;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .commerciauxPlaceholder__notes-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+
+    th {
+      text-align: left;
+      padding: 0.85em 1em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid vars.$borderColor;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.85em 1em;
+      border-bottom: 1px solid vars.$borderColor;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover { background: vars.$greyBackground; }
+  }
+
+  .commerciauxPlaceholder__notes-name {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  .commerciauxPlaceholder__notes-actions {
+    display: flex;
+    gap: 0.4em;
+
+    .actionBtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.5em;
+      height: 2.5em;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: vars.$transitionMedium;
+      font-size: 1.1em;
+      line-height: 1;
+      padding: 0;
+
+      &.view {
+        background: rgba(#9b59b6, 0.1);
+        color: #9b59b6;
+        &:hover { background: #9b59b6; color: white; transform: translateY(-2px); }
+      }
+
+      &.delete {
+        background: rgba(vars.$errorColor, 0.1);
+        color: vars.$errorColor;
+        &:hover { background: vars.$errorColor; color: white; transform: translateY(-2px); }
+      }
+    }
+  }
+
+  .commerciauxPlaceholder__no-notes {
+    text-align: center;
+    padding: 3em 1em;
+    color: vars.$fontColorSecondary;
+    font-size: 1.1rem;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+
+    &--error {
+      color: vars.$errorColor;
+    }
+  }
+
+  // MODALS
+  .commerciauxPlaceholder__modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.25s ease-out;
+  }
+
+  .commerciauxPlaceholder__modal-container {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .commerciauxPlaceholder__modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid vars.$borderColor;
+
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  .commerciauxPlaceholder__modal-close {
+    background: none;
+    border: none;
+    font-size: 1.35rem;
+    color: vars.$fontColorSecondary;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 50%;
+    transition: all vars.$transitionMedium;
+
+    &:hover {
+      background: vars.$greyBackground;
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  .commerciauxPlaceholder__modal-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .commerciauxPlaceholder__form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .commerciauxPlaceholder__form-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: vars.$fontColorSecondary;
+  }
+
+  .commerciauxPlaceholder__form-input {
+    padding: 0.75rem 1rem;
+    border: 1.5px solid vars.$borderColor;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: border-color vars.$transitionMedium;
+
+    &:focus {
+      outline: none;
+      border-color: #8b5cf6;
+    }
+
+    &:disabled {
+      background: vars.$greyBackground;
+      cursor: not-allowed;
+    }
+  }
+
+  .commerciauxPlaceholder__dropzone {
+    border: 2px dashed vars.$borderColor;
+    border-radius: 12px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all vars.$transitionMedium;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+
+    &:hover,
+    &--active {
+      border-color: #8b5cf6;
+      background: rgba(#8b5cf6, 0.03);
+    }
+
+    &--has-file {
+      border-style: solid;
+      border-color: rgba(#8b5cf6, 0.4);
+      background: rgba(#8b5cf6, 0.02);
+    }
+  }
+
+  .commerciauxPlaceholder__dropzone-icon {
+    font-size: 2.5rem;
+    color: vars.$fontColorSecondary;
+    margin-bottom: 0.75rem;
+  }
+
+  .commerciauxPlaceholder__dropzone-text {
+    margin: 0;
+    font-size: 0.9rem;
+    color: vars.$fontColorPrimary;
+    font-weight: 500;
+
+    span {
+      color: #8b5cf6;
+      text-decoration: underline;
+    }
+  }
+
+  .commerciauxPlaceholder__dropzone-sub {
+    margin: 0.35rem 0 0;
+    font-size: 0.78rem;
+    color: vars.$fontColorSecondary;
+  }
+
+  .commerciauxPlaceholder__dropzone-filename {
+    margin: 0;
+    font-weight: 600;
+    color: #8b5cf6;
+    font-size: 0.95rem;
+  }
+
+  .commerciauxPlaceholder__dropzone-size {
+    margin: 0.2rem 0 0;
+    font-size: 0.8rem;
+    color: vars.$fontColorSecondary;
+  }
+
+  .commerciauxPlaceholder__modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    border-top: 1px solid vars.$borderColor;
+    background: #fbfbfb;
+  }
+
+  .commerciauxPlaceholder__upload-error {
+    background: rgba(vars.$errorColor, 0.07);
+    color: vars.$errorColor;
+    border: 1px solid rgba(vars.$errorColor, 0.15);
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  .commerciauxPlaceholder__upload-success {
+    background: #ecfdf5;
+    color: #065f46;
+    border: 1px solid #a7f3d0;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 500;
+  }
+
+  // Animation definitions
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
 }

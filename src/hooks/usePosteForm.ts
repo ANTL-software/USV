@@ -82,7 +82,7 @@ export function usePosteForm() {
           subsections: ['mail_new', 'mail_list', 'mail_convert']
         }),
         ...(nextEnabled && sectionId === 'commerciaux' && {
-          subsections: ['notes-direction', 'mon_planning']
+          subsections: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning']
         })
       };
       
