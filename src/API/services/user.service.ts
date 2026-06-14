@@ -126,3 +126,13 @@ export const deleteEmployePhotoService = async (id: number): Promise<void> => {
     throw new Error(response.data.message || "Impossible de supprimer la photo");
   }
 };
+
+export const exportEmployeDataService = async (id: number): Promise<Blob> => {
+  const response: AxiosResponse<Blob> = await getRequest(
+    `/employes/${id}/export`,
+    {
+      responseType: "blob",
+    }
+  );
+  return response.data;
+};

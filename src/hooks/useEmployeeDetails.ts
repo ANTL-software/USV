@@ -25,6 +25,7 @@ import type { Planning, PlanningAssignation } from '../utils/types/planning.type
 import {
   uploadEmployePhotoService,
   deleteEmployePhotoService,
+  exportEmployeDataService,
 } from '../API/services/user.service';
 
 /**
@@ -372,6 +373,25 @@ export const useEmployeeDetails = () => {
     setPdfModal({ visible: false, pdfUrl: '', fileName: '', fileType: 'pdf' });
   }, [pdfModal.pdfUrl, setPdfModal]);
 
+  // Export des données personnelles de l'employé
+  const handleExportData = useCallback(async () => {
+    if (!id || !currentEmploye) return;
+    try {
+      const idNum = parseInt(id, 10);
+      const blob = await exportEmployeDataService(idNum);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `antl_données_personnelle_${currentEmploye.prenom}_${currentEmploye.nom}.zip`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      await showSuccess('Données exportées avec succès !');
+    } catch (error) {
+      console.error('Erreur lors de l\'export des données:', error);
+      await showError('Impossible d\'exporter les données personnelles');
+    }
+  }, [id, currentEmploye, showSuccess, showError]);
+
   return {
     // Employé
     currentEmploye,
@@ -428,6 +448,7 @@ export const useEmployeeDetails = () => {
     handleDownloadDocument,
     handleViewDocument,
     closePdfModal,
+    handleExportData,
   };
 };
 

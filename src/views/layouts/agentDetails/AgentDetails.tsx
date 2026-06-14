@@ -112,6 +112,7 @@ function AgentDetails(): ReactElement {
     handleDownloadDocument,
     handleViewDocument,
     closePdfModal,
+    handleExportData,
   } = useEmployeeDetails();
 
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -120,7 +121,7 @@ function AgentDetails(): ReactElement {
   const actionMap: Record<number, () => void> = {
     1: handleAddDocument, // Ajouter un document
     2: openPlanningModal,
-    3: () => {},
+    3: handleExportData,
   };
 
   return (

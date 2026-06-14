@@ -17,6 +17,7 @@ export {
   updatePosteService,
   deletePosteService,
   deactivateEmployeService,
+  exportEmployeDataService,
 } from './user.service.ts';
 
 export {
