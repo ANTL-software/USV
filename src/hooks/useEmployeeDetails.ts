@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEmployes } from './useEmployes';
+import { useAlert } from '../context/alert/AlertContext';
 
 // Services
 import {
@@ -32,6 +33,7 @@ import {
  */
 export const useEmployeeDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const { showConfirm, showSuccess, showError } = useAlert();
   const { employes, isLoading: employesLoading, load: reloadEmployes } = useEmployes();
 
   // State pour la photo de l'employé
@@ -291,7 +293,8 @@ export const useEmployeeDetails = () => {
 
   const handlePhotoDelete = useCallback(async () => {
     if (!id) return;
-    if (!window.confirm('Supprimer la photo de cet employé ?')) return;
+    const confirm = await showConfirm('Supprimer la photo de cet employé ?', 'Supprimer la photo');
+    if (!confirm) return;
     
     setIsPhotoUploading(true);
     setPhotoError(null);
@@ -300,26 +303,31 @@ export const useEmployeeDetails = () => {
       const idNum = parseInt(id, 10);
       await deleteEmployePhotoService(idNum);
       await reloadEmployes();
+      await showSuccess('Photo supprimée avec succès.');
     } catch (err) {
       console.error('Erreur suppression photo:', err);
-      setPhotoError(err instanceof Error ? err.message : "Erreur lors de la suppression");
+      const msg = err instanceof Error ? err.message : "Erreur lors de la suppression";
+      setPhotoError(msg);
+      await showError(msg);
     } finally {
       setIsPhotoUploading(false);
     }
-  }, [id, reloadEmployes]);
+  }, [id, reloadEmployes, showConfirm, showSuccess, showError]);
 
   // Suppression d'un document via service
   const handleDeleteDocument = useCallback(async (documentId: number) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer ce document ?')) return;
+    const confirm = await showConfirm('Êtes-vous sûr de vouloir supprimer ce document ?', 'Supprimer le document');
+    if (!confirm) return;
 
     try {
       await deleteDocumentService(documentId);
+      await showSuccess('Document supprimé avec succès.');
       refetchDocuments();
     } catch (error) {
       console.error('Erreur lors de la suppression:', error);
-      alert('Impossible de supprimer le document');
+      await showError('Impossible de supprimer le document');
     }
-  }, [refetchDocuments]);
+  }, [refetchDocuments, showConfirm, showSuccess, showError]);
 
   // Téléchargement d'un document
   const handleDownloadDocument = useCallback(async (documentId: number, filename: string) => {

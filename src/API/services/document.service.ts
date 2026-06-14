@@ -127,7 +127,7 @@ export const deleteDocumentService = async (
 ): Promise<DocumentDeleteResult> => {
   try {
     const response: AxiosResponse<DocumentDeleteResult> = await deleteRequest(
-      `/documents/${documentId}`
+      `/employes/documents/${documentId}`
     );
 
     if (response.data.success) {
