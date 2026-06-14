@@ -12,7 +12,7 @@ import { hasAccessToSubsection } from '../utils/scripts/permissions';
 import { PdfModalState } from '../utils/types/document.types';
 
 export const useNotesDirection = () => {
-  const { user } = useUserContext();
+  const { user, refreshUser } = useUserContext();
   const { showConfirm, showSuccess, showError } = useAlert();
 
   const [notes, setNotes] = useState<NoteDirectionModel[]>([]);
@@ -59,7 +59,10 @@ export const useNotesDirection = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, [fetchNotes]);
+    if (refreshUser) {
+      refreshUser().catch((err) => console.error('Erreur lors du rafraîchissement utilisateur:', err));
+    }
+  }, [fetchNotes, refreshUser]);
 
   // File selection
   const handleFileSelect = useCallback((file: File) => {
