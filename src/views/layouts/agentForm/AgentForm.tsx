@@ -22,10 +22,10 @@ import ColorPicker from '../../../components/colorPicker/ColorPicker';
 function AgentForm(): ReactElement {
   const navigate = useNavigate();
   const {
-    form, setForm, existing, sipUri,
-    postes, rangs, isEdit, isLoading, isFetching, isProvisioningSip,
-    error, success, sipWarning,
-    handleChange, handleProvisionSip, handleSubmit,
+    form, setForm, existing,
+    postes, rangs, isEdit, isLoading, isFetching,
+    error, success,
+    handleChange, handleSubmit,
   } = useAgentForm();
 
 
@@ -59,19 +59,7 @@ function AgentForm(): ReactElement {
 
           {error      && <div className="agentForm__error">{error}</div>}
           {success    && <div className="agentForm__success">{success}</div>}
-          {sipWarning && (
-            <div className="agentForm__sip-warning">
-              <span>{sipWarning}</span>
-              <button
-                type="button"
-                className="agentForm__btn-provision-sip"
-                onClick={handleProvisionSip}
-                disabled={isProvisioningSip}
-              >
-                {isProvisioningSip ? 'Provisionnement...' : 'Provisionner le SIP'}
-              </button>
-            </div>
-          )}
+
 
           <form className="agentForm__form" onSubmit={handleSubmit}>
             <fieldset className="agentForm__fieldset">
@@ -169,29 +157,7 @@ function AgentForm(): ReactElement {
               </div>
             </fieldset>
 
-            {isEdit && (
-              <fieldset className="agentForm__fieldset agentForm__fieldset--sip">
-                <legend>Configuration SIP</legend>
-                {(existing?.sip_uri || sipUri) ? (
-                  <p className="agentForm__fieldset-hint">
-                    URI active : <code>{existing?.sip_uri || sipUri}</code>
-                    <span className="agentForm__sip-sync-note"> — mot de passe synchronisé avec le mot de passe de connexion</span>
-                  </p>
-                ) : (
-                  <div className="agentForm__sip-unprov">
-                    <span>Aucun SIP configuré pour cet agent.</span>
-                    <button
-                      type="button"
-                      className="agentForm__btn-provision-sip"
-                      onClick={handleProvisionSip}
-                      disabled={isProvisioningSip || isLoading}
-                    >
-                      {isProvisioningSip ? 'Provisionnement...' : 'Provisionner le SIP automatiquement'}
-                    </button>
-                  </div>
-                )}
-              </fieldset>
-            )}
+
 
             <div className="agentForm__actions">
               <button type="button" className="agentForm__btn-cancel" onClick={() => navigate('/operations/employes')} disabled={isLoading}>

@@ -8,7 +8,6 @@ export type {
   LoginResponse,
   ApiResponse,
   CreateEmployeData,
-  UpdateSipData,
   CreateEmployeResponse,
 } from './user.types.ts';
 

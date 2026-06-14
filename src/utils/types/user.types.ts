@@ -38,7 +38,6 @@ export interface Employe {
   id_rang_commercial?: number | null;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
-  sip_uri?: string | null;
   couleur?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -60,10 +59,7 @@ export interface CreateEmployeData {
   couleur?: string;
 }
 
-export interface UpdateSipData {
-  sip_uri: string;
-  sip_password: string;
-}
+
 
 export interface LoginCredentials {
   identifiant: string;

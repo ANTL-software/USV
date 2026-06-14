@@ -14,7 +14,6 @@ export class UserModel implements Employe {
   id_departement?: number;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
-  sip_uri?: string | null;
   couleur?: string | null;
   created_at?: string;
   updated_at?: string;
@@ -35,7 +34,6 @@ export class UserModel implements Employe {
     this.id_departement = data.id_departement;
     this.actif = data.actif;
     this.role = data.role;
-    this.sip_uri = data.sip_uri;
     this.couleur = data.couleur;
     this.created_at = data.created_at;
     this.updated_at = data.updated_at;
@@ -69,7 +67,6 @@ export class UserModel implements Employe {
       id_departement: this.id_departement,
       actif: this.actif,
       role: this.role,
-      sip_uri: this.sip_uri,
       couleur: this.couleur,
       created_at: this.created_at,
       updated_at: this.updated_at,

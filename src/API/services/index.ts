@@ -10,8 +10,6 @@ export {
   updateEmployeService,
   deleteEmployeService,
   createEmployeService,
-  provisionSipService,
-  setSipCredentialsService,
   getRangsCommerciauxService,
   getPostesService,
   getPosteByIdService,

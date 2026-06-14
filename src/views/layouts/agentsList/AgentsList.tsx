@@ -2,17 +2,17 @@
 import './agentsList.scss';
 
 // hooks | library
-import { ReactElement, useState } from 'react';
+import { ReactElement, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPersonAdd, IoPencil, IoCheckmarkCircle, IoCloseCircle, IoEye } from 'react-icons/io5';
-import { MdArrowBack } from 'react-icons/md';
+import { IoPersonAdd, IoPencil, IoCloseCircle, IoEye } from 'react-icons/io5';
+import { MdArrowBack, MdMoreVert } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 import { useEmployes } from '../../../hooks/useEmployes';
 import type { EmployeFilter } from '../../../hooks/useEmployes';
 import type { Employe } from '../../../utils/types/user.types';
-import { getEmployePhotoUrl } from '../../../utils/scripts/utils';
+import { getEmployePhotoUrl, formatPhoneNumber } from '../../../utils/scripts/utils';
 
 // constants
 import { getPosteBadgeStyle } from '../../../utils/constants/poste.constants';
@@ -35,6 +35,29 @@ function AgentsList(): ReactElement {
   const [filterOption, setFilterOption] = useState(FILTER_OPTIONS[0]);
   const [hoveredAgent, setHoveredAgent] = useState<Employe | null>(null);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [openActionMenu, setOpenActionMenu] = useState<number | null>(null);
+
+  const handleActionMenuToggle = (employeId: number) => {
+    if (openActionMenu === employeId) {
+      setOpenActionMenu(null);
+    } else {
+      setOpenActionMenu(employeId);
+    }
+  };
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (openActionMenu !== null && !target.closest('.actionMenuWrapper')) {
+        setOpenActionMenu(null);
+      }
+    };
+
+    document.addEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('click', handleOutsideClick);
+    };
+  }, [openActionMenu]);
 
   const filtered = employes.filter(a => filter(a, filterOption.value));
 
@@ -85,7 +108,6 @@ function AgentsList(): ReactElement {
                     <th>Email</th>
                     <th>Téléphone</th>
                     <th style={{ textAlign: 'center' }}>Poste</th>
-                    <th>SIP</th>
                     <th>Actif</th>
                     <th>Actions</th>
                   </tr>
@@ -106,7 +128,7 @@ function AgentsList(): ReactElement {
                       <td style={{ textTransform: 'uppercase' }}>{agent.nom}</td>
                       <td>{agent.prenom}</td>
                       <td>{agent.email || '—'}</td>
-                      <td>{agent.telephone || '—'}</td>
+                      <td>{formatPhoneNumber(agent.telephone)}</td>
                       <td style={{ textAlign: 'center' }}>
                         {agent.poste ? (
                           <span
@@ -118,41 +140,58 @@ function AgentsList(): ReactElement {
                         ) : '—'}
                       </td>
                       <td>
-                        {agent.sip_uri
-                          ? <span className="agentsList__badge agentsList__badge--ok"><IoCheckmarkCircle /> Configuré</span>
-                          : <span className="agentsList__badge agentsList__badge--missing"><IoCloseCircle /> Non configuré</span>
-                        }
-                      </td>
-                      <td>
                         {agent.actif
                           ? <span className="agentsList__badge agentsList__badge--ok">Actif</span>
                           : <span className="agentsList__badge agentsList__badge--inactive">Inactif</span>
                         }
                       </td>
                       <td className="agentsList__actions" onClick={(e) => e.stopPropagation()}>
-                        <button
-                          className="agentsList__btn-view"
-                          onClick={() => navigate(`/operations/employes/details/${agent.id_employe}`)}
-                          title="Voir"
-                        >
-                          <IoEye />
-                        </button>
-                        <button
-                          className="agentsList__btn-edit"
-                          onClick={() => navigate(`/operations/employes/${agent.id_employe}`)}
-                          title="Modifier"
-                        >
-                          <IoPencil />
-                        </button>
-                        {agent.actif && (
+                        <div className="actionMenuWrapper">
                           <button
-                            className="agentsList__btn-deactivate"
-                            onClick={() => deactivate(agent.id_employe, `${agent.prenom} ${agent.nom}`)}
-                            title="Désactiver"
+                            className="actionMenuTrigger"
+                            onClick={() => handleActionMenuToggle(agent.id_employe)}
+                            title="Actions"
+                            type="button"
                           >
-                            <IoCloseCircle />
+                            <MdMoreVert />
                           </button>
-                        )}
+                          {openActionMenu === agent.id_employe && (
+                            <div className="actionMenu">
+                              <button
+                                className="actionBtn view"
+                                onClick={() => {
+                                  setOpenActionMenu(null);
+                                  navigate(`/operations/employes/details/${agent.id_employe}`);
+                                }}
+                                title="Voir"
+                              >
+                                <IoEye />
+                              </button>
+                              <button
+                                className="actionBtn edit"
+                                onClick={() => {
+                                  setOpenActionMenu(null);
+                                  navigate(`/operations/employes/${agent.id_employe}`);
+                                }}
+                                title="Modifier"
+                              >
+                                <IoPencil />
+                              </button>
+                              {agent.actif && (
+                                <button
+                                  className="actionBtn delete"
+                                  onClick={() => {
+                                    setOpenActionMenu(null);
+                                    deactivate(agent.id_employe, `${agent.prenom} ${agent.nom}`);
+                                  }}
+                                  title="Désactiver"
+                                >
+                                  <IoCloseCircle />
+                                </button>
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))}

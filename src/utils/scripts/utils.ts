@@ -154,3 +154,24 @@ export function toSelectOptions<T>(
     label: getLabel(item),
   }));
 }
+
+/**
+ * Formate un numéro de téléphone sous la forme xx.xx.xx.xx.xx
+ * @param phone - Le numéro de téléphone à formater
+ */
+export const formatPhoneNumber = (phone: string | null | undefined): string => {
+  if (!phone) return '—';
+  const digits = phone.replace(/\D/g, '');
+  if (digits.length === 10) {
+    return digits.replace(/(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5');
+  }
+  return phone;
+};
+
+/**
+ * Nettoie un numéro de téléphone pour ne conserver que les chiffres (format bdd xxxxxxxxxx)
+ * @param phone - Le numéro de téléphone à nettoyer
+ */
+export const sanitizePhoneNumber = (phone: string): string => {
+  return phone.replace(/\D/g, '');
+};

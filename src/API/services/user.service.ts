@@ -1,7 +1,7 @@
 import { getRequest, postRequest, patchRequest, deleteRequest, postFormDataRequest } from '../APICalls.ts';
 import { AxiosResponse } from 'axios';
 import { UserModel } from '../models/user.model.ts';
-import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, UpdateSipData, CreateEmployeResponse } from '../../utils/types/user.types.ts';
+import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse } from '../../utils/types/user.types.ts';
 
 export const getAllEmployesService = async (): Promise<UserModel[]> => {
   const response: AxiosResponse<ApiResponse<{ employes: Employe[] }>> = await getRequest('/employes');
@@ -50,21 +50,6 @@ export const createEmployeService = async (data: CreateEmployeData): Promise<Cre
   throw new Error(response.data.message || 'Impossible de créer l\'agent');
 };
 
-export const provisionSipService = async (id: number): Promise<{ message: string; sip_uri: string }> => {
-  const response: AxiosResponse<ApiResponse<{ sip_uri: string }>> = await postRequest(`/employes/${id}/provision-sip`, {});
-  if (response.data.success && response.data.data) {
-    return { message: response.data.message || 'SIP provisionné avec succès', sip_uri: response.data.data.sip_uri };
-  }
-  throw new Error(response.data.message || 'Échec du provisionnement SIP');
-};
-
-export const setSipCredentialsService = async (id: number, data: UpdateSipData): Promise<UserModel> => {
-  const response: AxiosResponse<ApiResponse<Employe>> = await patchRequest(`/employes/${id}`, data);
-  if (response.data.success && response.data.data) {
-    return UserModel.fromJSON(response.data.data);
-  }
-  throw new Error(response.data.message || 'Impossible de configurer les credentials SIP');
-};
 
 export const getRangsCommerciauxService = async (): Promise<RangCommercial[]> => {
   const response: AxiosResponse<ApiResponse<RangCommercial[]>> = await getRequest('/rangs-commerciaux');
