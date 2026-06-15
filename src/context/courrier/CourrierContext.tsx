@@ -25,6 +25,7 @@ interface ICourrierContext {
       departmentOptions?: string[];
     }
   ) => Promise<ICourrierAnalysisResult>;
+  checkCourrierName: (name: string) => Promise<boolean>;
 }
 
 export const CourrierContext: Context<ICourrierContext> = createContext<ICourrierContext>({
@@ -45,4 +46,5 @@ export const CourrierContext: Context<ICourrierContext> = createContext<ICourrie
   sendCourrierEmail: async (): Promise<void> => {},
   getCourrierStats: async (): Promise<void> => {},
   analyzeCourrier: async (): Promise<ICourrierAnalysisResult> => { throw new Error("Context not initialized"); },
+  checkCourrierName: async (): Promise<boolean> => { throw new Error("Context not initialized"); },
 });

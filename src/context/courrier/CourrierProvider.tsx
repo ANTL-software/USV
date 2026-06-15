@@ -11,7 +11,8 @@ import {
   downloadCourrierService,
   sendCourrierEmailService,
   getCourrierStatsService,
-  analyzeCourrierService
+  analyzeCourrierService,
+  checkCourrierNameService
 } from "../../API/services/courrier.service.ts";
 
 export const CourrierProvider = ({
@@ -176,6 +177,10 @@ export const CourrierProvider = ({
     return await analyzeCourrierService(file, options);
   }, []);
 
+  const checkCourrierName = useCallback(async (name: string): Promise<boolean> => {
+    return await checkCourrierNameService(name);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       courriers,
@@ -195,8 +200,9 @@ export const CourrierProvider = ({
       sendCourrierEmail,
       getCourrierStats,
       analyzeCourrier,
+      checkCourrierName,
     }),
-    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, deleteCourrier, downloadCourrier, getCourrierStats, updateCourrier, searchCourriers, sendCourrierEmail, analyzeCourrier],
+    [courriers, currentCourrier, isLoading, pagination, stats, uploadCourrier, getAllCourriers, deleteCourrier, downloadCourrier, getCourrierStats, updateCourrier, searchCourriers, sendCourrierEmail, analyzeCourrier, checkCourrierName],
   );
 
   return (

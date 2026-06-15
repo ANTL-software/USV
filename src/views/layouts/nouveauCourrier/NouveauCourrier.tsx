@@ -31,7 +31,7 @@ import { useCourrierFieldOptions } from "../../../utils/hooks/useCourrierFieldOp
 function NouveauCourrier(): ReactElement {
   const SELECT_AUTOFILL_THRESHOLD = 85;
   const navigate = useNavigate();
-  const { uploadCourrier, isLoading, analyzeCourrier } = useCourrier();
+  const { uploadCourrier, isLoading, analyzeCourrier, checkCourrierName } = useCourrier();
   
   // Charger les options pour les champs avec autocomplétion
   const kindOptions = useCourrierFieldOptions('kind');
@@ -60,6 +60,35 @@ function NouveauCourrier(): ReactElement {
     kind: null,
     department: null
   });
+  const [duplicateNameError, setDuplicateNameError] = useState<string | null>(null);
+  const [isCheckingName, setIsCheckingName] = useState(false);
+
+  const checkFileNameDuplication = async (customName: string, file: File | undefined) => {
+    if (!file || !customName.trim()) {
+      setDuplicateNameError(null);
+      return;
+    }
+
+    const originalName = file.name;
+    const dotIndex = originalName.lastIndexOf('.');
+    const extension = dotIndex !== -1 ? originalName.substring(dotIndex) : '';
+    const finalFileName = `${customName.trim()}${extension}`;
+
+    setIsCheckingName(true);
+    try {
+      const exists = await checkCourrierName(finalFileName);
+      if (exists) {
+        setDuplicateNameError(`Un courrier nommé "${finalFileName}" existe déjà. Veuillez choisir un autre nom.`);
+      } else {
+        setDuplicateNameError(null);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la vérification de l'unicité du nom :", error);
+      setDuplicateNameError(null);
+    } finally {
+      setIsCheckingName(false);
+    }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -71,10 +100,15 @@ function NouveauCourrier(): ReactElement {
 
   const handleInputBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
+    const trimmedValue = value.trim();
     setFormData(prev => ({
       ...prev,
-      [name]: value.trim() // Trim quand l'utilisateur sort du champ
+      [name]: trimmedValue // Trim quand l'utilisateur sort du champ
     }));
+
+    if (name === "customFileName") {
+      checkFileNameDuplication(trimmedValue, formData.fichierJoint);
+    }
   };
 
   const handleSelectChange = (selectedOption: { value: string; label: string } | null, name: string) => {
@@ -88,6 +122,7 @@ function NouveauCourrier(): ReactElement {
 
   const handleFileUpload = (file: File) => {
     const nameWithoutExt = file.name.replace(/\.[^/.]+$/, "").trim();
+    const finalCustomName = formData.customFileName || nameWithoutExt;
 
     setFormData(prev => ({
       ...prev,
@@ -97,6 +132,9 @@ function NouveauCourrier(): ReactElement {
 
     // Lancer l'analyse LLM automatiquement
     analyzeDocument(file);
+
+    // Vérifier l'unicité du nom
+    checkFileNameDuplication(finalCustomName, file);
   };
 
   const resolveSelectValue = (
@@ -150,6 +188,10 @@ function NouveauCourrier(): ReactElement {
         customFileName: result.customFileName || prev.customFileName,
       }));
 
+      // Vérifier si le nom suggéré par l'IA crée un doublon
+      const suggestedFileName = result.customFileName || formData.customFileName || file.name.replace(/\.[^/.]+$/, "").trim();
+      checkFileNameDuplication(suggestedFileName, file);
+
       if (result.confidence > 0) {
         showErrorNotification(`Document analysé (${result.confidence}% de confiance)`, 'info');
       }
@@ -195,6 +237,25 @@ function NouveauCourrier(): ReactElement {
     if (!validation.isValid) {
       showErrorNotification(validation.errorMessage, 'warning');
       return;
+    }
+
+    // Double check duplication in case it was missed
+    if (formData.fichierJoint && formData.customFileName.trim()) {
+      const originalName = formData.fichierJoint.name;
+      const dotIndex = originalName.lastIndexOf('.');
+      const extension = dotIndex !== -1 ? originalName.substring(dotIndex) : '';
+      const finalFileName = `${formData.customFileName.trim()}${extension}`;
+
+      try {
+        const exists = await checkCourrierName(finalFileName);
+        if (exists) {
+          showErrorNotification(`Un courrier avec le nom "${finalFileName}" existe déjà`, 'warning');
+          setDuplicateNameError(`Un courrier nommé "${finalFileName}" existe déjà. Veuillez choisir un autre nom.`);
+          return;
+        }
+      } catch (err) {
+        console.error("Erreur lors de la validation finale de l'unicité :", err);
+      }
     }
     
     try {
@@ -300,6 +361,7 @@ function NouveauCourrier(): ReactElement {
                             kind: null,
                             department: null
                           });
+                          setDuplicateNameError(null);
                         }}
                       >
                         <MdCancel />
@@ -391,6 +453,11 @@ function NouveauCourrier(): ReactElement {
                       onBlur={handleInputBlur}
                       placeholder="Nom personnalisé du fichier (sans extension)"
                     />
+                    {duplicateNameError && (
+                      <span className="duplicateErrorHint">
+                        {duplicateNameError}
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -547,6 +614,8 @@ function NouveauCourrier(): ReactElement {
                 className="btnSubmit"
                 disabled={
                   isLoading ||
+                  isCheckingName ||
+                  duplicateNameError !== null ||
                   !formData.direction ||
                   !formData.fichierJoint ||
                   !formData.customFileName.trim() ||

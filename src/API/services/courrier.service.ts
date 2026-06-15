@@ -254,3 +254,13 @@ export const analyzeCourrierService = async (
 
   throw new Error(response.data.message || "Failed to analyze courrier");
 };
+
+export const checkCourrierNameService = async (name: string): Promise<boolean> => {
+  const response: AxiosResponse<IApiResponse<{ exists: boolean }>> = await getRequest(`/courriers/check-name?name=${encodeURIComponent(name)}`);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data.exists;
+  }
+
+  throw new Error(response.data.message || "Failed to check courrier name");
+};
