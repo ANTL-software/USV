@@ -63,11 +63,11 @@ export const useNotesDirection = () => {
 
   // File selection
   const handleFileSelect = useCallback((file: File) => {
-    const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+    const MAX_SIZE = 50 * 1024 * 1024; // 50MB
     const ALLOWED_TYPES = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/webp'];
 
     if (file.size > MAX_SIZE) {
-      setUploadError('Le fichier dépasse 5 Mo');
+      setUploadError('Le fichier dépasse 50 Mo');
       return;
     }
 
