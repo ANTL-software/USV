@@ -22,6 +22,7 @@ import type { AbsenceRequest } from '../../../utils/types/absence.types';
 import { showError, showSuccess } from '../../../utils/services/alertService';
 import type { UserModel } from '../../../API/models/user.model';
 import { useNotifications } from '../../../hooks/useNotifications';
+import NotificationBadge from '../../../components/notificationBadge/NotificationBadge';
 
 const formatPeriod = (request: AbsenceRequest): string => {
   if (request.type_demande === 'heures') {
@@ -177,8 +178,14 @@ function AbsenceDemandes(): ReactElement {
                 type="button"
                 className={activeTab === 'pending' ? 'is-active' : ''}
                 onClick={() => setActiveTab('pending')}
+                style={{ position: 'relative' }}
               >
                 Demandes à traiter
+                <NotificationBadge 
+                  sectionId="operations" 
+                  subsectionId="demandes-absence" 
+                  style={{ top: '2px', right: '4px', width: '10px', height: '10px' }} 
+                />
               </button>
               <button
                 type="button"
