@@ -19,6 +19,7 @@ import { hasAccessToSection } from "../../../utils/scripts/permissions.ts";
 import Header from "../../components/header/Header";
 import SubNav from "../../components/subNav/SubNav";
 import BackToTop from "../../components/backToTop/BackToTop";
+import NotificationBadge from "../../../components/notificationBadge/NotificationBadge";
 
 function Home(): ReactElement {
   const { user } = useUserContext();
@@ -31,7 +32,8 @@ function Home(): ReactElement {
         <div className={"mainWrapper"}>
           {hasAccessToSection(user, 'mail') && (
             <section className={"utilsSection"}>
-              <Link to={"/mail"}>
+              <Link to={"/mail"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="mail" />
                 <figure>
                   <img src={mailBackground} alt={"Bureau de travail"} />
                 </figure>
@@ -41,7 +43,8 @@ function Home(): ReactElement {
           )}
           {hasAccessToSection(user, 'booking') && (
             <section className={"bookingSection"}>
-              <Link to={"/booking"}>
+              <Link to={"/booking"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="booking" />
                 <figure>
                   <img src={calendarBackground} alt={"Salle de production"} />
                 </figure>
@@ -51,7 +54,8 @@ function Home(): ReactElement {
           )}
           {hasAccessToSection(user, 'operations') && (
             <section className={"callCenterSection"}>
-              <Link to={"/operations"}>
+              <Link to={"/operations"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" />
                 <figure>
                   <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
                 </figure>
@@ -61,7 +65,8 @@ function Home(): ReactElement {
           )}
           {hasAccessToSection(user, 'commerciaux') && (
             <section className={"commerciauxSection"}>
-              <Link to={"/commerciaux"}>
+              <Link to={"/commerciaux"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="commerciaux" />
                 <figure>
                   <img src={commerciauxBackground} alt={"Gestion commerciaux"} />
                 </figure>
@@ -71,7 +76,8 @@ function Home(): ReactElement {
           )}
           {hasAccessToSection(user, 'projets') && (
             <section className={"projetsSection"}>
-              <Link to={"/projets"}>
+              <Link to={"/projets"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="projets" />
                 <figure>
                   <img src={projetsBackground} alt={"Gestion de projets"} />
                 </figure>

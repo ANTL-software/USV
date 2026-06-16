@@ -1,4 +1,4 @@
-export type TypeMateriel = 'laptop' | 'pc_fixe' | 'smartphone' | 'tablette' | 'ecran' | 'autre';
+export type TypeMateriel = 'laptop' | 'pc_fixe' | 'smartphone' | 'tablette' | 'ecran' | 'micro_casque' | 'autre';
 
 export type EtatMateriel = 'neuf' | 'comme_neuf' | 'bon_etat' | 'usage' | 'endommage' | 'en_panne';
 
@@ -111,6 +111,7 @@ export const TYPE_MATERIEL_LABELS: Record<TypeMateriel, string> = {
   smartphone: 'Smartphone',
   tablette:   'Tablette',
   ecran:      'Écran',
+  micro_casque: 'Micro-casque',
   autre:      'Autre',
 };
 
@@ -120,5 +121,6 @@ export const TYPE_MATERIEL_OPTIONS: { value: TypeMateriel; label: string }[] = [
   { value: 'smartphone', label: 'Smartphone'  },
   { value: 'tablette',  label: 'Tablette'    },
   { value: 'ecran',     label: 'Écran'       },
+  { value: 'micro_casque', label: 'Micro-casque' },
   { value: 'autre',     label: 'Autre'       },
 ];

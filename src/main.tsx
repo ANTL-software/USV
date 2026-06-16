@@ -3,6 +3,7 @@ import App from "./App.tsx";
 
 // context
 import { UserProvider } from "./context/user/UserProvider.tsx";
+import { NotificationProvider } from "./context/notification/NotificationContext.tsx";
 import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
 import { BookingProvider } from "./context/booking/BookingProvider.tsx";
 import LoaderProvider from "./context/loader/LoaderProvider.tsx";
@@ -32,18 +33,20 @@ try {
 
 createRoot(document.getElementById("root")!).render(
   <UserProvider>
-    <CourrierProvider>
-      <LoaderProvider>
-        <AlertProvider>
-          <BookingProvider>
-            <VenteProvider>
-              <ProjetProvider>
-                <App />
-              </ProjetProvider>
-            </VenteProvider>
-          </BookingProvider>
-        </AlertProvider>
-      </LoaderProvider>
-    </CourrierProvider>
+    <NotificationProvider>
+      <CourrierProvider>
+        <LoaderProvider>
+          <AlertProvider>
+            <BookingProvider>
+              <VenteProvider>
+                <ProjetProvider>
+                  <App />
+                </ProjetProvider>
+              </VenteProvider>
+            </BookingProvider>
+          </AlertProvider>
+        </LoaderProvider>
+      </CourrierProvider>
+    </NotificationProvider>
   </UserProvider>,
 );

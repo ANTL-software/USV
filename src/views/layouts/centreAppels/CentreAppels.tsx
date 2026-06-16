@@ -15,6 +15,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import NotificationBadge from '../../../components/notificationBadge/NotificationBadge';
 
 function CentreAppels(): ReactElement {
   const navigate = useNavigate();
@@ -34,7 +35,8 @@ function CentreAppels(): ReactElement {
         <div className="centreAppels__wrapper">
           <div className="centreAppels__row">
             {hasAccessToSubsection(user, 'operations', 'supervision') && (
-              <section className="centreAppels__card" onClick={() => navigate('/supervision')}>
+              <section className="centreAppels__card" onClick={() => navigate('/supervision')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="supervision" />
                 <div className="centreAppels__card-icon">
                   <IoEyeOutline />
                 </div>
@@ -43,7 +45,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'commandes') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/commandes')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/commandes')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="commandes" />
                 <div className="centreAppels__card-icon">
                   <IoReceipt />
                 </div>
@@ -52,7 +55,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'campagnes') && (
-              <section className="centreAppels__card" onClick={() => navigate('/campagnes')}>
+              <section className="centreAppels__card" onClick={() => navigate('/campagnes')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="campagnes" />
                 <div className="centreAppels__card-icon">
                   <IoCallOutline />
                 </div>
@@ -61,7 +65,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'prospects') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/prospects')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/prospects')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="prospects" />
                 <div className="centreAppels__card-icon">
                   <IoPersonCircleOutline />
                 </div>
@@ -72,7 +77,8 @@ function CentreAppels(): ReactElement {
 
           <div className="centreAppels__row">
             {hasAccessToSubsection(user, 'operations', 'produits') && (
-              <section className="centreAppels__card" onClick={() => navigate('/produits')}>
+              <section className="centreAppels__card" onClick={() => navigate('/produits')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="produits" />
                 <div className="centreAppels__card-icon">
                   <IoPricetag />
                 </div>
@@ -81,7 +87,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'qualite') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/qualite')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/qualite')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="qualite" />
                 <div className="centreAppels__card-icon">
                   <IoCheckmarkCircleOutline />
                 </div>
@@ -90,7 +97,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'demandes-absence') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/demandes-absence')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/demandes-absence')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="demandes-absence" />
                 <div className="centreAppels__card-icon">
                   <IoCalendarClear />
                 </div>
@@ -99,7 +107,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'employes') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/employes')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/employes')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="employes" />
                 <div className="centreAppels__card-icon">
                   <IoPeople />
                 </div>
@@ -108,7 +117,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'postes') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/postes')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/postes')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="postes" />
                 <div className="centreAppels__card-icon">
                   <IoBriefcase />
                 </div>
@@ -117,7 +127,8 @@ function CentreAppels(): ReactElement {
             )}
 
             {hasAccessToSubsection(user, 'operations', 'materiel') && (
-              <section className="centreAppels__card" onClick={() => navigate('/operations/materiel')}>
+              <section className="centreAppels__card" onClick={() => navigate('/operations/materiel')} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="operations" subsectionId="materiel" />
                 <div className="centreAppels__card-icon">
                   <IoLaptopOutline />
                 </div>
