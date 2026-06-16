@@ -154,13 +154,11 @@ function CommandesList(): ReactElement {
       soft_deleted: isCorbeille,
       page: 1,
     });
-    load();
-  }, [localStatut, localDateDebut, localDateFin, setFilters, load, isCorbeille]);
+  }, [localStatut, localDateDebut, localDateFin, setFilters, isCorbeille]);
 
   const handlePageChange = useCallback((newPage: number) => {
     setFilters({ page: newPage });
-    load();
-  }, [setFilters, load]);
+  }, [setFilters]);
 
   const handleRowClick = useCallback((v: Vente) => {
     if (v.soft_deleted) return;
