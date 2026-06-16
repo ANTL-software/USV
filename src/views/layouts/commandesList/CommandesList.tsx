@@ -61,9 +61,9 @@ function CommandesList(): ReactElement {
 
   const { ventes, pagination, isLoading, error, filters, setFilters, load, stats } = venteCtx;
 
-  const [localStatut, setLocalStatut] = useState<StatutVente | ''>('');
-  const [localDateDebut, setLocalDateDebut] = useState('');
-  const [localDateFin, setLocalDateFin] = useState('');
+  const [localStatut, setLocalStatut] = useState<StatutVente | ''>(filters.statut ?? '');
+  const [localDateDebut, setLocalDateDebut] = useState(filters.date_debut ?? '');
+  const [localDateFin, setLocalDateFin] = useState(filters.date_fin ?? '');
   const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
 
   const isCorbeille = vueMode === 'corbeille';
@@ -134,6 +134,13 @@ function CommandesList(): ReactElement {
       load();
     }
   }, [filters.campagne, load]);
+
+  // Synchroniser l'état local avec les filtres du contexte si ceux-ci changent
+  useEffect(() => {
+    setLocalDateDebut(filters.date_debut ?? '');
+    setLocalDateFin(filters.date_fin ?? '');
+    setLocalStatut(filters.statut ?? '');
+  }, [filters.date_debut, filters.date_fin, filters.statut]);
 
   const handleCampagneChange = useCallback((campagneId: number | null) => {
     setFilters({ campagne: campagneId ?? undefined, soft_deleted: isCorbeille, page: 1 });
@@ -211,7 +218,7 @@ function CommandesList(): ReactElement {
                 value={campagneOptions.find(o => o.value === String(filters.campagne)) ?? null}
                 onChange={opt => handleCampagneChange(opt ? Number((opt as typeof campagneOptions[number]).value) : null)}
                 styles={reactSelectStyles}
-                placeholder="Choisir une campagne..."
+                placeholder="Campagne..."
                 isClearable
               />
             </div>

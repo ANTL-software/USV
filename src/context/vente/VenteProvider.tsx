@@ -11,13 +11,23 @@ interface VenteProviderProps {
   children: ReactNode;
 }
 
-const DEFAULT_FILTERS: VenteListParams = {
-  campagne: undefined,
-  statut: undefined,
-  date_debut: undefined,
-  date_fin: undefined,
-  page: 1,
-  limit: 20,
+const getDefaultFilters = (): VenteListParams => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth(); // 0-indexed
+  
+  const startDate = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+  const lastDay = new Date(year, month + 1, 0).getDate();
+  const endDate = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+  
+  return {
+    campagne: undefined,
+    statut: undefined,
+    date_debut: startDate,
+    date_fin: endDate,
+    page: 1,
+    limit: 20,
+  };
 };
 
 export const VenteProvider = ({ children }: VenteProviderProps) => {
@@ -29,7 +39,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
   const [stats, setStats] = useState<VenteContextType['stats']>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [filters, setFiltersState] = useState<VenteListParams>(DEFAULT_FILTERS);
+  const [filters, setFiltersState] = useState<VenteListParams>(getDefaultFilters);
 
   const load = useCallback(async () => {
     if (!isAuthenticated) return;
@@ -82,7 +92,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
   }, []);
 
   const resetFilters = useCallback(() => {
-    setFiltersState(DEFAULT_FILTERS);
+    setFiltersState(getDefaultFilters());
     setVentes([]);
     setPagination(null);
     setStats(null);
