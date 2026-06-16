@@ -59,7 +59,7 @@ function CommandesList(): ReactElement {
 
   if (!venteCtx) throw new Error('CommandesList must be used within a VenteProvider');
 
-  const { ventes, pagination, isLoading, error, filters, setFilters, load, stats } = venteCtx;
+  const { ventes, pagination, isLoading, error, filters, setFilters, load, stats, resetFilters } = venteCtx;
 
   const [localStatut, setLocalStatut] = useState<StatutVente | ''>(filters.statut ?? '');
   const [localDateDebut, setLocalDateDebut] = useState(filters.date_debut ?? '');
@@ -141,6 +141,13 @@ function CommandesList(): ReactElement {
     setLocalDateFin(filters.date_fin ?? '');
     setLocalStatut(filters.statut ?? '');
   }, [filters.date_debut, filters.date_fin, filters.statut]);
+
+  // Réinitialiser les filtres au démontage (unmount) du composant
+  useEffect(() => {
+    return () => {
+      resetFilters();
+    };
+  }, [resetFilters]);
 
   const handleCampagneChange = useCallback((campagneId: number | null) => {
     setFilters({ campagne: campagneId ?? undefined, soft_deleted: isCorbeille, page: 1 });
