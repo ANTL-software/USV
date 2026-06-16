@@ -10,6 +10,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import Modal from '../../components/modal/Modal';
 import {
   getActiveAbsenceRequestsService,
   getAllAbsenceRequestsService,
@@ -36,6 +37,17 @@ const getReturnDate = (request: AbsenceRequest): string => {
   return returnDate.toLocaleDateString('fr-FR');
 };
 
+const formatDateTime = (value?: string | null): string => {
+  if (!value) return 'Non renseigné';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return date.toLocaleString('fr-FR');
+};
+
 function AbsenceDemandes(): ReactElement {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'active' | 'pending' | 'all'>('active');
@@ -49,6 +61,7 @@ function AbsenceDemandes(): ReactElement {
   const [selectedEmployeId, setSelectedEmployeId] = useState<number | null>(null);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
+  const [selectedRequest, setSelectedRequest] = useState<AbsenceRequest | null>(null);
 
   const loadData = async () => {
     try {
@@ -124,6 +137,12 @@ function AbsenceDemandes(): ReactElement {
       return true;
     });
   }, [baseRequests, dateFrom, dateTo, selectedEmployeId, statusFilter]);
+
+  const detailTitle = selectedRequest
+    ? `Demande d’absence - ${selectedRequest.employe
+      ? `${selectedRequest.employe.prenom} ${selectedRequest.employe.nom}`
+      : `Employé #${selectedRequest.id_employe}`}`
+    : 'Détail de la demande';
 
   return (
     <div id="absenceDemandes">
@@ -243,7 +262,11 @@ function AbsenceDemandes(): ReactElement {
                 </thead>
                 <tbody>
                   {requests.map((request) => (
-                    <tr key={request.id_demande}>
+                    <tr
+                      key={request.id_demande}
+                      className="absenceDemandes__row"
+                      onClick={() => setSelectedRequest(request)}
+                    >
                       <td>
                         {('employe' in request && request.employe)
                           ? `${request.employe.prenom} ${request.employe.nom}`
@@ -269,14 +292,20 @@ function AbsenceDemandes(): ReactElement {
                           <div className="absenceDemandes__actions">
                             <Button
                               style="green"
-                              onClick={() => void handleStatusUpdate(request.id_demande, 'validee')}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                void handleStatusUpdate(request.id_demande, 'validee');
+                              }}
                               disabled={isUpdating === request.id_demande}
                             >
                               <span>Valider</span>
                             </Button>
                             <Button
                               style="red"
-                              onClick={() => void handleStatusUpdate(request.id_demande, 'refusee')}
+                              onClick={(event) => {
+                                event.stopPropagation();
+                                void handleStatusUpdate(request.id_demande, 'refusee');
+                              }}
                               disabled={isUpdating === request.id_demande}
                             >
                               <span>Refuser</span>
@@ -293,6 +322,107 @@ function AbsenceDemandes(): ReactElement {
         </div>
       </main>
       <BackToTop />
+
+      <Modal
+        isVisible={selectedRequest !== null}
+        onClose={() => setSelectedRequest(null)}
+        title={detailTitle}
+      >
+        {selectedRequest && (
+          <div className="absenceDemandes__detail">
+            <div className="absenceDemandes__detailGrid">
+              <div className="absenceDemandes__detailCard">
+                <span>Employé</span>
+                <strong>
+                  {selectedRequest.employe
+                    ? `${selectedRequest.employe.prenom} ${selectedRequest.employe.nom}`
+                    : `Employé #${selectedRequest.id_employe}`}
+                </strong>
+              </div>
+
+              <div className="absenceDemandes__detailCard">
+                <span>Statut</span>
+                <strong className={`absenceDemandes__status absenceDemandes__status--${selectedRequest.statut}`}>
+                  {selectedRequest.statut === 'demandee'
+                    ? 'Demandée'
+                    : selectedRequest.statut === 'validee'
+                      ? 'Validée'
+                      : 'Refusée'}
+                </strong>
+              </div>
+
+              <div className="absenceDemandes__detailCard">
+                <span>Période</span>
+                <strong>{formatPeriod(selectedRequest)}</strong>
+              </div>
+
+              <div className="absenceDemandes__detailCard">
+                <span>Date de retour</span>
+                <strong>{getReturnDate(selectedRequest)}</strong>
+              </div>
+
+              <div className="absenceDemandes__detailCard">
+                <span>Créée le</span>
+                <strong>{formatDateTime(selectedRequest.created_at)}</strong>
+              </div>
+
+              <div className="absenceDemandes__detailCard">
+                <span>Traitée le</span>
+                <strong>{formatDateTime(selectedRequest.date_traitement)}</strong>
+              </div>
+            </div>
+
+            <div className="absenceDemandes__detailBlock">
+              <span>Motif</span>
+              <strong>{selectedRequest.motif_label}</strong>
+            </div>
+
+            <div className="absenceDemandes__detailBlock">
+              <span>Commentaire de la demande</span>
+              <p>{selectedRequest.description}</p>
+            </div>
+
+            {selectedRequest.commentaire_validation && (
+              <div className="absenceDemandes__detailBlock">
+                <span>Commentaire de validation</span>
+                <p>{selectedRequest.commentaire_validation}</p>
+              </div>
+            )}
+
+            {selectedRequest.traitant && (
+              <div className="absenceDemandes__detailBlock">
+                <span>Traitée par</span>
+                <p>{selectedRequest.traitant.prenom} {selectedRequest.traitant.nom}</p>
+              </div>
+            )}
+
+            {activeTab === 'pending' && selectedRequest.statut === 'demandee' && (
+              <div className="absenceDemandes__detailActions">
+                <Button
+                  style="green"
+                  onClick={async () => {
+                    await handleStatusUpdate(selectedRequest.id_demande, 'validee');
+                    setSelectedRequest(null);
+                  }}
+                  disabled={isUpdating === selectedRequest.id_demande}
+                >
+                  <span>Valider</span>
+                </Button>
+                <Button
+                  style="red"
+                  onClick={async () => {
+                    await handleStatusUpdate(selectedRequest.id_demande, 'refusee');
+                    setSelectedRequest(null);
+                  }}
+                  disabled={isUpdating === selectedRequest.id_demande}
+                >
+                  <span>Refuser</span>
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
+      </Modal>
     </div>
   );
 }

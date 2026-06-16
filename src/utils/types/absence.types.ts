@@ -29,6 +29,11 @@ export interface AbsenceRequest {
     nom: string;
     prenom: string;
   } | null;
+  traitant?: {
+    id_employe: number;
+    nom: string;
+    prenom: string;
+  } | null;
 }
 
 export interface CreateAbsenceRequestPayload {
