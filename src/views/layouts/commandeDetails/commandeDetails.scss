@@ -369,6 +369,18 @@
         border-color: vars.$errorColor;
       }
     }
+
+    &--frigo {
+      &:hover:not(.active) {
+        border-color: #6b7280;
+        color: #6b7280;
+        background: rgba(107, 114, 128, 0.05);
+      }
+      &.active {
+        background: #6b7280;
+        border-color: #6b7280;
+      }
+    }
   }
 
   // Document Actions

@@ -1,4 +1,4 @@
-export type StatutVente = 'en_attente' | 'validee' | 'annulee';
+export type StatutVente = 'en_attente' | 'validee' | 'annulee' | 'frigo';
 
 export type ModePaiement = 'CB' | 'Prelevement' | 'Cheque' | 'Virement';
 
@@ -89,12 +89,14 @@ export const STATUT_VENTE_LABELS: Record<StatutVente, string> = {
   en_attente: 'En attente',
   validee: 'Validée',
   annulee: 'Annulée',
+  frigo: 'Frigo',
 };
 
 export const STATUT_VENTE_COLORS: Record<StatutVente, string> = {
   en_attente: '#f59e0b',
   validee: '#22c55e',
   annulee: '#ef4444',
+  frigo: '#6b7280',
 };
 
 export const MODE_PAIEMENT_LABELS: Record<ModePaiement, string> = {
@@ -108,6 +110,7 @@ export const STATUT_VENTE_OPTIONS: { value: StatutVente; label: string }[] = [
   { value: 'en_attente', label: 'En attente' },
   { value: 'validee', label: 'Validée' },
   { value: 'annulee', label: 'Annulée' },
+  { value: 'frigo', label: 'Frigo' },
 ];
 
 export interface VenteStatusStats {
@@ -119,6 +122,6 @@ export interface VenteStats {
   validees: VenteStatusStats;
   enAttente: VenteStatusStats;
   annulees: VenteStatusStats;
+  frigo: VenteStatusStats;
   total: VenteStatusStats;
 }
-

@@ -177,6 +177,8 @@ function CommandesList(): ReactElement {
   const statsEnAttenteAmount = stats?.enAttente.total_montant ?? 0;
   const statsAnnuleesCount = stats?.annulees.count ?? 0;
   const statsAnnuleesAmount = stats?.annulees.total_montant ?? 0;
+  const statsFrigoCount = stats?.frigo.count ?? 0;
+  const statsFrigoAmount = stats?.frigo.total_montant ?? 0;
 
   const totalVentesCount = stats?.total.count ?? 0;
   const averageValidatedAmount = statsValideesCount > 0 ? (statsValideesAmount / statsValideesCount) : 0;
@@ -291,6 +293,12 @@ function CommandesList(): ReactElement {
                   {statsAnnuleesCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsAnnuleesAmount))})</span>
                 </span>
                 <span className="summary-card__label">Annulées</span>
+              </div>
+              <div className="summary-card summary-card--frigo">
+                <span className="summary-card__value">
+                  {statsFrigoCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsFrigoAmount))})</span>
+                </span>
+                <span className="summary-card__label">CDE suspendues</span>
               </div>
             </div>
           )}

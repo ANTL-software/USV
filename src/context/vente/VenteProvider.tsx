@@ -46,6 +46,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
         validees: { count: 0, total_montant: 0 },
         enAttente: { count: 0, total_montant: 0 },
         annulees: { count: 0, total_montant: 0 },
+        frigo: { count: 0, total_montant: 0 },
         total: { count: 0, total_montant: 0 }
       };
 
@@ -62,6 +63,8 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
             statsObj.enAttente = { count, total_montant: amount };
           } else if (s.statut_vente === 'annulee') {
             statsObj.annulees = { count, total_montant: amount };
+          } else if (s.statut_vente === 'frigo') {
+            statsObj.frigo = { count, total_montant: amount };
           }
         });
       }

@@ -5,6 +5,7 @@ import {
   IoCheckmarkCircle, 
   IoHourglass, 
   IoCloseCircle, 
+  IoPauseCircle,
   IoDocumentText, 
   IoCloudUpload, 
   IoPrint, 
@@ -467,6 +468,14 @@ function CommandeDetails(): ReactElement {
                   >
                     <IoCloseCircle />
                     <span>Annulée</span>
+                  </button>
+                  <button
+                    onClick={() => handleStatusChange('frigo')}
+                    className={`qualif-btn qualif-btn--frigo ${commande.statut_vente === 'frigo' ? 'active' : ''}`}
+                    disabled={isUpdating}
+                  >
+                    <IoPauseCircle />
+                    <span>Frigo</span>
                   </button>
                 </div>
               </div>

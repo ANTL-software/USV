@@ -124,6 +124,9 @@
 
     &--annulee { border-top-color: vars.$errorColor; }
     &--annulee .summary-card__value { color: vars.$errorColor; }
+
+    &--frigo { border-top-color: #6b7280; }
+    &--frigo .summary-card__value { color: #6b7280; }
   }
 
   // Tableau
@@ -175,6 +178,7 @@
     &--en_attente { background: vars.$warningColor; }
     &--validee { background: vars.$successColor; }
     &--annulee { background: vars.$errorColor; }
+    &--frigo { background: #6b7280; }
   }
 
   // Pagination
