@@ -23,14 +23,15 @@ import { showError, showSuccess } from '../../../utils/services/alertService';
 import type { UserModel } from '../../../API/models/user.model';
 import { useNotifications } from '../../../hooks/useNotifications';
 import NotificationBadge from '../../../components/notificationBadge/NotificationBadge';
+import { formatDate } from '../../../utils/scripts/formatters';
 
 const formatPeriod = (request: AbsenceRequest): string => {
   if (request.type_demande === 'heures') {
-    return `${request.date_debut} • ${request.heure_debut?.slice(0, 5)} - ${request.heure_fin?.slice(0, 5)}`;
+    return `${formatDate(request.date_debut)} • ${request.heure_debut?.slice(0, 5)} - ${request.heure_fin?.slice(0, 5)}`;
   }
   return request.date_debut === request.date_fin
-    ? request.date_debut
-    : `${request.date_debut} au ${request.date_fin}`;
+    ? formatDate(request.date_debut)
+    : `${formatDate(request.date_debut)} au ${formatDate(request.date_fin)}`;
 };
 
 const getReturnDate = (request: AbsenceRequest): string => {
