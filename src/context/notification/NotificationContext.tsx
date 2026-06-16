@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useUserContext } from '../../hooks/useUserContext';
 import { hasAccessToSection, hasAccessToSubsection } from '../../utils/scripts/permissions';
+import { getPendingAbsenceRequestsService } from '../../API/services/absence.service';
 
 export type NotificationType = 'info' | 'task';
 
@@ -21,6 +22,7 @@ export interface NotificationContextType {
   hasNotificationForSubsection: (sectionId: string, subsectionId: string) => boolean;
   markInfoAsRead: (id: string) => void;
   resolveTask: (id: string) => void;
+  refreshNotifications: () => Promise<void>;
 }
 
 export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -29,24 +31,82 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   const { user } = useUserContext();
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
 
-  // Charger les notifications initiales
-  useEffect(() => {
-    // Dans le futur, ceci proviendra d'un appel API (ex: GET /api/notifications)
-    setNotifications([]);
-  }, []);
-
   // Détermine si une notification est active pour l'utilisateur actuel
   const isNotificationActive = (notif: NotificationItem): boolean => {
     if (!user) return false;
 
     if (notif.type === 'info') {
-      // Pour une notification informative, elle est active si l'utilisateur ne l'a pas encore lue
       return !notif.readByUsers.includes(user.id_employe);
     } else {
-      // Pour une notification de type tâche, elle est active tant qu'elle n'est pas résolue
       return !notif.resolved;
     }
   };
+
+  // Charge et rafraîchit les notifications en interrogeant les APIs appropriées
+  const refreshNotifications = async () => {
+    if (!user) return;
+
+    try {
+      // 1. Traitement des demandes d'absence en attente
+      // On appelle l'API uniquement si l'utilisateur a le droit d'accès
+      let pendingAbsences = [];
+      if (hasAccessToSubsection(user, 'operations', 'demandes-absence')) {
+        pendingAbsences = await getPendingAbsenceRequestsService();
+      }
+
+      const hasPendingAbsences = pendingAbsences.length > 0;
+
+      setNotifications(prev => {
+        const index = prev.findIndex(
+          n => n.sectionId === 'operations' && n.subsectionId === 'demandes-absence' && n.type === 'task'
+        );
+
+        if (hasPendingAbsences) {
+          if (index === -1) {
+            // Créer une nouvelle notification active
+            const newNotif: NotificationItem = {
+              id: 'notif-absence-pending',
+              sectionId: 'operations',
+              subsectionId: 'demandes-absence',
+              type: 'task',
+              message: 'Nouvelle demande d\'absence en attente de validation',
+              readByUsers: [],
+              resolved: false,
+              createdAt: new Date().toISOString(),
+            };
+            return [...prev, newNotif];
+          } else if (prev[index].resolved) {
+            // Ré-activer la notification si elle était précédemment résolue
+            return prev.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: false } : n);
+          }
+        } else {
+          // S'il n'y a plus de demandes en attente, on la résout
+          if (index !== -1 && !prev[index].resolved) {
+            return prev.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: true } : n);
+          }
+        }
+        return prev;
+      });
+
+    } catch (error) {
+      console.warn('[Notifications] Failed to refresh pending absence requests:', error);
+    }
+  };
+
+  // Rafraîchir les notifications à la connexion et à intervalles réguliers (toutes les 60 secondes)
+  useEffect(() => {
+    if (user) {
+      void refreshNotifications();
+
+      const interval = setInterval(() => {
+        void refreshNotifications();
+      }, 60000);
+
+      return () => clearInterval(interval);
+    } else {
+      setNotifications([]);
+    }
+  }, [user]);
 
   // Vérifie si une section a au moins une notification active (en prenant en compte les permissions)
   const hasNotificationForSection = (sectionId: string): boolean => {
@@ -85,7 +145,6 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     setNotifications(prev =>
       prev.map(notif => {
         if (notif.id === id && notif.type === 'info') {
-          // Si l'utilisateur n'a pas déjà lu, on l'ajoute à la liste
           if (!notif.readByUsers.includes(user.id_employe)) {
             return {
               ...notif,
@@ -115,7 +174,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       hasNotificationForSection,
       hasNotificationForSubsection,
       markInfoAsRead,
-      resolveTask
+      resolveTask,
+      refreshNotifications
     }}>
       {children}
     </NotificationContext.Provider>

@@ -21,6 +21,7 @@ import { getAllEmployesService } from '../../../API/services/user.service';
 import type { AbsenceRequest } from '../../../utils/types/absence.types';
 import { showError, showSuccess } from '../../../utils/services/alertService';
 import type { UserModel } from '../../../API/models/user.model';
+import { useNotifications } from '../../../hooks/useNotifications';
 
 const formatPeriod = (request: AbsenceRequest): string => {
   if (request.type_demande === 'heures') {
@@ -50,6 +51,7 @@ const formatDateTime = (value?: string | null): string => {
 
 function AbsenceDemandes(): ReactElement {
   const navigate = useNavigate();
+  const { refreshNotifications } = useNotifications();
   const [activeTab, setActiveTab] = useState<'active' | 'pending' | 'all'>('active');
   const [activeRequests, setActiveRequests] = useState<AbsenceRequest[]>([]);
   const [pendingRequests, setPendingRequests] = useState<AbsenceRequest[]>([]);
@@ -93,6 +95,7 @@ function AbsenceDemandes(): ReactElement {
       await updateAbsenceRequestStatusService(requestId, statut);
       await showSuccess(`Demande ${statut === 'validee' ? 'validée' : 'refusée'} avec succès.`, 'Absence');
       await loadData();
+      void refreshNotifications();
     } catch (error) {
       await showError(error instanceof Error ? error.message : 'Impossible de mettre à jour la demande', 'Erreur');
     } finally {

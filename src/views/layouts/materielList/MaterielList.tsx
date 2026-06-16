@@ -9,6 +9,7 @@ import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
+import { formatDate } from '../../../utils/scripts/formatters';
 
 // hooks
 import { useMateriel, useMarques } from '../../../hooks/useMateriel';
@@ -276,7 +277,7 @@ function MaterielList(): ReactElement {
                             : <span className="materielList__libre">Libre</span>
                           }
                         </td>
-                        <td>{affectation?.date_affectation ?? '—'}</td>
+                        <td>{affectation?.date_affectation ? formatDate(affectation.date_affectation) : '—'}</td>
                         <td className="materielList__notes">{m.notes || '—'}</td>
                         <td className="materielList__actions">
                           <button
@@ -457,8 +458,8 @@ function MaterielList(): ReactElement {
                                 : `#${a.id_employe}`
                               }
                             </td>
-                            <td>{a.date_affectation}</td>
-                            <td>{a.date_restitution ?? <span className="materielList__historique-actif">En cours</span>}</td>
+                            <td>{formatDate(a.date_affectation)}</td>
+                            <td>{a.date_restitution ? formatDate(a.date_restitution) : <span className="materielList__historique-actif">En cours</span>}</td>
                             <td>
                               {a.etat_affectation
                                 ? <span className={`materielList__etat materielList__etat--${a.etat_affectation}`}>{ETAT_MATERIEL_LABELS[a.etat_affectation]}</span>
