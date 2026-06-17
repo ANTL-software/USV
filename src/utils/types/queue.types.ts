@@ -25,6 +25,7 @@ export interface CallInProgress {
   id_appel: number;
   id_agent: number;
   id_prospect: number;
+  date_heure_appel: string;
   prospect_nom: string;
   prospect_prenom: string;
   telephone: string;
@@ -34,6 +35,12 @@ export interface CallInProgress {
   origine_appel: string;
   twilio_call_sid?: string;
   prospect_call_sid?: string;
+  answered_by?: string | null;
+  call_classification?: string | null;
+  svi_detecte?: boolean;
+  bridged_to_agent_at?: string | null;
+  ended_by_system?: boolean;
+  end_reason?: string | null;
 }
 
 export interface QueueState {

@@ -31,6 +31,23 @@ export interface AllGraphiquesStats {
   appelsParStatut: StatutAppelCount[];
   statutsParHeure: StatutAppelParHeure[];
   appelsParOrigine: AppelsParOrigine[];
+  amdStats: AmdStats;
+}
+
+export interface AmdStats {
+  totalCalls: number;
+  qualifiedCalls: number;
+  humanCount: number;
+  sviCount: number;
+  messagingCount: number;
+  faxCount: number;
+  unknownCount: number;
+  pendingCount: number;
+  systemEndedCount: number;
+  bridgeCount: number;
+  avgBridgeDelaySeconds: number;
+  sviDurationSampleCount: number;
+  avgSviDurationSeconds: number;
 }
 
 // Labels pour les statuts d'appels
