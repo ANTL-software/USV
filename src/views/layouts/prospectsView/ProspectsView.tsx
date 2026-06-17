@@ -123,6 +123,24 @@ function ProspectsView(): ReactElement {
     }
   };
 
+  const getStatutCampagneBadgeClass = (statut: string): string => {
+    switch (statut) {
+      case 'en_attente': return 'badge--en_attente';
+      case 'assigne': return 'badge--assigne';
+      case 'en_cours': return 'badge--en_cours';
+      case 'traite': return 'badge--traite';
+      case 'rappeler': return 'badge--rappeler';
+      case 'refuse': return 'badge--refuse';
+      default: return '';
+    }
+  };
+
+  const getTentativesBadgeClass = (attempts: number): string => {
+    if (attempts === 0) return 'badge--interesse';
+    if (attempts <= 2) return 'badge--rappel';
+    return 'badge--non_interesse';
+  };
+
   return (
     <div id="prospectsView">
       <Header />
@@ -204,13 +222,18 @@ function ProspectsView(): ReactElement {
                       <th style={{ textAlign: 'center' }}>ID</th>
                       <th>Nom</th>
                       <th>Téléphone</th>
-                      <th>Email</th>
+                      {!selectedCampagne && <th>Email</th>}
                       <th>Ville</th>
-                      <th>Pays</th>
-                      <th>Statut</th>
-                      <th>Type</th>
-                      <th>Activité</th>
-                      <th>Date création</th>
+                      {!selectedCampagne && <th>Pays</th>}
+                      <th>{selectedCampagne ? 'Statut Prospect' : 'Statut'}</th>
+                      {selectedCampagne && <th>Statut Appel</th>}
+                      {selectedCampagne && <th style={{ textAlign: 'center' }}>Tentatives</th>}
+                      {selectedCampagne && <th>Dernier appel</th>}
+                      {selectedCampagne && <th>Agent assigné</th>}
+                      {selectedCampagne && <th>Date injection</th>}
+                      {!selectedCampagne && <th>Type</th>}
+                      {!selectedCampagne && <th>Activité</th>}
+                      {!selectedCampagne && <th>Date création</th>}
                     </tr>
                   </thead>
                   <tbody>
@@ -235,13 +258,15 @@ function ProspectsView(): ReactElement {
                             {prospect.type_telephone}
                           </span>
                         </td>
-                        <td className="prospectsView__email">
-                          {prospect.email ? (
-                            <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()}>
-                              {prospect.email}
-                            </a>
-                          ) : '—'}
-                        </td>
+                        {!selectedCampagne && (
+                          <td className="prospectsView__email">
+                            {prospect.email ? (
+                              <a href={`mailto:${prospect.email}`} onClick={e => e.stopPropagation()}>
+                                {prospect.email}
+                              </a>
+                            ) : '—'}
+                          </td>
+                        )}
                         <td className="prospectsView__location">
                           {prospect.ville ? (
                             <>
@@ -250,21 +275,69 @@ function ProspectsView(): ReactElement {
                             </>
                           ) : '—'}
                         </td>
-                        <td>{prospect.pays || '—'}</td>
+                        {!selectedCampagne && <td>{prospect.pays || '—'}</td>}
                         <td>
                           <span className={`badge ${getStatutBadgeClass(prospect.statut)}`}>
                             {prospect.statut.replace(/_/g, ' ')}
                           </span>
                         </td>
-                        <td>
-                          <span className={`badge ${getTypeBadgeClass(prospect.type_prospect)}`}>
-                            {prospect.type_prospect}
-                          </span>
-                        </td>
-                        <td>{prospect.activite || '—'}</td>
-                        <td className="prospectsView__date">
-                          {new Date(prospect.created_at).toLocaleDateString('fr-FR')}
-                        </td>
+                        {selectedCampagne && (
+                          <td>
+                            <span className={`badge ${getStatutCampagneBadgeClass(prospect.statut_campagne || '')}`}>
+                              {(prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                        )}
+                        {selectedCampagne && (
+                          <td style={{ textAlign: 'center' }}>
+                            <span className={`badge ${getTentativesBadgeClass(prospect.nb_tentatives || 0)}`}>
+                              {prospect.nb_tentatives ?? 0} / {prospect.max_tentatives ?? 5}
+                            </span>
+                          </td>
+                        )}
+                        {selectedCampagne && (
+                          <td className="prospectsView__date">
+                            {prospect.derniere_tentative
+                              ? new Date(prospect.derniere_tentative).toLocaleString('fr-FR', {
+                                  day: '2-digit',
+                                  month: '2-digit',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })
+                              : '—'
+                            }
+                          </td>
+                        )}
+                        {selectedCampagne && (
+                          <td>
+                            {prospect.agent_assigne
+                              ? `${prospect.agent_assigne.nom.toUpperCase()} ${prospect.agent_assigne.prenom || ''}`
+                              : '—'
+                            }
+                          </td>
+                        )}
+                        {selectedCampagne && (
+                          <td className="prospectsView__date">
+                            {prospect.date_injection
+                              ? new Date(prospect.date_injection).toLocaleDateString('fr-FR')
+                              : '—'
+                            }
+                          </td>
+                        )}
+                        {!selectedCampagne && (
+                          <td>
+                            <span className={`badge ${getTypeBadgeClass(prospect.type_prospect)}`}>
+                              {prospect.type_prospect}
+                            </span>
+                          </td>
+                        )}
+                        {!selectedCampagne && <td>{prospect.activite || '—'}</td>}
+                        {!selectedCampagne && (
+                          <td className="prospectsView__date">
+                            {new Date(prospect.created_at).toLocaleDateString('fr-FR')}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>

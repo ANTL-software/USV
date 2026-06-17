@@ -85,6 +85,20 @@ export interface Prospect {
   optout_signale_par: number | null;
   created_at: string;
   updated_at: string;
+  // Optionnels (provenant de campagnes.prospects_campagnes si filtré par campagne)
+  id_prospection?: number;
+  statut_campagne?: 'en_attente' | 'assigne' | 'en_cours' | 'traite' | 'rappeler' | 'refuse';
+  nb_tentatives?: number;
+  max_tentatives?: number;
+  derniere_tentative?: string | null;
+  id_agent_assigne?: number | null;
+  agent_assigne?: {
+    id_employe: number;
+    nom: string;
+    prenom: string | null;
+  } | null;
+  date_injection?: string;
+  date_traitement?: string | null;
 }
 
 export interface ProspectsApiResponse {

@@ -51,6 +51,19 @@ const mapProspectCampagneRowToProspect = (row: ProspectCampagneRow): Prospect =>
   optout_signale_par: null,
   created_at: row.prospect.created_at,
   updated_at: row.prospect.updated_at,
+  id_prospection: row.id_prospection,
+  statut_campagne: row.statut,
+  nb_tentatives: row.nb_tentatives,
+  max_tentatives: row.max_tentatives,
+  derniere_tentative: row.derniere_tentative,
+  id_agent_assigne: row.id_agent_assigne,
+  agent_assigne: row.agentAssignee ? {
+    id_employe: row.agentAssignee.id_employe,
+    nom: row.agentAssignee.nom,
+    prenom: row.agentAssignee.prenom,
+  } : null,
+  date_injection: row.date_injection,
+  date_traitement: row.date_traitement,
 });
 
 export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {

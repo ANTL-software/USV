@@ -302,6 +302,36 @@
       background: #f1f5f9;
       color: #64748b;
     }
+
+    &--en_attente {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    &--assigne {
+      background: #f3e8ff;
+      color: #7c3aed;
+    }
+
+    &--en_cours {
+      background: #e0e7ff;
+      color: #4f46e5;
+    }
+
+    &--traite {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+
+    &--rappeler {
+      background: #fef9c3;
+      color: #a16207;
+    }
+
+    &--refuse {
+      background: #fee2e2;
+      color: #dc2626;
+    }
   }
 
   .prospectsView__pagination {

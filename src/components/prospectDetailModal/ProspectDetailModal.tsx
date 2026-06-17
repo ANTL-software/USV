@@ -317,6 +317,53 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
             </div>
           </div>
 
+          {prospect.id_prospection !== undefined && (
+            <div className="prospectDetail__section">
+              <h3>Détails d'appel (Campagne)</h3>
+              <div className="detailRow">
+                <span className="detailLabel">Statut d'appel</span>
+                <span className="detailValue">
+                  <span className={`badge badge--${prospect.statut_campagne || 'en_attente'}`}>
+                    {(prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
+                  </span>
+                </span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">Tentatives d'appel</span>
+                <span className="detailValue">
+                  <code>{prospect.nb_tentatives ?? 0}</code> / <code>{prospect.max_tentatives ?? 5}</code>
+                </span>
+              </div>
+              {prospect.derniere_tentative && (
+                <div className="detailRow">
+                  <span className="detailLabel">Dernier appel</span>
+                  <span className="detailValue">
+                    <IoCalendarOutline />
+                    {new Date(prospect.derniere_tentative).toLocaleString('fr-FR')}
+                  </span>
+                </div>
+              )}
+              <div className="detailRow">
+                <span className="detailLabel">Agent assigné</span>
+                <span className="detailValue">
+                  {prospect.agent_assigne
+                    ? `${prospect.agent_assigne.nom.toUpperCase()} ${prospect.agent_assigne.prenom || ''}`
+                    : 'Aucun'
+                  }
+                </span>
+              </div>
+              {prospect.date_injection && (
+                <div className="detailRow">
+                  <span className="detailLabel">Date d'injection</span>
+                  <span className="detailValue">
+                    <IoCalendarOutline />
+                    {new Date(prospect.date_injection).toLocaleDateString('fr-FR')}
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
+
           {(prospect.est_doublon || prospect.optout) && (
             <div className="prospectDetail__section prospectDetail__section--alert">
               <h3>Alertes</h3>

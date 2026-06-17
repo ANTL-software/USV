@@ -74,6 +74,11 @@ export interface ProspectCampagneRow {
   max_tentatives: number;
   derniere_tentative: string | null;
   id_agent_assigne: number | null;
+  agentAssignee?: {
+    id_employe: number;
+    nom: string;
+    prenom: string | null;
+  } | null;
   date_injection: string;
   date_traitement: string | null;
   prospect: {
