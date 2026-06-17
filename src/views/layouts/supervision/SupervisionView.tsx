@@ -27,6 +27,7 @@ import PrintButton from '../../../components/printButton/PrintButton';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../../utils/types/queue.types';
 import type { Campagne } from '../../../utils/types/campagne.types';
+import type { AmdStats } from '../../../utils/types/graphiques.types';
 import { formatCallDuration, formatSince } from '../../../utils/scripts/formatters';
 import './supervisionView.scss';
 
@@ -51,6 +52,8 @@ const STATUT_COLORS: Record<string, string> = {
 const DIALER_STATUT_COLORS: Record<string, string> = {
   disponible: '#27ae60',
   en_appel: '#3498db',
+  qualification_en_cours: '#7c3aed',
+  svi_a_naviguer: '#f97316',
   appel_sortant: '#6366f1',
   pause_apres_appel: '#f1c40f',
   pause: '#e67e22',
@@ -60,10 +63,30 @@ const DIALER_STATUT_COLORS: Record<string, string> = {
 const DIALER_STATUT_LABELS: Record<string, string> = {
   disponible: 'Disponible',
   en_appel: 'En appel',
+  qualification_en_cours: 'Qualification en cours',
+  svi_a_naviguer: 'SVI à naviguer',
   appel_sortant: 'Appel sortant',
   pause_apres_appel: 'Pause après appel',
   pause: 'En pause',
   hors_ligne: 'Hors ligne',
+};
+
+const CALL_CLASSIFICATION_LABELS: Record<string, string> = {
+  qualification_en_cours: 'Qualification en cours',
+  humain_detecte: 'Humain',
+  svi_detecte: 'SVI',
+  messagerie_detectee: 'Messagerie',
+  fax_detecte: 'Fax',
+  unknown_a_traiter: 'Unknown',
+};
+
+const CALL_CLASSIFICATION_COLORS: Record<string, string> = {
+  qualification_en_cours: '#7c3aed',
+  humain_detecte: '#27ae60',
+  svi_detecte: '#f97316',
+  messagerie_detectee: '#6b7280',
+  fax_detecte: '#334155',
+  unknown_a_traiter: '#0ea5e9',
 };
 
 const ORIGINE_LABELS: Record<string, string> = {
@@ -76,6 +99,19 @@ const ORIGINE_COLORS: Record<string, string> = {
   auto: '#3498db',
   manuel: '#6366f1',
   rappel: '#f39c12',
+};
+
+const formatBridgeLabel = (isoDate: string | null | undefined): string => {
+  if (!isoDate) {
+    return 'Pas encore';
+  }
+
+  const date = new Date(isoDate);
+  return `${date.toLocaleTimeString('fr-FR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  })} (${formatSince(isoDate)})`;
 };
 
 const QueueCards = ({ counts }: { counts: QueueCount[] }) => {
@@ -172,6 +208,9 @@ const CallsTable = ({
             <th>Prospect</th>
             <th>Téléphone</th>
             <th>Origine</th>
+            <th>Qualification</th>
+            <th>Fin système</th>
+            <th>Bridge agent</th>
             <th>Durée</th>
             <th>Action</th>
           </tr>
@@ -191,6 +230,26 @@ const CallsTable = ({
                   >
                     {ORIGINE_LABELS[c.origine_appel] || c.origine_appel}
                   </span>
+                </td>
+                <td>
+                  <span
+                    className="origin-badge"
+                    style={{ backgroundColor: CALL_CLASSIFICATION_COLORS[c.call_classification || 'qualification_en_cours'] || '#95a5a6' }}
+                  >
+                    {CALL_CLASSIFICATION_LABELS[c.call_classification || 'qualification_en_cours'] || c.call_classification || 'Qualification'}
+                  </span>
+                </td>
+                <td>
+                  {c.ended_by_system ? (
+                    <span className="system-end-badge">
+                      {c.end_reason || 'Auto'}
+                    </span>
+                  ) : (
+                    'Non'
+                  )}
+                </td>
+                <td className="calls-duration">
+                  {formatBridgeLabel(c.bridged_to_agent_at)}
                 </td>
                 <td className="calls-duration">{formatCallDuration(c.duree_secondes)}</td>
                 <td>
@@ -271,6 +330,56 @@ const SummaryCards = ({ counts, agents, calls }: {
       <div className="summary-card" role="status" aria-label={`${agents.length} agents affectés`}>
         <span className="summary-card__value">{agents.length}</span>
         <span className="summary-card__label">Agents affectés</span>
+      </div>
+    </div>
+  );
+};
+
+const AmdKpiCards = ({ stats }: { stats: AmdStats }) => {
+  const denominator = stats.qualifiedCalls || stats.totalCalls || 1;
+  const formatRate = (count: number) => `${Math.round((count / denominator) * 100)}%`;
+
+  return (
+    <div className="supervisionView__amd-kpis" role="status" aria-label="KPI qualification d'appel">
+      <div className="amd-kpi-card amd-kpi-card--human">
+        <span className="amd-kpi-card__value">{stats.humanCount}</span>
+        <span className="amd-kpi-card__label">Humains</span>
+        <span className="amd-kpi-card__meta">{formatRate(stats.humanCount)}</span>
+      </div>
+      <div className="amd-kpi-card amd-kpi-card--svi">
+        <span className="amd-kpi-card__value">{stats.sviCount}</span>
+        <span className="amd-kpi-card__label">SVI</span>
+        <span className="amd-kpi-card__meta">{formatRate(stats.sviCount)}</span>
+      </div>
+      <div className="amd-kpi-card amd-kpi-card--messaging">
+        <span className="amd-kpi-card__value">{stats.messagingCount + stats.faxCount}</span>
+        <span className="amd-kpi-card__label">Messagerie / Fax</span>
+        <span className="amd-kpi-card__meta">{formatRate(stats.messagingCount + stats.faxCount)}</span>
+      </div>
+      <div className="amd-kpi-card amd-kpi-card--unknown">
+        <span className="amd-kpi-card__value">{stats.unknownCount}</span>
+        <span className="amd-kpi-card__label">Unknown</span>
+        <span className="amd-kpi-card__meta">{formatRate(stats.unknownCount)}</span>
+      </div>
+      <div className="amd-kpi-card">
+        <span className="amd-kpi-card__value">{formatCallDuration(stats.avgBridgeDelaySeconds || 0)}</span>
+        <span className="amd-kpi-card__label">Délai moyen avant humain</span>
+        <span className="amd-kpi-card__meta">{stats.bridgeCount} bridge(s)</span>
+      </div>
+      <div className="amd-kpi-card">
+        <span className="amd-kpi-card__value">{formatCallDuration(stats.avgSviDurationSeconds || 0)}</span>
+        <span className="amd-kpi-card__label">Durée moyenne appels SVI</span>
+        <span className="amd-kpi-card__meta">{stats.sviDurationSampleCount} appel(s) SVI</span>
+      </div>
+      <div className="amd-kpi-card">
+        <span className="amd-kpi-card__value">{stats.pendingCount}</span>
+        <span className="amd-kpi-card__label">Qualification en cours</span>
+        <span className="amd-kpi-card__meta">Dans la période</span>
+      </div>
+      <div className="amd-kpi-card">
+        <span className="amd-kpi-card__value">{stats.systemEndedCount}</span>
+        <span className="amd-kpi-card__label">Coupures système</span>
+        <span className="amd-kpi-card__meta">Dans la période</span>
       </div>
     </div>
   );
@@ -527,35 +636,44 @@ const SupervisionView = () => {
                         {(graphiquesLoading || employeStatsLoading) && <Loader message="Chargement des graphiques..." />}
 
                         {!(graphiquesLoading || employeStatsLoading) && displayStats && (
-                          <div className="supervisionView__graphiques-grid">
-                            <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <StatutsAppelsChart data={displayStats?.appelsParStatut || []} />
+                          <>
+                            <div className="supervisionView__graphiques-grid">
+                              <div className="supervisionView__graphique supervisionView__graphique--full">
+                                <StatutsAppelsChart data={displayStats?.appelsParStatut || []} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--full">
+                                <AppelsParHeureChart data={displayStats?.appelsParHeure || []} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--half">
+                                <TauxAboutiChart data={displayStats?.tauxAbouti || { aboutis: 0, non_aboutis: 0, taux_abouti: 0 }} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--half">
+                                <DureeMoyenneChart data={displayStats?.dureeMoyenne7j || []} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--half">
+                                <AppelsParOrigineChart data={displayStats?.appelsParOrigine || []} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--half">
+                                <TopRaisonsChart data={displayStats?.topRaisons || []} />
+                              </div>
+
+                              <div className="supervisionView__graphique supervisionView__graphique--full">
+                                <StatutsParHeureChart data={displayStats?.statutsParHeure || []} />
+                              </div>
                             </div>
 
-                            <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <AppelsParHeureChart data={displayStats?.appelsParHeure || []} />
+                            <div className="supervisionView__historical-amd">
+                              <div className="supervisionView__section-header">
+                                <h4>Qualification AMD / SVI sur la période</h4>
+                              </div>
+                              <AmdKpiCards stats={displayStats.amdStats} />
                             </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <TauxAboutiChart data={displayStats?.tauxAbouti || { aboutis: 0, non_aboutis: 0, taux_abouti: 0 }} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <DureeMoyenneChart data={displayStats?.dureeMoyenne7j || []} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <AppelsParOrigineChart data={displayStats?.appelsParOrigine || []} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--half">
-                              <TopRaisonsChart data={displayStats?.topRaisons || []} />
-                            </div>
-
-                            <div className="supervisionView__graphique supervisionView__graphique--full">
-                              <StatutsParHeureChart data={displayStats?.statutsParHeure || []} />
-                            </div>
-                          </div>
+                          </>
                         )}
                       </>
                     )}

@@ -80,6 +80,64 @@
     flex-wrap: wrap;
   }
 
+  .supervisionView__amd-kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    gap: 0.75em;
+    margin-bottom: 1em;
+  }
+
+  .supervisionView__historical-amd {
+    margin-top: 1.5em;
+  }
+
+  .amd-kpi-card {
+    background: vars.$greyBackground;
+    border-radius: 10px;
+    padding: 0.9em 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    border-top: 3px solid vars.$fontColorSecondary;
+
+    &__value {
+      font-size: 1.5em;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+    }
+
+    &__label {
+      font-size: 0.8em;
+      color: vars.$fontColorSecondary;
+    }
+
+    &__meta {
+      font-size: 0.75em;
+      color: vars.$fontColorSecondary;
+      opacity: 0.9;
+    }
+
+    &--human {
+      border-top-color: #27ae60;
+      .amd-kpi-card__value { color: #27ae60; }
+    }
+
+    &--svi {
+      border-top-color: #f97316;
+      .amd-kpi-card__value { color: #f97316; }
+    }
+
+    &--messaging {
+      border-top-color: #64748b;
+      .amd-kpi-card__value { color: #64748b; }
+    }
+
+    &--unknown {
+      border-top-color: #0ea5e9;
+      .amd-kpi-card__value { color: #0ea5e9; }
+    }
+  }
+
   .summary-card {
     background: vars.$greyBackground;
     border-radius: 8px;
@@ -365,6 +423,17 @@
       color: vars.$fontColorSecondary;
       cursor: help;
     }
+  }
+
+  .system-end-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.2em 0.55em;
+    border-radius: 999px;
+    background: rgba(100, 116, 139, 0.14);
+    color: #475569;
+    font-size: 0.78em;
+    font-weight: 600;
   }
 
   .empty, .loading {
