@@ -38,7 +38,7 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
   });
 
   // Filtrer pour ne garder que les statuts les plus importants
-  const importantStatuts = ['abouti', 'non_abouti', 'en_cours', 'rdv_pris', 'vente_conclue', 'refus_definitif', 'occupe', 'pas_de_reponse', 'messagerie'];
+  const importantStatuts = ['abouti', 'non_abouti', 'en_cours', 'rdv_pris', 'vente_conclue', 'refus_definitif', 'occupe', 'pas_de_reponse', 'rendez_vous_pris'];
   const displayStatuts = Array.from(allStatuts).filter(s => importantStatuts.includes(s));
 
   // Formatter les données pour le graphique (stacked bar chart)
