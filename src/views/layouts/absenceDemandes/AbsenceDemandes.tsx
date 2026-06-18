@@ -15,7 +15,9 @@ import {
   getActiveAbsenceRequestsService,
   getAllAbsenceRequestsService,
   getPendingAbsenceRequestsService,
-  updateAbsenceRequestStatusService
+  updateAbsenceRequestStatusService,
+  updateAbsenceRequestService,
+  deleteAbsenceRequestService
 } from '../../../API/services/absence.service';
 import { getAllEmployesService } from '../../../API/services/user.service';
 import type { AbsenceRequest } from '../../../utils/types/absence.types';
@@ -66,6 +68,74 @@ function AbsenceDemandes(): ReactElement {
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
   const [selectedRequest, setSelectedRequest] = useState<AbsenceRequest | null>(null);
+
+  const [editDateDebut, setEditDateDebut] = useState('');
+  const [editDateFin, setEditDateFin] = useState('');
+  const [editHeureDebut, setEditHeureDebut] = useState('');
+  const [editHeureFin, setEditHeureFin] = useState('');
+  const [motifAnnulation, setMotifAnnulation] = useState('');
+  const [isEditingMode, setIsEditingMode] = useState(false);
+  const [isCancellingMode, setIsCancellingMode] = useState(false);
+
+  useEffect(() => {
+    if (selectedRequest) {
+      setEditDateDebut(selectedRequest.date_debut || '');
+      setEditDateFin(selectedRequest.date_fin || '');
+      setEditHeureDebut(selectedRequest.heure_debut?.slice(0, 5) || '');
+      setEditHeureFin(selectedRequest.heure_fin?.slice(0, 5) || '');
+      setMotifAnnulation('');
+      setIsEditingMode(false);
+      setIsCancellingMode(false);
+    }
+  }, [selectedRequest]);
+
+  const handleSaveModifications = async () => {
+    if (!selectedRequest) return;
+    try {
+      setIsLoading(true);
+      const payload = {
+        motif_code: selectedRequest.motif_code,
+        motif_label: selectedRequest.motif_label,
+        description: selectedRequest.description,
+        type_demande: selectedRequest.type_demande,
+        date_debut: editDateDebut,
+        date_fin: selectedRequest.type_demande === 'heures' ? editDateDebut : editDateFin,
+        heure_debut: selectedRequest.type_demande === 'heures' ? editHeureDebut : null,
+        heure_fin: selectedRequest.type_demande === 'heures' ? editHeureFin : null,
+        justificatif_requis: selectedRequest.justificatif_requis,
+      };
+
+      await updateAbsenceRequestService(selectedRequest.id_demande, payload);
+      await showSuccess('Demande d\'absence modifiée avec succès.', 'Succès');
+      setSelectedRequest(null);
+      await loadData();
+      void refreshNotifications();
+    } catch (error) {
+      await showError(error instanceof Error ? error.message : 'Impossible de modifier la demande', 'Erreur');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirmCancellation = async () => {
+    if (!selectedRequest) return;
+    if (!motifAnnulation.trim()) {
+      await showError('Veuillez renseigner un motif d\'annulation.', 'Erreur');
+      return;
+    }
+    try {
+      setIsLoading(true);
+      await deleteAbsenceRequestService(selectedRequest.id_demande, motifAnnulation);
+      await showSuccess('Demande d\'absence annulée avec succès.', 'Succès');
+      setSelectedRequest(null);
+      await loadData();
+      void refreshNotifications();
+    } catch (error) {
+      await showError(error instanceof Error ? error.message : 'Impossible d\'annuler la demande', 'Erreur');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -341,95 +411,199 @@ function AbsenceDemandes(): ReactElement {
       >
         {selectedRequest && (
           <div className="absenceDemandes__detail">
-            <div className="absenceDemandes__detailGrid">
-              <div className="absenceDemandes__detailCard">
-                <span>Employé</span>
-                <strong>
-                  {selectedRequest.employe
-                    ? `${selectedRequest.employe.prenom} ${selectedRequest.employe.nom}`
-                    : `Employé #${selectedRequest.id_employe}`}
-                </strong>
+            {isEditingMode ? (
+              <div className="absenceDemandes__editForm" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Date de début</span>
+                    <input
+                      type="date"
+                      value={editDateDebut}
+                      onChange={(e) => {
+                        setEditDateDebut(e.target.value);
+                        if (selectedRequest.type_demande === 'heures') {
+                          setEditDateFin(e.target.value);
+                        }
+                      }}
+                      style={{ padding: '0.6rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
+                    />
+                  </label>
+                  <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>{selectedRequest.type_demande === 'heures' ? 'Date concernée' : 'Date de fin'}</span>
+                    <input
+                      type="date"
+                      value={selectedRequest.type_demande === 'heures' ? editDateDebut : editDateFin}
+                      onChange={(e) => setEditDateFin(e.target.value)}
+                      disabled={selectedRequest.type_demande === 'heures'}
+                      style={{ padding: '0.6rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
+                    />
+                  </label>
+                </div>
+
+                {selectedRequest.type_demande === 'heures' && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Heure de début</span>
+                      <input
+                        type="time"
+                        value={editHeureDebut}
+                        onChange={(e) => setEditHeureDebut(e.target.value)}
+                        style={{ padding: '0.6rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
+                      />
+                    </label>
+                    <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Heure de fin</span>
+                      <input
+                        type="time"
+                        value={editHeureFin}
+                        onChange={(e) => setEditHeureFin(e.target.value)}
+                        style={{ padding: '0.6rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-card)' }}
+                      />
+                    </label>
+                  </div>
+                )}
+
+                <div className="absenceDemandes__detailActions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                  <Button style="grey" onClick={() => setIsEditingMode(false)}>
+                    <span>Annuler</span>
+                  </Button>
+                  <Button style="gradient" onClick={handleSaveModifications}>
+                    <span>Enregistrer</span>
+                  </Button>
+                </div>
               </div>
+            ) : isCancellingMode ? (
+              <div className="absenceDemandes__cancelForm" style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem', marginTop: '1rem' }}>
+                <label style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                  <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-muted)' }}>Motif d'annulation</span>
+                  <textarea
+                    rows={4}
+                    value={motifAnnulation}
+                    onChange={(e) => setMotifAnnulation(e.target.value)}
+                    placeholder="Veuillez renseigner le motif d'annulation de cette absence..."
+                    style={{ padding: '0.6rem', borderRadius: '4px', border: '1px solid var(--border-color)', background: 'var(--bg-card)', resize: 'vertical' }}
+                  />
+                </label>
 
-              <div className="absenceDemandes__detailCard">
-                <span>Statut</span>
-                <strong className={`absenceDemandes__status absenceDemandes__status--${selectedRequest.statut}`}>
-                  {selectedRequest.statut === 'demandee'
-                    ? 'Demandée'
-                    : selectedRequest.statut === 'validee'
-                      ? 'Validée'
-                      : 'Refusée'}
-                </strong>
+                <div className="absenceDemandes__detailActions" style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                  <Button style="grey" onClick={() => setIsCancellingMode(false)}>
+                    <span>Retour</span>
+                  </Button>
+                  <Button style="red" onClick={handleConfirmCancellation}>
+                    <span>Confirmer l'annulation (Suppression)</span>
+                  </Button>
+                </div>
               </div>
+            ) : (
+              <>
+                <div className="absenceDemandes__detailGrid">
+                  <div className="absenceDemandes__detailCard">
+                    <span>Employé</span>
+                    <strong>
+                      {selectedRequest.employe
+                        ? `${selectedRequest.employe.prenom} ${selectedRequest.employe.nom}`
+                        : `Employé #${selectedRequest.id_employe}`}
+                    </strong>
+                  </div>
 
-              <div className="absenceDemandes__detailCard">
-                <span>Période</span>
-                <strong>{formatPeriod(selectedRequest)}</strong>
-              </div>
+                  <div className="absenceDemandes__detailCard">
+                    <span>Statut</span>
+                    <strong className={`absenceDemandes__status absenceDemandes__status--${selectedRequest.statut}`}>
+                      {selectedRequest.statut === 'demandee'
+                        ? 'Demandée'
+                        : selectedRequest.statut === 'validee'
+                          ? 'Validée'
+                          : 'Refusée'}
+                    </strong>
+                  </div>
 
-              <div className="absenceDemandes__detailCard">
-                <span>Date de retour</span>
-                <strong>{getReturnDate(selectedRequest)}</strong>
-              </div>
+                  <div className="absenceDemandes__detailCard">
+                    <span>Période</span>
+                    <strong>{formatPeriod(selectedRequest)}</strong>
+                  </div>
 
-              <div className="absenceDemandes__detailCard">
-                <span>Créée le</span>
-                <strong>{formatDateTime(selectedRequest.created_at)}</strong>
-              </div>
+                  <div className="absenceDemandes__detailCard">
+                    <span>Date de retour</span>
+                    <strong>{getReturnDate(selectedRequest)}</strong>
+                  </div>
 
-              <div className="absenceDemandes__detailCard">
-                <span>Traitée le</span>
-                <strong>{formatDateTime(selectedRequest.date_traitement)}</strong>
-              </div>
-            </div>
+                  <div className="absenceDemandes__detailCard">
+                    <span>Créée le</span>
+                    <strong>{formatDateTime(selectedRequest.created_at)}</strong>
+                  </div>
 
-            <div className="absenceDemandes__detailBlock">
-              <span>Motif</span>
-              <strong>{selectedRequest.motif_label}</strong>
-            </div>
+                  <div className="absenceDemandes__detailCard">
+                    <span>Traitée le</span>
+                    <strong>{formatDateTime(selectedRequest.date_traitement)}</strong>
+                  </div>
+                </div>
 
-            <div className="absenceDemandes__detailBlock">
-              <span>Commentaire de la demande</span>
-              <p>{selectedRequest.description}</p>
-            </div>
+                <div className="absenceDemandes__detailBlock">
+                  <span>Motif</span>
+                  <strong>{selectedRequest.motif_label}</strong>
+                </div>
 
-            {selectedRequest.commentaire_validation && (
-              <div className="absenceDemandes__detailBlock">
-                <span>Commentaire de validation</span>
-                <p>{selectedRequest.commentaire_validation}</p>
-              </div>
-            )}
+                <div className="absenceDemandes__detailBlock">
+                  <span>Commentaire de la demande</span>
+                  <p>{selectedRequest.description}</p>
+                </div>
 
-            {selectedRequest.traitant && (
-              <div className="absenceDemandes__detailBlock">
-                <span>Traitée par</span>
-                <p>{selectedRequest.traitant.prenom} {selectedRequest.traitant.nom}</p>
-              </div>
-            )}
+                {selectedRequest.commentaire_validation && (
+                  <div className="absenceDemandes__detailBlock">
+                    <span>Commentaire de validation</span>
+                    <p>{selectedRequest.commentaire_validation}</p>
+                  </div>
+                )}
 
-            {activeTab === 'pending' && selectedRequest.statut === 'demandee' && (
-              <div className="absenceDemandes__detailActions">
-                <Button
-                  style="green"
-                  onClick={async () => {
-                    await handleStatusUpdate(selectedRequest.id_demande, 'validee');
-                    setSelectedRequest(null);
-                  }}
-                  disabled={isUpdating === selectedRequest.id_demande}
-                >
-                  <span>Valider</span>
-                </Button>
-                <Button
-                  style="red"
-                  onClick={async () => {
-                    await handleStatusUpdate(selectedRequest.id_demande, 'refusee');
-                    setSelectedRequest(null);
-                  }}
-                  disabled={isUpdating === selectedRequest.id_demande}
-                >
-                  <span>Refuser</span>
-                </Button>
-              </div>
+                {selectedRequest.traitant && (
+                  <div className="absenceDemandes__detailBlock">
+                    <span>Traitée par</span>
+                    <p>{selectedRequest.traitant.prenom} {selectedRequest.traitant.nom}</p>
+                  </div>
+                )}
+
+                {selectedRequest.motif_annulation && (
+                  <div className="absenceDemandes__detailBlock">
+                    <span>Motif d'annulation</span>
+                    <p style={{ color: 'var(--color-danger)', fontWeight: 500 }}>{selectedRequest.motif_annulation}</p>
+                  </div>
+                )}
+
+                <div className="absenceDemandes__detailActions" style={{ marginTop: '2rem', display: 'flex', gap: '1rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
+                  {activeTab === 'pending' && selectedRequest.statut === 'demandee' && (
+                    <>
+                      <Button
+                        style="green"
+                        onClick={async () => {
+                          await handleStatusUpdate(selectedRequest.id_demande, 'validee');
+                          setSelectedRequest(null);
+                        }}
+                        disabled={isUpdating === selectedRequest.id_demande}
+                      >
+                        <span>Valider</span>
+                      </Button>
+                      <Button
+                        style="red"
+                        onClick={async () => {
+                          await handleStatusUpdate(selectedRequest.id_demande, 'refusee');
+                          setSelectedRequest(null);
+                        }}
+                        disabled={isUpdating === selectedRequest.id_demande}
+                      >
+                        <span>Refuser</span>
+                      </Button>
+                    </>
+                  )}
+
+                  <Button style="seaGreen" onClick={() => setIsEditingMode(true)}>
+                    <span>Modifier les dates</span>
+                  </Button>
+
+                  <Button style="red" onClick={() => setIsCancellingMode(true)}>
+                    <span>Annuler l'absence (Soft Delete)</span>
+                  </Button>
+                </div>
+              </>
             )}
           </div>
         )}

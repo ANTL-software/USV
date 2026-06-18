@@ -34,6 +34,7 @@ export interface AbsenceRequest {
     nom: string;
     prenom: string;
   } | null;
+  motif_annulation?: string | null;
 }
 
 export interface CreateAbsenceRequestPayload {

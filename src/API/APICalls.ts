@@ -183,11 +183,12 @@ export const patchRequest = async <T, R>(
   }
 };
 
-export const deleteRequest = async <R>(
+export const deleteRequest = async <T, R>(
   url: string,
+  data?: T,
 ): Promise<AxiosResponse<R>> => {
   try {
-    return await axios.delete<R>(url);
+    return await axios.delete<R>(url, { data });
   } catch (error) {
     console.error("Erreur in deleteRequest:", error);
     throw error;

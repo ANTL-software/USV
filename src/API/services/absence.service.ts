@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { getRequest, postRequest, patchRequest } from '../APICalls.ts';
+import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { ApiResponse } from '../../utils/types/user.types.ts';
 import type { AbsenceRequest, CreateAbsenceRequestPayload } from '../../utils/types/absence.types.ts';
 
@@ -8,11 +8,12 @@ type AbsenceRequestsResponse = {
 };
 
 export const getMyAbsenceRequestsService = async (): Promise<AbsenceRequest[]> => {
-  const response: AxiosResponse<ApiResponse<AbsenceRequestsResponse>> = await getRequest('/employes/me/absence-requests');
-  if (response.data.success && response.data.data?.demandes) {
-    return response.data.data.demandes;
+  const response: AxiosResponse<ApiResponse<ApiResponse<AbsenceRequestsResponse>>> = await getRequest('/employes/me/absence-requests');
+  const responseData = response.data as unknown as ApiResponse<AbsenceRequestsResponse>;
+  if (responseData.success && responseData.data?.demandes) {
+    return responseData.data.demandes;
   }
-  throw new Error(response.data.message || 'Impossible de récupérer vos demandes d\'absence');
+  throw new Error(responseData.message || 'Impossible de récupérer vos demandes d\'absence');
 };
 
 export const createMyAbsenceRequestService = async (payload: CreateAbsenceRequestPayload): Promise<AbsenceRequest> => {
@@ -24,27 +25,30 @@ export const createMyAbsenceRequestService = async (payload: CreateAbsenceReques
 };
 
 export const getActiveAbsenceRequestsService = async (): Promise<AbsenceRequest[]> => {
-  const response: AxiosResponse<ApiResponse<AbsenceRequestsResponse>> = await getRequest('/employes/absence-requests/active');
-  if (response.data.success && response.data.data?.demandes) {
-    return response.data.data.demandes;
+  const response: AxiosResponse<ApiResponse<ApiResponse<AbsenceRequestsResponse>>> = await getRequest('/employes/absence-requests/active');
+  const responseData = response.data as unknown as ApiResponse<AbsenceRequestsResponse>;
+  if (responseData.success && responseData.data?.demandes) {
+    return responseData.data.demandes;
   }
-  throw new Error(response.data.message || 'Impossible de récupérer les absences en cours');
+  throw new Error(responseData.message || 'Impossible de récupérer les absences en cours');
 };
 
 export const getPendingAbsenceRequestsService = async (): Promise<AbsenceRequest[]> => {
-  const response: AxiosResponse<ApiResponse<AbsenceRequestsResponse>> = await getRequest('/employes/absence-requests/pending');
-  if (response.data.success && response.data.data?.demandes) {
-    return response.data.data.demandes;
+  const response: AxiosResponse<ApiResponse<ApiResponse<AbsenceRequestsResponse>>> = await getRequest('/employes/absence-requests/pending');
+  const responseData = response.data as unknown as ApiResponse<AbsenceRequestsResponse>;
+  if (responseData.success && responseData.data?.demandes) {
+    return responseData.data.demandes;
   }
-  throw new Error(response.data.message || 'Impossible de récupérer les demandes en attente');
+  throw new Error(responseData.message || 'Impossible de récupérer les demandes en attente');
 };
 
 export const getAllAbsenceRequestsService = async (): Promise<AbsenceRequest[]> => {
-  const response: AxiosResponse<ApiResponse<AbsenceRequestsResponse>> = await getRequest('/employes/absence-requests');
-  if (response.data.success && response.data.data?.demandes) {
-    return response.data.data.demandes;
+  const response: AxiosResponse<ApiResponse<ApiResponse<AbsenceRequestsResponse>>> = await getRequest('/employes/absence-requests');
+  const responseData = response.data as unknown as ApiResponse<AbsenceRequestsResponse>;
+  if (responseData.success && responseData.data?.demandes) {
+    return responseData.data.demandes;
   }
-  throw new Error(response.data.message || 'Impossible de récupérer l’historique des demandes');
+  throw new Error(responseData.message || 'Impossible de récupérer l’historique des demandes');
 };
 
 export const updateAbsenceRequestStatusService = async (
@@ -59,4 +63,32 @@ export const updateAbsenceRequestStatusService = async (
     return response.data.data.demande;
   }
   throw new Error(response.data.message || 'Impossible de mettre à jour la demande');
+};
+
+export const updateAbsenceRequestService = async (
+  idDemande: number,
+  payload: CreateAbsenceRequestPayload
+): Promise<AbsenceRequest> => {
+  const response: AxiosResponse<ApiResponse<{ demande: AbsenceRequest }>> = await putRequest(
+    `/employes/absence-requests/${idDemande}`,
+    payload
+  );
+  if (response.data.success && response.data.data?.demande) {
+    return response.data.data.demande;
+  }
+  throw new Error(response.data.message || 'Impossible de modifier la demande d\'absence');
+};
+
+export const deleteAbsenceRequestService = async (
+  idDemande: number,
+  motifAnnulation?: string
+): Promise<void> => {
+  const response: AxiosResponse<ApiResponse<void>> = await deleteRequest(
+    `/employes/absence-requests/${idDemande}`,
+    { motif_annulation: motifAnnulation }
+  );
+  if (response.data.success) {
+    return;
+  }
+  throw new Error(response.data.message || 'Impossible d\'annuler la demande d\'absence');
 };
