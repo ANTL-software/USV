@@ -52,6 +52,7 @@ function PaniersList(): ReactElement {
   const {
     produits: expandedPanierProduits,
     isLoading: produitsLoading,
+    error: produitsError,
   } = usePanierProduits({ panierId: expandedPanierId });
 
   const handleCreate = () => {
@@ -241,6 +242,8 @@ function PaniersList(): ReactElement {
                     <div className="paniersList__dropdown-content">
                       {produitsLoading ? (
                         <div className="paniersList__produits-loading">Chargement des produits...</div>
+                      ) : produitsError ? (
+                        <div className="paniersList__error">{produitsError}</div>
                       ) : expandedPanierProduits.length === 0 ? (
                         <div className="paniersList__produits-empty">Aucun produit associé à ce panier.</div>
                       ) : (
