@@ -7,6 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { IoAdd, IoTrash, IoArrowUp, IoArrowDown, IoClose } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
+import type { MultiValue } from 'react-select';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
 // components
@@ -51,6 +52,14 @@ function PanierProduitsList(): ReactElement {
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedProducts, setSelectedProducts] = useState<SelectOption[]>([]);
   const [isAdding, setIsAdding] = useState(false);
+
+  const availableProductOptions: SelectOption[] = allProduits
+    .filter(p => !panierProduits.some(pp => pp.id_produit === p.id_produit))
+    .sort((a, b) => a.code_produit.localeCompare(b.code_produit, 'fr', { numeric: true }))
+    .map(p => ({
+      value: String(p.id_produit),
+      label: `${p.code_produit} - ${p.nom_produit}${p.code_produit_origine ? ` - Ref. origine ${p.code_produit_origine}` : ''}`
+    }));
 
   // Charger les infos du panier
   const loadPanier = useCallback(async () => {
@@ -308,17 +317,26 @@ function PanierProduitsList(): ReactElement {
 
                   <Select
                     isMulti
-                    options={allProduits
-                      .filter(p => !panierProduits.some(pp => pp.id_produit === p.id_produit))
-                      .map(p => ({
-                        value: String(p.id_produit),
-                        label: `${p.code_produit} - ${p.nom_produit}`
-                      }))}
+                    options={availableProductOptions}
                     value={selectedProducts}
-                    onChange={(newValue) => setSelectedProducts([...newValue])}
-                    placeholder="Rechercher des produits..."
+                    onChange={(newValue: MultiValue<SelectOption>) => setSelectedProducts([...newValue])}
+                    placeholder="Rechercher par code, référence ou nom..."
                     noOptionsMessage={() => "Aucun produit disponible"}
                     classNamePrefix="reactSelect"
+                    menuPortalTarget={document.body}
+                    menuPosition="fixed"
+                    menuShouldScrollIntoView={false}
+                    hideSelectedOptions={false}
+                    closeMenuOnSelect={false}
+                    filterOption={(option, inputValue) => {
+                      const normalized = inputValue.trim().toLowerCase();
+                      if (!normalized) return true;
+                      return option.label.toLowerCase().includes(normalized);
+                    }}
+                    styles={{
+                      menuPortal: (base) => ({ ...base, zIndex: 2000 }),
+                      menu: (base) => ({ ...base, zIndex: 2000 }),
+                    }}
                     isClearable
                   />
 

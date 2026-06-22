@@ -17,13 +17,29 @@ interface ApiResponse<T> {
 // ─── Produits ────────────────────────────────────────────────────────────────
 
 export const getAllProduitsService = async (params?: { actif?: boolean; search?: string }): Promise<Produit[]> => {
-  const query = new URLSearchParams();
-  if (params?.actif !== undefined) query.set('actif', String(params.actif));
-  if (params?.search) query.set('search', params.search);
-  query.set('limit', '100');
-  const res: AxiosResponse<ApiResponse<Produit[]>> = await getRequest(`/produits?${query}`);
-  if (res.data.success && Array.isArray(res.data.data)) return res.data.data;
-  throw new Error(res.data.message || 'Erreur récupération produits');
+  const allProduits: Produit[] = [];
+  let page = 1;
+  let totalPages = 1;
+
+  do {
+    const query = new URLSearchParams();
+    if (params?.actif !== undefined) query.set('actif', String(params.actif));
+    if (params?.search) query.set('search', params.search);
+    query.set('page', String(page));
+    query.set('limit', '100');
+
+    const res: AxiosResponse<ApiResponse<Produit[]> & { pagination?: { totalPages?: number } }> = await getRequest(`/produits?${query}`);
+
+    if (!(res.data.success && Array.isArray(res.data.data))) {
+      throw new Error(res.data.message || 'Erreur récupération produits');
+    }
+
+    allProduits.push(...res.data.data);
+    totalPages = res.data.pagination?.totalPages ?? 1;
+    page += 1;
+  } while (page <= totalPages);
+
+  return allProduits;
 };
 
 export const getProduitByIdService = async (id: number): Promise<Produit> => {

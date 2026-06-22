@@ -2,21 +2,23 @@
 @use "../../../utils/styles/mixins" as mixins;
 
 #panierProduitsList {
-  @include mixins.pageContainer;
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em;
+  }
 
   .panierProduitsList__container {
-    @include mixins.mainView;
-    padding: 1em;
-    padding-top: 8dvh;
-    max-width: 1200px;
+    @include mixins.centeredContainer(1200px);
+    width: 100%;
   }
 
   .panierProduitsList__header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     gap: 1em;
-    margin-bottom: 2em;
+    margin-bottom: 1.5em;
     flex-wrap: wrap;
 
     & > div:first-child {
@@ -185,10 +187,12 @@
 
   .panierProduitsList__modal-container {
     @include mixins.card(16px);
-    max-width: 600px;
-    width: 90%;
-    max-height: 80vh;
-    overflow-y: auto;
+    max-width: 760px;
+    width: min(92vw, 760px);
+    max-height: min(82vh, 760px);
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
   }
 
   .panierProduitsList__modal-header {
@@ -214,6 +218,7 @@
 
   .panierProduitsList__modal-content {
     padding: 1em;
+    overflow: visible;
 
     .panierProduitsList__modal-help {
       margin-bottom: 1em;
@@ -236,9 +241,12 @@
     display: flex;
     gap: 1em;
     justify-content: flex-end;
-    margin-top: 1em;
-    padding-top: 1em;
+    margin-top: auto;
+    padding: 1em;
     border-top: 1px solid vars.$borderColor;
+    background: white;
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
 
     button {
       @include mixins.actionButton(inherit, inherit);
