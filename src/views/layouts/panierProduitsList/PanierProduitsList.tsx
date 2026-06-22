@@ -94,9 +94,9 @@ function PanierProduitsList(): ReactElement {
 
     try {
       // Ajouter chaque produit sélectionné
-      for (const option of selectedProducts) {
+      for (const [index, option] of selectedProducts.entries()) {
         await addProduitToPanierService(Number(idPanier), Number(option.value), {
-          ordre_affichage: panierProduits.length
+          ordre_affichage: panierProduits.length + index
         });
       }
 
