@@ -46,7 +46,7 @@ function Qualite(): ReactElement {
               <p>Écouter et évaluer les appels des agents pour le contrôle qualité.</p>
             </section>
 
-            <section className="qualite__card qualite__card--disabled" onClick={() => null}>
+            <section className="qualite__card" onClick={() => navigate('/operations/qualite/statistiques')}>
               <div className="qualite__card-icon">
                 <IoBarChartOutline />
               </div>

@@ -55,6 +55,7 @@ import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHi
 import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
 import CommandeDetailsWithAuth from "./views/layouts/commandeDetails/CommandeDetails";
 import QualiteWithAuth from "./views/layouts/qualite/Qualite";
+import QualiteStatsWithAuth from "./views/layouts/qualiteStats/QualiteStats";
 import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 import ProspectsViewWithAuth from "./views/layouts/prospectsView/ProspectsView";
 import ProjetsListWithAuth from "./views/layouts/projets/ProjetsList";
@@ -137,8 +138,9 @@ function App(): ReactElement {
         <Route path={"operations/materiel"} element={<MaterielListWithAuth />}></Route>
         <Route path={"operations/commandes"} element={<CommandesListWithAuth />}></Route>
         <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
-        <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
+        <Route path={"operations/qualite/statistiques"} element={<QualiteStatsWithAuth />}></Route>
+        <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
