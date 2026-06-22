@@ -70,6 +70,8 @@ export const STATUT_LABELS: Record<string, string> = {
   fax: 'Fax',
   doublon: 'Doublon',
   optout: 'Opt-out',
+  amd_repondeur_auto: 'Répondeur auto coupé',
+  amd_fax_auto: 'Fax auto coupé',
 };
 
 // Couleurs pour les statuts d'appels
@@ -92,6 +94,8 @@ export const STATUT_COLORS: Record<string, string> = {
   fax: '#64748b',
   doublon: '#64748b',
   optout: '#ef4444',
+  amd_repondeur_auto: '#f97316',
+  amd_fax_auto: '#475569',
 };
 
 // Types supplémentaires pour les graphiques
