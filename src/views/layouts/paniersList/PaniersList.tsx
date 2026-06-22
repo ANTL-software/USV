@@ -30,12 +30,14 @@ const origineOptions: SelectOption[] = [
 interface PanierFormState {
   label: string;
   origine: string;
+  prix_ht: string;
   actif: boolean;
 }
 
 const INITIAL_FORM: PanierFormState = {
   label: '',
   origine: 'Campagne',
+  prix_ht: '',
   actif: true,
 };
 
@@ -67,6 +69,7 @@ function PaniersList(): ReactElement {
     setForm({
       label: panier.label,
       origine: panier.origine,
+      prix_ht: panier.prix_ht != null ? String(panier.prix_ht) : '',
       actif: panier.actif,
     });
     setFormError(null);
@@ -81,9 +84,15 @@ function PaniersList(): ReactElement {
     }
 
     if (editingId) {
-      await updatePanier(editingId, form);
+      await updatePanier(editingId, {
+        ...form,
+        prix_ht: form.prix_ht.trim() ? Number.parseFloat(form.prix_ht) : null,
+      });
     } else {
-      await createPanier(form);
+      await createPanier({
+        ...form,
+        prix_ht: form.prix_ht.trim() ? Number.parseFloat(form.prix_ht) : null,
+      });
     }
     setShowForm(false);
   };
@@ -169,6 +178,19 @@ function PaniersList(): ReactElement {
                     />
                   </label>
 
+                  <label>
+                    Prix HT
+                    <input
+                      name="prix_ht"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={form.prix_ht}
+                      onChange={handleChange}
+                      placeholder="Ex : 49.90"
+                    />
+                  </label>
+
                   <div className="paniersList__form-actions">
                     <button type="button" onClick={() => setShowForm(false)}>
                       Annuler
@@ -199,6 +221,11 @@ function PaniersList(): ReactElement {
                     <div className="paniersList__dropdown-info">
                       <span className="paniersList__dropdown-label">{p.label}</span>
                       <span className="paniersList__dropdown-origine">{p.origine}</span>
+                      {p.prix_ht != null && (
+                        <span className="paniersList__dropdown-origine">
+                          {new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' }).format(p.prix_ht)}
+                        </span>
+                      )}
                       <span className={`paniersList__badge paniersList__badge--${p.actif ? 'actif' : 'inactif'}`}>
                         {p.actif ? 'Actif' : 'Inactif'}
                       </span>

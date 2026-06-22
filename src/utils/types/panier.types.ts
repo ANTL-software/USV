@@ -2,6 +2,7 @@ export interface Panier {
   id_panier: number;
   label: string;
   origine: string;
+  prix_ht: number | null;
   actif: boolean;
   created_at: string;
   updated_at: string;
@@ -10,12 +11,14 @@ export interface Panier {
 export interface CreatePanierData {
   label: string;
   origine?: string;
+  prix_ht?: number | null;
   actif?: boolean;
 }
 
 export interface UpdatePanierData {
   label?: string;
   origine?: string;
+  prix_ht?: number | null;
   actif?: boolean;
 }
 
