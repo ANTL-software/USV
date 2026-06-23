@@ -61,7 +61,11 @@ const mapProspectCampagneRowToProspect = (row: ProspectCampagneRow): Prospect =>
     id_employe: row.agentAssignee.id_employe,
     nom: row.agentAssignee.nom,
     prenom: row.agentAssignee.prenom,
-  } : null,
+  } : (row.prospect.commercialAffecte ? {
+    id_employe: row.prospect.commercialAffecte.id_employe,
+    nom: row.prospect.commercialAffecte.nom,
+    prenom: row.prospect.commercialAffecte.prenom,
+  } : null),
   date_injection: row.date_injection,
   date_traitement: row.date_traitement,
 });
@@ -97,7 +101,15 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
           search: search || undefined,
         };
         const result = await getAllProspectsService(filters);
-        setProspects(result.data);
+        const mappedData = result.data.map(p => ({
+          ...p,
+          agent_assigne: p.commercialAffecte ? {
+            id_employe: p.commercialAffecte.id_employe,
+            nom: p.commercialAffecte.nom,
+            prenom: p.commercialAffecte.prenom,
+          } : null
+        }));
+        setProspects(mappedData);
         setPagination(result.pagination);
       }
     } catch (err: unknown) {

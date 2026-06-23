@@ -553,4 +553,303 @@
       }
     }
   }
+
+  // Erreur ou vide dans les historiques
+  .history-error {
+    color: vars.$errorColor;
+    font-size: 0.9em;
+    background: rgba(239, 68, 68, 0.05);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    padding: 0.75em;
+    border-radius: 6px;
+    margin: 0;
+  }
+
+  .history-empty {
+    color: vars.$fontColorSecondary;
+    font-size: 0.9em;
+    font-style: italic;
+    margin: 0;
+  }
+
+  // Historique des appels
+  .appels-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  .appel-history-item {
+    background: vars.$greyBackground;
+    border: 1px solid vars.$borderColor;
+    border-radius: 8px;
+    padding: 1em;
+    transition: all 0.2s ease;
+
+    &:hover {
+      border-color: darken(vars.$borderColor, 10%);
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    }
+  }
+
+  .appel-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75em;
+    border-bottom: 1px dashed vars.$borderColor;
+    padding-bottom: 0.5em;
+  }
+
+  .appel-history-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.75em;
+  }
+
+  .appel-history-date {
+    font-weight: 700;
+    color: vars.$fontColorPrimary;
+    font-size: 0.9em;
+  }
+
+  .appel-history-time {
+    color: vars.$fontColorSecondary;
+    font-size: 0.8em;
+  }
+
+  .appel-history-status {
+    font-size: 0.75em;
+    font-weight: 600;
+    padding: 0.25em 0.6em;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+
+    &.status-badge-success {
+      background: rgba(34, 197, 94, 0.1);
+      color: #16a34a;
+    }
+    &.status-badge-warning {
+      background: rgba(245, 158, 11, 0.1);
+      color: #d97706;
+    }
+    &.status-badge-danger {
+      background: rgba(239, 68, 68, 0.1);
+      color: #dc2626;
+    }
+    &.status-badge-info {
+      background: rgba(59, 130, 246, 0.1);
+      color: #2563eb;
+    }
+  }
+
+  .appel-history-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+  }
+
+  .appel-history-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    font-size: 0.85em;
+    color: vars.$fontColorSecondary;
+
+    strong {
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  .appel-history-notes {
+    background: white;
+    border: 1px solid vars.$borderColor;
+    border-radius: 6px;
+    padding: 0.75em;
+    font-size: 0.85em;
+    line-height: 1.4;
+    color: vars.$fontColorPrimary;
+    margin: 0.5em 0 0 0;
+  }
+
+  .appels-history-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5em;
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px solid vars.$borderColor;
+
+    .pag-btn {
+      background: white;
+      border: 1px solid vars.$borderColor;
+      padding: 0.4em 1em;
+      border-radius: 6px;
+      font-size: 0.85em;
+      font-weight: 600;
+      color: vars.$fontColorSecondary;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover:not(:disabled) {
+        border-color: vars.$utilsPrimary;
+        color: vars.$utilsPrimary;
+        background: rgba(124, 58, 237, 0.02);
+      }
+
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+
+    .pag-info {
+      font-size: 0.85em;
+      font-weight: 500;
+      color: vars.$fontColorSecondary;
+    }
+  }
+
+  // Historique des offres
+  .ventes-history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
+  .vente-history-item {
+    border: 1px solid vars.$borderColor;
+    border-radius: 8px;
+    overflow: hidden;
+    background: white;
+  }
+
+  .vente-history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.85em 1em;
+    background: vars.$greyBackground;
+    cursor: pointer;
+    transition: background 0.2s ease;
+
+    &:hover {
+      background: darken(vars.$greyBackground, 2%);
+    }
+  }
+
+  .vente-history-info {
+    display: flex;
+    align-items: center;
+    gap: 1.5em;
+    flex-wrap: wrap;
+  }
+
+  .vente-history-date {
+    font-weight: 700;
+    color: vars.$fontColorPrimary;
+    font-size: 0.9em;
+  }
+
+  .vente-history-ref {
+    font-family: monospace;
+    font-size: 0.85em;
+    color: vars.$fontColorSecondary;
+    background: white;
+    padding: 0.15em 0.5em;
+    border-radius: 4px;
+    border: 1px solid vars.$borderColor;
+  }
+
+  .vente-history-amount {
+    font-weight: 800;
+    color: vars.$utilsPrimary;
+    font-size: 0.95em;
+  }
+
+  .vente-history-actions {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+
+    .statut-badge--mini {
+      font-size: 0.7em;
+      font-weight: 600;
+      padding: 0.2em 0.6em;
+      border-radius: 10px;
+      color: white;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .expand-btn {
+      background: none;
+      border: none;
+      color: vars.$fontColorSecondary;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25em;
+      font-size: 1.1em;
+    }
+  }
+
+  .vente-history-details-expanded {
+    padding: 1em;
+    border-top: 1px solid vars.$borderColor;
+    background: white;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+
+    p {
+      margin: 0;
+      font-size: 0.85em;
+      color: vars.$fontColorSecondary;
+
+      strong {
+        color: vars.$fontColorPrimary;
+      }
+    }
+
+    .vente-history-notes {
+      background: #fafafa;
+      border-left: 3px solid vars.$borderColor;
+      padding: 0.5em 0.75em;
+      border-radius: 0 4px 4px 0;
+    }
+  }
+
+  .vente-history-products-table {
+    border: 1px solid vars.$borderColor;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 0.5em;
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8em;
+
+      th, td {
+        padding: 0.6em 0.8em;
+        border-bottom: 1px solid vars.$borderColor;
+      }
+
+      th {
+        background: vars.$greyBackground;
+        font-weight: 600;
+        color: vars.$fontColorSecondary;
+        text-align: left;
+      }
+
+      tbody tr:last-child td {
+        border-bottom: none;
+      }
+    }
+  }
 }
+

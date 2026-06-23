@@ -14,7 +14,10 @@ import {
   IoLocation, 
   IoCart, 
   IoInformationCircle,
-  IoTrash
+  IoTrash,
+  IoCall,
+  IoChevronDown,
+  IoChevronForward
 } from 'react-icons/io5';
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
@@ -23,10 +26,20 @@ import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { getVenteByIdService, updateVenteStatutService, getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
+import { getProspectAppelsService, getProspectVentesService } from '../../../API/services/prospect.service.ts';
 import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
-import type { VenteComplete, StatutVente } from '../../../utils/types/vente.types';
+import type { VenteComplete, StatutVente, Vente } from '../../../utils/types/vente.types';
+import type { Appel } from '../../../utils/types/appel.types';
 import { STATUT_VENTE_LABELS, STATUT_VENTE_COLORS, MODE_PAIEMENT_LABELS } from '../../../utils/types/vente.types';
+import { 
+  formatDateShort, 
+  formatTime, 
+  formatDurationFromSeconds, 
+  getStatutAppelClass, 
+  getStatutAppelLabel 
+} from '../../../utils/scripts/formatters';
 import './commandeDetails.scss';
+
 
 function formatMontant(montant: string | number | undefined): string {
   if (montant === undefined) return '0,00 €';
@@ -58,6 +71,20 @@ function CommandeDetails(): ReactElement {
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  // Appels du prospect
+  const [appels, setAppels] = useState<Appel[]>([]);
+  const [appelsLoading, setAppelsLoading] = useState(false);
+  const [appelsError, setAppelsError] = useState<string | null>(null);
+  const [appelsPage, setAppelsPage] = useState(1);
+  const [appelsTotalPages, setAppelsTotalPages] = useState(1);
+  const [appelsTotal, setAppelsTotal] = useState(0);
+
+  // Ventes/Offres du prospect
+  const [ventesProspect, setVentesProspect] = useState<Vente[]>([]);
+  const [ventesLoading, setVentesLoading] = useState(false);
+  const [ventesError, setVentesError] = useState<string | null>(null);
+  const [expandedVenteId, setExpandedVenteId] = useState<number | null>(null);
+
   // Mock Upload state
   const [mockDocs, setMockDocs] = useState<MockSignedDoc[]>([]);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -83,9 +110,52 @@ function CommandeDetails(): ReactElement {
     }
   }, [idVente]);
 
+  const loadAppels = useCallback(async (page: number = 1) => {
+    if (!commande?.prospect?.id_prospect) return;
+    setAppelsLoading(true);
+    setAppelsError(null);
+    try {
+      const data = await getProspectAppelsService(commande.prospect.id_prospect, { page, limit: 5 });
+      setAppels(data.appels);
+      setAppelsPage(data.page);
+      setAppelsTotalPages(data.totalPages);
+      setAppelsTotal(data.total);
+    } catch (err) {
+      console.error(err);
+      setAppelsError(err instanceof Error ? err.message : 'Erreur lors du chargement des appels');
+    } finally {
+      setAppelsLoading(false);
+    }
+  }, [commande?.prospect?.id_prospect]);
+
+  const loadVentesProspect = useCallback(async () => {
+    if (!commande?.prospect?.id_prospect) return;
+    setVentesLoading(true);
+    setVentesError(null);
+    try {
+      const data = await getProspectVentesService(commande.prospect.id_prospect, { limit: 100 });
+      // Exclure la vente courante pour ne pas la doubler
+      const filtered = data.ventes.filter(v => v.id_vente !== idVente);
+      setVentesProspect(filtered);
+    } catch (err) {
+      console.error(err);
+      setVentesError(err instanceof Error ? err.message : 'Erreur lors du chargement des offres');
+    } finally {
+      setVentesLoading(false);
+    }
+  }, [commande?.prospect?.id_prospect, idVente]);
+
   useEffect(() => {
     loadCommande();
   }, [loadCommande]);
+
+  useEffect(() => {
+    if (commande?.prospect?.id_prospect) {
+      loadAppels(1);
+      loadVentesProspect();
+    }
+  }, [commande?.prospect?.id_prospect, loadAppels, loadVentesProspect]);
+
 
   const handleStatusChange = useCallback(async (targetStatus: StatutVente) => {
     if (!commande) return;
@@ -436,7 +506,154 @@ function CommandeDetails(): ReactElement {
                   </div>
                 </div>
               </section>
+
+              {/* Historique des appels */}
+              <section className="details-section card-style">
+                <h3 className="section-title"><IoCall /> Historique des appels ({appelsTotal})</h3>
+                {appelsLoading && <Loader message="Chargement des appels..." />}
+                {appelsError && <p className="history-error">{appelsError}</p>}
+                {!appelsLoading && !appelsError && appels.length === 0 && (
+                  <p className="history-empty">Aucun appel enregistré pour ce prospect.</p>
+                )}
+                {!appelsLoading && !appelsError && appels.length > 0 && (
+                  <div className="appels-history-list">
+                    {appels.map(appel => (
+                      <div key={appel.id_appel} className="appel-history-item">
+                        <div className="appel-history-header">
+                          <div className="appel-history-meta">
+                            <span className="appel-history-date">{formatDateShort(appel.created_at)}</span>
+                            <span className="appel-history-time">{formatTime(appel.created_at)}</span>
+                          </div>
+                          <span className={`appel-history-status status-badge-${getStatutAppelClass(appel.statut_appel)}`}>
+                            {getStatutAppelLabel(appel.statut_appel)}
+                          </span>
+                        </div>
+                        <div className="appel-history-body">
+                          <div className="appel-history-details">
+                            <span><strong>Durée :</strong> {formatDurationFromSeconds(appel.duree_secondes)}</span>
+                            {appel.Employe && (
+                              <span><strong>Agent :</strong> {appel.Employe.prenom} {appel.Employe.nom.toUpperCase()}</span>
+                            )}
+                          </div>
+                          {appel.notes && (
+                            <p className="appel-history-notes">{appel.notes}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {appelsTotalPages > 1 && (
+                      <div className="appels-history-pagination">
+                        <button 
+                          className="pag-btn" 
+                          onClick={() => loadAppels(appelsPage - 1)} 
+                          disabled={appelsPage === 1}
+                        >
+                          Précédent
+                        </button>
+                        <span className="pag-info">Page {appelsPage} sur {appelsTotalPages}</span>
+                        <button 
+                          className="pag-btn" 
+                          onClick={() => loadAppels(appelsPage + 1)} 
+                          disabled={appelsPage === appelsTotalPages}
+                        >
+                          Suivant
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </section>
+
+              {/* Historique des offres */}
+              <section className="details-section card-style">
+                <h3 className="section-title"><IoCart /> Commandes précédentes ({ventesProspect.length})</h3>
+                {ventesLoading && <Loader message="Chargement des offres..." />}
+                {ventesError && <p className="history-error">{ventesError}</p>}
+                {!ventesLoading && !ventesError && ventesProspect.length === 0 && (
+                  <p className="history-empty">Aucune autre commande pour ce prospect.</p>
+                )}
+
+                {!ventesLoading && !ventesError && ventesProspect.length > 0 && (
+                  <div className="ventes-history-list">
+                    {ventesProspect.map(vente => {
+                      const isExpanded = expandedVenteId === vente.id_vente;
+                      const details = vente.details || [];
+                      return (
+                        <div key={vente.id_vente} className="vente-history-item">
+                          <div className="vente-history-header" onClick={() => setExpandedVenteId(isExpanded ? null : vente.id_vente)}>
+                            <div className="vente-history-info">
+                              <span className="vente-history-date">{formatDateShort(vente.created_at)}</span>
+                              <span className="vente-history-ref">{vente.reference_doc ?? `#${vente.id_vente}`}</span>
+                              <span className="vente-history-amount">{formatMontant(vente.montant_total)}</span>
+                            </div>
+                            <div className="vente-history-actions">
+                              <span 
+                                className={`statut-badge statut-badge--mini`}
+                                style={{ backgroundColor: STATUT_VENTE_COLORS[vente.statut_vente] || '#6b7280' }}
+                              >
+                                {STATUT_VENTE_LABELS[vente.statut_vente]}
+                              </span>
+                              <button className="expand-btn">
+                                {isExpanded ? <IoChevronDown /> : <IoChevronForward />}
+                              </button>
+                            </div>
+                          </div>
+
+                          {isExpanded && (
+                            <div className="vente-history-details-expanded">
+                              {vente.agent && (
+                                <p className="vente-history-agent">
+                                  <strong>Commercial :</strong> {vente.agent.prenom} {vente.agent.nom.toUpperCase()}
+                                </p>
+                              )}
+                              {vente.notes && (
+                                <p className="vente-history-notes">
+                                  <strong>Notes :</strong> {vente.notes}
+                                </p>
+                              )}
+                              
+                              <div className="vente-history-products-table">
+                                <table>
+                                  <thead>
+                                    <tr>
+                                      <th>Désignation</th>
+                                      <th style={{ textAlign: 'center' }}>Qté</th>
+                                      <th style={{ textAlign: 'right' }}>PU HT</th>
+                                      <th style={{ textAlign: 'right' }}>Remise</th>
+                                      <th style={{ textAlign: 'right' }}>Total HT</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {details.map((detail: any, idx: number) => (
+                                      <tr key={detail.id_detail || idx}>
+                                        <td>{detail.produit?.nom_produit ?? 'Produit inconnu'}</td>
+                                        <td style={{ textAlign: 'center' }}>{detail.quantite}</td>
+                                        <td style={{ textAlign: 'right' }}>{formatMontant(detail.prix_unitaire)}</td>
+                                        <td style={{ textAlign: 'right' }}>{parseFloat(detail.remise) > 0 ? formatMontant(detail.remise) : '—'}</td>
+                                        <td style={{ textAlign: 'right', fontWeight: 'bold' }}>{formatMontant(detail.montant_ligne)}</td>
+                                      </tr>
+                                    ))}
+                                    {details.length === 0 && (
+                                      <tr>
+                                        <td colSpan={5} style={{ textAlign: 'center', padding: '1em' }}>
+                                          Aucun produit dans cette commande.
+                                        </td>
+                                      </tr>
+                                    )}
+                                  </tbody>
+                                </table>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </section>
             </div>
+
 
             {/* Colonne droite - Aside */}
             <aside className="commandeDetails__right">

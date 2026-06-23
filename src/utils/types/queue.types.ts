@@ -104,6 +104,12 @@ export interface ProspectCampagneRow {
     telephone_contact: string | null;
     est_doublon: boolean;
     optout: boolean;
+    affecter_au_commercial?: number | null;
+    commercialAffecte?: {
+      id_employe: number;
+      nom: string;
+      prenom: string | null;
+    } | null;
     created_at: string;
     updated_at: string;
   };

@@ -83,6 +83,12 @@ export interface Prospect {
   optout_date: string | null;
   doublon_signale_par: number | null;
   optout_signale_par: number | null;
+  affecter_au_commercial?: number | null;
+  commercialAffecte?: {
+    id_employe: number;
+    nom: string;
+    prenom: string | null;
+  } | null;
   created_at: string;
   updated_at: string;
   // Optionnels (provenant de campagnes.prospects_campagnes si filtré par campagne)

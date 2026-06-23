@@ -229,7 +229,7 @@ function ProspectsView(): ReactElement {
                       {selectedCampagne && <th>Statut Appel</th>}
                       {selectedCampagne && <th style={{ textAlign: 'center' }}>Tentatives</th>}
                       {selectedCampagne && <th>Dernier appel</th>}
-                      {selectedCampagne && <th>Agent assigné</th>}
+                      <th>Agent assigné</th>
                       {selectedCampagne && <th>Date injection</th>}
                       {!selectedCampagne && <th>Type</th>}
                       {!selectedCampagne && <th>Activité</th>}
@@ -309,14 +309,12 @@ function ProspectsView(): ReactElement {
                             }
                           </td>
                         )}
-                        {selectedCampagne && (
                           <td>
                             {prospect.agent_assigne
                               ? `${prospect.agent_assigne.nom.toUpperCase()} ${prospect.agent_assigne.prenom || ''}`
                               : '—'
                             }
                           </td>
-                        )}
                         {selectedCampagne && (
                           <td className="prospectsView__date">
                             {prospect.date_injection

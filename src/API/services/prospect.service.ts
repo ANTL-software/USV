@@ -11,6 +11,8 @@ import type {
   ProspectFilters,
   ProspectUpdateData,
 } from '../../utils/types/prospect.types.ts';
+import type { Appel, Vente } from '../../utils/types/index.ts';
+
 
 export const importProspectsService = async (rows: ImportProspectRow[]): Promise<ImportResult> => {
   const response: AxiosResponse<ImportApiResponse> = await postRequest('/prospects/import', { prospects: rows });
@@ -100,3 +102,78 @@ export const updateProspectService = async (id: number, data: ProspectUpdateData
     throw error;
   }
 };
+
+interface PaginatedAppelsResponse {
+  appels: Appel[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+interface PaginatedVentesResponse {
+  ventes: Vente[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export const getProspectAppelsService = async (
+  prospectId: number,
+  params?: { page?: number; limit?: number }
+): Promise<PaginatedAppelsResponse> => {
+  const queryParams = new URLSearchParams();
+  if (params?.page) queryParams.set('page', String(params.page));
+  if (params?.limit) queryParams.set('limit', String(params.limit));
+
+  const qs = queryParams.toString();
+  const url = `/prospects/${prospectId}/appels${qs ? `?${qs}` : ''}`;
+
+  const response: AxiosResponse<{
+    success: boolean;
+    data?: Appel[];
+    message?: string;
+    pagination?: { page: number; limit: number; total: number; totalPages: number };
+  }> = await getRequest(url);
+
+  if (response.data.success && response.data.data) {
+    const pag = response.data.pagination ?? { page: 1, limit: 20, total: response.data.data.length, totalPages: 1 };
+    return {
+      appels: response.data.data,
+      total: pag.total,
+      page: pag.page,
+      totalPages: pag.totalPages,
+    };
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer les appels du prospect');
+};
+
+export const getProspectVentesService = async (
+  prospectId: number,
+  params?: { page?: number; limit?: number }
+): Promise<PaginatedVentesResponse> => {
+  const queryParams = new URLSearchParams();
+  if (params?.page) queryParams.set('page', String(params.page));
+  if (params?.limit) queryParams.set('limit', String(params.limit));
+
+  const qs = queryParams.toString();
+  const url = `/prospects/${prospectId}/ventes${qs ? `?${qs}` : ''}`;
+
+  const response: AxiosResponse<{
+    success: boolean;
+    data?: Vente[];
+    message?: string;
+    pagination?: { page: number; limit: number; total: number; totalPages: number };
+  }> = await getRequest(url);
+
+  if (response.data.success && response.data.data) {
+    const pag = response.data.pagination ?? { page: 1, limit: 20, total: response.data.data.length, totalPages: 1 };
+    return {
+      ventes: response.data.data,
+      total: pag.total,
+      page: pag.page,
+      totalPages: pag.totalPages,
+    };
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer les ventes du prospect');
+};
+

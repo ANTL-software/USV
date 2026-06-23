@@ -156,3 +156,10 @@ export type {
 } from './graphiques.types.ts';
 
 export { STATUT_LABELS, STATUT_COLORS } from './graphiques.types.ts';
+
+export type {
+  StatutAppel,
+  OrigineAppel,
+  Appel,
+} from './appel.types.ts';
+
