@@ -39,6 +39,7 @@ const mapRowToProspect = (row: ProspectCampagneRow): Prospect => ({
   optout_date: null,
   doublon_signale_par: null,
   optout_signale_par: null,
+  maturite_commerciale: row.prospect.maturite_commerciale,
   created_at: row.prospect.created_at,
   updated_at: row.prospect.updated_at,
   id_prospection: row.id_prospection,
