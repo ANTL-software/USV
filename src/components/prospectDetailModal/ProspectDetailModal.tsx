@@ -170,6 +170,16 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
                 )}
               </span>
             </div>
+            <div className="detailRow">
+              <span className="detailLabel">Maturité commerciale</span>
+              <span className="detailValue">
+                {prospect.maturite_commerciale ? (
+                  <span className={`badge badge--${prospect.maturite_commerciale.toLowerCase()}`}>
+                    {prospect.maturite_commerciale}
+                  </span>
+                ) : '—'}
+              </span>
+            </div>
             {(isEditing || prospect.type_prospect === 'Entreprise') && (
               <div className="detailRow">
                 <span className="detailLabel">Raison sociale</span>
