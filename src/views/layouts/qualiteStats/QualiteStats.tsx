@@ -67,26 +67,36 @@ const buildDateRange = (
   const today = getToday();
   const monthBounds = getMonthBounds();
 
-  if (mode === 'jour') {
-    return { dateDebut: startDate || today, dateFin: startDate || today };
+  if (startDate && endDate) {
+    return {
+      dateDebut: startDate,
+      dateFin: endDate
+    };
   }
 
   if (mode === 'mois') {
-    return { dateDebut: monthBounds.start, dateFin: monthBounds.end };
+    return {
+      dateDebut: startDate || monthBounds.start,
+      dateFin: endDate || monthBounds.end
+    };
   }
 
-  if (mode === 'depuis') {
-    return { dateDebut: startDate || today, dateFin: null };
+  if (mode === 'jour') {
+    return {
+      dateDebut: startDate || today,
+      dateFin: endDate || startDate || today
+    };
   }
 
-  if (mode === 'jusquau') {
-    return { dateDebut: null, dateFin: endDate || today };
+  if (startDate) {
+    return { dateDebut: startDate, dateFin: null };
   }
 
-  return {
-    dateDebut: startDate || today,
-    dateFin: endDate || startDate || today
-  };
+  if (endDate) {
+    return { dateDebut: null, dateFin: endDate };
+  }
+
+  return { dateDebut: today, dateFin: today };
 };
 
 const formatPercent = (value: number): string => `${value.toFixed(1)} %`;
@@ -110,6 +120,14 @@ const formatTooltipProgpa = (value: unknown): [string, string] => {
 };
 
 const getRangeLabel = (mode: PeriodMode, dateDebut: string | null, dateFin: string | null): string => {
+  if (dateDebut && dateFin) {
+    if (dateDebut === dateFin) {
+      return `Le ${new Date(dateDebut).toLocaleDateString('fr-FR')}`;
+    }
+
+    return `Du ${new Date(dateDebut).toLocaleDateString('fr-FR')} au ${new Date(dateFin).toLocaleDateString('fr-FR')}`;
+  }
+
   if (mode === 'jour' && dateDebut) {
     return `Le ${new Date(dateDebut).toLocaleDateString('fr-FR')}`;
   }
@@ -124,10 +142,6 @@ const getRangeLabel = (mode: PeriodMode, dateDebut: string | null, dateFin: stri
 
   if (mode === 'jusquau' && dateFin) {
     return `Jusqu’au ${new Date(dateFin).toLocaleDateString('fr-FR')}`;
-  }
-
-  if (dateDebut && dateFin) {
-    return `Du ${new Date(dateDebut).toLocaleDateString('fr-FR')} au ${new Date(dateFin).toLocaleDateString('fr-FR')}`;
   }
 
   return 'Aujourd’hui';
@@ -198,10 +212,31 @@ function QualiteStats(): ReactElement {
     idEmploye: null
   });
 
+  const { data, isLoading, error, reload } = useQualiteProgpaStats(
+    appliedFilters.dateDebut,
+    appliedFilters.dateFin,
+    appliedFilters.idEmploye
+  );
+
+  const commercialIdsFromStats = useMemo(
+    () => new Set((data?.commerciaux || []).map((item) => item.id_employe)),
+    [data]
+  );
+
   const commercialOptions = useMemo<SelectOption[]>(() => {
     const commerciaux = employes
-      .filter((employe) => employe.actif)
-      .filter((employe) => employe.poste?.type_poste === 'commercial' || (employe.id_rang_commercial !== null && employe.id_rang_commercial !== undefined))
+      .filter((employe) => {
+        const posteLabel = employe.poste?.libelle_poste?.toLowerCase() || '';
+        const isCommercialMetadata =
+          employe.poste?.type_poste === 'commercial' ||
+          (employe.id_rang_commercial !== null && employe.id_rang_commercial !== undefined) ||
+          posteLabel.includes('sales') ||
+          posteLabel.includes('business developer') ||
+          posteLabel.includes('commercial') ||
+          posteLabel.includes('stagiaire');
+
+        return isCommercialMetadata || commercialIdsFromStats.has(employe.id_employe);
+      })
       .sort((a, b) => `${a.prenom} ${a.nom}`.localeCompare(`${b.prenom} ${b.nom}`, 'fr'));
 
     return [
@@ -211,13 +246,7 @@ function QualiteStats(): ReactElement {
         label: `${employe.prenom} ${employe.nom.toUpperCase()} (${employe.identifiant})`
       }))
     ];
-  }, [employes]);
-
-  const { data, isLoading, error, reload } = useQualiteProgpaStats(
-    appliedFilters.dateDebut,
-    appliedFilters.dateFin,
-    appliedFilters.idEmploye
-  );
+  }, [commercialIdsFromStats, employes]);
 
   const selectedCommercial = data?.commercial || null;
   const rankingData = useMemo(
@@ -344,7 +373,7 @@ function QualiteStats(): ReactElement {
           <section className="qualiteStats__filters">
             <div className="qualiteStats__filters-grid">
               <div className="qualiteStats__field">
-                <label htmlFor="periodMode">Période</label>
+                <label htmlFor="periodMode">Raccourci de période</label>
                 <Select<SelectOption, false>
                   inputId="periodMode"
                   options={PERIOD_OPTIONS}
@@ -357,35 +386,27 @@ function QualiteStats(): ReactElement {
                 />
               </div>
 
-              {(periodMode === 'jour' || periodMode === 'depuis' || periodMode === 'entre') && (
-                <div className="qualiteStats__field">
-                  <label htmlFor="startDate">
-                    {periodMode === 'jour' ? 'Date' : 'Date début'}
-                  </label>
-                  <input
-                    id="startDate"
-                    type="date"
-                    value={startDate}
-                    onChange={(event) => setStartDate(event.target.value)}
-                    max={periodMode === 'entre' ? endDate || undefined : undefined}
-                  />
-                </div>
-              )}
+              <div className="qualiteStats__field">
+                <label htmlFor="startDate">Date début</label>
+                <input
+                  id="startDate"
+                  type="date"
+                  value={startDate}
+                  onChange={(event) => setStartDate(event.target.value)}
+                  max={endDate || undefined}
+                />
+              </div>
 
-              {(periodMode === 'jusquau' || periodMode === 'entre') && (
-                <div className="qualiteStats__field">
-                  <label htmlFor="endDate">
-                    {periodMode === 'jusquau' ? 'Date fin' : 'Date fin'}
-                  </label>
-                  <input
-                    id="endDate"
-                    type="date"
-                    value={endDate}
-                    onChange={(event) => setEndDate(event.target.value)}
-                    min={periodMode === 'entre' ? startDate || undefined : undefined}
-                  />
-                </div>
-              )}
+              <div className="qualiteStats__field">
+                <label htmlFor="endDate">Date fin</label>
+                <input
+                  id="endDate"
+                  type="date"
+                  value={endDate}
+                  onChange={(event) => setEndDate(event.target.value)}
+                  min={startDate || undefined}
+                />
+              </div>
 
               <div className="qualiteStats__field">
                 <label htmlFor="commercialSelect">Commercial</label>
