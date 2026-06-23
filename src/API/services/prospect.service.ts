@@ -11,7 +11,9 @@ import type {
   ProspectFilters,
   ProspectUpdateData,
 } from '../../utils/types/prospect.types.ts';
-import type { Appel, Vente } from '../../utils/types/index.ts';
+import type { Appel, VenteComplete } from '../../utils/types/index.ts';
+
+
 
 
 export const importProspectsService = async (rows: ImportProspectRow[]): Promise<ImportResult> => {
@@ -111,11 +113,12 @@ interface PaginatedAppelsResponse {
 }
 
 interface PaginatedVentesResponse {
-  ventes: Vente[];
+  ventes: VenteComplete[];
   total: number;
   page: number;
   totalPages: number;
 }
+
 
 export const getProspectAppelsService = async (
   prospectId: number,
@@ -160,7 +163,7 @@ export const getProspectVentesService = async (
 
   const response: AxiosResponse<{
     success: boolean;
-    data?: Vente[];
+    data?: VenteComplete[];
     message?: string;
     pagination?: { page: number; limit: number; total: number; totalPages: number };
   }> = await getRequest(url);

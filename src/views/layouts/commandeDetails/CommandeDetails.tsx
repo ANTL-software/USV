@@ -28,8 +28,9 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { getVenteByIdService, updateVenteStatutService, getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
 import { getProspectAppelsService, getProspectVentesService } from '../../../API/services/prospect.service.ts';
 import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
-import type { VenteComplete, StatutVente, Vente } from '../../../utils/types/vente.types';
+import type { VenteComplete, StatutVente } from '../../../utils/types/vente.types';
 import type { Appel } from '../../../utils/types/appel.types';
+
 import { STATUT_VENTE_LABELS, STATUT_VENTE_COLORS, MODE_PAIEMENT_LABELS } from '../../../utils/types/vente.types';
 import { 
   formatDateShort, 
@@ -80,7 +81,8 @@ function CommandeDetails(): ReactElement {
   const [appelsTotal, setAppelsTotal] = useState(0);
 
   // Ventes/Offres du prospect
-  const [ventesProspect, setVentesProspect] = useState<Vente[]>([]);
+  const [ventesProspect, setVentesProspect] = useState<VenteComplete[]>([]);
+
   const [ventesLoading, setVentesLoading] = useState(false);
   const [ventesError, setVentesError] = useState<string | null>(null);
   const [expandedVenteId, setExpandedVenteId] = useState<number | null>(null);
