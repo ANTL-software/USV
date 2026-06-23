@@ -9,7 +9,7 @@
   }
 
   .prospectsView__container {
-    @include mixins.centeredContainer(1400px);
+    @include mixins.centeredContainer(100%);
   }
 
   .prospectsView__back {
@@ -279,6 +279,16 @@
     }
 
     &--entreprise {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    &--client {
+      background: #d1fae5;
+      color: #047857;
+    }
+
+    &--prospect {
       background: #fef3c7;
       color: #b45309;
     }

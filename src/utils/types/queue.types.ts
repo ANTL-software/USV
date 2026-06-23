@@ -110,6 +110,7 @@ export interface ProspectCampagneRow {
       nom: string;
       prenom: string | null;
     } | null;
+    maturite_commerciale?: string | null;
     created_at: string;
     updated_at: string;
   };

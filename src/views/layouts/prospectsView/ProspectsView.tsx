@@ -141,6 +141,10 @@ function ProspectsView(): ReactElement {
     return 'badge--non_interesse';
   };
 
+  const getMaturiteBadgeClass = (maturite: string): string => {
+    return maturite === 'client' ? 'badge--client' : 'badge--prospect';
+  };
+
   return (
     <div id="prospectsView">
       <Header />
@@ -226,6 +230,7 @@ function ProspectsView(): ReactElement {
                       <th>Ville</th>
                       {!selectedCampagne && <th>Pays</th>}
                       <th>{selectedCampagne ? 'Statut Prospect' : 'Statut'}</th>
+                      <th>Maturité commerciale</th>
                       {selectedCampagne && <th>Statut Appel</th>}
                       {selectedCampagne && <th style={{ textAlign: 'center' }}>Tentatives</th>}
                       {selectedCampagne && <th>Dernier appel</th>}
@@ -280,6 +285,13 @@ function ProspectsView(): ReactElement {
                           <span className={`badge ${getStatutBadgeClass(prospect.statut)}`}>
                             {prospect.statut.replace(/_/g, ' ')}
                           </span>
+                        </td>
+                        <td>
+                          {prospect.maturite_commerciale ? (
+                            <span className={`badge ${getMaturiteBadgeClass(prospect.maturite_commerciale)}`}>
+                              {prospect.maturite_commerciale}
+                            </span>
+                          ) : '—'}
                         </td>
                         {selectedCampagne && (
                           <td>

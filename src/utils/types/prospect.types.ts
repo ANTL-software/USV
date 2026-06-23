@@ -89,6 +89,7 @@ export interface Prospect {
     nom: string;
     prenom: string | null;
   } | null;
+  maturite_commerciale?: string | null;
   created_at: string;
   updated_at: string;
   // Optionnels (provenant de campagnes.prospects_campagnes si filtré par campagne)
