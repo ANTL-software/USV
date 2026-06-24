@@ -9,7 +9,8 @@ import type { StylesConfig, GroupBase } from 'react-select';
 const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
   control: (base, state) => ({
     ...base,
-    minHeight: '44px',
+    minHeight: '38px',
+    height: '38px',
     border: state.isFocused
       ? '2px solid #7c3aed'
       : '2px solid rgba(0, 0, 0, 0.1)',
@@ -24,6 +25,18 @@ const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
     fontFamily: 'inherit',
   }),
 
+  valueContainer: (provided) => ({
+    ...provided,
+    height: '34px',
+    padding: '0 10px',
+  }),
+
+  input: (provided) => ({
+    ...provided,
+    margin: '0px',
+    padding: '0px',
+  }),
+
   placeholder: (provided) => ({
     ...provided,
     color: '#5a6c7d',
@@ -36,6 +49,21 @@ const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
 
   indicatorSeparator: () => ({
     display: 'none',
+  }),
+
+  indicatorsContainer: (provided) => ({
+    ...provided,
+    height: '34px',
+  }),
+
+  clearIndicator: (provided) => ({
+    ...provided,
+    padding: '6px',
+  }),
+
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: '6px',
   }),
 
   menuPortal: (base) => ({

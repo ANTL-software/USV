@@ -353,7 +353,6 @@ function QualiteEcoutes(): ReactElement {
                     const isCurrentPlaying = activeRecording?.id_enregistrement === recording.id_enregistrement;
                     const prospectInfo = recording.appel?.prospect;
                     const raisonSociale = prospectInfo?.raison_sociale;
-                    const prospectNom = prospectInfo ? `${prospectInfo.prenom || ''} ${prospectInfo.nom || ''}`.trim() : '';
 
                     return (
                       <tr key={recording.id_enregistrement} className={isCurrentPlaying ? 'qualiteEcoutes__row--playing' : ''}>
@@ -375,10 +374,8 @@ function QualiteEcoutes(): ReactElement {
                         <td>
                           {raisonSociale ? (
                             <strong>{raisonSociale}</strong>
-                          ) : prospectNom ? (
-                            <span>{prospectNom}</span>
                           ) : (
-                            <span className="qualiteEcoutes__text-muted">Particulier / Inconnu</span>
+                            <span className="qualiteEcoutes__text-muted">Particulier</span>
                           )}
                         </td>
                         <td>{recording.appel?.numero_telephone || '—'}</td>
