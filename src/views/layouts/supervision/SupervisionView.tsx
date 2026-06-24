@@ -75,6 +75,7 @@ const CALL_CLASSIFICATION_LABELS: Record<string, string> = {
   qualification_en_cours: 'Qualification en cours',
   humain_detecte: 'Humain',
   svi_detecte: 'SVI',
+  automate_filtre: 'Automate filtré',
   messagerie_detectee: 'Messagerie',
   fax_detecte: 'Fax',
   unknown_a_traiter: 'Unknown',
@@ -84,6 +85,7 @@ const CALL_CLASSIFICATION_COLORS: Record<string, string> = {
   qualification_en_cours: '#7c3aed',
   humain_detecte: '#27ae60',
   svi_detecte: '#f97316',
+  automate_filtre: '#ea580c',
   messagerie_detectee: '#6b7280',
   fax_detecte: '#334155',
   unknown_a_traiter: '#0ea5e9',
@@ -350,6 +352,11 @@ const AmdKpiCards = ({ stats }: { stats: AmdStats }) => {
         <span className="amd-kpi-card__value">{stats.sviCount}</span>
         <span className="amd-kpi-card__label">SVI</span>
         <span className="amd-kpi-card__meta">{formatRate(stats.sviCount)}</span>
+      </div>
+      <div className="amd-kpi-card amd-kpi-card--messaging">
+        <span className="amd-kpi-card__value">{stats.filteredMachineStartCount}</span>
+        <span className="amd-kpi-card__label">Automates filtrés</span>
+        <span className="amd-kpi-card__meta">{formatRate(stats.filteredMachineStartCount)}</span>
       </div>
       <div className="amd-kpi-card amd-kpi-card--messaging">
         <span className="amd-kpi-card__value">{stats.messagingCount + stats.faxCount}</span>

@@ -41,6 +41,7 @@ export interface AmdStats {
   sviCount: number;
   messagingCount: number;
   faxCount: number;
+  filteredMachineStartCount: number;
   unknownCount: number;
   pendingCount: number;
   systemEndedCount: number;
@@ -72,6 +73,7 @@ export const STATUT_LABELS: Record<string, string> = {
   optout: 'Opt-out',
   amd_repondeur_auto: 'Répondeur auto coupé',
   amd_fax_auto: 'Fax auto coupé',
+  amd_machine_start_auto: 'Automate filtré auto',
 };
 
 // Couleurs pour les statuts d'appels
@@ -96,6 +98,7 @@ export const STATUT_COLORS: Record<string, string> = {
   optout: '#ef4444',
   amd_repondeur_auto: '#f97316',
   amd_fax_auto: '#475569',
+  amd_machine_start_auto: '#ea580c',
 };
 
 // Types supplémentaires pour les graphiques
