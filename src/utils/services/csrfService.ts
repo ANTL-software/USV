@@ -1,4 +1,4 @@
-import { getRequest } from '../../API/APICalls';
+import axios from 'axios';
 
 /**
  * Service de gestion des tokens CSRF
@@ -22,7 +22,7 @@ class CSRFService {
     try {
       // Avec les cookies httpOnly, l'authentification est transparente
       // L'URL de base contient déjà /api, donc on utilise juste /csrf-token
-      const response = await getRequest('/csrf-token') as { data: CSRFTokenResponse };
+      const response = await axios.get<CSRFTokenResponse>('/csrf-token');
       
       if (response.data.success && response.data.csrfToken) {
         this.token = response.data.csrfToken;

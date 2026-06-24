@@ -38,7 +38,7 @@ function Qualite(): ReactElement {
               <p>Contrôle humain des prospects signalés en doublon ou opt-out.</p>
             </section>
 
-            <section className="qualite__card qualite__card--disabled" onClick={() => null}>
+            <section className="qualite__card" onClick={() => navigate('/operations/qualite/ecoutes')}>
               <div className="qualite__card-icon">
                 <IoEarOutline />
               </div>

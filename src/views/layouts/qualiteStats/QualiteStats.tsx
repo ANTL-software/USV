@@ -653,7 +653,7 @@ function QualiteStats(): ReactElement {
                         >
                           <td>
                             <strong>{commercial.prenom} {commercial.nom.toUpperCase()}</strong>
-                            <span>{commercial.identifiant}</span>
+                            <span>Matricule : {commercial.id_employe}</span>
                           </td>
                           <td>{formatProgpa(commercial.moyenne_progpa)}</td>
                           <td>{commercial.max_progpa_atteint} / 5</td>

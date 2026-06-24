@@ -58,6 +58,7 @@ import QualiteWithAuth from "./views/layouts/qualite/Qualite";
 import QualiteStatsWithAuth from "./views/layouts/qualiteStats/QualiteStats";
 import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
 import ProspectsViewWithAuth from "./views/layouts/prospectsView/ProspectsView";
+import QualiteEcoutesWithAuth from "./views/layouts/qualiteEcoutes/QualiteEcoutes";
 import ProjetsListWithAuth from "./views/layouts/projets/ProjetsList";
 import ProjetFormWithAuth from "./views/layouts/projets/ProjetForm";
 import ProjetDetailsWithAuth from "./views/layouts/projets/ProjetDetails";
@@ -140,6 +141,7 @@ function App(): ReactElement {
         <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
         <Route path={"operations/qualite/statistiques"} element={<QualiteStatsWithAuth />}></Route>
+        <Route path={"operations/qualite/ecoutes"} element={<QualiteEcoutesWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>

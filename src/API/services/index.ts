@@ -124,3 +124,8 @@ export {
   getViewUrlRemainingTime,
   formatRemainingTime,
 } from './viewUrl.service.ts';
+
+export {
+  getAllRecordingsService,
+  getRecordingStreamUrl,
+} from './enregistrement.service.ts';
