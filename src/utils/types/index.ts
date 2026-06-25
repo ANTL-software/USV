@@ -1,5 +1,7 @@
 export type {
   TypePoste,
+  PermissionSection,
+  PermissionRecord,
   Poste,
   Departement,
   RangCommercial,
@@ -43,6 +45,49 @@ export type {
   TypeMateriel,
   EtatMateriel,
 } from './materiel.types.ts';
+
+export type {
+  IncidentSecteur,
+  IncidentSource,
+  IncidentImpact,
+  IncidentCriticite,
+  IncidentPriorite,
+  IncidentUrgence,
+  IncidentStatut,
+  IncidentEnvironnement,
+  IncidentTypeCommentaire,
+  IncidentEmploye,
+  IncidentCommentaire,
+  Incident,
+  IncidentPagination,
+  IncidentListResult,
+  IncidentFilters,
+  CreateIncidentPayload,
+  QualifierIncidentPayload,
+  TraiterIncidentPayload,
+  AddIncidentCommentairePayload,
+} from './incident.types.ts';
+
+export {
+  INCIDENT_SECTEUR_LABELS,
+  INCIDENT_SOURCE_LABELS,
+  INCIDENT_IMPACT_LABELS,
+  INCIDENT_CRITICITE_LABELS,
+  INCIDENT_PRIORITE_LABELS,
+  INCIDENT_URGENCE_LABELS,
+  INCIDENT_STATUT_LABELS,
+  INCIDENT_ENVIRONNEMENT_LABELS,
+  INCIDENT_SECTEUR_OPTIONS,
+  INCIDENT_SOURCE_OPTIONS,
+  INCIDENT_IMPACT_OPTIONS,
+  INCIDENT_CRITICITE_OPTIONS,
+  INCIDENT_PRIORITE_OPTIONS,
+  INCIDENT_URGENCE_OPTIONS,
+  INCIDENT_STATUT_OPTIONS,
+  INCIDENT_ENVIRONNEMENT_OPTIONS,
+  INCIDENT_CLASSIFICATION_OPTIONS,
+  formatIncidentEmploye,
+} from './incident.types.ts';
 
 export type {
   EmployeMaterielBasic,
@@ -162,4 +207,3 @@ export type {
   OrigineAppel,
   Appel,
 } from './appel.types.ts';
-

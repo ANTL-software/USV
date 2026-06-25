@@ -2,6 +2,13 @@
 
 export type TypePoste = 'direction' | 'commercial' | 'support' | 'rh' | 'technique' | 'adv' | 'autre';
 
+export interface PermissionSection {
+  enabled: boolean;
+  subsections?: string[];
+}
+
+export type PermissionRecord = Record<string, PermissionSection>;
+
 export interface Poste {
   id_poste: number;
   libelle_poste: string;
@@ -9,7 +16,7 @@ export interface Poste {
   salaire_base?: number | null;
   type_poste?: TypePoste | null;
   couleur?: string | null;
-  permissions?: Record<string, any> | null;
+  permissions?: PermissionRecord | null;
 }
 
 export interface Departement {

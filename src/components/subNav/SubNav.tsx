@@ -4,7 +4,9 @@ import "./subNav.scss";
 // hooks | libraries
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoHome, IoMail, IoCalendar, IoCallOutline, IoFolder, IoPeopleCircle } from "react-icons/io5";
+import { IoHome, IoMail, IoCalendar, IoCallOutline, IoFolder, IoPeopleCircle, IoAlertCircleOutline } from "react-icons/io5";
+import { useUserContext } from "../../hooks/useUserContext.ts";
+import { getAllowedSections, hasAccessToSection } from "../../utils/scripts/permissions.ts";
 
 interface ISection {
   id: string;
@@ -16,6 +18,7 @@ interface ISection {
 
 export default function SubNav(): ReactElement | null {
   const navigate = useNavigate();
+  const { user } = useUserContext();
 
   const sections: ISection[] = [
     {
@@ -45,12 +48,18 @@ export default function SubNav(): ReactElement | null {
     },
     {
       id: "5",
+      name: "Gestion des incidents",
+      path: "/incidents",
+      icon: <IoAlertCircleOutline />,
+    },
+    {
+      id: "6",
       name: "Gestion commerciaux",
       path: "/commerciaux",
       icon: <IoPeopleCircle />,
     },
     {
-      id: "6",
+      id: "7",
       name: "Gestion de projets",
       path: "/projets",
       icon: <IoFolder />,
@@ -66,14 +75,29 @@ export default function SubNav(): ReactElement | null {
 
   const currentApp = getCurrentSection();
 
+  const allowedSections = sections.filter((app: ISection) => {
+    if (app.id === "1") return getAllowedSections(user).length > 1;
+    if (app.id === "2") return hasAccessToSection(user, 'mail');
+    if (app.id === "3") return hasAccessToSection(user, 'booking');
+    if (app.id === "4") return hasAccessToSection(user, 'operations');
+    if (app.id === "5") return hasAccessToSection(user, 'incidents');
+    if (app.id === "6") return hasAccessToSection(user, 'commerciaux');
+    if (app.id === "7") return hasAccessToSection(user, 'projets');
+    return false;
+  });
+
   const handleAppChange = (app: ISection) => {
     navigate(app.path);
   };
 
+  if (allowedSections.length <= 1 && allowedSections.every(s => s.id !== "1")) {
+    return null;
+  }
+
   return (
     <div id="subNav" className={`subNav`}>
       <div className="subNavContainer">
-        {sections.map((app: ISection) => (
+        {allowedSections.map((app: ISection) => (
           <button
             key={app.id}
             className={`subNavItem ${

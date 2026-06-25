@@ -65,6 +65,11 @@ import ProjetDetailsWithAuth from "./views/layouts/projets/ProjetDetails";
 import TacheFormWithAuth from "./views/layouts/projets/TacheForm";
 import TachesKanbanWithAuth from "./views/layouts/projets/TachesKanban";
 import MesTachesWithAuth from "./views/layouts/projets/MesTaches";
+import IncidentsHubWithAuth from "./views/layouts/incidents/IncidentsHub";
+import IncidentDeclarationWithAuth from "./views/layouts/incidents/IncidentDeclaration";
+import IncidentQualificationWithAuth from "./views/layouts/incidents/IncidentQualification";
+import IncidentTraitementWithAuth from "./views/layouts/incidents/IncidentTraitement";
+import IncidentListWithAuth from "./views/layouts/incidents/IncidentList";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -148,6 +153,12 @@ function App(): ReactElement {
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"operations/prospect/:id/inject"} element={<ProspectInjectionWithAuth />}></Route>
+        <Route path={"incidents"} element={<IncidentsHubWithAuth />}></Route>
+        <Route path={"incidents/declarer"} element={<IncidentDeclarationWithAuth />}></Route>
+        <Route path={"incidents/qualification"} element={<IncidentQualificationWithAuth />}></Route>
+        <Route path={"incidents/traitement"} element={<IncidentTraitementWithAuth />}></Route>
+        <Route path={"incidents/traitement/:id"} element={<IncidentTraitementWithAuth />}></Route>
+        <Route path={"incidents/liste"} element={<IncidentListWithAuth />}></Route>
         <Route path={"supervision"} element={<SupervisionViewWithAuth />}></Route>
         <Route path={"supervision/alertes"} element={<AlertesConfigViewWithAuth />}></Route>
         <Route path={"supervision/alertes/historique"} element={<AlertesHistoryViewWithAuth />}></Route>

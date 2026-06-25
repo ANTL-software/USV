@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
+    "test": "npm run test:unit && npm run test:e2e",
     "test:unit": "node --test --experimental-strip-types --experimental-test-module-mocks tests/unit/*.test.ts",
+    "test:e2e": "node --test --experimental-strip-types --experimental-test-module-mocks tests/e2e/*.test.ts",
     "preview": "vite preview"
   },
   "dependencies": {

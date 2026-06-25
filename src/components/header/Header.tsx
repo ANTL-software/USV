@@ -11,12 +11,13 @@ import { getGreetingName, getSalutation } from "../../utils/scripts/utils.ts";
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder } from "react-icons/io5";
+import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder, IoAlertCircleOutline } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { useUserContext } from "../../hooks/useUserContext.ts";
 
 // components
 import PWAInstallButton from "../pwaInstallButton/PWAInstallButton.tsx";
+import { getAllowedSections, hasAccessToSection, hasAccessToSubsection } from "../../utils/scripts/permissions.ts";
 
 export default function Header(): ReactElement {
   const location = useLocation();
@@ -112,65 +113,104 @@ export default function Header(): ReactElement {
 
               {/* Navigation */}
               <div className="mobileSection">
-                <button
-                  className={`mobileNavItem ${location.pathname === "/home" ? "active" : ""}`}
-                  onClick={() => handleNavigate("/home")}
-                >
-                  <IoHome className="mobileNavIcon" />
-                  <span className="mobileNavText">Accueil</span>
-                </button>
+                {getAllowedSections(user).length > 1 && (
+                  <button
+                    className={`mobileNavItem ${location.pathname === "/home" ? "active" : ""}`}
+                    onClick={() => handleNavigate("/home")}
+                  >
+                    <IoHome className="mobileNavIcon" />
+                    <span className="mobileNavText">Accueil</span>
+                  </button>
+                )}
 
-                <h3 className="mobileSectionTitle">Gestion des courriers</h3>
-                <button
-                  className={`mobileNavItem ${location.pathname === "/mail/new" ? "active" : ""}`}
-                  onClick={() => handleNavigate("/mail/new")}
-                >
-                  <IoAdd className="mobileNavIcon" />
-                  <span className="mobileNavText">Ajouter un courrier</span>
-                </button>
-                <button
-                  className={`mobileNavItem ${location.pathname === "/mail/list" ? "active" : ""}`}
-                  onClick={() => handleNavigate("/mail/list")}
-                >
-                  <IoList className="mobileNavIcon" />
-                  <span className="mobileNavText">Liste des courriers</span>
-                </button>
+                {hasAccessToSection(user, 'mail') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion des courriers</h3>
+                    {hasAccessToSubsection(user, 'mail', 'mail_new') && (
+                      <button
+                        className={`mobileNavItem ${location.pathname === "/mail/new" ? "active" : ""}`}
+                        onClick={() => handleNavigate("/mail/new")}
+                      >
+                        <IoAdd className="mobileNavIcon" />
+                        <span className="mobileNavText">Ajouter un courrier</span>
+                      </button>
+                    )}
+                    {hasAccessToSubsection(user, 'mail', 'mail_list') && (
+                      <button
+                        className={`mobileNavItem ${location.pathname === "/mail/list" ? "active" : ""}`}
+                        onClick={() => handleNavigate("/mail/list")}
+                      >
+                        <IoList className="mobileNavIcon" />
+                        <span className="mobileNavText">Liste des courriers</span>
+                      </button>
+                    )}
+                  </>
+                )}
 
-                <h3 className="mobileSectionTitle">Agenda</h3>
-                <button
-                  className={`mobileNavItem ${location.pathname === "/booking" ? "active" : ""}`}
-                  onClick={() => handleNavigate("/booking")}
-                >
-                  <IoCalendar className="mobileNavIcon" />
-                  <span className="mobileNavText">Agenda</span>
-                </button>
+                {hasAccessToSection(user, 'booking') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Agenda</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname === "/booking" ? "active" : ""}`}
+                      onClick={() => handleNavigate("/booking")}
+                    >
+                      <IoCalendar className="mobileNavIcon" />
+                      <span className="mobileNavText">Agenda</span>
+                    </button>
+                  </>
+                )}
 
-                <h3 className="mobileSectionTitle">Gestion opérationnelle</h3>
-                <button
-                  className={`mobileNavItem ${location.pathname.startsWith("/operations") || location.pathname.startsWith("/campagnes") || location.pathname.startsWith("/prospects") || location.pathname.startsWith("/produits") ? "active" : ""}`}
-                  onClick={() => handleNavigate("/operations")}
-                >
-                  <IoCallOutline className="mobileNavIcon" />
-                  <span className="mobileNavText">Gestion opérationnelle</span>
-                </button>
+                {hasAccessToSection(user, 'operations') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion opérationnelle</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/operations") || location.pathname.startsWith("/campagnes") || location.pathname.startsWith("/prospects") || location.pathname.startsWith("/produits") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/operations")}
+                    >
+                      <IoCallOutline className="mobileNavIcon" />
+                      <span className="mobileNavText">Gestion opérationnelle</span>
+                    </button>
+                  </>
+                )}
 
-                <h3 className="mobileSectionTitle">Gestion commerciaux</h3>
-                <button
-                  className={`mobileNavItem ${location.pathname.startsWith("/commerciaux") ? "active" : ""}`}
-                  onClick={() => handleNavigate("/commerciaux")}
-                >
-                  <IoPeopleCircle className="mobileNavIcon" />
-                  <span className="mobileNavText">Gestion commerciaux</span>
-                </button>
+                {hasAccessToSection(user, 'incidents') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion des incidents</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/incidents") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/incidents")}
+                    >
+                      <IoAlertCircleOutline className="mobileNavIcon" />
+                      <span className="mobileNavText">Gestion des incidents</span>
+                    </button>
+                  </>
+                )}
 
-                <h3 className="mobileSectionTitle">Gestion de projets</h3>
-                <button
-                  className={`mobileNavItem ${location.pathname.startsWith("/projets") ? "active" : ""}`}
-                  onClick={() => handleNavigate("/projets")}
-                >
-                  <IoFolder className="mobileNavIcon" />
-                  <span className="mobileNavText">Gestion de projets</span>
-                </button>
+                {hasAccessToSection(user, 'commerciaux') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion commerciaux</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/commerciaux") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/commerciaux")}
+                    >
+                      <IoPeopleCircle className="mobileNavIcon" />
+                      <span className="mobileNavText">Gestion commerciaux</span>
+                    </button>
+                  </>
+                )}
+
+                {hasAccessToSection(user, 'projets') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion de projets</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/projets") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/projets")}
+                    >
+                      <IoFolder className="mobileNavIcon" />
+                      <span className="mobileNavText">Gestion de projets</span>
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           </div>

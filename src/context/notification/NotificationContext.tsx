@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import { useUserContext } from '../../hooks/useUserContext';
 import { hasAccessToSection, hasAccessToSubsection } from '../../utils/scripts/permissions';
 import { getPendingAbsenceRequestsService } from '../../API/services/absence.service';
+import { getIncidentsService } from '../../API/services/incident.service';
 
 export type NotificationType = 'info' | 'task';
 
@@ -56,13 +57,23 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
       const hasPendingAbsences = pendingAbsences.length > 0;
 
+      let hasDeclaredIncidents = false;
+      if (hasAccessToSection(user, 'incidents')) {
+        const declaredResult = await getIncidentsService({ statut: 'declare', page: 1, limit: 1 });
+        hasDeclaredIncidents = declaredResult.pagination.total > 0;
+      }
+
       setNotifications(prev => {
-        const index = prev.findIndex(
+        const absenceIndex = prev.findIndex(
           n => n.sectionId === 'operations' && n.subsectionId === 'demandes-absence' && n.type === 'task'
         );
+        const incidentIndex = prev.findIndex(
+          n => n.sectionId === 'incidents' && n.type === 'task'
+        );
+        let next = prev;
 
         if (hasPendingAbsences) {
-          if (index === -1) {
+          if (absenceIndex === -1) {
             // Créer une nouvelle notification active
             const newNotif: NotificationItem = {
               id: 'notif-absence-pending',
@@ -74,18 +85,40 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
               resolved: false,
               createdAt: new Date().toISOString(),
             };
-            return [...prev, newNotif];
-          } else if (prev[index].resolved) {
+            next = [...next, newNotif];
+          } else if (prev[absenceIndex].resolved) {
             // Ré-activer la notification si elle était précédemment résolue
-            return prev.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: false } : n);
+            next = next.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: false } : n);
           }
         } else {
           // S'il n'y a plus de demandes en attente, on la résout
-          if (index !== -1 && !prev[index].resolved) {
-            return prev.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: true } : n);
+          if (absenceIndex !== -1 && !prev[absenceIndex].resolved) {
+            next = next.map(n => n.id === 'notif-absence-pending' ? { ...n, resolved: true } : n);
           }
         }
-        return prev;
+
+        if (hasDeclaredIncidents) {
+          if (incidentIndex === -1) {
+            next = [
+              ...next,
+              {
+                id: 'notif-incidents-declared',
+                sectionId: 'incidents',
+                type: 'task',
+                message: 'Nouvel incident déclaré à qualifier',
+                readByUsers: [],
+                resolved: false,
+                createdAt: new Date().toISOString(),
+              }
+            ];
+          } else if (prev[incidentIndex].resolved) {
+            next = next.map(n => n.id === 'notif-incidents-declared' ? { ...n, resolved: false } : n);
+          }
+        } else if (incidentIndex !== -1 && !prev[incidentIndex].resolved) {
+          next = next.map(n => n.id === 'notif-incidents-declared' ? { ...n, resolved: true } : n);
+        }
+
+        return next;
       });
 
     } catch (error) {

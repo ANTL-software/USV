@@ -89,6 +89,15 @@ export {
 } from './materiel.service.ts';
 
 export {
+  getIncidentsService,
+  getIncidentByIdService,
+  createIncidentService,
+  qualifierIncidentService,
+  traiterIncidentService,
+  addIncidentCommentaireService,
+} from './incident.service.ts';
+
+export {
   getBookingsService,
   createBookingService,
   updateBookingService,

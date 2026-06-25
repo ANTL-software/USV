@@ -11,7 +11,7 @@ import { getGreetingName, getSalutation } from "../../../utils/scripts/utils.ts"
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder } from "react-icons/io5";
+import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder, IoAlertCircleOutline } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { useUserContext } from "../../../hooks/useUserContext.ts";
 
@@ -169,6 +169,19 @@ export default function Header(): ReactElement {
                     >
                       <IoCallOutline className="mobileNavIcon" />
                       <span className="mobileNavText">Gestion opérationnelle</span>
+                    </button>
+                  </>
+                )}
+
+                {hasAccessToSection(user, 'incidents') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Gestion des incidents</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/incidents") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/incidents")}
+                    >
+                      <IoAlertCircleOutline className="mobileNavIcon" />
+                      <span className="mobileNavText">Gestion des incidents</span>
                     </button>
                   </>
                 )}

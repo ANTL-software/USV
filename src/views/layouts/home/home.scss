@@ -42,6 +42,7 @@
   .webDevSection,
   .projetsSection,
   .callCenterSection,
+  .incidentsSection,
   .commerciauxSection,
   .bookingSection {
     flex: 1;
@@ -154,6 +155,17 @@
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+  }
+
+  .incidentsSection h2 {
+    background: vars.$utilsGradient;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .incidentsSection figure img {
+    object-position: center 68%;
   }
 
   .commerciauxSection h2 {

@@ -87,7 +87,43 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
     },
   });
 
-  assert.deepEqual(getAllowedSections(user), ['mail', 'booking', 'operations', 'commerciaux', 'projets']);
+  assert.deepEqual(getAllowedSections(user), ['mail', 'booking', 'operations', 'incidents', 'commerciaux', 'projets']);
   assert.equal(getFirstAllowedPath(user), '/commerciaux');
   assert.equal(getFirstAllowedPath(null), '/auth');
+});
+
+test('les accès incidents suivent les sous-sections du poste', () => {
+  const lecteur = createUser({
+    poste: {
+      id_poste: 6,
+      libelle_poste: 'Lecteur incidents',
+      permissions: {
+        incidents: { enabled: true, subsections: ['liste'] },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToSection(lecteur, 'incidents'), true);
+  assert.equal(hasAccessToSubsection(lecteur, 'incidents', 'liste'), true);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/liste'), true);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/traitement/12'), true);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/traitement'), false);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/declarer'), false);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/qualification'), false);
+});
+
+test('le traitement incidents nécessite le droit dédié', () => {
+  const intervenant = createUser({
+    poste: {
+      id_poste: 7,
+      libelle_poste: 'Intervenant incidents',
+      permissions: {
+        incidents: { enabled: true, subsections: ['traiter'] },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(intervenant, '/incidents/traitement'), true);
+  assert.equal(hasAccessToPath(intervenant, '/incidents/traitement/12'), true);
+  assert.equal(hasAccessToPath(intervenant, '/incidents/liste'), false);
 });

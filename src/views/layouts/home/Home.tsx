@@ -7,6 +7,7 @@ import calendarBackground from "../../../assets/background/calendar.webp";
 import callCenterBackground from "../../../assets/background/utilsSection.webp";
 import projetsBackground from "../../../assets/background/projetSection.webp";
 import commerciauxBackground from "../../../assets/background/gestionCommerciaux.webp";
+import incidentsBackground from "../../../assets/background/gestionIncidents.webp";
 
 // hooks | library
 import { ReactElement } from "react";
@@ -60,6 +61,17 @@ function Home(): ReactElement {
                   <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
                 </figure>
                 <h2>Gestion opérationnelle</h2>
+              </Link>
+            </section>
+          )}
+          {hasAccessToSection(user, 'incidents') && (
+            <section className={"incidentsSection"}>
+              <Link to={"/incidents"} style={{ position: 'relative' }}>
+                <NotificationBadge sectionId="incidents" />
+                <figure>
+                  <img src={incidentsBackground} alt={"Gestion des incidents"} />
+                </figure>
+                <h2>Gestion des incidents</h2>
               </Link>
             </section>
           )}

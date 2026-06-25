@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPosteByIdService, createPosteService, updatePosteService } from '../API/services/user.service';
-import type { Poste, TypePoste } from '../utils/types/user.types';
+import type { PermissionRecord, Poste, TypePoste } from '../utils/types/user.types';
 
 interface PosteFormState {
   libelle_poste: string;
@@ -9,15 +9,23 @@ interface PosteFormState {
   salaire_base: string;
   type_poste: TypePoste | '';
   couleur: string;
-  permissions: Record<string, { enabled: boolean; subsections?: string[] }>;
+  permissions: PermissionRecord;
 }
 
-const INITIAL_PERMISSIONS = {
+const INITIAL_PERMISSIONS: PermissionRecord = {
   mail: { enabled: false, subsections: [] },
   booking: { enabled: false },
   operations: { enabled: false, subsections: [] },
+  incidents: { enabled: false, subsections: [] },
   commerciaux: { enabled: false, subsections: [] },
   projets: { enabled: false }
+};
+
+const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
+  operations: ['supervision', 'commandes', 'campagnes', 'prospects', 'produits', 'qualite', 'demandes-absence', 'employes', 'postes', 'materiel'],
+  incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
+  mail: ['mail_new', 'mail_list', 'mail_convert'],
+  commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
 };
 
 const INITIAL_FORM: PosteFormState = {
@@ -49,7 +57,7 @@ export function usePosteForm() {
         salaire_base:  p.salaire_base != null ? String(p.salaire_base) : '',
         type_poste:    (p.type_poste as TypePoste) || '',
         couleur:       p.couleur || '',
-        permissions:   (p.permissions as Record<string, { enabled: boolean; subsections?: string[] }>) || INITIAL_PERMISSIONS,
+        permissions:   { ...INITIAL_PERMISSIONS, ...(p.permissions as PermissionRecord || {}) },
       }))
       .catch(err => setError(err instanceof Error ? err.message : 'Erreur de chargement'))
       .finally(() => setIsFetching(false));
@@ -75,14 +83,8 @@ export function usePosteForm() {
       perms[sectionId] = {
         ...current,
         enabled: nextEnabled,
-        ...(nextEnabled && sectionId === 'operations' && {
-          subsections: ['supervision', 'commandes', 'campagnes', 'prospects', 'produits', 'qualite', 'demandes-absence', 'employes', 'postes', 'materiel']
-        }),
-        ...(nextEnabled && sectionId === 'mail' && {
-          subsections: ['mail_new', 'mail_list', 'mail_convert']
-        }),
-        ...(nextEnabled && sectionId === 'commerciaux' && {
-          subsections: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning']
+        ...(nextEnabled && DEFAULT_SUBSECTIONS_BY_SECTION[sectionId] && {
+          subsections: DEFAULT_SUBSECTIONS_BY_SECTION[sectionId]
         })
       };
       
