@@ -7,6 +7,7 @@ export interface ProspectSignale {
   id_prospect: number;
   nom: string;
   prenom: string | null;
+  raison_sociale: string | null;
   telephone: string;
   email: string | null;
   ville: string | null;

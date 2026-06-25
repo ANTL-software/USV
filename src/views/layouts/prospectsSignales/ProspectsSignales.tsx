@@ -99,7 +99,7 @@ function ProspectsSignales(): ReactElement {
                 <table className="prospectsSignales__table">
                   <thead>
                     <tr>
-                      <th>Nom</th>
+                      <th>Raison sociale</th>
                       <th>Téléphone</th>
                       <th>Type</th>
                       <th>Date signalement</th>
@@ -112,9 +112,7 @@ function ProspectsSignales(): ReactElement {
 
                       return (
                         <tr key={row.id_prospect}>
-                          <td>
-                            {row.prenom ? `${row.prenom} ` : ''}{row.nom}
-                          </td>
+                          <td>{row.raison_sociale || '—'}</td>
                           <td>{row.telephone}</td>
                           <td>
                             <span className={`prospectsSignales__badge ${isDoublon ? 'prospectsSignales__badge--doublon' : 'prospectsSignales__badge--optout'}`}>
