@@ -39,7 +39,7 @@ function IncidentsHub(): ReactElement {
         <div className="incidents__hero">
           <div>
             <h1><IoAlertCircleOutline /> Gestion des incidents</h1>
-            <p>Déclaration, qualification, traitement et historique des incidents ANTL.</p>
+            <p>Déclaration, qualification, traitement et historique des incidents.</p>
           </div>
         </div>
 
