@@ -335,7 +335,6 @@ function IncidentTraitement(): ReactElement {
                         </header>
                         <div className="incidents__timeline-body">
                           <div className="incidents__timeline-card">
-                            <strong>Description initiale</strong>
                             <p>{activeIncident.description}</p>
                           </div>
                           {declarationComments.length > 0 && (
