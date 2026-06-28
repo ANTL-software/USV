@@ -124,6 +124,9 @@ export {
   importProspectsService,
   getAllProspectsService,
   getProspectByIdService,
+  getProspectEnrichmentSnapshotService,
+  previewProspectEnrichmentService,
+  applyProspectEnrichmentService,
   updateProspectService,
 } from './prospect.service.ts';
 

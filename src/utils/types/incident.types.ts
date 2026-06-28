@@ -117,9 +117,25 @@ export interface IncidentPagination {
   totalPages: number;
 }
 
+export interface IncidentNotificationMeta {
+  attempted: boolean;
+  success: boolean;
+  recipient: string;
+  error?: string;
+}
+
+export interface IncidentResponseMeta {
+  emailNotification?: IncidentNotificationMeta;
+}
+
 export interface IncidentListResult {
   incidents: Incident[];
   pagination: IncidentPagination;
+}
+
+export interface CreateIncidentResult {
+  incident: Incident;
+  meta?: IncidentResponseMeta;
 }
 
 export interface IncidentFilters {
@@ -198,6 +214,7 @@ export interface ApiIncidentResponse {
   message?: string;
   data?: Incident | Incident[];
   pagination?: IncidentPagination;
+  meta?: IncidentResponseMeta;
 }
 
 export interface ApiIncidentCommentaireResponse {

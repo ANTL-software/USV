@@ -44,6 +44,7 @@ import CampagnesListWithAuth from "./views/layouts/campagnesList/CampagnesList";
 import CampagneFormWithAuth from "./views/layouts/campagneForm/CampagneForm";
 import ProspectImportWithAuth from "./views/layouts/prospectImport/ProspectImport";
 import ProspectInjectionWithAuth from "./views/layouts/prospectInjection/ProspectInjection";
+import ProspectEnrichmentWithAuth from "./views/layouts/prospectEnrichment/ProspectEnrichment";
 import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
 import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
 import PaniersListWithAuth from "./views/layouts/paniersList/PaniersList";
@@ -149,6 +150,7 @@ function App(): ReactElement {
         <Route path={"operations/qualite/ecoutes"} element={<QualiteEcoutesWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>
+        <Route path={"operations/prospects/enrichissement"} element={<ProspectEnrichmentWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>
         <Route path={"campagnes/:id"} element={<CampagneFormWithAuth />}></Route>

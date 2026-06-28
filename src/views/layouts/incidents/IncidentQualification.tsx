@@ -6,6 +6,7 @@ import { IoClipboardOutline, IoSave } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { useEmployes } from '../../../hooks/useEmployes';
+import { useNotifications } from '../../../hooks/useNotifications';
 import { useIncident, useIncidents } from '../../../hooks/useIncidents';
 import type {
   IncidentCriticite,
@@ -65,13 +66,15 @@ const parseTags = (value: string): string[] => value
 function IncidentQualification(): ReactElement {
   const navigate = useNavigate();
   const { employes } = useEmployes();
+  const { refreshNotifications } = useNotifications();
   const { incidents, isLoading, error, refresh } = useIncidents({ limit: 100 });
   const { qualify } = useIncident();
   const incidentsAQualifier = useMemo(
-    () => incidents.filter(incident => incident.statut === 'declare' || incident.statut === 'qualifie'),
+    () => incidents.filter(incident => incident.statut === 'declare'),
     [incidents]
   );
   const [selectedId, setSelectedId] = useState('');
+  const [autoSelectEnabled, setAutoSelectEnabled] = useState(true);
   const selectedIncident = incidentsAQualifier.find(incident => String(incident.id_incident) === selectedId) ?? null;
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -94,10 +97,10 @@ function IncidentQualification(): ReactElement {
   });
 
   useEffect(() => {
-    if (!selectedId && incidentsAQualifier.length > 0) {
+    if (autoSelectEnabled && !selectedId && incidentsAQualifier.length > 0) {
       setSelectedId(String(incidentsAQualifier[0].id_incident));
     }
-  }, [incidentsAQualifier, selectedId]);
+  }, [autoSelectEnabled, incidentsAQualifier, selectedId]);
 
   useEffect(() => {
     if (!selectedIncident) return;
@@ -160,6 +163,9 @@ function IncidentQualification(): ReactElement {
     if (updated) {
       setSuccess(`${updated.reference} qualifié.`);
       await refresh();
+      await refreshNotifications();
+      setSelectedId('');
+      setAutoSelectEnabled(false);
     }
   };
 
@@ -199,7 +205,10 @@ function IncidentQualification(): ReactElement {
                       key={incident.id_incident}
                       type="button"
                       className={selectedId === String(incident.id_incident) ? 'active' : ''}
-                      onClick={() => setSelectedId(String(incident.id_incident))}
+                      onClick={() => {
+                        setSelectedId(String(incident.id_incident));
+                        setAutoSelectEnabled(true);
+                      }}
                     >
                       <strong>{incident.reference}</strong>
                       <span>{incident.titre}</span>

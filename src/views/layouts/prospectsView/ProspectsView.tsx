@@ -161,6 +161,9 @@ function ProspectsView(): ReactElement {
           <div className="prospectsView__header">
             <div className="prospectsView__title-section">
               <h1>Prospects</h1>
+              <Button style="grey" onClick={() => navigate('/operations/prospects/enrichissement')}>
+                <span>Enrichissement de donnée Prospect</span>
+              </Button>
               {selectedCampagne && (
                 <>
                   <Button style="gradient" onClick={() => navigate(`/operations/prospect/${selectedCampagne.id_campagne}/inject`)}>

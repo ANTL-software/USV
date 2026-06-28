@@ -10,6 +10,8 @@ import type {
   ProspectsApiResponse,
   ProspectFilters,
   ProspectUpdateData,
+  ProspectEnrichmentSnapshot,
+  ProspectEnrichmentPreview,
 } from '../../utils/types/prospect.types.ts';
 import type { Appel, VenteComplete } from '../../utils/types/index.ts';
 
@@ -74,6 +76,33 @@ export const getProspectByIdService = async (id: number): Promise<Prospect> => {
     return response.data.data;
   }
   throw new Error(response.data.message || 'Impossible de récupérer le prospect');
+};
+
+export const getProspectEnrichmentSnapshotService = async (id: number): Promise<ProspectEnrichmentSnapshot> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentSnapshot; message?: string }> = await getRequest(`/prospects/${id}/enrichment`);
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer la fiche d’enrichissement du prospect');
+};
+
+export const previewProspectEnrichmentService = async (id: number): Promise<ProspectEnrichmentPreview> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentPreview; message?: string }> = await postRequest(`/prospects/${id}/enrichment/preview`, {});
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de générer la prévisualisation d’enrichissement');
+};
+
+export const applyProspectEnrichmentService = async (
+  id: number,
+  proposal: Partial<Prospect>
+): Promise<ProspectEnrichmentSnapshot> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentSnapshot; message?: string }> = await postRequest(`/prospects/${id}/enrichment/apply`, { proposal });
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible d’enregistrer l’enrichissement');
 };
 
 export const updateProspectService = async (id: number, data: ProspectUpdateData): Promise<Prospect> => {
@@ -179,4 +208,3 @@ export const getProspectVentesService = async (
   }
   throw new Error(response.data.message || 'Impossible de récupérer les ventes du prospect');
 };
-

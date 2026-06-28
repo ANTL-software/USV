@@ -6,10 +6,11 @@ import { IoAlertCircleOutline, IoSave } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { useEmployes } from '../../../hooks/useEmployes';
+import { useNotifications } from '../../../hooks/useNotifications';
 import { useIncident } from '../../../hooks/useIncidents';
 import type {
   CreateIncidentPayload,
-  Incident,
+  CreateIncidentResult,
   IncidentCriticite,
   IncidentEnvironnement,
   IncidentImpact,
@@ -80,9 +81,10 @@ const parseTags = (value: string): string[] => value
 function IncidentDeclaration(): ReactElement {
   const navigate = useNavigate();
   const { employes } = useEmployes();
+  const { refreshNotifications } = useNotifications();
   const { create } = useIncident();
   const [form, setForm] = useState<DeclarationFormState>(INITIAL_FORM);
-  const [createdIncident, setCreatedIncident] = useState<Incident | null>(null);
+  const [createdResult, setCreatedResult] = useState<CreateIncidentResult | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -127,8 +129,9 @@ function IncidentDeclaration(): ReactElement {
     setIsSaving(false);
 
     if (created) {
-      setCreatedIncident(created);
+      setCreatedResult(created);
       setForm(INITIAL_FORM);
+      await refreshNotifications();
     }
   };
 
@@ -154,10 +157,13 @@ function IncidentDeclaration(): ReactElement {
           </div>
 
           {error && <div className="incidents__error">{error}</div>}
-          {createdIncident && (
+          {createdResult && (
             <div className="incidents__success">
-              Incident {createdIncident.reference} déclaré.
-              <button type="button" onClick={() => navigate(`/incidents/traitement/${createdIncident.id_incident}`)}>
+              <span>
+                Incident {createdResult.incident.reference} déclaré.
+                {createdResult.meta?.emailNotification?.success === false && ' Notification email non envoyée.'}
+              </span>
+              <button type="button" onClick={() => navigate(`/incidents/traitement/${createdResult.incident.id_incident}`)}>
                 Consulter
               </button>
             </div>

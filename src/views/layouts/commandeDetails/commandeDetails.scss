@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use '../../../utils/styles/variables' as vars;
 @use '../../../utils/styles/mixins' as mixins;
 
@@ -587,7 +588,7 @@
     transition: all 0.2s ease;
 
     &:hover {
-      border-color: darken(vars.$borderColor, 10%);
+      border-color: color.adjust(vars.$borderColor, $lightness: -10%);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     }
   }
@@ -736,7 +737,7 @@
     transition: background 0.2s ease;
 
     &:hover {
-      background: darken(vars.$greyBackground, 2%);
+      background: color.adjust(vars.$greyBackground, $lightness: -2%);
     }
   }
 
@@ -852,4 +853,3 @@
     }
   }
 }
-

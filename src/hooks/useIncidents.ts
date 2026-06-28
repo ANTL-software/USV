@@ -11,6 +11,7 @@ import { showError } from '../utils/services/alertService';
 import type {
   AddIncidentCommentairePayload,
   CreateIncidentPayload,
+  CreateIncidentResult,
   Incident,
   IncidentFilters,
   IncidentPagination,
@@ -88,7 +89,7 @@ export function useIncident(id?: number) {
     if (id) load(id);
   }, [id, load]);
 
-  const create = useCallback(async (payload: CreateIncidentPayload): Promise<Incident | null> => {
+  const create = useCallback(async (payload: CreateIncidentPayload): Promise<CreateIncidentResult | null> => {
     try {
       return await createIncidentService(payload);
     } catch (err) {

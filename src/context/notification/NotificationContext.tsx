@@ -68,7 +68,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
           n => n.sectionId === 'operations' && n.subsectionId === 'demandes-absence' && n.type === 'task'
         );
         const incidentIndex = prev.findIndex(
-          n => n.sectionId === 'incidents' && n.type === 'task'
+          n => n.sectionId === 'incidents' && n.subsectionId === 'qualifier' && n.type === 'task'
         );
         let next = prev;
 
@@ -104,6 +104,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
               {
                 id: 'notif-incidents-declared',
                 sectionId: 'incidents',
+                subsectionId: 'qualifier',
                 type: 'task',
                 message: 'Nouvel incident déclaré à qualifier',
                 readByUsers: [],

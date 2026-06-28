@@ -8,7 +8,9 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { useUserContext } from '../../../hooks/useUserContext';
 import { useIncident, useIncidents } from '../../../hooks/useIncidents';
 import { hasAccessToSubsection } from '../../../utils/scripts/permissions';
+import { confirm as confirmAlert } from '../../../utils/services/alertService';
 import type {
+  IncidentCommentaire,
   IncidentStatut,
   TraiterIncidentPayload,
 } from '../../../utils/types/incident.types';
@@ -57,19 +59,25 @@ const computeResolutionMinutes = (start?: string | null, end?: string | null): s
   return rest > 0 ? `${hours}h${String(rest).padStart(2, '0')}` : `${hours}h`;
 };
 
+const matchesStructuredComment = (commentaire: IncidentCommentaire, expected?: string | null): boolean => {
+  return Boolean(expected && commentaire.commentaire.trim() === expected.trim());
+};
+
 function IncidentTraitement(): ReactElement {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const isReadOnlyHistoryView = Boolean(id);
   const { user } = useUserContext();
   const canTraiter = hasAccessToSubsection(user, 'incidents', 'traiter');
   const initialId = id ? Number(id) : undefined;
-  const { incidents, isLoading: isLoadingList } = useIncidents({ limit: 100 });
+  const { incidents, isLoading: isLoadingList, refresh } = useIncidents({ limit: 100 });
   const { incident, isLoading, error, load, treat, addComment } = useIncident(initialId);
   const incidentsOuverts = useMemo(
-    () => incidents.filter(item => item.statut !== 'resolu' && item.statut !== 'annule'),
+    () => incidents.filter(item => ['qualifie', 'en_traitement', 'en_attente'].includes(item.statut)),
     [incidents]
   );
   const [selectedId, setSelectedId] = useState(id ?? '');
+  const activeIncident = selectedId && incident?.id_incident === Number(selectedId) ? incident : null;
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
   const [commentaireLibre, setCommentaireLibre] = useState('');
@@ -96,7 +104,9 @@ function IncidentTraitement(): ReactElement {
   useEffect(() => {
     if (!incident) return;
     setForm({
-      statut: incident.statut === 'resolu' || incident.statut === 'annule' ? incident.statut : 'en_traitement',
+      statut: incident.statut === 'resolu' || incident.statut === 'annule' || incident.statut === 'en_attente'
+        ? incident.statut
+        : 'en_traitement',
       classification: incident.classification ?? '',
       cause_racine: incident.cause_racine ?? '',
       solution: incident.solution ?? '',
@@ -113,9 +123,50 @@ function IncidentTraitement(): ReactElement {
     setSuccess(null);
   };
 
+  const declarationComments = useMemo(
+    () => (activeIncident?.commentaires ?? []).filter(commentaire => commentaire.type_commentaire === 'declaration'),
+    [activeIncident]
+  );
+  const qualificationComments = useMemo(
+    () => (activeIncident?.commentaires ?? []).filter(
+      commentaire => commentaire.type_commentaire === 'qualification' && !matchesStructuredComment(commentaire, activeIncident?.commentaire_qualification)
+    ),
+    [activeIncident]
+  );
+  const traitementComments = useMemo(
+    () => (activeIncident?.commentaires ?? []).filter(
+      commentaire => commentaire.type_commentaire === 'traitement' && !matchesStructuredComment(commentaire, activeIncident?.commentaire_traitement)
+    ),
+    [activeIncident]
+  );
+  const clotureComments = useMemo(
+    () => (activeIncident?.commentaires ?? []).filter(commentaire => {
+      if (!['resolution', 'annulation'].includes(commentaire.type_commentaire)) return false;
+      return !matchesStructuredComment(commentaire, activeIncident?.commentaire_cloture);
+    }),
+    [activeIncident]
+  );
+  const freeComments = useMemo(
+    () => (activeIncident?.commentaires ?? []).filter(commentaire => commentaire.type_commentaire === 'commentaire'),
+    [activeIncident]
+  );
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (!incident) return;
+    if (!activeIncident) return;
+
+    if (form.statut === 'resolu' || form.statut === 'annule') {
+      const isResolution = form.statut === 'resolu';
+      const confirmed = await confirmAlert(
+        isResolution
+          ? 'Confirmer la résolution de cet incident ?'
+          : 'Confirmer l’annulation de cet incident ?',
+        isResolution ? 'Confirmer la résolution' : 'Confirmer l’annulation',
+        isResolution ? 'Résoudre' : 'Annuler',
+        'Retour'
+      );
+      if (!confirmed) return;
+    }
 
     setIsSaving(true);
     const tempsPasse = form.temps_passe_minutes.trim() ? Number(form.temps_passe_minutes) : undefined;
@@ -130,15 +181,19 @@ function IncidentTraitement(): ReactElement {
       temps_passe_minutes: tempsPasse,
     };
 
-    const updated = await treat(incident.id_incident, payload);
+    const updated = await treat(activeIncident.id_incident, payload);
     setIsSaving(false);
 
-    if (updated) setSuccess(`${updated.reference} mis à jour.`);
+    if (updated) {
+      setSuccess(`${updated.reference} mis à jour.`);
+      setSelectedId('');
+      await refresh();
+    }
   };
 
   const handleAddComment = async () => {
-    if (!incident || !commentaireLibre.trim()) return;
-    const ok = await addComment(incident.id_incident, {
+    if (!activeIncident || !commentaireLibre.trim()) return;
+    const ok = await addComment(activeIncident.id_incident, {
       commentaire: commentaireLibre.trim(),
       type_commentaire: 'commentaire',
     });
@@ -156,7 +211,7 @@ function IncidentTraitement(): ReactElement {
               <MdArrowBack />
               <span>Retour</span>
             </Button>
-            <h1><IoBuildOutline /> Traitement des incidents</h1>
+            <h1><IoBuildOutline /> {isReadOnlyHistoryView ? "Historique de l'incident" : 'Traitement des incidents'}</h1>
           </div>
 
           {error && <div className="incidents__error">{error}</div>}
@@ -165,23 +220,25 @@ function IncidentTraitement(): ReactElement {
           <div className="incidents__layout incidents__layout--detail">
             <aside className="incidents__sidebar">
               <h2>Incident</h2>
-              <select value={selectedId} onChange={event => setSelectedId(event.target.value)} disabled={isLoadingList}>
-                <option value="">Sélectionner</option>
-                {incidentsOuverts.map(item => (
-                  <option key={item.id_incident} value={item.id_incident}>
-                    {item.reference} · {item.titre}
-                  </option>
-                ))}
-              </select>
-              {incident && (
+              {!isReadOnlyHistoryView && (
+                <select value={selectedId} onChange={event => setSelectedId(event.target.value)} disabled={isLoadingList}>
+                  <option value="">Sélectionner</option>
+                  {incidentsOuverts.map(item => (
+                    <option key={item.id_incident} value={item.id_incident}>
+                      {item.reference} · {item.titre}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {activeIncident && (
                 <div className="incidents__meta-list">
-                  <div><span>Statut</span><strong>{INCIDENT_STATUT_LABELS[incident.statut]}</strong></div>
-                  <div><span>Secteur</span><strong>{INCIDENT_SECTEUR_LABELS[incident.secteur]}</strong></div>
-                  <div><span>Priorité</span><strong>{INCIDENT_PRIORITE_LABELS[incident.priorite]}</strong></div>
-                  <div><span>Criticité</span><strong>{INCIDENT_CRITICITE_LABELS[incident.criticite]}</strong></div>
-                  <div><span>Intervenant</span><strong>{formatIncidentEmploye(incident.intervenant)}</strong></div>
-                  <div><span>Utilisateurs impactés</span><strong>{formatIncidentUtilisateursImpactes(incident)}</strong></div>
-                  <div><span>Durée</span><strong>{computeResolutionMinutes(incident.date_declaration, incident.date_resolution)}</strong></div>
+                  <div><span>Statut</span><strong>{INCIDENT_STATUT_LABELS[activeIncident.statut]}</strong></div>
+                  <div><span>Secteur</span><strong>{INCIDENT_SECTEUR_LABELS[activeIncident.secteur]}</strong></div>
+                  <div><span>Priorité</span><strong>{INCIDENT_PRIORITE_LABELS[activeIncident.priorite]}</strong></div>
+                  <div><span>Criticité</span><strong>{INCIDENT_CRITICITE_LABELS[activeIncident.criticite]}</strong></div>
+                  <div><span>Intervenant</span><strong>{formatIncidentEmploye(activeIncident.intervenant)}</strong></div>
+                  <div><span>Utilisateurs impactés</span><strong>{formatIncidentUtilisateursImpactes(activeIncident)}</strong></div>
+                  <div><span>Durée</span><strong>{computeResolutionMinutes(activeIncident.date_declaration, activeIncident.date_resolution)}</strong></div>
                 </div>
               )}
             </aside>
@@ -189,21 +246,21 @@ function IncidentTraitement(): ReactElement {
             <section className="incidents__panel">
               {isLoading ? (
                 <div className="incidents__empty">Chargement...</div>
-              ) : incident ? (
+              ) : activeIncident ? (
                 <>
                   <div className="incidents__summary">
-                    <span className={`incidents__badge incidents__badge--${incident.statut}`}>{INCIDENT_STATUT_LABELS[incident.statut]}</span>
-                    <h2>{incident.reference} · {incident.titre}</h2>
-                    <p>{incident.description}</p>
+                    <span className={`incidents__badge incidents__badge--${activeIncident.statut}`}>{INCIDENT_STATUT_LABELS[activeIncident.statut]}</span>
+                    <h2>{activeIncident.reference} · {activeIncident.titre}</h2>
+                    <p>{activeIncident.description}</p>
                     <dl>
-                      <div><dt>Déclarant</dt><dd>{formatIncidentEmploye(incident.declarant)}</dd></div>
-                      <div><dt>Créé le</dt><dd>{formatDate(incident.created_at)}</dd></div>
-                      <div><dt>Utilisateurs impactés</dt><dd>{formatIncidentUtilisateursImpactes(incident)}</dd></div>
-                      <div><dt>Classification</dt><dd>{incident.classification ?? '—'}</dd></div>
+                      <div><dt>Déclarant</dt><dd>{formatIncidentEmploye(activeIncident.declarant)}</dd></div>
+                      <div><dt>Créé le</dt><dd>{formatDate(activeIncident.created_at)}</dd></div>
+                      <div><dt>Utilisateurs impactés</dt><dd>{formatIncidentUtilisateursImpactes(activeIncident)}</dd></div>
+                      <div><dt>Classification</dt><dd>{activeIncident.classification ?? '—'}</dd></div>
                     </dl>
                   </div>
 
-                  {canTraiter ? (
+                  {canTraiter && !isReadOnlyHistoryView ? (
                     <form className="incidents__form" onSubmit={handleSubmit}>
                       <div className="incidents__grid">
                         <div className="incidents__field">
@@ -259,26 +316,192 @@ function IncidentTraitement(): ReactElement {
 
                   <section className="incidents__comments">
                     <h2><IoChatbubbleOutline /> Commentaires</h2>
-                    {canTraiter && (
+                    {canTraiter && !isReadOnlyHistoryView && (
                       <div className="incidents__comment-form">
                         <textarea value={commentaireLibre} onChange={event => setCommentaireLibre(event.target.value)} rows={3} placeholder="Ajouter un commentaire..." />
-                        <button type="button" className="incidents__btn-secondary" onClick={handleAddComment} disabled={!commentaireLibre.trim()}>
+                        <button type="button" className="incidents__btn-secondary" onClick={handleAddComment} disabled={!commentaireLibre.trim() || isSaving}>
                           Ajouter
                         </button>
                       </div>
                     )}
+                    <div className="incidents__timeline">
+                      <article className="incidents__timeline-step">
+                        <header className="incidents__timeline-header">
+                          <div>
+                            <h3>Déclaration</h3>
+                          <p>{formatDate(activeIncident.date_declaration)} à {formatTime(activeIncident.date_declaration)}</p>
+                          </div>
+                          <span className="incidents__badge incidents__badge--declare">Déclaré</span>
+                        </header>
+                        <div className="incidents__timeline-body">
+                          <div className="incidents__timeline-card">
+                            <strong>Description initiale</strong>
+                            <p>{activeIncident.description}</p>
+                          </div>
+                          {declarationComments.length > 0 && (
+                            <div className="incidents__comment-list">
+                              {declarationComments.map(commentaire => (
+                                <article key={commentaire.id_commentaire}>
+                                  <header>
+                                    <strong>{formatIncidentEmploye(commentaire.auteur)}</strong>
+                                    <span>{formatDate(commentaire.created_at)} à {formatTime(commentaire.created_at)}</span>
+                                    <em>Déclaration</em>
+                                  </header>
+                                  <p>{commentaire.commentaire}</p>
+                                </article>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </article>
+
+                      {(activeIncident.date_qualification || activeIncident.commentaire_qualification || qualificationComments.length > 0 || activeIncident.statut !== 'declare') && (
+                        <article className="incidents__timeline-step">
+                          <header className="incidents__timeline-header">
+                            <div>
+                              <h3>Qualification</h3>
+                              <p>{activeIncident.date_qualification ? `${formatDate(activeIncident.date_qualification)} à ${formatTime(activeIncident.date_qualification)}` : 'En attente de qualification complète'}</p>
+                            </div>
+                            <span className="incidents__badge incidents__badge--qualifie">Qualifié</span>
+                          </header>
+                          <div className="incidents__timeline-body">
+                            <div className="incidents__timeline-grid">
+                              <div className="incidents__timeline-card">
+                                <strong>Classification</strong>
+                                <p>{activeIncident.classification ?? '—'}</p>
+                              </div>
+                              <div className="incidents__timeline-card">
+                                <strong>Intervenant</strong>
+                                <p>{formatIncidentEmploye(activeIncident.intervenant)}</p>
+                              </div>
+                            </div>
+                            {activeIncident.commentaire_qualification && (
+                              <div className="incidents__timeline-card">
+                                <strong>Commentaire de qualification</strong>
+                                <p>{activeIncident.commentaire_qualification}</p>
+                              </div>
+                            )}
+                            {qualificationComments.length > 0 && (
+                              <div className="incidents__comment-list">
+                                {qualificationComments.map(commentaire => (
+                                  <article key={commentaire.id_commentaire}>
+                                    <header>
+                                      <strong>{formatIncidentEmploye(commentaire.auteur)}</strong>
+                                      <span>{formatDate(commentaire.created_at)} à {formatTime(commentaire.created_at)}</span>
+                                      <em>Qualification</em>
+                                    </header>
+                                    <p>{commentaire.commentaire}</p>
+                                  </article>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </article>
+                      )}
+
+                      {(activeIncident.date_debut_traitement || activeIncident.commentaire_traitement || activeIncident.cause_racine || activeIncident.solution || activeIncident.actions_correctives || traitementComments.length > 0 || ['en_traitement', 'en_attente', 'resolu', 'annule'].includes(activeIncident.statut)) && (
+                        <article className="incidents__timeline-step">
+                          <header className="incidents__timeline-header">
+                            <div>
+                              <h3>Traitement</h3>
+                              <p>{activeIncident.date_debut_traitement ? `${formatDate(activeIncident.date_debut_traitement)} à ${formatTime(activeIncident.date_debut_traitement)}` : 'Traitement non démarré'}</p>
+                            </div>
+                            <span className={`incidents__badge incidents__badge--${activeIncident.statut === 'en_attente' ? 'en_attente' : 'en_traitement'}`}>
+                              {activeIncident.statut === 'en_attente' ? 'En attente' : 'En traitement'}
+                            </span>
+                          </header>
+                          <div className="incidents__timeline-body">
+                            {activeIncident.commentaire_traitement && (
+                              <div className="incidents__timeline-card">
+                                <strong>Commentaire de traitement</strong>
+                                <p>{activeIncident.commentaire_traitement}</p>
+                              </div>
+                            )}
+                            <div className="incidents__timeline-grid">
+                              <div className="incidents__timeline-card">
+                                <strong>Cause racine</strong>
+                                <p>{activeIncident.cause_racine ?? '—'}</p>
+                              </div>
+                              <div className="incidents__timeline-card">
+                                <strong>Solution</strong>
+                                <p>{activeIncident.solution ?? '—'}</p>
+                              </div>
+                            </div>
+                            <div className="incidents__timeline-card">
+                              <strong>Actions correctives</strong>
+                              <p>{activeIncident.actions_correctives ?? '—'}</p>
+                            </div>
+                            {traitementComments.length > 0 && (
+                              <div className="incidents__comment-list">
+                                {traitementComments.map(commentaire => (
+                                  <article key={commentaire.id_commentaire}>
+                                    <header>
+                                      <strong>{formatIncidentEmploye(commentaire.auteur)}</strong>
+                                      <span>{formatDate(commentaire.created_at)} à {formatTime(commentaire.created_at)}</span>
+                                      <em>Traitement</em>
+                                    </header>
+                                    <p>{commentaire.commentaire}</p>
+                                  </article>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </article>
+                      )}
+
+                      {(activeIncident.statut === 'resolu' || activeIncident.statut === 'annule' || activeIncident.date_resolution || activeIncident.date_annulation || activeIncident.commentaire_cloture || clotureComments.length > 0) && (
+                        <article className="incidents__timeline-step">
+                          <header className="incidents__timeline-header">
+                            <div>
+                              <h3>{activeIncident.statut === 'annule' ? 'Annulation' : 'Résolution'}</h3>
+                              <p>
+                                {activeIncident.statut === 'annule'
+                                  ? (activeIncident.date_annulation ? `${formatDate(activeIncident.date_annulation)} à ${formatTime(activeIncident.date_annulation)}` : 'Annulation en cours')
+                                  : (activeIncident.date_resolution ? `${formatDate(activeIncident.date_resolution)} à ${formatTime(activeIncident.date_resolution)}` : 'Résolution en cours')}
+                              </p>
+                            </div>
+                            <span className={`incidents__badge incidents__badge--${activeIncident.statut === 'annule' ? 'annule' : 'resolu'}`}>
+                              {activeIncident.statut === 'annule' ? 'Annulé' : 'Résolu'}
+                            </span>
+                          </header>
+                          <div className="incidents__timeline-body">
+                            {activeIncident.commentaire_cloture && (
+                              <div className="incidents__timeline-card">
+                                <strong>Commentaire de clôture</strong>
+                                <p>{activeIncident.commentaire_cloture}</p>
+                              </div>
+                            )}
+                            {clotureComments.length > 0 && (
+                              <div className="incidents__comment-list">
+                                {clotureComments.map(commentaire => (
+                                  <article key={commentaire.id_commentaire}>
+                                    <header>
+                                      <strong>{formatIncidentEmploye(commentaire.auteur)}</strong>
+                                      <span>{formatDate(commentaire.created_at)} à {formatTime(commentaire.created_at)}</span>
+                                      <em>{commentaire.type_commentaire === 'annulation' ? 'Annulation' : 'Résolution'}</em>
+                                    </header>
+                                    <p>{commentaire.commentaire}</p>
+                                  </article>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </article>
+                      )}
+                    </div>
+
                     <div className="incidents__comment-list">
-                      {(incident.commentaires ?? []).map(commentaire => (
+                      {freeComments.map(commentaire => (
                         <article key={commentaire.id_commentaire}>
                           <header>
                             <strong>{formatIncidentEmploye(commentaire.auteur)}</strong>
                             <span>{formatDate(commentaire.created_at)} à {formatTime(commentaire.created_at)}</span>
-                            <em>{commentaire.type_commentaire}</em>
+                            <em>Commentaire libre</em>
                           </header>
                           <p>{commentaire.commentaire}</p>
                         </article>
                       ))}
-                      {(incident.commentaires ?? []).length === 0 && <p>Aucun commentaire pour cet incident.</p>}
+                      {freeComments.length === 0 && <p>Aucun commentaire libre pour cet incident.</p>}
                     </div>
                   </section>
                 </>

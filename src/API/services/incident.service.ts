@@ -5,6 +5,7 @@ import type {
   ApiIncidentCommentaireResponse,
   ApiIncidentResponse,
   CreateIncidentPayload,
+  CreateIncidentResult,
   Incident,
   IncidentFilters,
   IncidentListResult,
@@ -43,10 +44,13 @@ export const getIncidentByIdService = async (id: number): Promise<Incident> => {
   throw new Error(response.data.message || "Impossible de récupérer l'incident");
 };
 
-export const createIncidentService = async (payload: CreateIncidentPayload): Promise<Incident> => {
+export const createIncidentService = async (payload: CreateIncidentPayload): Promise<CreateIncidentResult> => {
   const response: AxiosResponse<ApiIncidentResponse> = await postRequest('/incidents', payload);
   if (response.data.success && response.data.data && !Array.isArray(response.data.data)) {
-    return response.data.data;
+    return {
+      incident: response.data.data,
+      meta: response.data.meta,
+    };
   }
   throw new Error(response.data.message || "Impossible de déclarer l'incident");
 };
