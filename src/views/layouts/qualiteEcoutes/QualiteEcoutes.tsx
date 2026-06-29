@@ -220,7 +220,7 @@ function QualiteEcoutes(): ReactElement {
                   <div className="qualiteEcoutes__search-input-wrapper">
                     <input
                       type="text"
-                      placeholder="Nom, entreprise, prospect..."
+                      placeholder="Nom, entreprise, ID prospect..."
                       value={recherche}
                       onChange={(e) => setRecherche(e.target.value)}
                     />
@@ -305,7 +305,7 @@ function QualiteEcoutes(): ReactElement {
                   <label>Téléphone</label>
                   <input
                     type="tel"
-                    placeholder="Ex: 06..."
+                    placeholder="Ex: 04..., 06..., +334..."
                     value={telephone}
                     onChange={(e) => {
                       setTelephone(e.target.value);
