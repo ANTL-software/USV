@@ -6,6 +6,7 @@ import mailBackground from "../../../assets/background/mailSectionBckground.webp
 import calendarBackground from "../../../assets/background/calendar.webp";
 import callCenterBackground from "../../../assets/background/utilsSection.webp";
 import projetsBackground from "../../../assets/background/projetSection.webp";
+import commercialBackground from "../../../assets/background/commercialBackground.jpeg";
 import commerciauxBackground from "../../../assets/background/gestionCommerciaux.webp";
 import incidentsBackground from "../../../assets/background/gestionIncidents.webp";
 
@@ -61,6 +62,16 @@ function Home(): ReactElement {
                   <img src={callCenterBackground} alt={"Gestion opérationnelle"} />
                 </figure>
                 <h2>Gestion opérationnelle</h2>
+              </Link>
+            </section>
+          )}
+          {hasAccessToSection(user, 'commercial') && (
+            <section className={"commercialSection"}>
+              <Link to={"/commercial"} style={{ position: 'relative' }}>
+                <figure>
+                  <img src={commercialBackground} alt={"Gestion commerciale"} />
+                </figure>
+                <h2>Commercial</h2>
               </Link>
             </section>
           )}

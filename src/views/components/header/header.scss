@@ -83,6 +83,9 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
   white-space: nowrap;
   pointer-events: none;
   font-size: 0.85em;
@@ -91,6 +94,32 @@
   @media (min-width: vars.$mobileWidth) {
     font-size: 0.9em;
   }
+}
+
+.envBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3.25rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: #fff;
+  pointer-events: none;
+}
+
+.envBadge--test {
+  background: #c62828;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
+}
+
+.mobileUserGreeting {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .logoutButton {
