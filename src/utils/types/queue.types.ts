@@ -19,6 +19,10 @@ export interface AgentState {
   statut_dialer: string | null;
   debut_statut: string | null;
   raison_pause: string | null;
+  id_campagne_active?: number | null;
+  nom_campagne_active?: string | null;
+  has_runtime_mismatch?: boolean;
+  has_missing_runtime_campaign?: boolean;
 }
 
 export interface CallInProgress {
@@ -70,6 +74,8 @@ export interface ProspectCampagneRow {
   id_prospect: number;
   id_campagne: number;
   statut: StatutProspection;
+  statut_prospect_campagne?: string | null;
+  statut_file?: StatutProspection;
   nb_tentatives: number;
   max_tentatives: number;
   derniere_tentative: string | null;
@@ -95,6 +101,7 @@ export interface ProspectCampagneRow {
     ville: string | null;
     pays: string | null;
     statut: string;
+    statut_global?: string;
     siret: string | null;
     code_naf: string | null;
     activite: string | null;

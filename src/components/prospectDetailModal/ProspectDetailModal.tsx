@@ -5,6 +5,12 @@ import { IoCallOutline, IoMailOutline, IoBusiness, IoPersonOutline, IoCalendarOu
 import type { Prospect, ProspectUpdateData, TypeProspect, StatutProspect } from '../../utils/types/prospect.types';
 import { updateProspectService } from '../../API/services/prospect.service';
 import { useAlert } from '../../context/alert/AlertContext';
+import {
+  getLegacyOptoutLabel,
+  getProspectCampaignStatusHeading,
+  getProspectStatusHeading,
+  isProspectGloballyFlagged,
+} from '../../utils/scripts/prospectStatus';
 
 interface ProspectDetailModalProps {
   prospect: Prospect;
@@ -307,7 +313,7 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
           <div className="prospectDetail__section">
             <h3>Statut</h3>
             <div className="detailRow">
-              <span className="detailLabel">Statut actuel</span>
+              <span className="detailLabel">{getProspectStatusHeading(prospect.id_prospection !== undefined)}</span>
               <span className="detailValue">
                 {isEditing ? (
                   renderSelect('statut', prospect.statut, statutOptions)
@@ -331,10 +337,18 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
             <div className="prospectDetail__section">
               <h3>Détails d'appel (Campagne)</h3>
               <div className="detailRow">
-                <span className="detailLabel">Statut d'appel</span>
+                <span className="detailLabel">{getProspectCampaignStatusHeading(prospect.id_prospection !== undefined)}</span>
                 <span className="detailValue">
-                  <span className={`badge badge--${prospect.statut_campagne || 'en_attente'}`}>
-                    {(prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
+                  <span className={`badge badge--statut badge--${prospect.statut_prospect_campagne || 'nouveau'}`}>
+                    {(prospect.statut_prospect_campagne || 'nouveau').replace(/_/g, ' ')}
+                  </span>
+                </span>
+              </div>
+              <div className="detailRow">
+                <span className="detailLabel">État file</span>
+                <span className="detailValue">
+                  <span className={`badge badge--${prospect.statut_file || prospect.statut_campagne || 'en_attente'}`}>
+                    {(prospect.statut_file || prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
                   </span>
                 </span>
               </div>
@@ -374,9 +388,9 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
             </div>
           )}
 
-          {(prospect.est_doublon || prospect.optout) && (
+          {(isProspectGloballyFlagged(prospect) || prospect.optout) && (
             <div className="prospectDetail__section prospectDetail__section--alert">
-              <h3>Alertes</h3>
+              <h3>Alertes globales</h3>
               {prospect.est_doublon && (
                 <div className="detailRow">
                   <span className="detailLabel">Doublon</span>
@@ -390,7 +404,7 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
               )}
               {prospect.optout && (
                 <div className="detailRow">
-                  <span className="detailLabel">Opt-out</span>
+                  <span className="detailLabel">{getLegacyOptoutLabel()}</span>
                   <span className="detailValue">
                     <span className="badge badge--danger">Oui</span>
                     {prospect.optout_date && (

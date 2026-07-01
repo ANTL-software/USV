@@ -1,3 +1,5 @@
+import type { CampaignVariant } from '../scripts/campaignVariants';
+
 export type StatutCampagne = 'inactive' | 'active' | 'terminee';
 
 export type ModePaiement = 'CB' | 'Prelevement' | 'Cheque' | 'Virement';
@@ -5,7 +7,7 @@ export type ModePaiement = 'CB' | 'Prelevement' | 'Cheque' | 'Virement';
 export interface Campagne {
   id_campagne: number;
   nom_campagne: string;
-  type_campagne: string | null;
+  type_campagne: CampaignVariant | null;
   date_debut: string;
   date_fin: string | null;
   statut: StatutCampagne;
@@ -34,7 +36,7 @@ export interface Campagne {
 
 export interface CreateCampagneData {
   nom_campagne: string;
-  type_campagne?: string;
+  type_campagne?: CampaignVariant;
   date_debut: string;
   date_fin?: string;
   objectifs?: string;
@@ -58,7 +60,7 @@ export interface CreateCampagneData {
 
 export interface UpdateCampagneData {
   nom_campagne?: string;
-  type_campagne?: string;
+  type_campagne?: CampaignVariant;
   date_debut?: string;
   date_fin?: string;
   objectifs?: string;

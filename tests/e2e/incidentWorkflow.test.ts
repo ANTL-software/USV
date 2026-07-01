@@ -183,9 +183,9 @@ test('flux e2e USV déclaration qualification traitement consultation', async ()
     source: 'script'
   });
 
-  assert.equal(declared.statut, 'declare');
+  assert.equal(declared.incident.statut, 'declare');
 
-  const qualified = await qualifierIncidentService(declared.id_incident, {
+  const qualified = await qualifierIncidentService(declared.incident.id_incident, {
     secteur: 'dialer',
     priorite: 'haute',
     criticite: 'bloquante',
@@ -195,7 +195,7 @@ test('flux e2e USV déclaration qualification traitement consultation', async ()
   assert.equal(qualified.statut, 'qualifie');
   assert.equal(qualified.id_intervenant, 4);
 
-  const resolved = await traiterIncidentService(declared.id_incident, {
+  const resolved = await traiterIncidentService(declared.incident.id_incident, {
     statut: 'resolu',
     solution: 'Nouveau token Twilio appliqué'
   });
@@ -203,14 +203,14 @@ test('flux e2e USV déclaration qualification traitement consultation', async ()
   assert.equal(resolved.statut, 'resolu');
   assert.equal(resolved.solution, 'Nouveau token Twilio appliqué');
 
-  const comment = await addIncidentCommentaireService(declared.id_incident, {
+  const comment = await addIncidentCommentaireService(declared.incident.id_incident, {
     commentaire: 'Contrôle post-résolution OK',
     type_commentaire: 'resolution'
   });
 
   assert.equal(comment.commentaire, 'Contrôle post-résolution OK');
 
-  const detail = await getIncidentByIdService(declared.id_incident);
+  const detail = await getIncidentByIdService(declared.incident.id_incident);
   const list = await getIncidentsService({ statut: 'resolu', search: 'Twilio' });
 
   assert.equal(detail.reference, 'INC-20260625-00001');

@@ -74,6 +74,7 @@ export interface Prospect {
   ville: string | null;
   pays: string | null;
   statut: StatutProspect;
+  statut_global?: StatutProspect;
   siret: string | null;
   code_naf: string | null;
   activite: string | null;
@@ -133,6 +134,8 @@ export interface Prospect {
   // Optionnels (provenant de campagnes.prospects_campagnes si filtré par campagne)
   id_prospection?: number;
   statut_campagne?: 'en_attente' | 'assigne' | 'en_cours' | 'traite' | 'rappeler' | 'refuse';
+  statut_prospect_campagne?: StatutProspect | null;
+  statut_file?: 'en_attente' | 'assigne' | 'en_cours' | 'traite' | 'rappeler' | 'refuse';
   nb_tentatives?: number;
   max_tentatives?: number;
   derniere_tentative?: string | null;

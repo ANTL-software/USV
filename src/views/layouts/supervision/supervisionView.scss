@@ -274,6 +274,14 @@
       padding: 0.25em 0.6em;
       border-radius: 4px;
       color: white;
+
+      &--alert {
+        background: #dc2626;
+      }
+
+      &--warning {
+        background: #d97706;
+      }
     }
 
     &__list {
@@ -317,6 +325,31 @@
     .agent-pause {
       font-size: 0.8em;
       color: vars.$fontColorSecondary;
+    }
+
+    .agent-runtime-badge,
+    .agent-runtime-warning,
+    .agent-runtime-alert {
+      font-size: 0.75em;
+      font-weight: 600;
+      padding: 0.2em 0.55em;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    .agent-runtime-badge {
+      background: #e0f2fe;
+      color: #075985;
+    }
+
+    .agent-runtime-warning {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .agent-runtime-alert {
+      background: #fee2e2;
+      color: #991b1b;
     }
   }
 
