@@ -92,11 +92,7 @@ export const isTestEnvironment = (): boolean => {
   return getEnvironment() === 'development';
 };
 
-export function getGreetingName(prenom?: string, userId?: number): string | undefined {
-  if (userId === 5) {
-    return 'Anthony McCallister';
-  }
-
+export function getGreetingName(prenom?: string, _userId?: number): string | undefined {
   return prenom;
 }
 
