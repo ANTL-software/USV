@@ -7,18 +7,20 @@ export const isOnProduction = (): boolean => {
 export const getApiBaseUrl = (): string => {
   const configuredUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
-  if (configuredUrl) {
+  // Si on est en production (non-local) mais que l'URL configurée pointe vers localhost,
+  // on ignore cette configuration locale erronée.
+  const isProd = isOnProduction();
+  const isLocalUrl = configuredUrl && (configuredUrl.includes('localhost') || configuredUrl.includes('127.0.0.1'));
+
+  if (configuredUrl && !(isProd && isLocalUrl)) {
     return configuredUrl.replace(/\/+$/, '');
   }
 
-  const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
-  const isDevPort = ["5173", "5174", "5175"].includes(window.location.port);
-
-  if (isDev && isDevPort) {
-    return "http://localhost:8800/api";
+  if (isProd) {
+    return "https://api.antl.fr/api";
   }
 
-  return "https://api.antl.fr/api";
+  return "http://localhost:8800/api";
 };
 
 /**
