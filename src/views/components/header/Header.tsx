@@ -5,13 +5,13 @@ import "./header.scss";
 import antlLogo from "../../../assets/antlLogo.png";
 
 // utils
-import { getGreetingName, getSalutation } from "../../../utils/scripts/utils.ts";
+import { getGreetingName, getSalutation, isTestEnvironment } from "../../../utils/scripts/utils.ts";
 
 // hooks | libraries
 import { ReactElement, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { HiMenu, HiX } from "react-icons/hi";
-import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder, IoAlertCircleOutline } from "react-icons/io5";
+import { IoHome, IoAdd, IoList, IoCalendar, IoPeopleCircle, IoCallOutline, IoFolder, IoAlertCircleOutline, IoReceiptOutline } from "react-icons/io5";
 import { LuLogOut } from "react-icons/lu";
 import { useUserContext } from "../../../hooks/useUserContext.ts";
 
@@ -25,6 +25,7 @@ export default function Header(): ReactElement {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, logout } = useUserContext();
   const greetingName = getGreetingName(user?.prenom, user?.id_employe);
+  const showTestBadge = isTestEnvironment();
 
   const isAuthRoute: boolean = location.pathname === "/auth";
 
@@ -58,7 +59,10 @@ export default function Header(): ReactElement {
           {/* User Info & Desktop Navigation */}
           <div className="headerRight">
             {user && !isAuthRoute && (
-              <span className="userGreeting">{getSalutation(greetingName)}</span>
+              <span className="userGreeting">
+                <span>{getSalutation(greetingName)}</span>
+                {showTestBadge && <span className="envBadge envBadge--test">TEST</span>}
+              </span>
             )}
             {user && !isAuthRoute && (
               <div className="headerActions">
@@ -102,7 +106,8 @@ export default function Header(): ReactElement {
               {user && (
                 <div className="mobileUserInfo">
                   <span className="mobileUserGreeting">
-                    {getSalutation(greetingName)}
+                    <span>{getSalutation(greetingName)}</span>
+                    {showTestBadge && <span className="envBadge envBadge--test">TEST</span>}
                   </span>
                   <PWAInstallButton variant="mobile" compact={true} />
                   <button onClick={handleLogout} className="mobileLogoutButton" title="Déconnexion">
@@ -169,6 +174,19 @@ export default function Header(): ReactElement {
                     >
                       <IoCallOutline className="mobileNavIcon" />
                       <span className="mobileNavText">Gestion opérationnelle</span>
+                    </button>
+                  </>
+                )}
+
+                {hasAccessToSection(user, 'commercial') && (
+                  <>
+                    <h3 className="mobileSectionTitle">Commercial</h3>
+                    <button
+                      className={`mobileNavItem ${location.pathname.startsWith("/commercial") ? "active" : ""}`}
+                      onClick={() => handleNavigate("/commercial")}
+                    >
+                      <IoReceiptOutline className="mobileNavIcon" />
+                      <span className="mobileNavText">Commercial</span>
                     </button>
                   </>
                 )}

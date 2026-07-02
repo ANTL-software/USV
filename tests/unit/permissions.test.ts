@@ -77,6 +77,22 @@ test('hasAccessToPath gère les alias et sous-routes sensibles', () => {
   assert.equal(hasAccessToPath(user, '/operations/prospects'), true);
   assert.equal(hasAccessToPath(user, '/produits'), true);
   assert.equal(hasAccessToPath(user, '/operations/postes'), false);
+  assert.equal(hasAccessToPath(user, '/commercial'), false);
+});
+
+test('la section commercial suit la permission principale du poste', () => {
+  const user = createUser({
+    poste: {
+      id_poste: 8,
+      libelle_poste: 'Gestion commerciale',
+      permissions: {
+        commercial: { enabled: true },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToSection(user, 'commercial'), true);
+  assert.equal(hasAccessToPath(user, '/commercial'), true);
 });
 
 test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
@@ -87,7 +103,7 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
     },
   });
 
-  assert.deepEqual(getAllowedSections(user), ['mail', 'booking', 'operations', 'incidents', 'commerciaux', 'projets']);
+  assert.deepEqual(getAllowedSections(user), ['mail', 'booking', 'operations', 'commercial', 'incidents', 'commerciaux', 'projets']);
   assert.equal(getFirstAllowedPath(user), '/commerciaux');
   assert.equal(getFirstAllowedPath(null), '/auth');
 });

@@ -16,6 +16,7 @@ const INITIAL_PERMISSIONS: PermissionRecord = {
   mail: { enabled: false, subsections: [] },
   booking: { enabled: false },
   operations: { enabled: false, subsections: [] },
+  commercial: { enabled: false },
   incidents: { enabled: false, subsections: [] },
   commerciaux: { enabled: false, subsections: [] },
   projets: { enabled: false }

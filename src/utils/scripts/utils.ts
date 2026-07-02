@@ -86,6 +86,10 @@ export const getEnvironment = (): 'development' | 'production' => {
   return (isDev && isDevPort) ? 'development' : 'production';
 };
 
+export const isTestEnvironment = (): boolean => {
+  return getEnvironment() === 'development';
+};
+
 export function getGreetingName(prenom?: string, userId?: number): string | undefined {
   if (userId === 5) {
     return 'Anthony McCallister';

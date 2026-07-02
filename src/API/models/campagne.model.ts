@@ -1,4 +1,6 @@
 import type { Campagne, StatutCampagne, ModePaiement } from '../../utils/types/campagne.types';
+import { normalizeCampaignVariant } from '../../utils/scripts/campaignVariants.ts';
+import type { CampaignVariant } from '../../utils/scripts/campaignVariants.ts';
 
 const STATUT_LABELS: Record<StatutCampagne, string> = {
   inactive: 'Inactive',
@@ -9,7 +11,7 @@ const STATUT_LABELS: Record<StatutCampagne, string> = {
 export class CampagneModel implements Campagne {
   id_campagne: number;
   nom_campagne: string;
-  type_campagne: string | null;
+  type_campagne: CampaignVariant | null;
   date_debut: string;
   date_fin: string | null;
   statut: StatutCampagne;
@@ -36,7 +38,7 @@ export class CampagneModel implements Campagne {
   constructor(data: Campagne) {
     this.id_campagne = data.id_campagne;
     this.nom_campagne = data.nom_campagne;
-    this.type_campagne = data.type_campagne ?? null;
+    this.type_campagne = normalizeCampaignVariant(data.type_campagne);
     this.date_debut = data.date_debut;
     this.date_fin = data.date_fin ?? null;
     this.statut = data.statut;

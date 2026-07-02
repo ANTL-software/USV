@@ -14,6 +14,7 @@ import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import { useAlert } from '../../../context/alert/AlertContext';
 import { getCampagneLogoUrl } from '../../../utils/scripts/utils';
+import { CAMPAIGN_VARIANT_OPTIONS } from '../../../utils/scripts/campaignVariants';
 
 function CampagneForm(): ReactElement {
   const navigate = useNavigate();
@@ -125,13 +126,22 @@ function CampagneForm(): ReactElement {
                   </label>
 
                   <label>
-                    Type
-                    <input
+                    Variante du script *
+                    <select
                       name="type_campagne"
                       value={form.type_campagne}
                       onChange={handleChange}
-                      placeholder="Ex : Rénovation, Énergie..."
-                    />
+                      required
+                    >
+                      {CAMPAIGN_VARIANT_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="campagneForm__hint">
+                      Ce réglage pilote le rendu fonctionnel du script vendeur pour cette campagne.
+                    </span>
                   </label>
                 </div>
 

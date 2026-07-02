@@ -18,6 +18,7 @@ import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import { useAlert } from '../../../context/alert/AlertContext';
 import { purgeProspectsService } from '../../../API/services/queue.service';
+import { isProspectGloballyFlagged } from '../../../utils/scripts/prospectStatus';
 
 function ProspectsView(): ReactElement {
   const navigate = useNavigate();
@@ -135,6 +136,10 @@ function ProspectsView(): ReactElement {
     }
   };
 
+  const getProspectCampaignStatutBadgeClass = (statut: string): string => {
+    return getStatutBadgeClass(statut);
+  };
+
   const getTentativesBadgeClass = (attempts: number): string => {
     if (attempts === 0) return 'badge--interesse';
     if (attempts <= 2) return 'badge--rappel';
@@ -232,9 +237,10 @@ function ProspectsView(): ReactElement {
                       {!selectedCampagne && <th>Email</th>}
                       <th>Ville</th>
                       {!selectedCampagne && <th>Pays</th>}
-                      <th>{selectedCampagne ? 'Statut Prospect' : 'Statut'}</th>
+                      <th>{selectedCampagne ? 'Statut global' : 'Statut'}</th>
                       <th>Maturité commerciale</th>
-                      {selectedCampagne && <th>Statut Appel</th>}
+                      {selectedCampagne && <th>Statut campagne</th>}
+                      {selectedCampagne && <th>État file</th>}
                       {selectedCampagne && <th style={{ textAlign: 'center' }}>Tentatives</th>}
                       {selectedCampagne && <th>Dernier appel</th>}
                       <th>Agent assigné</th>
@@ -249,7 +255,7 @@ function ProspectsView(): ReactElement {
                       <tr
                         key={prospect.id_prospect}
                         onClick={() => handleRowClick(prospect)}
-                        className={prospect.est_doublon || prospect.optout ? 'prospectsView__row--alert' : ''}
+                        className={isProspectGloballyFlagged(prospect) ? 'prospectsView__row--alert' : ''}
                       >
                         <td className="prospectsView__id" style={{ textAlign: 'center' }}>
                           <code>{prospect.id_prospect}</code>
@@ -298,8 +304,15 @@ function ProspectsView(): ReactElement {
                         </td>
                         {selectedCampagne && (
                           <td>
-                            <span className={`badge ${getStatutCampagneBadgeClass(prospect.statut_campagne || '')}`}>
-                              {(prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
+                            <span className={`badge ${getProspectCampaignStatutBadgeClass(prospect.statut_prospect_campagne || '')}`}>
+                              {(prospect.statut_prospect_campagne || 'nouveau').replace(/_/g, ' ')}
+                            </span>
+                          </td>
+                        )}
+                        {selectedCampagne && (
+                          <td>
+                            <span className={`badge ${getStatutCampagneBadgeClass(prospect.statut_file || prospect.statut_campagne || '')}`}>
+                              {(prospect.statut_file || prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
                             </span>
                           </td>
                         )}

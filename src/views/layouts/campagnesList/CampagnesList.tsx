@@ -11,6 +11,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
+import { getCampaignVariantLabel } from '../../../utils/scripts/campaignVariants';
 
 const STATUT_LABELS: Record<StatutCampagne, string> = {
   inactive: 'Inactive',
@@ -80,7 +81,7 @@ function CampagnesList(): ReactElement {
                         className="campagnesList__row--clickable"
                       >
                         <td className="campagnesList__nom">{c.nom_campagne}</td>
-                        <td>{c.type_campagne ?? '—'}</td>
+                        <td>{getCampaignVariantLabel(c.type_campagne)}</td>
                         <td>{c.date_debut}</td>
                         <td>{c.date_fin ?? '—'}</td>
                         <td className="campagnesList__agents-count">{c.agents_count ?? 0}</td>

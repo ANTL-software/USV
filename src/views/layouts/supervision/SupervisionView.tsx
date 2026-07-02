@@ -156,6 +156,9 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
     return acc;
   }, {} as Record<string, number>);
 
+  const runtimeMismatchCount = agents.filter((agent) => agent.has_runtime_mismatch).length;
+  const missingRuntimeCount = agents.filter((agent) => agent.has_missing_runtime_campaign).length;
+
   return (
     <div className="supervisionView__agents">
       <div className="supervisionView__agents__summary">
@@ -164,6 +167,16 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
             {count} {DIALER_STATUT_LABELS[statut] || statut}
           </span>
         ))}
+        {runtimeMismatchCount > 0 && (
+          <span className="stat-badge stat-badge--alert">
+            {runtimeMismatchCount} runtime incohérent
+          </span>
+        )}
+        {missingRuntimeCount > 0 && (
+          <span className="stat-badge stat-badge--warning">
+            {missingRuntimeCount} sans runtime
+          </span>
+        )}
       </div>
       <div className="supervisionView__agents__list">
         {agents.map(a => {
@@ -179,6 +192,21 @@ const AgentList = ({ agents, now }: { agents: AgentState[]; now: number }) => {
                 <span className="agent-since">depuis {formatSince(a.debut_statut)}</span>
               )}
               {a.raison_pause && <span className="agent-pause">({a.raison_pause})</span>}
+              {a.nom_campagne_active && (
+                <span className="agent-runtime-badge">
+                  Runtime: {a.nom_campagne_active}
+                </span>
+              )}
+              {a.has_missing_runtime_campaign && (
+                <span className="agent-runtime-warning">
+                  Runtime manquant
+                </span>
+              )}
+              {a.has_runtime_mismatch && (
+                <span className="agent-runtime-alert">
+                  Runtime incohérent
+                </span>
+              )}
             </div>
           );
         })}

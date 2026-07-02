@@ -10,6 +10,7 @@ import {
   deleteCampagneLogoService,
 } from '../API/services/campagneLogo.service';
 import type { Campagne, CreateCampagneData, UpdateCampagneData, ModePaiement } from '../utils/types/campagne.types';
+import { CAMPAIGN_VARIANTS, normalizeCampaignVariant } from '../utils/scripts/campaignVariants';
 
 interface CampagneFormState {
   nom_campagne: string;
@@ -34,7 +35,7 @@ interface CampagneFormState {
 
 const INITIAL_FORM: CampagneFormState = {
   nom_campagne: '',
-  type_campagne: '',
+  type_campagne: CAMPAIGN_VARIANTS.vente,
   date_debut: '',
   date_fin: '',
   objectifs: '',
@@ -90,7 +91,7 @@ export function useCampagneForm() {
         setExisting(campagne);
         setForm({
           nom_campagne: campagne.nom_campagne,
-          type_campagne: campagne.type_campagne || '',
+          type_campagne: normalizeCampaignVariant(campagne.type_campagne),
           date_debut: campagne.date_debut,
           date_fin: campagne.date_fin || '',
           objectifs: campagne.objectifs || '',
@@ -265,7 +266,7 @@ export function useCampagneForm() {
       if (isEdit) {
         const updateData: UpdateCampagneData = {
           nom_campagne: form.nom_campagne.trim(),
-          type_campagne: form.type_campagne || undefined,
+          type_campagne: normalizeCampaignVariant(form.type_campagne),
           date_debut: form.date_debut,
           date_fin: form.date_fin || undefined,
           objectifs: form.objectifs || undefined,
@@ -290,7 +291,7 @@ export function useCampagneForm() {
       } else {
         const createData: CreateCampagneData = {
           nom_campagne: form.nom_campagne.trim(),
-          type_campagne: form.type_campagne || undefined,
+          type_campagne: normalizeCampaignVariant(form.type_campagne),
           date_debut: form.date_debut,
           date_fin: form.date_fin || undefined,
           objectifs: form.objectifs || undefined,
