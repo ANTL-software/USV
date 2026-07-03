@@ -1,5 +1,5 @@
 import { ReactElement, useState, useEffect, useCallback, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { 
   IoArrowBack, 
   IoCheckmarkCircle, 
@@ -30,6 +30,7 @@ import { getProspectAppelsService, getProspectVentesService } from '../../../API
 import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
 import type { VenteComplete, StatutVente } from '../../../utils/types/vente.types';
 import type { Appel } from '../../../utils/types/appel.types';
+import LeadClientDetails from '../leadClientDetails/LeadClientDetails.tsx';
 
 import { STATUT_VENTE_LABELS, STATUT_VENTE_COLORS, MODE_PAIEMENT_LABELS } from '../../../utils/types/vente.types';
 import { 
@@ -65,7 +66,13 @@ interface MockSignedDoc {
 function CommandeDetails(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const idVente = Number(id);
+  const mode = searchParams.get('mode');
+
+  if (mode === 'lead') {
+    return <LeadClientDetails />;
+  }
 
   const [commande, setCommande] = useState<VenteComplete | null>(null);
   const [loading, setLoading] = useState(true);
@@ -113,11 +120,15 @@ function CommandeDetails(): ReactElement {
   }, [idVente]);
 
   const loadAppels = useCallback(async (page: number = 1) => {
-    if (!commande?.prospect?.id_prospect) return;
+    if (!commande?.prospect?.id_prospect || !commande.id_campagne) return;
     setAppelsLoading(true);
     setAppelsError(null);
     try {
-      const data = await getProspectAppelsService(commande.prospect.id_prospect, { page, limit: 5 });
+      const data = await getProspectAppelsService(commande.prospect.id_prospect, {
+        page,
+        limit: 5,
+        campagne: commande.id_campagne,
+      });
       setAppels(data.appels);
       setAppelsPage(data.page);
       setAppelsTotalPages(data.totalPages);
@@ -131,11 +142,14 @@ function CommandeDetails(): ReactElement {
   }, [commande?.prospect?.id_prospect]);
 
   const loadVentesProspect = useCallback(async () => {
-    if (!commande?.prospect?.id_prospect) return;
+    if (!commande?.prospect?.id_prospect || !commande.id_campagne) return;
     setVentesLoading(true);
     setVentesError(null);
     try {
-      const data = await getProspectVentesService(commande.prospect.id_prospect, { limit: 100 });
+      const data = await getProspectVentesService(commande.prospect.id_prospect, {
+        limit: 100,
+        campagne: commande.id_campagne,
+      });
       // Exclure la vente courante pour ne pas la doubler
       const filtered = data.ventes.filter(v => v.id_vente !== idVente);
       setVentesProspect(filtered);
@@ -533,8 +547,8 @@ function CommandeDetails(): ReactElement {
                         <div className="appel-history-body">
                           <div className="appel-history-details">
                             <span><strong>Durée :</strong> {formatDurationFromSeconds(appel.duree_secondes)}</span>
-                            {appel.Employe && (
-                              <span><strong>Agent :</strong> {appel.Employe.prenom} {appel.Employe.nom.toUpperCase()}</span>
+                            {(appel.agent ?? appel.Employe) && (
+                              <span><strong>Agent :</strong> {(appel.agent ?? appel.Employe)?.prenom} {(appel.agent ?? appel.Employe)?.nom.toUpperCase()}</span>
                             )}
                           </div>
                           {appel.notes && (

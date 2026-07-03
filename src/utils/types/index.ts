@@ -207,3 +207,21 @@ export type {
   OrigineAppel,
   Appel,
 } from './appel.types.ts';
+
+export type {
+  StatutRendezVous,
+  RendezVousAgent,
+  RendezVousProspect,
+  RendezVousCampagne,
+  RendezVousAppelSource,
+  RendezVousItem,
+  LeadClient,
+  LeadClientListParams,
+  LeadClientStats,
+} from './rendezVous.types.ts';
+
+export {
+  STATUT_RENDEZ_VOUS_LABELS,
+  STATUT_RENDEZ_VOUS_COLORS,
+  STATUT_RENDEZ_VOUS_OPTIONS,
+} from './rendezVous.types.ts';

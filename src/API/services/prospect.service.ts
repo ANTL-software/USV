@@ -13,7 +13,7 @@ import type {
   ProspectEnrichmentSnapshot,
   ProspectEnrichmentPreview,
 } from '../../utils/types/prospect.types.ts';
-import type { Appel, VenteComplete } from '../../utils/types/index.ts';
+import type { Appel, VenteComplete, RendezVousItem } from '../../utils/types/index.ts';
 
 
 
@@ -148,14 +148,22 @@ interface PaginatedVentesResponse {
   totalPages: number;
 }
 
+interface PaginatedRendezVousResponse {
+  rendezVous: RendezVousItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 
 export const getProspectAppelsService = async (
   prospectId: number,
-  params?: { page?: number; limit?: number }
+  params?: { page?: number; limit?: number; campagne?: number }
 ): Promise<PaginatedAppelsResponse> => {
   const queryParams = new URLSearchParams();
   if (params?.page) queryParams.set('page', String(params.page));
   if (params?.limit) queryParams.set('limit', String(params.limit));
+  if (params?.campagne) queryParams.set('campagne', String(params.campagne));
 
   const qs = queryParams.toString();
   const url = `/prospects/${prospectId}/appels${qs ? `?${qs}` : ''}`;
@@ -181,11 +189,12 @@ export const getProspectAppelsService = async (
 
 export const getProspectVentesService = async (
   prospectId: number,
-  params?: { page?: number; limit?: number }
+  params?: { page?: number; limit?: number; campagne?: number }
 ): Promise<PaginatedVentesResponse> => {
   const queryParams = new URLSearchParams();
   if (params?.page) queryParams.set('page', String(params.page));
   if (params?.limit) queryParams.set('limit', String(params.limit));
+  if (params?.campagne) queryParams.set('campagne', String(params.campagne));
 
   const qs = queryParams.toString();
   const url = `/prospects/${prospectId}/ventes${qs ? `?${qs}` : ''}`;
@@ -207,4 +216,36 @@ export const getProspectVentesService = async (
     };
   }
   throw new Error(response.data.message || 'Impossible de récupérer les ventes du prospect');
+};
+
+export const getProspectRendezVousService = async (
+  prospectId: number,
+  params?: { page?: number; limit?: number; campagne?: number }
+): Promise<PaginatedRendezVousResponse> => {
+  const queryParams = new URLSearchParams();
+  if (params?.page) queryParams.set('page', String(params.page));
+  if (params?.limit) queryParams.set('limit', String(params.limit));
+  if (params?.campagne) queryParams.set('campagne', String(params.campagne));
+
+  const qs = queryParams.toString();
+  const url = `/rendez-vous/prospect/${prospectId}${qs ? `?${qs}` : ''}`;
+
+  const response: AxiosResponse<{
+    success: boolean;
+    data?: RendezVousItem[];
+    message?: string;
+    pagination?: { page: number; limit: number; total: number; totalPages: number };
+  }> = await getRequest(url);
+
+  if (response.data.success && response.data.data) {
+    const pag = response.data.pagination ?? { page: 1, limit: 20, total: response.data.data.length, totalPages: 1 };
+    return {
+      rendezVous: response.data.data,
+      total: pag.total,
+      page: pag.page,
+      totalPages: pag.totalPages,
+    };
+  }
+
+  throw new Error(response.data.message || 'Impossible de récupérer les rendez-vous du prospect');
 };

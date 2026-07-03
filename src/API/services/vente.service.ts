@@ -1,7 +1,7 @@
 import { getRequest, deleteRequest, postRequest, putRequest } from '../APICalls.ts';
 import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
 import type { AxiosResponse } from 'axios';
-import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement } from '../../utils/types/vente.types.ts';
+import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/vente.types.ts';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -13,7 +13,7 @@ interface ApiResponse<T> {
     total: number;
     totalPages: number;
   };
-  stats?: any;
+  stats?: VenteStats;
 }
 
 interface VentesResponse {
@@ -24,7 +24,7 @@ interface VentesResponse {
     total: number;
     totalPages: number;
   };
-  stats?: any;
+  stats?: VenteStats;
 }
 
 export const getVentesService = async (params?: VenteListParams): Promise<VentesResponse> => {

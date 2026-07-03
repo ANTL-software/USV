@@ -30,6 +30,9 @@ export interface VenteCampagne {
 
 export interface Vente {
   id_vente: number;
+  id_prospect?: number;
+  id_agent?: number;
+  id_campagne: number;
   date_vente: string;
   montant_total: string;
   statut_vente: StatutVente;

@@ -31,6 +31,7 @@ export interface Appel {
   id_campagne: number;
   id_rendez_vous_source?: number | null;
   date_appel: string;
+  date_heure_appel?: string;
   duree_secondes?: number | null;
   statut_appel: StatutAppel;
   notes?: string | null;
@@ -48,5 +49,6 @@ export interface Appel {
   progpa_atteint: number;
   created_at: string;
   updated_at: string;
+  agent?: Employe;
   Employe?: Employe;
 }
