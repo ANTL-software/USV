@@ -129,7 +129,7 @@ export default function LeadClientDetails(): ReactElement {
 
   const loadLead = useCallback(async () => {
     if (Number.isNaN(idRendezVous)) {
-      setError('ID de lead invalide');
+      setError('ID de rendez-vous invalide');
       setLoading(false);
       return;
     }
@@ -141,13 +141,13 @@ export default function LeadClientDetails(): ReactElement {
       const result = await getLeadClientByIdService(idRendezVous);
 
       if (!isLeadClientRendezVous(result.motif)) {
-        throw new Error('Ce rendez-vous ne correspond pas à un lead client MMA');
+        throw new Error('Ce rendez-vous ne correspond pas à un rendez-vous client MMA');
       }
 
       setLead(result);
     } catch (loadError) {
       console.error(loadError);
-      setError(loadError instanceof Error ? loadError.message : 'Impossible de récupérer le lead client');
+      setError(loadError instanceof Error ? loadError.message : 'Impossible de récupérer le rendez-vous client');
     } finally {
       setLoading(false);
     }
@@ -211,7 +211,7 @@ export default function LeadClientDetails(): ReactElement {
       setLeadHistory(filteredHistory);
     } catch (loadError) {
       console.error(loadError);
-      setLeadHistoryError(loadError instanceof Error ? loadError.message : 'Erreur lors du chargement des leads');
+      setLeadHistoryError(loadError instanceof Error ? loadError.message : 'Erreur lors du chargement des rendez-vous');
     } finally {
       setLeadHistoryLoading(false);
     }
@@ -236,7 +236,7 @@ export default function LeadClientDetails(): ReactElement {
         <Header />
         <SubNav />
         <main className="commandeDetails__loading">
-          <Loader message="Chargement du lead client..." />
+          <Loader message="Chargement du rendez-vous client..." />
         </main>
       </div>
     );
@@ -256,9 +256,9 @@ export default function LeadClientDetails(): ReactElement {
             </div>
             <div className="commandeDetails__error">
               <h3>Erreur de chargement</h3>
-              <p>{error || 'Lead introuvable'}</p>
+              <p>{error || 'Rendez-vous introuvable'}</p>
               <Button style="gradient" onClick={() => navigate('/operations/commandes')}>
-                Retour aux leads
+                Retour aux rendez-vous
               </Button>
             </div>
           </div>
@@ -277,7 +277,7 @@ export default function LeadClientDetails(): ReactElement {
             <Button style="back" onClick={() => navigate('/operations/commandes')}>
               <IoArrowBack /> Retour
             </Button>
-            <h2>Lead client {formatLeadClientReference(lead.id_rendez_vous)}</h2>
+            <h2>Rendez-vous client {formatLeadClientReference(lead.id_rendez_vous)}</h2>
             <span
               className={`statut-badge statut-badge--${lead.statut}`}
               style={{ backgroundColor: STATUT_RENDEZ_VOUS_COLORS[lead.statut] }}
@@ -315,7 +315,7 @@ export default function LeadClientDetails(): ReactElement {
               </section>
 
               <section className="details-section card-style">
-                <h3 className="section-title"><IoInformationCircle /> Informations du lead</h3>
+                <h3 className="section-title"><IoInformationCircle /> Informations du rendez-vous</h3>
                 <div className="details-grid">
                   <div className="grid-item">
                     <span className="grid-label">Date de prise</span>
@@ -339,7 +339,7 @@ export default function LeadClientDetails(): ReactElement {
                   </div>
                   {lead.notes && (
                     <div className="grid-item full-width">
-                      <span className="grid-label">Notes du lead</span>
+                      <span className="grid-label">Notes du rendez-vous</span>
                       <p className="notes-text">{lead.notes}</p>
                     </div>
                   )}
@@ -408,11 +408,11 @@ export default function LeadClientDetails(): ReactElement {
               </section>
 
               <section className="details-section card-style">
-                <h3 className="section-title"><IoCall /> Historique des leads client ({leadHistory.length})</h3>
-                {leadHistoryLoading && <Loader message="Chargement des leads..." />}
+                <h3 className="section-title"><IoCall /> Historique des rendez-vous client ({leadHistory.length})</h3>
+                {leadHistoryLoading && <Loader message="Chargement des rendez-vous..." />}
                 {leadHistoryError && <p className="history-error">{leadHistoryError}</p>}
                 {!leadHistoryLoading && !leadHistoryError && leadHistory.length === 0 && (
-                  <p className="history-empty">Aucun autre lead client sur cette campagne pour ce prospect.</p>
+                  <p className="history-empty">Aucun autre rendez-vous client sur cette campagne pour ce prospect.</p>
                 )}
                 {!leadHistoryLoading && !leadHistoryError && leadHistory.length > 0 && (
                   <div className="ventes-history-list">

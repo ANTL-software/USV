@@ -62,7 +62,7 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
     };
   }
 
-  throw new Error(response.data.message || 'Impossible de récupérer les leads client');
+  throw new Error(response.data.message || 'Impossible de récupérer les rendez-vous client');
 };
 
 export const getLeadClientByIdService = async (idRendezVous: number): Promise<LeadClient> => {
@@ -72,5 +72,5 @@ export const getLeadClientByIdService = async (idRendezVous: number): Promise<Le
     return response.data.data;
   }
 
-  throw new Error(response.data.message || 'Impossible de récupérer le lead client');
+  throw new Error(response.data.message || 'Impossible de récupérer le rendez-vous client');
 };

@@ -186,7 +186,7 @@ function CommandesList(): ReactElement {
       setLeadPagination(result.pagination);
       setLeadStats(result.stats);
     } catch (loadError) {
-      const message = loadError instanceof Error ? loadError.message : 'Erreur lors du chargement des leads client';
+      const message = loadError instanceof Error ? loadError.message : 'Erreur lors du chargement des rendez-vous client';
       setLeadError(message);
       setLeadClients([]);
       setLeadPagination(null);
@@ -425,7 +425,7 @@ function CommandesList(): ReactElement {
             <Button style="back" onClick={() => navigate('/operations')}>
               <MdArrowBack /> Retour
             </Button>
-            <h2>{isLeadCampaign ? 'Leads client' : 'Commandes'}</h2>
+            <h2>{isLeadCampaign ? 'Rendez-vous client' : 'Commandes'}</h2>
             {!isLeadCampaign && isCorbeille && (
               <span className="commandesList__corbeille-badge">🗑️ Mode Corbeille</span>
             )}
@@ -514,7 +514,7 @@ function CommandesList(): ReactElement {
             <div className="commandesList__summary">
               <div className="summary-card summary-card--total">
                 <span className="summary-card__value">{leadStats.total}</span>
-                <span className="summary-card__label">Leads pris</span>
+                <span className="summary-card__label">Rendez-vous pris</span>
               </div>
               <div className="summary-card summary-card--validee">
                 <span className="summary-card__value">{leadStats.planifies}</span>
@@ -584,16 +584,16 @@ function CommandesList(): ReactElement {
 
           {!hasCampaignSelection && (
             <div className="empty">
-              Sélectionnez une campagne pour voir {isLeadCampaign ? 'les leads client' : 'les commandes'}.
+              Sélectionnez une campagne pour voir {isLeadCampaign ? 'les rendez-vous client' : 'les commandes'}.
             </div>
           )}
 
           {hasCampaignSelection && pageLoading && (
-            <Loader message={isLeadCampaign ? 'Chargement des leads client...' : 'Chargement des commandes...'} />
+            <Loader message={isLeadCampaign ? 'Chargement des rendez-vous client...' : 'Chargement des commandes...'} />
           )}
 
           {hasCampaignSelection && !pageLoading && isLeadCampaign && leadClients.length === 0 && !pageError && (
-            <div className="empty">Aucun lead client trouvé pour cette campagne.</div>
+            <div className="empty">Aucun rendez-vous client trouvé pour cette campagne.</div>
           )}
 
           {hasCampaignSelection && !pageLoading && !isLeadCampaign && ventes.length === 0 && !pageError && (
