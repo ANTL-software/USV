@@ -4,17 +4,23 @@ import {
   IoArrowBack,
   IoBusiness,
   IoCall,
+  IoCalendarClear,
+  IoCheckmarkCircle,
+  IoCloseCircle,
+  IoHourglass,
   IoInformationCircle,
+  IoPauseCircle,
   IoPerson,
+  IoPrint,
 } from 'react-icons/io5';
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
-import { getLeadClientByIdService } from '../../../API/services/lead.service.ts';
-import { getProspectAppelsService, getProspectRendezVousService } from '../../../API/services/prospect.service.ts';
-import type { Appel, LeadClient } from '../../../utils/types/index.ts';
+import { getLeadClientByIdService, getLeadClientsByProspectService } from '../../../API/services/lead.service.ts';
+import { getProspectAppelsService } from '../../../API/services/prospect.service.ts';
+import type { Appel, LeadClient, StatutRendezVous } from '../../../utils/types/index.ts';
 import { STATUT_RENDEZ_VOUS_COLORS, STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
 import {
   formatDateShort,
@@ -98,6 +104,21 @@ function resolveInterlocuteurEmail(lead: LeadClient | null): string {
     ?? '—';
 }
 
+function formatProspectAddress(lead: LeadClient | null): string {
+  const adresse = lead?.prospect?.adresse_facturation?.trim();
+  const codePostal = lead?.prospect?.code_postal?.trim();
+  const ville = lead?.prospect?.ville?.trim();
+  const pays = lead?.prospect?.pays?.trim();
+
+  const locality = [codePostal, ville]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(' ');
+
+  return [adresse, locality, pays]
+    .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .join(', ') || '—';
+}
+
 function resolveAppelAgent(appel: Appel): string {
   const agent = appel.agent ?? appel.Employe;
   if (!agent) {
@@ -107,10 +128,52 @@ function resolveAppelAgent(appel: Appel): string {
   return `${agent.prenom} ${agent.nom.toUpperCase()}`;
 }
 
+function getLeadQualificationButtonClass(statut: StatutRendezVous): string {
+  switch (statut) {
+    case 'planifie':
+      return 'qualif-btn--planifie';
+    case 'effectue':
+      return 'qualif-btn--effectue';
+    case 'annule':
+      return 'qualif-btn--annule';
+    case 'reporte':
+      return 'qualif-btn--reporte';
+    case 'non_honore':
+      return 'qualif-btn--non-honore';
+    default:
+      return '';
+  }
+}
+
+function renderLeadQualificationIcon(statut: StatutRendezVous): ReactElement {
+  switch (statut) {
+    case 'planifie':
+      return <IoHourglass />;
+    case 'effectue':
+      return <IoCheckmarkCircle />;
+    case 'annule':
+      return <IoCloseCircle />;
+    case 'reporte':
+      return <IoCalendarClear />;
+    case 'non_honore':
+      return <IoPauseCircle />;
+    default:
+      return <IoInformationCircle />;
+  }
+}
+
+const LEAD_QUALIFICATION_OPTIONS: StatutRendezVous[] = [
+  'effectue',
+  'planifie',
+  'reporte',
+  'annule',
+  'non_honore',
+];
+
 export default function LeadClientDetails(): ReactElement {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const idRendezVous = Number(id);
+  const idLead = Number(id);
 
   const [lead, setLead] = useState<LeadClient | null>(null);
   const [loading, setLoading] = useState(true);
@@ -128,8 +191,8 @@ export default function LeadClientDetails(): ReactElement {
   const [leadHistoryError, setLeadHistoryError] = useState<string | null>(null);
 
   const loadLead = useCallback(async () => {
-    if (Number.isNaN(idRendezVous)) {
-      setError('ID de rendez-vous invalide');
+    if (Number.isNaN(idLead)) {
+      setError('ID de rendez-vous client invalide');
       setLoading(false);
       return;
     }
@@ -138,7 +201,7 @@ export default function LeadClientDetails(): ReactElement {
     setError(null);
 
     try {
-      const result = await getLeadClientByIdService(idRendezVous);
+      const result = await getLeadClientByIdService(idLead);
 
       if (!isLeadClientRendezVous(result.motif)) {
         throw new Error('Ce rendez-vous ne correspond pas à un rendez-vous client MMA');
@@ -151,7 +214,7 @@ export default function LeadClientDetails(): ReactElement {
     } finally {
       setLoading(false);
     }
-  }, [idRendezVous]);
+  }, [idLead]);
 
   const loadAppels = useCallback(async (page: number = 1, currentLead?: LeadClient | null) => {
     const leadToUse = currentLead ?? lead;
@@ -196,14 +259,14 @@ export default function LeadClientDetails(): ReactElement {
     setLeadHistoryError(null);
 
     try {
-      const result = await getProspectRendezVousService(prospectId, {
+      const result = await getLeadClientsByProspectService(prospectId, {
         limit: 100,
         campagne: campagneId,
       });
 
-      const filteredHistory = result.rendezVous
+      const filteredHistory = result
         .filter((rendezVous) =>
-          rendezVous.id_rendez_vous !== leadToUse?.id_rendez_vous
+          rendezVous.id_lead !== leadToUse?.id_lead
           && isLeadClientRendezVous(rendezVous.motif)
         )
         .sort((left, right) => new Date(right.created_at).getTime() - new Date(left.created_at).getTime());
@@ -277,7 +340,7 @@ export default function LeadClientDetails(): ReactElement {
             <Button style="back" onClick={() => navigate('/operations/commandes')}>
               <IoArrowBack /> Retour
             </Button>
-            <h2>Rendez-vous client {formatLeadClientReference(lead.id_rendez_vous)}</h2>
+            <h2>Rendez-vous client {formatLeadClientReference(lead.id_lead)}</h2>
             <span
               className={`statut-badge statut-badge--${lead.statut}`}
               style={{ backgroundColor: STATUT_RENDEZ_VOUS_COLORS[lead.statut] }}
@@ -310,6 +373,10 @@ export default function LeadClientDetails(): ReactElement {
                   <div className="grid-item">
                     <span className="grid-label">Email</span>
                     <span className="grid-value">{resolveInterlocuteurEmail(lead)}</span>
+                  </div>
+                  <div className="grid-item full-width">
+                    <span className="grid-label">Adresse</span>
+                    <span className="grid-value">{formatProspectAddress(lead)}</span>
                   </div>
                 </div>
               </section>
@@ -417,11 +484,11 @@ export default function LeadClientDetails(): ReactElement {
                 {!leadHistoryLoading && !leadHistoryError && leadHistory.length > 0 && (
                   <div className="ventes-history-list">
                     {leadHistory.map((historyItem) => (
-                      <div key={historyItem.id_rendez_vous} className="vente-history-item">
+                      <div key={historyItem.id_lead} className="vente-history-item">
                         <div className="vente-history-header">
                           <div className="vente-history-info">
                             <span className="vente-history-date">{formatDateShort(historyItem.created_at)}</span>
-                            <span className="vente-history-ref">{formatLeadClientReference(historyItem.id_rendez_vous)}</span>
+                            <span className="vente-history-ref">{formatLeadClientReference(historyItem.id_lead)}</span>
                             <span className="vente-history-amount">{formatDateTime(historyItem.date_rdv, historyItem.heure_rdv)}</span>
                           </div>
                           <div className="vente-history-actions">
@@ -452,6 +519,48 @@ export default function LeadClientDetails(): ReactElement {
                 )}
               </section>
             </div>
+
+            <aside className="commandeDetails__right">
+              <div className="aside-card card-style">
+                <h3>Qualification</h3>
+                <p className="aside-hint">Définir l'état opérationnel du rendez-vous client :</p>
+                <div className="qualification-buttons">
+                  {LEAD_QUALIFICATION_OPTIONS.map((statut) => (
+                    <button
+                      key={statut}
+                      type="button"
+                      onClick={() => undefined}
+                      className={`qualif-btn ${getLeadQualificationButtonClass(statut)} ${lead.statut === statut ? 'active' : ''}`}
+                    >
+                      {renderLeadQualificationIcon(statut)}
+                      <span>{STATUT_RENDEZ_VOUS_LABELS[statut]}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="aside-card card-style">
+                <h3>Actions du rendez-vous</h3>
+                <div className="aside-actions-list">
+                  <Button
+                    style="gradient"
+                    onClick={() => undefined}
+                    className="action-btn-aside"
+                  >
+                    <IoPrint />
+                    <span>Réimprimer la fiche du rendez-vous</span>
+                  </Button>
+                </div>
+
+                <div className="aside-divider"></div>
+
+                <h4>Document du rendez-vous</h4>
+                <div className="upload-zone-disabled">
+                  <IoInformationCircle className="info-icon" />
+                  <p>L'upload d'un document lié sera activé dans une prochaine itération.</p>
+                </div>
+              </div>
+            </aside>
           </div>
         </div>
       </main>

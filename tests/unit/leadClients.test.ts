@@ -8,7 +8,7 @@ interface AxiosLikeResponse<T> {
 interface LeadApiResponse {
   success: boolean;
   data: {
-    id_rendez_vous: number;
+    id_lead: number;
     id_agent: number;
     id_prospect: number;
     id_campagne: number;
@@ -48,7 +48,7 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
           success: true,
           data: [
             {
-              id_rendez_vous: 42,
+              id_lead: 42,
               id_agent: 5,
               id_prospect: 18,
               id_campagne: 9,
@@ -102,8 +102,8 @@ test('getLeadClientsService sérialise les filtres MMA et retourne les stats du 
     limit: 25,
   });
 
-  assert.equal(result.leads[0]?.id_rendez_vous, 42);
+  assert.equal(result.leads[0]?.id_lead, 42);
   assert.equal(result.pagination.totalPages, 3);
   assert.equal(result.stats.planifies, 30);
-  assert.equal(globalThis.capturedLeadUrl, '/rendez-vous/operations/leads?campagne=9&statut=planifie&date_debut=2026-07-01&date_fin=2026-07-31&page=2&limit=25');
+  assert.equal(globalThis.capturedLeadUrl, '/leads/operations?campagne=9&statut=planifie&date_debut=2026-07-01&date_fin=2026-07-31&page=2&limit=25');
 });

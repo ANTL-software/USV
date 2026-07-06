@@ -380,7 +380,7 @@ function CommandesList(): ReactElement {
   }, [navigate]);
 
   const handleLeadRowClick = useCallback((lead: LeadClient) => {
-    navigate(`/operations/commandes/details/${lead.id_rendez_vous}?mode=lead`);
+    navigate(`/operations/commandes/details/${lead.id_lead}?mode=lead`);
   }, [navigate]);
 
   const campagneOptions: SelectOption[] = campagnes.map((campagne) => ({
@@ -622,11 +622,11 @@ function CommandesList(): ReactElement {
                   <tbody>
                     {leadClients.map((lead) => (
                       <tr
-                        key={lead.id_rendez_vous}
+                        key={lead.id_lead}
                         onClick={() => handleLeadRowClick(lead)}
                         className="commandesList__row--clickable"
                       >
-                        <td>{formatLeadClientReference(lead.id_rendez_vous)}</td>
+                        <td>{formatLeadClientReference(lead.id_lead)}</td>
                         <td>{formatDate(lead.created_at)}</td>
                         <td>{formatLeadSlot(lead.date_rdv, lead.heure_rdv)}</td>
                         <td>{leadProspectName(lead)}</td>

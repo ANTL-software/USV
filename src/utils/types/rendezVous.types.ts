@@ -24,6 +24,10 @@ export interface RendezVousProspect {
   telephone?: string | null;
   telephone_contact?: string | null;
   raison_sociale?: string | null;
+  adresse_facturation?: string | null;
+  code_postal?: string | null;
+  ville?: string | null;
+  pays?: string | null;
   decisionnaire_nom?: string | null;
   decisionnaire_fonction?: string | null;
   decisionnaire_email_pro?: string | null;
@@ -65,7 +69,10 @@ export interface RendezVousItem {
   appelsSource?: RendezVousAppelSource[];
 }
 
-export type LeadClient = RendezVousItem;
+export type LeadClient = Omit<RendezVousItem, 'id_rendez_vous'> & {
+  id_lead: number;
+  id_appel?: number | null;
+};
 
 export interface LeadClientListParams {
   campagne?: number;

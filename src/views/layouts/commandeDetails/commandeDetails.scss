@@ -382,6 +382,66 @@
         border-color: #6b7280;
       }
     }
+
+    &--planifie {
+      &:hover:not(.active) {
+        border-color: #2563eb;
+        color: #2563eb;
+        background: rgba(37, 99, 235, 0.05);
+      }
+      &.active {
+        background: #2563eb;
+        border-color: #2563eb;
+      }
+    }
+
+    &--effectue {
+      &:hover:not(.active) {
+        border-color: vars.$successColor;
+        color: vars.$successColor;
+        background: rgba(34, 197, 94, 0.05);
+      }
+      &.active {
+        background: vars.$successColor;
+        border-color: vars.$successColor;
+      }
+    }
+
+    &--annule {
+      &:hover:not(.active) {
+        border-color: vars.$errorColor;
+        color: vars.$errorColor;
+        background: rgba(239, 68, 68, 0.05);
+      }
+      &.active {
+        background: vars.$errorColor;
+        border-color: vars.$errorColor;
+      }
+    }
+
+    &--reporte {
+      &:hover:not(.active) {
+        border-color: vars.$warningColor;
+        color: vars.$warningColor;
+        background: rgba(245, 158, 11, 0.05);
+      }
+      &.active {
+        background: vars.$warningColor;
+        border-color: vars.$warningColor;
+      }
+    }
+
+    &--non-honore {
+      &:hover:not(.active) {
+        border-color: #6b7280;
+        color: #6b7280;
+        background: rgba(107, 114, 128, 0.05);
+      }
+      &.active {
+        background: #6b7280;
+        border-color: #6b7280;
+      }
+    }
   }
 
   // Document Actions

@@ -46,7 +46,7 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
   if (params?.limit) queryParams.set('limit', String(params.limit));
 
   const query = queryParams.toString();
-  const url = `/rendez-vous/operations/leads${query ? `?${query}` : ''}`;
+  const url = `/leads/operations${query ? `?${query}` : ''}`;
   const response: AxiosResponse<ApiResponse<LeadClient[]>> = await getRequest(url);
 
   if (response.data.success && response.data.data) {
@@ -65,8 +65,27 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
   throw new Error(response.data.message || 'Impossible de récupérer les rendez-vous client');
 };
 
-export const getLeadClientByIdService = async (idRendezVous: number): Promise<LeadClient> => {
-  const response: AxiosResponse<ApiResponse<LeadClient>> = await getRequest(`/rendez-vous/${idRendezVous}`);
+export const getLeadClientByIdService = async (idLead: number): Promise<LeadClient> => {
+  const response: AxiosResponse<ApiResponse<LeadClient>> = await getRequest(`/leads/${idLead}`);
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de récupérer le rendez-vous client');
+};
+
+export const getLeadClientsByProspectService = async (
+  prospectId: number,
+  params?: { page?: number; limit?: number; campagne?: number }
+): Promise<LeadClient[]> => {
+  const queryParams = new URLSearchParams();
+  if (params?.page) queryParams.set('page', String(params.page));
+  if (params?.limit) queryParams.set('limit', String(params.limit));
+  if (params?.campagne) queryParams.set('campagne', String(params.campagne));
+
+  const query = queryParams.toString();
+  const response: AxiosResponse<ApiResponse<LeadClient[]>> = await getRequest(`/leads/prospect/${prospectId}${query ? `?${query}` : ''}`);
 
   if (response.data.success && response.data.data) {
     return response.data.data;
