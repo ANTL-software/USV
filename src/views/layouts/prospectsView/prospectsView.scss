@@ -38,6 +38,19 @@
     }
   }
 
+  .prospectsView__total-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.4em 0.8em;
+    border-radius: 999px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    color: #1d4ed8;
+    font-size: 0.9em;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
   .prospectsView__filters {
     display: flex;
     align-items: center;

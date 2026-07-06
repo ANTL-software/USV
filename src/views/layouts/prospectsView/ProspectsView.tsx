@@ -26,6 +26,7 @@ function ProspectsView(): ReactElement {
   const {
     prospects,
     pagination,
+    totalProspectsDb,
     isLoading,
     error,
     selectedCampagne,
@@ -166,6 +167,11 @@ function ProspectsView(): ReactElement {
           <div className="prospectsView__header">
             <div className="prospectsView__title-section">
               <h1>Prospects</h1>
+              {!selectedCampagne && totalProspectsDb !== null && (
+                <span className="prospectsView__total-pill">
+                  Total en base: {totalProspectsDb.toLocaleString('fr-FR')}
+                </span>
+              )}
               <Button style="grey" onClick={() => navigate('/operations/prospects/enrichissement')}>
                 <span>Enrichissement de donnée Prospect</span>
               </Button>

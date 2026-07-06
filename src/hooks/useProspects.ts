@@ -8,6 +8,7 @@ import type { Campagne } from '../utils/types/campagne.types';
 export interface UseProspectsReturn {
   prospects: Prospect[];
   pagination: { page: number; limit: number; total: number; totalPages: number } | null;
+  totalProspectsDb: number | null;
   isLoading: boolean;
   error: string | null;
   campagnes: Campagne[];
@@ -77,6 +78,7 @@ const mapProspectCampagneRowToProspect = (row: ProspectCampagneRow): Prospect =>
 export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [pagination, setPagination] = useState<{ page: number; limit: number; total: number; totalPages: number } | null>(null);
+  const [totalProspectsDb, setTotalProspectsDb] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
@@ -130,6 +132,34 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     load();
   }, [load]);
 
+  useEffect(() => {
+    if (selectedCampagne) {
+      setTotalProspectsDb(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    const loadTotalProspectsDb = async () => {
+      try {
+        const result = await getAllProspectsService({ page: 1, limit: 1 });
+        if (!cancelled) {
+          setTotalProspectsDb(result.pagination.total);
+        }
+      } catch {
+        if (!cancelled) {
+          setTotalProspectsDb(null);
+        }
+      }
+    };
+
+    loadTotalProspectsDb();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [selectedCampagne, refreshKey]);
+
   const handleSetPage = useCallback((page: number) => {
     setCurrentPage(page);
   }, []);
@@ -146,6 +176,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   return {
     prospects,
     pagination,
+    totalProspectsDb,
     isLoading,
     error,
     campagnes,
