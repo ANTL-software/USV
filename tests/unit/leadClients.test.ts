@@ -37,6 +37,8 @@ interface LeadApiResponse {
 
 declare global {
   var capturedLeadUrl: string | undefined;
+  var capturedLeadPatchUrl: string | undefined;
+  var capturedLeadPatchPayload: { statut: string } | undefined;
 }
 
 mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APICalls.ts', {
@@ -76,7 +78,33 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
           }
         }
       };
-    }
+    },
+    patchRequest: async (url: string, data: { statut: string }): Promise<AxiosLikeResponse<{
+      success: boolean;
+      data: {
+        id_lead: number;
+        statut: 'effectue';
+      };
+    }>> => {
+      globalThis.capturedLeadPatchUrl = url;
+      globalThis.capturedLeadPatchPayload = data;
+
+      return {
+        data: {
+          success: true,
+          data: {
+            id_lead: 42,
+            statut: 'effectue',
+          }
+        }
+      };
+    },
+  }
+});
+
+mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/utils/scripts/utils.ts', {
+  namedExports: {
+    getApiBaseUrl: (): string => 'http://localhost:8800/api',
   }
 });
 
@@ -106,4 +134,22 @@ test('getLeadClientsService sérialise les filtres MMA et retourne les stats du 
   assert.equal(result.pagination.totalPages, 3);
   assert.equal(result.stats.planifies, 30);
   assert.equal(globalThis.capturedLeadUrl, '/leads/operations?campagne=9&statut=planifie&date_debut=2026-07-01&date_fin=2026-07-31&page=2&limit=25');
+});
+
+test('updateLeadClientStatusService cible le endpoint de qualification MMA', async () => {
+  const { updateLeadClientStatusService } = await import('../../src/API/services/lead.service.ts');
+
+  const result = await updateLeadClientStatusService(42, 'effectue');
+
+  assert.equal(result.id_lead, 42);
+  assert.equal(result.statut, 'effectue');
+  assert.equal(globalThis.capturedLeadPatchUrl, '/leads/42/statut');
+  assert.deepEqual(globalThis.capturedLeadPatchPayload, { statut: 'effectue' });
+});
+
+test('getLeadClientDocumentUrl cible le document PDF dedie MMA', async () => {
+  const { getLeadClientDocumentUrl } = await import('../../src/API/services/lead.service.ts');
+  const url = getLeadClientDocumentUrl(42);
+
+  assert.equal(url, 'http://localhost:8800/api/leads/42/document.pdf');
 });

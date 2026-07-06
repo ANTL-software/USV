@@ -18,7 +18,12 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
-import { getLeadClientByIdService, getLeadClientsByProspectService } from '../../../API/services/lead.service.ts';
+import {
+  getLeadClientByIdService,
+  getLeadClientsByProspectService,
+  getLeadClientDocumentUrl,
+  updateLeadClientStatusService
+} from '../../../API/services/lead.service.ts';
 import { getProspectAppelsService } from '../../../API/services/prospect.service.ts';
 import type { Appel, LeadClient, StatutRendezVous } from '../../../utils/types/index.ts';
 import { STATUT_RENDEZ_VOUS_COLORS, STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
@@ -30,6 +35,7 @@ import {
   getStatutAppelLabel,
 } from '../../../utils/scripts/formatters.ts';
 import { formatLeadClientReference, isLeadClientRendezVous } from '../../../utils/scripts/leadClients.ts';
+import { showError, showSuccess } from '../../../utils/services/alertService.ts';
 
 function formatDateTime(dateValue?: string | null, timeValue?: string | null): string {
   if (!dateValue) {
@@ -189,6 +195,7 @@ export default function LeadClientDetails(): ReactElement {
   const [leadHistory, setLeadHistory] = useState<LeadClient[]>([]);
   const [leadHistoryLoading, setLeadHistoryLoading] = useState(false);
   const [leadHistoryError, setLeadHistoryError] = useState<string | null>(null);
+  const [statusUpdateLoading, setStatusUpdateLoading] = useState<StatutRendezVous | null>(null);
 
   const loadLead = useCallback(async () => {
     if (Number.isNaN(idLead)) {
@@ -292,6 +299,33 @@ export default function LeadClientDetails(): ReactElement {
     loadAppels(1, lead);
     loadLeadHistory(lead);
   }, [lead, loadAppels, loadLeadHistory]);
+
+  const handleLeadStatusUpdate = useCallback(async (statut: StatutRendezVous) => {
+    if (!lead || lead.statut === statut || statusUpdateLoading !== null) {
+      return;
+    }
+
+    setStatusUpdateLoading(statut);
+
+    try {
+      const updatedLead = await updateLeadClientStatusService(lead.id_lead, statut);
+      setLead(updatedLead);
+      showSuccess(`Rendez-vous client passé en "${STATUT_RENDEZ_VOUS_LABELS[statut]}".`);
+    } catch (updateError) {
+      console.error(updateError);
+      showError(updateError instanceof Error ? updateError.message : 'Erreur lors de la mise à jour du statut');
+    } finally {
+      setStatusUpdateLoading(null);
+    }
+  }, [lead, statusUpdateLoading]);
+
+  const handlePrintLeadDocument = useCallback(() => {
+    if (!lead) {
+      return;
+    }
+
+    window.open(getLeadClientDocumentUrl(lead.id_lead), '_blank', 'noopener,noreferrer');
+  }, [lead]);
 
   if (loading) {
     return (
@@ -529,11 +563,15 @@ export default function LeadClientDetails(): ReactElement {
                     <button
                       key={statut}
                       type="button"
-                      onClick={() => undefined}
+                      onClick={() => void handleLeadStatusUpdate(statut)}
                       className={`qualif-btn ${getLeadQualificationButtonClass(statut)} ${lead.statut === statut ? 'active' : ''}`}
+                      disabled={statusUpdateLoading !== null}
                     >
                       {renderLeadQualificationIcon(statut)}
-                      <span>{STATUT_RENDEZ_VOUS_LABELS[statut]}</span>
+                      <span>
+                        {STATUT_RENDEZ_VOUS_LABELS[statut]}
+                        {statusUpdateLoading === statut ? '...' : ''}
+                      </span>
                     </button>
                   ))}
                 </div>
@@ -544,7 +582,7 @@ export default function LeadClientDetails(): ReactElement {
                 <div className="aside-actions-list">
                   <Button
                     style="gradient"
-                    onClick={() => undefined}
+                    onClick={handlePrintLeadDocument}
                     className="action-btn-aside"
                   >
                     <IoPrint />

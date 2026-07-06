@@ -1,5 +1,6 @@
 import type { AxiosResponse } from 'axios';
-import { getRequest } from '../APICalls.ts';
+import { getRequest, patchRequest } from '../APICalls.ts';
+import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
 import type { LeadClient, LeadClientListParams, LeadClientStats } from '../../utils/types/rendezVous.types.ts';
 
 interface ApiResponse<T> {
@@ -92,4 +93,24 @@ export const getLeadClientsByProspectService = async (
   }
 
   throw new Error(response.data.message || 'Impossible de récupérer le rendez-vous client');
+};
+
+export const updateLeadClientStatusService = async (
+  idLead: number,
+  statut: LeadClient['statut']
+): Promise<LeadClient> => {
+  const response: AxiosResponse<ApiResponse<LeadClient>> = await patchRequest(
+    `/leads/${idLead}/statut`,
+    { statut }
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de mettre à jour le statut du rendez-vous client');
+};
+
+export const getLeadClientDocumentUrl = (idLead: number): string => {
+  return `${getApiBaseUrl()}/leads/${idLead}/document.pdf`;
 };
