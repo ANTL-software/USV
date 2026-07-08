@@ -34,6 +34,7 @@ export interface Vente {
   id_agent?: number;
   id_campagne: number;
   date_vente: string;
+  date_acceptation?: string | null;
   montant_total: string;
   statut_vente: StatutVente;
   mode_paiement?: ModePaiement;
@@ -81,8 +82,10 @@ export interface VenteComplete extends Vente {
 export interface VenteListParams {
   campagne?: number;
   statut?: StatutVente;
+  agent?: number;
   date_debut?: string;
   date_fin?: string;
+  date_field?: 'vente' | 'acceptation';
   soft_deleted?: boolean;
   page?: number;
   limit?: number;

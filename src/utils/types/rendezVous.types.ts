@@ -77,6 +77,7 @@ export type LeadClient = Omit<RendezVousItem, 'id_rendez_vous'> & {
 export interface LeadClientListParams {
   campagne?: number;
   statut?: StatutRendezVous;
+  agent?: number;
   date_debut?: string;
   date_fin?: string;
   page?: number;

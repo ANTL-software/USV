@@ -34,6 +34,7 @@ export class CampagneModel implements Campagne {
   pays?: string | null;
   footer_text?: string | null;
   modes_paiement?: ModePaiement[];
+  bon_commande_config?: Campagne['bon_commande_config'];
 
   constructor(data: Campagne) {
     this.id_campagne = data.id_campagne;
@@ -61,6 +62,7 @@ export class CampagneModel implements Campagne {
     this.pays = data.pays ?? null;
     this.footer_text = data.footer_text ?? null;
     this.modes_paiement = data.modes_paiement ?? [];
+    this.bon_commande_config = data.bon_commande_config ?? null;
   }
 
   public get statutLabel(): string {
@@ -102,6 +104,7 @@ export class CampagneModel implements Campagne {
       pays: this.pays,
       footer_text: this.footer_text,
       modes_paiement: this.modes_paiement,
+      bon_commande_config: this.bon_commande_config,
     };
   }
 

@@ -14,6 +14,7 @@ import { VenteContext } from '../../../context/vente/VenteContext.tsx';
 import { useCampagnes } from '../../../hooks/useCampagnes';
 import { deleteVenteService, restoreVenteService } from '../../../API/services/vente.service.ts';
 import { getLeadClientsService } from '../../../API/services/lead.service.ts';
+import { getAgentsCampagneService } from '../../../API/services/campagne.service.ts';
 import {
   STATUT_VENTE_OPTIONS,
   STATUT_VENTE_LABELS,
@@ -37,6 +38,8 @@ import type {
 import { CAMPAIGN_VARIANTS, normalizeCampaignVariant } from '../../../utils/scripts/campaignVariants.ts';
 import { formatLeadClientReference } from '../../../utils/scripts/leadClients.ts';
 import './commandesList.scss';
+
+type PeriodPreset = 'current_month' | 'previous_month' | 'custom';
 
 function formatMontant(montant: string): string {
   const num = parseFloat(montant);
@@ -64,6 +67,25 @@ function formatLeadSlot(dateStr: string, timeStr: string): string {
     hour: '2-digit',
     minute: '2-digit',
   });
+}
+
+function toInputDate(value: Date): string {
+  const year = value.getFullYear();
+  const month = String(value.getMonth() + 1).padStart(2, '0');
+  const day = String(value.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
+function getMonthBounds(monthOffset: number): { start: string; end: string } {
+  const referenceDate = new Date();
+  const firstDay = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + monthOffset, 1);
+  const lastDay = new Date(referenceDate.getFullYear(), referenceDate.getMonth() + monthOffset + 1, 0);
+
+  return {
+    start: toInputDate(firstDay),
+    end: toInputDate(lastDay),
+  };
 }
 
 function prospectName(vente: Vente): string {
@@ -131,6 +153,12 @@ const DEFAULT_LEAD_STATS: LeadClientStats = {
   nonHonores: 0,
 };
 
+const PERIOD_PRESET_OPTIONS: { value: PeriodPreset; label: string }[] = [
+  { value: 'current_month', label: 'Mois en cours' },
+  { value: 'previous_month', label: 'Mois précédent' },
+  { value: 'custom', label: 'Période personnalisée' },
+];
+
 function CommandesList(): ReactElement {
   const navigate = useNavigate();
   const venteCtx = useContext(VenteContext);
@@ -139,12 +167,17 @@ function CommandesList(): ReactElement {
   if (!venteCtx) throw new Error('CommandesList must be used within a VenteProvider');
 
   const { ventes, pagination, isLoading, error, filters, setFilters, load, stats, resetFilters } = venteCtx;
+  const currentMonthBounds = getMonthBounds(0);
+  const previousMonthBounds = getMonthBounds(-1);
 
   const [localStatut, setLocalStatut] = useState<StatutVente | ''>(filters.statut ?? '');
   const [localLeadStatut, setLocalLeadStatut] = useState<StatutRendezVous | ''>('');
-  const [localDateDebut, setLocalDateDebut] = useState(filters.date_debut ?? '');
-  const [localDateFin, setLocalDateFin] = useState(filters.date_fin ?? '');
+  const [periodPreset, setPeriodPreset] = useState<PeriodPreset>('current_month');
+  const [localDateDebut, setLocalDateDebut] = useState(filters.date_debut ?? currentMonthBounds.start);
+  const [localDateFin, setLocalDateFin] = useState(filters.date_fin ?? currentMonthBounds.end);
+  const [localAgentId, setLocalAgentId] = useState<number | null>(filters.agent ?? null);
   const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
+  const [campaignAgents, setCampaignAgents] = useState<SelectOption[]>([]);
 
   const [leadClients, setLeadClients] = useState<LeadClient[]>([]);
   const [leadPagination, setLeadPagination] = useState<{
@@ -177,6 +210,7 @@ function CommandesList(): ReactElement {
       const result = await getLeadClientsService({
         campagne: campagneId,
         statut: requestFilters.statut,
+        agent: requestFilters.agent,
         date_debut: requestFilters.date_debut,
         date_fin: requestFilters.date_fin,
         page: requestFilters.page,
@@ -201,14 +235,17 @@ function CommandesList(): ReactElement {
     setFilters({
       soft_deleted: mode === 'corbeille',
       statut: undefined,
-      date_debut: undefined,
-      date_fin: undefined,
+      agent: undefined,
+      date_debut: currentMonthBounds.start,
+      date_fin: currentMonthBounds.end,
       page: 1,
     });
+    setPeriodPreset('current_month');
     setLocalStatut('');
-    setLocalDateDebut('');
-    setLocalDateFin('');
-  }, [setFilters]);
+    setLocalAgentId(null);
+    setLocalDateDebut(currentMonthBounds.start);
+    setLocalDateFin(currentMonthBounds.end);
+  }, [currentMonthBounds.end, currentMonthBounds.start, setFilters]);
 
   const handleDeleteClick = useCallback(async (vente: Vente, event: React.MouseEvent) => {
     event.stopPropagation();
@@ -267,6 +304,7 @@ function CommandesList(): ReactElement {
   }, [
     filters.campagne,
     filters.statut,
+    filters.agent,
     filters.date_debut,
     filters.date_fin,
     filters.page,
@@ -293,6 +331,7 @@ function CommandesList(): ReactElement {
   useEffect(() => {
     if (isLeadCampaign) {
       setLocalLeadStatut(leadFilters.statut ?? '');
+      setLocalAgentId(leadFilters.agent ?? null);
       setLocalDateDebut(leadFilters.date_debut ?? '');
       setLocalDateFin(leadFilters.date_fin ?? '');
       return;
@@ -301,15 +340,72 @@ function CommandesList(): ReactElement {
     setLocalDateDebut(filters.date_debut ?? '');
     setLocalDateFin(filters.date_fin ?? '');
     setLocalStatut(filters.statut ?? '');
+    setLocalAgentId(filters.agent ?? null);
   }, [
+    filters.agent,
     filters.date_debut,
     filters.date_fin,
     filters.statut,
     isLeadCampaign,
+    leadFilters.agent,
     leadFilters.date_debut,
     leadFilters.date_fin,
     leadFilters.statut,
   ]);
+
+  useEffect(() => {
+    const isCurrentMonth = localDateDebut === currentMonthBounds.start && localDateFin === currentMonthBounds.end;
+    const isPreviousMonth = localDateDebut === previousMonthBounds.start && localDateFin === previousMonthBounds.end;
+
+    if (isCurrentMonth) {
+      setPeriodPreset('current_month');
+      return;
+    }
+
+    if (isPreviousMonth) {
+      setPeriodPreset('previous_month');
+      return;
+    }
+
+    setPeriodPreset('custom');
+  }, [currentMonthBounds.end, currentMonthBounds.start, localDateDebut, localDateFin, previousMonthBounds.end, previousMonthBounds.start]);
+
+  useEffect(() => {
+    if (!filters.campagne || !hasResolvedSelectedCampaign) {
+      setCampaignAgents([]);
+      return;
+    }
+
+    let isCancelled = false;
+
+    const loadCampaignAgents = async () => {
+      try {
+        const agents = await getAgentsCampagneService(filters.campagne as number);
+        if (isCancelled) {
+          return;
+        }
+
+        setCampaignAgents(
+          agents
+            .filter((entry) => entry.agent)
+            .map((entry) => ({
+              value: String(entry.agent?.id_employe),
+              label: `${entry.agent?.prenom ?? ''} ${entry.agent?.nom ?? ''}`.trim(),
+            }))
+        );
+      } catch (loadError) {
+        if (!isCancelled) {
+          setCampaignAgents([]);
+        }
+      }
+    };
+
+    void loadCampaignAgents();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [filters.campagne, hasResolvedSelectedCampaign]);
 
   useEffect(() => {
     return () => {
@@ -325,30 +421,51 @@ function CommandesList(): ReactElement {
       campagne: campagneId ?? undefined,
       soft_deleted: false,
       statut: undefined,
-      date_debut: undefined,
-      date_fin: undefined,
+      agent: undefined,
+      date_debut: currentMonthBounds.start,
+      date_fin: currentMonthBounds.end,
       page: 1,
     });
     setLeadFilters({
       page: 1,
       limit: 20,
+      date_debut: currentMonthBounds.start,
+      date_fin: currentMonthBounds.end,
     });
     setLeadClients([]);
     setLeadPagination(null);
     setLeadStats(DEFAULT_LEAD_STATS);
     setLeadError(null);
     setVueMode('actives');
+    setPeriodPreset('current_month');
     setLocalStatut('');
     setLocalLeadStatut('');
-    setLocalDateDebut('');
-    setLocalDateFin('');
-  }, [setFilters]);
+    setLocalAgentId(null);
+    setLocalDateDebut(currentMonthBounds.start);
+    setLocalDateFin(currentMonthBounds.end);
+  }, [currentMonthBounds.end, currentMonthBounds.start, setFilters]);
+
+  const handlePeriodPresetChange = useCallback((preset: PeriodPreset) => {
+    setPeriodPreset(preset);
+
+    if (preset === 'current_month') {
+      setLocalDateDebut(currentMonthBounds.start);
+      setLocalDateFin(currentMonthBounds.end);
+      return;
+    }
+
+    if (preset === 'previous_month') {
+      setLocalDateDebut(previousMonthBounds.start);
+      setLocalDateFin(previousMonthBounds.end);
+    }
+  }, [currentMonthBounds.end, currentMonthBounds.start, previousMonthBounds.end, previousMonthBounds.start]);
 
   const handleSearch = useCallback(() => {
     if (isLeadCampaign) {
       setLeadFilters((previous) => ({
         ...previous,
         statut: localLeadStatut || undefined,
+        agent: localAgentId ?? undefined,
         date_debut: localDateDebut || undefined,
         date_fin: localDateFin || undefined,
         page: 1,
@@ -358,6 +475,7 @@ function CommandesList(): ReactElement {
 
     setFilters({
       statut: localStatut || undefined,
+      agent: localAgentId ?? undefined,
       date_debut: localDateDebut || undefined,
       date_fin: localDateFin || undefined,
       soft_deleted: isCorbeille,
@@ -395,6 +513,10 @@ function CommandesList(): ReactElement {
   const statutLeadOptions: SelectOption[] = [
     { value: '', label: 'Tous les statuts' },
     ...STATUT_RENDEZ_VOUS_OPTIONS,
+  ];
+  const agentOptions: SelectOption[] = [
+    { value: '', label: 'Tous les commerciaux' },
+    ...campaignAgents,
   ];
 
   const statsValideesCount = stats?.validees.count ?? 0;
@@ -492,13 +614,57 @@ function CommandesList(): ReactElement {
             )}
 
             <div className="commandesList__filter-group">
+              <label>Commercial</label>
+              <Select
+                options={agentOptions}
+                value={agentOptions.find((option) => option.value === String(localAgentId ?? '')) ?? agentOptions[0]}
+                onChange={(option) => {
+                  const selectedOption = option as SelectOption | null;
+                  const rawValue = selectedOption?.value ?? '';
+                  setLocalAgentId(rawValue ? Number(rawValue) : null);
+                }}
+                styles={reactSelectStyles}
+                placeholder="Tous les commerciaux"
+                isSearchable={false}
+              />
+            </div>
+
+            <div className="commandesList__filter-group">
+              <label>Période</label>
+              <Select
+                options={PERIOD_PRESET_OPTIONS as unknown as SelectOption[]}
+                value={PERIOD_PRESET_OPTIONS.find((option) => option.value === periodPreset) as unknown as SelectOption}
+                onChange={(option) => {
+                  const selectedOption = option as SelectOption | null;
+                  handlePeriodPresetChange((selectedOption?.value as PeriodPreset) ?? 'current_month');
+                }}
+                styles={reactSelectStyles}
+                isSearchable={false}
+              />
+            </div>
+
+            <div className="commandesList__filter-group">
               <label>Du</label>
-              <input type="date" value={localDateDebut} onChange={(event) => setLocalDateDebut(event.target.value)} />
+              <input
+                type="date"
+                value={localDateDebut}
+                onChange={(event) => {
+                  setPeriodPreset('custom');
+                  setLocalDateDebut(event.target.value);
+                }}
+              />
             </div>
 
             <div className="commandesList__filter-group">
               <label>Au</label>
-              <input type="date" value={localDateFin} onChange={(event) => setLocalDateFin(event.target.value)} />
+              <input
+                type="date"
+                value={localDateFin}
+                onChange={(event) => {
+                  setPeriodPreset('custom');
+                  setLocalDateFin(event.target.value);
+                }}
+              />
             </div>
 
             <div className="commandesList__filter-actions">

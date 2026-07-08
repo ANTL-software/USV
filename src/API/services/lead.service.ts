@@ -40,6 +40,7 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
   const queryParams = new URLSearchParams();
   if (params?.campagne) queryParams.set('campagne', String(params.campagne));
   if (params?.statut) queryParams.set('statut', params.statut);
+  if (params?.agent) queryParams.set('agent', String(params.agent));
   if (params?.date_debut) queryParams.set('date_debut', params.date_debut);
   if (params?.date_fin) queryParams.set('date_fin', params.date_fin);
   if (params?.soft_deleted !== undefined) queryParams.set('soft_deleted', String(params.soft_deleted));

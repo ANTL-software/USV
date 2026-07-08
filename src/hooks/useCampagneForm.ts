@@ -9,7 +9,13 @@ import {
   uploadCampagneLogoService,
   deleteCampagneLogoService,
 } from '../API/services/campagneLogo.service';
-import type { Campagne, CreateCampagneData, UpdateCampagneData, ModePaiement } from '../utils/types/campagne.types';
+import type {
+  Campagne,
+  CreateCampagneData,
+  UpdateCampagneData,
+  ModePaiement,
+  BonCommandeInvoiceRecipient,
+} from '../utils/types/campagne.types';
 import { CAMPAIGN_VARIANTS, normalizeCampaignVariant } from '../utils/scripts/campaignVariants';
 
 interface CampagneFormState {
@@ -31,7 +37,23 @@ interface CampagneFormState {
   pays: string;
   footer_text: string;
   modes_paiement: string;
+  invoice_company_name: string;
+  invoice_siret: string;
+  invoice_tva: string;
+  invoice_email: string;
+  invoice_address: string;
+  invoice_postal_code: string;
+  invoice_city: string;
+  invoice_country: string;
+  invoice_phone: string;
 }
+
+const PAYMENT_OPTIONS: { value: ModePaiement; label: string }[] = [
+  { value: 'Prelevement', label: 'Prélèvement automatique' },
+  { value: 'Cheque', label: 'Chèque bancaire' },
+  { value: 'Virement', label: 'Virement bancaire' },
+  { value: 'CB', label: 'Carte bancaire (par téléphone)' },
+];
 
 const INITIAL_FORM: CampagneFormState = {
   nom_campagne: '',
@@ -52,7 +74,28 @@ const INITIAL_FORM: CampagneFormState = {
   pays: 'France',
   footer_text: '',
   modes_paiement: 'Prelevement,Cheque,Virement',
+  invoice_company_name: '',
+  invoice_siret: '',
+  invoice_tva: '',
+  invoice_email: '',
+  invoice_address: '',
+  invoice_postal_code: '',
+  invoice_city: '',
+  invoice_country: 'France',
+  invoice_phone: '',
 };
+
+const buildInvoiceRecipientForm = (recipient?: BonCommandeInvoiceRecipient | null) => ({
+  invoice_company_name: recipient?.company_name || '',
+  invoice_siret: recipient?.siret || '',
+  invoice_tva: recipient?.tva || '',
+  invoice_email: recipient?.email || '',
+  invoice_address: recipient?.address || '',
+  invoice_postal_code: recipient?.postal_code || '',
+  invoice_city: recipient?.city || '',
+  invoice_country: recipient?.country || 'France',
+  invoice_phone: recipient?.phone || '',
+});
 
 export function useCampagneForm() {
   const navigate = useNavigate();
@@ -86,7 +129,9 @@ export function useCampagneForm() {
         const campagne = await getCampagneByIdService(Number(id));
 
         // Conversion des modes_paiement de JSON vers chaîne pour le form
-        const modesString = campagne.modes_paiement?.join(',') || INITIAL_FORM.modes_paiement;
+        const modesString = Array.isArray(campagne.modes_paiement)
+          ? campagne.modes_paiement.join(',')
+          : INITIAL_FORM.modes_paiement;
 
         setExisting(campagne);
         setForm({
@@ -109,6 +154,7 @@ export function useCampagneForm() {
           pays: campagne.pays || 'France',
           footer_text: campagne.footer_text || '',
           modes_paiement: modesString,
+          ...buildInvoiceRecipientForm(campagne.bon_commande_config?.invoice_recipient),
         });
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Erreur lors du chargement');
@@ -131,10 +177,29 @@ export function useCampagneForm() {
   };
 
   // Gestion du select multiple pour modes_paiement
-  const handleModesPaiementChange = (selectedOptions: any[]) => {
-    const modes = selectedOptions.map((opt: any) => opt.value) as ModePaiement[];
+  const handleModesPaiementChange = (
+    selectedOptions: ReadonlyArray<{ value: ModePaiement; label: string }> | null,
+  ) => {
+    const modes = (selectedOptions ?? []).map((opt) => opt.value) as ModePaiement[];
     const modesString = modes.join(',');
     setForm(prev => ({ ...prev, modes_paiement: modesString }));
+  };
+
+  const buildInvoiceRecipientPayload = (): BonCommandeInvoiceRecipient | null => {
+    const payload: BonCommandeInvoiceRecipient = {
+      company_name: form.invoice_company_name || null,
+      siret: form.invoice_siret || null,
+      tva: form.invoice_tva || null,
+      email: form.invoice_email || null,
+      address: form.invoice_address || null,
+      postal_code: form.invoice_postal_code || null,
+      city: form.invoice_city || null,
+      country: form.invoice_country || null,
+      phone: form.invoice_phone || null,
+    };
+
+    const hasAnyValue = Object.values(payload).some((value) => typeof value === 'string' && value.trim().length > 0);
+    return hasAnyValue ? payload : null;
   };
 
   // Ouverture de la modale d'upload de logo
@@ -262,6 +327,7 @@ export function useCampagneForm() {
         .split(',')
         .filter(m => m.trim())
         .map(m => m.trim() as ModePaiement);
+      const invoiceRecipient = buildInvoiceRecipientPayload();
 
       if (isEdit) {
         const updateData: UpdateCampagneData = {
@@ -283,7 +349,8 @@ export function useCampagneForm() {
           telephone: form.telephone || undefined,
           pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
-          modes_paiement: modesArray.length > 0 ? modesArray : undefined,
+          modes_paiement: modesArray,
+          bon_commande_config: { invoice_recipient: invoiceRecipient },
         };
         await updateCampagneService(Number(id), updateData);
         setSuccess('Campagne mise à jour avec succès');
@@ -308,7 +375,8 @@ export function useCampagneForm() {
           telephone: form.telephone || undefined,
           pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
-          modes_paiement: modesArray.length > 0 ? modesArray : undefined,
+          modes_paiement: modesArray,
+          bon_commande_config: { invoice_recipient: invoiceRecipient },
         };
         await createCampagneService(createData);
         setSuccess('Campagne créée avec succès');
@@ -331,6 +399,7 @@ export function useCampagneForm() {
     success,
     handleChange,
     handleModesPaiementChange,
+    paymentOptions: PAYMENT_OPTIONS,
     handleSubmit,
     // Logo management
     isLogoModalOpen,

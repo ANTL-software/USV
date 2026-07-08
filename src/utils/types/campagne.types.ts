@@ -4,6 +4,23 @@ export type StatutCampagne = 'inactive' | 'active' | 'terminee';
 
 export type ModePaiement = 'CB' | 'Prelevement' | 'Cheque' | 'Virement';
 
+export interface BonCommandeInvoiceRecipient {
+  company_name?: string | null;
+  siret?: string | null;
+  tva?: string | null;
+  email?: string | null;
+  address?: string | null;
+  postal_code?: string | null;
+  city?: string | null;
+  country?: string | null;
+  phone?: string | null;
+}
+
+export interface BonCommandeConfig {
+  invoice_recipient?: BonCommandeInvoiceRecipient | null;
+  [key: string]: unknown;
+}
+
 export interface Campagne {
   id_campagne: number;
   nom_campagne: string;
@@ -32,6 +49,7 @@ export interface Campagne {
   pays?: string | null;
   footer_text?: string | null;
   modes_paiement?: ModePaiement[];
+  bon_commande_config?: BonCommandeConfig | null;
 }
 
 export interface CreateCampagneData {
@@ -56,6 +74,7 @@ export interface CreateCampagneData {
   pays?: string;
   footer_text?: string;
   modes_paiement?: ModePaiement[];
+  bon_commande_config?: BonCommandeConfig;
 }
 
 export interface UpdateCampagneData {
@@ -80,6 +99,7 @@ export interface UpdateCampagneData {
   pays?: string;
   footer_text?: string;
   modes_paiement?: ModePaiement[];
+  bon_commande_config?: BonCommandeConfig;
 }
 
 export interface AgentAffecte {

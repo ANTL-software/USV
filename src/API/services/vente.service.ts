@@ -3,6 +3,12 @@ import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
 import type { AxiosResponse } from 'axios';
 import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/vente.types.ts';
 
+type RawVenteStat = {
+  statut_vente: StatutVente;
+  count: number | string;
+  total_montant: number | string | null;
+};
+
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -13,7 +19,7 @@ interface ApiResponse<T> {
     total: number;
     totalPages: number;
   };
-  stats?: VenteStats;
+  stats?: VenteStats | RawVenteStat[];
 }
 
 interface VentesResponse {
@@ -27,12 +33,65 @@ interface VentesResponse {
   stats?: VenteStats;
 }
 
+const EMPTY_VENTE_STATS: VenteStats = {
+  validees: { count: 0, total_montant: 0 },
+  enAttente: { count: 0, total_montant: 0 },
+  annulees: { count: 0, total_montant: 0 },
+  frigo: { count: 0, total_montant: 0 },
+  total: { count: 0, total_montant: 0 },
+};
+
+function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | undefined): VenteStats | undefined {
+  if (!stats) {
+    return undefined;
+  }
+
+  if (!Array.isArray(stats)) {
+    return {
+      validees: stats.validees ?? EMPTY_VENTE_STATS.validees,
+      enAttente: stats.enAttente ?? EMPTY_VENTE_STATS.enAttente,
+      annulees: stats.annulees ?? EMPTY_VENTE_STATS.annulees,
+      frigo: stats.frigo ?? EMPTY_VENTE_STATS.frigo,
+      total: stats.total ?? EMPTY_VENTE_STATS.total,
+    };
+  }
+
+  return stats.reduce<VenteStats>((accumulator, currentStat) => {
+    const count = Number(currentStat.count ?? 0);
+    const totalMontant = Number.parseFloat(String(currentStat.total_montant ?? '0'));
+    const safeTotalMontant = Number.isNaN(totalMontant) ? 0 : totalMontant;
+
+    accumulator.total.count += count;
+    accumulator.total.total_montant += safeTotalMontant;
+
+    if (currentStat.statut_vente === 'validee') {
+      accumulator.validees = { count, total_montant: safeTotalMontant };
+    } else if (currentStat.statut_vente === 'en_attente') {
+      accumulator.enAttente = { count, total_montant: safeTotalMontant };
+    } else if (currentStat.statut_vente === 'annulee') {
+      accumulator.annulees = { count, total_montant: safeTotalMontant };
+    } else if (currentStat.statut_vente === 'frigo') {
+      accumulator.frigo = { count, total_montant: safeTotalMontant };
+    }
+
+    return accumulator;
+  }, {
+    validees: { count: 0, total_montant: 0 },
+    enAttente: { count: 0, total_montant: 0 },
+    annulees: { count: 0, total_montant: 0 },
+    frigo: { count: 0, total_montant: 0 },
+    total: { count: 0, total_montant: 0 },
+  });
+}
+
 export const getVentesService = async (params?: VenteListParams): Promise<VentesResponse> => {
   const qs = new URLSearchParams();
   if (params?.campagne) qs.set('campagne', String(params.campagne));
   if (params?.statut) qs.set('statut', params.statut);
+  if (params?.agent) qs.set('agent', String(params.agent));
   if (params?.date_debut) qs.set('date_debut', params.date_debut);
   if (params?.date_fin) qs.set('date_fin', params.date_fin);
+  if (params?.date_field) qs.set('date_field', params.date_field);
   if (params?.soft_deleted !== undefined) qs.set('soft_deleted', String(params.soft_deleted));
   if (params?.page) qs.set('page', String(params.page));
   if (params?.limit) qs.set('limit', String(params.limit));
@@ -51,7 +110,7 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
         total: response.data.data.length,
         totalPages: 1,
       },
-      stats: response.data.stats,
+      stats: normalizeVenteStats(response.data.stats),
     };
   }
 

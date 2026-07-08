@@ -50,35 +50,13 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
       const result = await getVentesService(filters);
       setVentes(result.ventes);
       setPagination(result.pagination);
-
-      // Transformer les stats reçues en objet structuré
-      const statsObj = {
+      setStats(result.stats ?? {
         validees: { count: 0, total_montant: 0 },
         enAttente: { count: 0, total_montant: 0 },
         annulees: { count: 0, total_montant: 0 },
         frigo: { count: 0, total_montant: 0 },
         total: { count: 0, total_montant: 0 }
-      };
-
-      if (result.stats && Array.isArray(result.stats)) {
-        result.stats.forEach((s: any) => {
-          const count = Number(s.count || 0);
-          const amount = parseFloat(s.total_montant || '0');
-          statsObj.total.count += count;
-          statsObj.total.total_montant += amount;
-
-          if (s.statut_vente === 'validee') {
-            statsObj.validees = { count, total_montant: amount };
-          } else if (s.statut_vente === 'en_attente') {
-            statsObj.enAttente = { count, total_montant: amount };
-          } else if (s.statut_vente === 'annulee') {
-            statsObj.annulees = { count, total_montant: amount };
-          } else if (s.statut_vente === 'frigo') {
-            statsObj.frigo = { count, total_montant: amount };
-          }
-        });
-      }
-      setStats(statsObj);
+      });
     } catch (err) {
       const msg = err instanceof Error ? err.message : 'Erreur lors du chargement des ventes';
       setError(msg);
