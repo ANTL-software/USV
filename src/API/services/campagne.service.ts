@@ -1,5 +1,6 @@
 import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
+import axios from 'axios';
 import { CampagneModel } from '../models/campagne.model.ts';
 import type {
   Campagne,
@@ -92,4 +93,19 @@ export const transfererAgentService = async (
   if (!response.data.success) {
     throw new Error(response.data.message || 'Impossible de transférer l\'agent');
   }
+};
+
+export const downloadCampagneFacturationDocumentService = async (
+  idCampagne: number,
+  payload: { date_debut: string; date_fin: string }
+): Promise<Blob> => {
+  const response = await axios.post(`/campagnes/${idCampagne}/facturation/document`, payload, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    responseType: 'blob' as const,
+    withCredentials: true,
+  });
+
+  return response.data;
 };

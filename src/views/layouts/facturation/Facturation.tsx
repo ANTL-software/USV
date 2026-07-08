@@ -2,7 +2,7 @@ import './facturation.scss';
 
 import { ReactElement, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdArrowBack, MdOutlineChecklist, MdOutlineDescription, MdOutlineInsights, MdOutlineTune } from 'react-icons/md';
+import { MdArrowBack, MdOutlineChecklist, MdOutlineInsights, MdOutlineTune } from 'react-icons/md';
 
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
@@ -11,10 +11,11 @@ import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
 import { useCampagnes } from '../../../hooks/useCampagnes';
+import { downloadCampagneFacturationDocumentService } from '../../../API/services/campagne.service.ts';
 import { getVentesService } from '../../../API/services/vente.service.ts';
 import { getLeadClientsService } from '../../../API/services/lead.service.ts';
+import { triggerBlobDownload } from '../../../utils/services/downloadService.ts';
 import {
-  MODE_PAIEMENT_LABELS,
   STATUT_VENTE_LABELS,
   type Vente,
   type VenteStats,
@@ -47,6 +48,12 @@ type ResolvedBillingProfile = {
   sourceLabel: string;
   fields: BillingField[];
   missingRequiredFields: string[];
+};
+
+type CampaignBillingSettings = {
+  vatRate: number;
+  shippingFeeHt: number;
+  freeShippingThresholdHt: number;
 };
 
 type BillingPreview =
@@ -98,6 +105,101 @@ function formatCurrency(value: number | string): string {
     style: 'currency',
     currency: 'EUR',
   });
+}
+
+function formatPercentValue(value: number | string | null | undefined): string {
+  if (value === null || value === undefined || value === '') {
+    return 'Non applicable';
+  }
+
+  const numericValue = typeof value === 'string' ? Number.parseFloat(value) : value;
+
+  if (Number.isNaN(numericValue) || numericValue <= 0) {
+    return 'Non applicable';
+  }
+
+  return `${numericValue.toLocaleString('fr-FR', {
+    minimumFractionDigits: Number.isInteger(numericValue) ? 0 : 2,
+    maximumFractionDigits: 2,
+  })} %`;
+}
+
+function getCampaignBillingSettings(campagne: Campagne | null): CampaignBillingSettings {
+  const rawConfig = campagne?.bon_commande_config;
+  const rawVatRate = rawConfig && typeof rawConfig === 'object' && 'vat_rate' in rawConfig
+    ? rawConfig.vat_rate
+    : null;
+  const rawShipping = rawConfig && typeof rawConfig === 'object' && 'shipping' in rawConfig
+    ? rawConfig.shipping
+    : null;
+  const rawShippingFee = rawShipping && typeof rawShipping === 'object' && 'fee_ht' in rawShipping
+    ? rawShipping.fee_ht
+    : null;
+  const rawFreeShippingThreshold = rawShipping && typeof rawShipping === 'object' && 'free_threshold_ht' in rawShipping
+    ? rawShipping.free_threshold_ht
+    : null;
+
+  const parsedVatRate = typeof rawVatRate === 'number'
+    ? rawVatRate
+    : Number.parseFloat(String(rawVatRate ?? '0.2'));
+  const parsedShippingFee = typeof rawShippingFee === 'number'
+    ? rawShippingFee
+    : Number.parseFloat(String(rawShippingFee ?? '30'));
+  const parsedFreeShippingThreshold = typeof rawFreeShippingThreshold === 'number'
+    ? rawFreeShippingThreshold
+    : Number.parseFloat(String(rawFreeShippingThreshold ?? '300'));
+
+  return {
+    vatRate: Number.isNaN(parsedVatRate) ? 0.2 : parsedVatRate,
+    shippingFeeHt: Number.isNaN(parsedShippingFee) ? 30 : parsedShippingFee,
+    freeShippingThresholdHt: Number.isNaN(parsedFreeShippingThreshold) ? 300 : parsedFreeShippingThreshold,
+  };
+}
+
+function parseNumericAmount(value: number | string): number {
+  const numericAmount = typeof value === 'string' ? Number.parseFloat(value) : value;
+
+  if (Number.isNaN(numericAmount)) {
+    return 0;
+  }
+
+  return numericAmount;
+}
+
+function computeTtcAmount(htAmount: number | string, vatRate: number): number {
+  const numericAmount = parseNumericAmount(htAmount);
+
+  return numericAmount * (1 + vatRate);
+}
+
+function computeShippingHt(vente: Vente, billingSettings: CampaignBillingSettings): number {
+  const totalArticlesHt = parseNumericAmount(vente.montant_total);
+
+  if (totalArticlesHt >= billingSettings.freeShippingThresholdHt || vente.livraison_offerte) {
+    return 0;
+  }
+
+  return billingSettings.shippingFeeHt;
+}
+
+function computeFacturableHt(vente: Vente, billingSettings: CampaignBillingSettings): number {
+  return parseNumericAmount(vente.montant_total) + computeShippingHt(vente, billingSettings);
+}
+
+function computePreviewTotals(preview: BillingPreview | null, billingSettings: CampaignBillingSettings): { totalHt: number; totalTtc: number } {
+  if (!preview || preview.source !== 'ventes') {
+    return {
+      totalHt: 0,
+      totalTtc: 0,
+    };
+  }
+
+  const totalHt = preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente, billingSettings), 0);
+
+  return {
+    totalHt,
+    totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate),
+  };
 }
 
 function formatDisplayDate(value: string | null | undefined): string {
@@ -200,6 +302,15 @@ function venteBillingDateLabel(vente: Vente): string {
 
 function campaignDisplayName(campagne: Campagne): string {
   return `${campagne.nom_campagne} · ${getCampaignVariantLabel(campagne.type_campagne)}`;
+}
+
+function sanitizeFileSegment(value: string): string {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]+/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .toLowerCase();
 }
 
 function getInvoiceRecipient(campagne: Campagne | null): InvoiceRecipient | null {
@@ -341,6 +452,7 @@ function Facturation(): ReactElement {
   const [previewLoading, setPreviewLoading] = useState<boolean>(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
+  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState<boolean>(false);
 
   useEffect(() => {
     if (activeCampagnes.length === 0) {
@@ -357,6 +469,14 @@ function Facturation(): ReactElement {
 
   const selectedCampagne = activeCampagnes.find((campagne) => campagne.id_campagne === selectedCampagneId) ?? null;
   const selectedVariant = normalizeCampaignVariant(selectedCampagne?.type_campagne);
+  const billingSettings = useMemo(
+    () => getCampaignBillingSettings(selectedCampagne),
+    [selectedCampagne],
+  );
+  const previewTotals = useMemo(
+    () => computePreviewTotals(preview, billingSettings),
+    [billingSettings, preview],
+  );
   const resolvedBillingProfile = useMemo(
     () => buildResolvedBillingProfile(selectedCampagne),
     [selectedCampagne],
@@ -378,6 +498,7 @@ function Facturation(): ReactElement {
   }, [currentMonthBounds, customDateEnd, customDateStart, periodPreset, previousMonthBounds]);
 
   const missingRequiredFields = resolvedBillingProfile?.missingRequiredFields ?? [];
+  const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0;
 
   useEffect(() => {
     if (!selectedCampagne || !resolvedPeriod.start || !resolvedPeriod.end) {
@@ -447,6 +568,32 @@ function Facturation(): ReactElement {
     };
   }, [resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
 
+  const handleGenerateInvoice = async () => {
+    if (!selectedCampagne || !canGenerateInvoice) {
+      return;
+    }
+
+    setPreviewError(null);
+    setIsGeneratingInvoice(true);
+
+    try {
+      const blob = await downloadCampagneFacturationDocumentService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+      });
+
+      const filename = `facture_${sanitizeFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`;
+      triggerBlobDownload(blob, filename);
+    } catch (generationError) {
+      const message = generationError instanceof Error
+        ? generationError.message
+        : 'Impossible de générer la facture.';
+      setPreviewError(message);
+    } finally {
+      setIsGeneratingInvoice(false);
+    }
+  };
+
   const summaryCards = useMemo<BillingSummaryCard[]>(() => {
     if (!selectedCampagne) {
       return [];
@@ -461,11 +608,6 @@ function Facturation(): ReactElement {
       {
         label: 'Période',
         value: `${formatDisplayDate(resolvedPeriod.start)} → ${formatDisplayDate(resolvedPeriod.end)}`,
-        tone: 'muted',
-      },
-      {
-        label: 'Source pressentie',
-        value: selectedVariant === CAMPAIGN_VARIANTS.lead_b2b ? 'commercial.leads' : 'commercial.ventes',
         tone: 'muted',
       },
       {
@@ -494,7 +636,7 @@ function Facturation(): ReactElement {
         },
         {
           label: 'CA validé',
-          value: formatCurrency(preview.stats.total.total_montant),
+          value: formatCurrency(previewTotals.totalHt),
           tone: 'success',
         },
       ];
@@ -513,9 +655,7 @@ function Facturation(): ReactElement {
         tone: 'success',
       },
     ];
-  }, [missingRequiredFields.length, preview, resolvedBillingProfile, resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
-
-  const campaignModesPaiement = selectedCampagne?.modes_paiement?.map((mode) => MODE_PAIEMENT_LABELS[mode]).join(', ') ?? '—';
+  }, [missingRequiredFields.length, preview, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
 
   return (
     <div id="facturationView">
@@ -538,12 +678,6 @@ function Facturation(): ReactElement {
                 Espace de préparation pour la génération des factures B2B par campagne et par période.
                 La logique finale de calcul sera branchée dès que tu me donnes les règles métier.
               </p>
-            </div>
-            <div className="facturationView__hero-note">
-              <MdOutlineDescription />
-              <span>
-                Structure prête pour gérer plusieurs campagnes, plusieurs périodes, et une lecture adaptée au type de campagne.
-              </span>
             </div>
           </section>
 
@@ -655,7 +789,7 @@ function Facturation(): ReactElement {
                   </div>
                 ) : preview.source === 'ventes' ? (
                   <>
-                    <div className="facturationView__warning">
+                    <div className="facturationView__warning facturationView__warning--spaced-bottom">
                       <strong>Règle de facturation ventes :</strong> seules les commandes au statut validée
                       avec une date de validation comprise dans la période sont retenues.
                     </div>
@@ -667,15 +801,19 @@ function Facturation(): ReactElement {
                       </div>
                       <div className="facturationView__kpi">
                         <span>CA validé</span>
-                        <strong>{formatCurrency(preview.stats.total.total_montant)}</strong>
+                        <strong>{formatCurrency(previewTotals.totalHt)} HT</strong>
+                      </div>
+                      <div className="facturationView__kpi">
+                        <span>CA validé TTC</span>
+                        <strong>{formatCurrency(previewTotals.totalTtc)}</strong>
                       </div>
                       <div className="facturationView__kpi">
                         <span>Période de validation</span>
                         <strong>{formatDisplayDate(resolvedPeriod.start)} → {formatDisplayDate(resolvedPeriod.end)}</strong>
                       </div>
                       <div className="facturationView__kpi">
-                        <span>Champ de rattachement</span>
-                        <strong>`date_acceptation`</strong>
+                        <span>TVA appliquée</span>
+                        <strong>{(billingSettings.vatRate * 100).toLocaleString('fr-FR', { maximumFractionDigits: 2 })} %</strong>
                       </div>
                     </div>
 
@@ -705,7 +843,11 @@ function Facturation(): ReactElement {
                                 <td>{venteProspectLabel(vente)}</td>
                                 <td>{venteBillingDateLabel(vente)}</td>
                                 <td>{formatDisplayDateTime(vente.date_vente)}</td>
-                                <td>{formatCurrency(vente.montant_total)}</td>
+                                <td>
+                                  {formatCurrency(computeFacturableHt(vente, billingSettings))} HT
+                                  <br />
+                                  {formatCurrency(computeTtcAmount(computeFacturableHt(vente, billingSettings), billingSettings.vatRate))} TTC
+                                </td>
                                 <td>{STATUT_VENTE_LABELS[vente.statut_vente]}</td>
                               </tr>
                             ))
@@ -819,8 +961,8 @@ function Facturation(): ReactElement {
                         })}
 
                         <div className="facturationView__document-item is-complete">
-                          <span>Modes de paiement</span>
-                          <strong>{campaignModesPaiement}</strong>
+                          <span>Commission antl</span>
+                          <strong>{formatPercentValue(selectedCampagne.taux_commission_facturation)}</strong>
                         </div>
                       </div>
 
@@ -831,7 +973,7 @@ function Facturation(): ReactElement {
                       )}
 
                       {resolvedBillingProfile?.source === 'invoice_recipient' && (
-                        <div className="facturationView__warning">
+                        <div className="facturationView__warning facturationView__warning--spaced-top">
                           <strong>Adresse de facturation prioritaire :</strong> la facture utilisera d’abord le bloc
                           de facturation tierce de la campagne, avec fallback automatique sur la fiche campagne
                           pour les champs non renseignés.
@@ -860,10 +1002,6 @@ function Facturation(): ReactElement {
                       <strong>{formatDisplayDate(resolvedPeriod.start)} → {formatDisplayDate(resolvedPeriod.end)}</strong>
                     </div>
                     <div>
-                      <span>Source pressentie</span>
-                      <strong>{selectedVariant === CAMPAIGN_VARIANTS.lead_b2b ? 'Flux leads client MMA' : 'Flux ventes historiques'}</strong>
-                    </div>
-                    <div>
                       <span>Facturé à</span>
                       <strong>{resolvedBillingProfile?.fields.find((field) => field.label === 'Société facturée')?.value ?? '—'}</strong>
                     </div>
@@ -875,12 +1013,15 @@ function Facturation(): ReactElement {
 
                   <div className="facturationView__placeholder">
                     <p>
-                      J’ai volontairement laissé la génération finale en mode cadrage : dès que tu me donnes
-                      les éléments de facturation, on branche ici le calcul, le libellé, la numérotation et
-                      l’export du document.
+                      La génération PDF s’appuie sur la campagne active, le type de campagne et la période
+                      affichée ci-dessus. Le backend choisit automatiquement le bon modèle de facture.
                     </p>
-                    <Button style="grey" disabled>
-                      Génération à brancher
+                    <Button
+                      style={canGenerateInvoice ? 'gradient' : 'grey'}
+                      onClick={handleGenerateInvoice}
+                      disabled={!canGenerateInvoice || isGeneratingInvoice}
+                    >
+                      {isGeneratingInvoice ? 'Génération...' : 'Télécharger la facture PDF'}
                     </Button>
                   </div>
                 </article>

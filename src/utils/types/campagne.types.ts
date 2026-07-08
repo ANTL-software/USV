@@ -48,6 +48,7 @@ export interface Campagne {
   telephone?: string | null;
   pays?: string | null;
   footer_text?: string | null;
+  taux_commission_facturation?: number | null;
   modes_paiement?: ModePaiement[];
   bon_commande_config?: BonCommandeConfig | null;
 }
@@ -73,6 +74,7 @@ export interface CreateCampagneData {
   telephone?: string;
   pays?: string;
   footer_text?: string;
+  taux_commission_facturation?: number | null;
   modes_paiement?: ModePaiement[];
   bon_commande_config?: BonCommandeConfig;
 }
@@ -98,6 +100,7 @@ export interface UpdateCampagneData {
   telephone?: string;
   pays?: string;
   footer_text?: string;
+  taux_commission_facturation?: number | null;
   modes_paiement?: ModePaiement[];
   bon_commande_config?: BonCommandeConfig;
 }

@@ -58,26 +58,6 @@
     line-height: 1.6;
   }
 
-  .facturationView__hero-note {
-    border-radius: 1em;
-    padding: 1em 1.1em;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.12), rgba(167, 139, 250, 0.16));
-    color: vars.$utilsDark;
-    display: flex;
-    gap: 0.75em;
-    align-items: flex-start;
-
-    svg {
-      font-size: 1.5rem;
-      flex-shrink: 0;
-    }
-
-    span {
-      line-height: 1.5;
-      font-weight: 600;
-    }
-  }
-
   .facturationView__panel {
     border-radius: 1.1em;
     padding: 1.2em;
@@ -294,6 +274,14 @@
     color: #9a6700;
     border: 1px solid rgba(243, 156, 18, 0.22);
     line-height: 1.5;
+  }
+
+  .facturationView__warning--spaced-top {
+    margin-top: 1em;
+  }
+
+  .facturationView__warning--spaced-bottom {
+    margin-bottom: 1em;
   }
 
   .facturationView__error {

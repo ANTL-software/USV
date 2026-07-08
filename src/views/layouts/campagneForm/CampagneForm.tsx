@@ -509,6 +509,28 @@ function CampagneForm(): ReactElement {
                   />
                 </fieldset>
 
+                <fieldset className="campagneForm__fieldset">
+                  <legend>Commission de facturation</legend>
+                  <div className="campagneForm__row">
+                    <label>
+                      Taux de commission antl (%)
+                      <input
+                        type="number"
+                        name="taux_commission_facturation"
+                        value={form.taux_commission_facturation}
+                        onChange={handleChange}
+                        min="0"
+                        max="100"
+                        step="0.01"
+                        placeholder="Ex : 45"
+                      />
+                      <span className="campagneForm__hint">
+                        Pourcentage du montant de vente que nous facturons. Vide ou 0 = non applicable.
+                      </span>
+                    </label>
+                  </div>
+                </fieldset>
+
                 <div className="campagneForm__actions">
                   <Button style="grey" type="button" onClick={() => navigate('/campagnes')}>Annuler</Button>
                   <Button style="gradient" type="submit" disabled={isLoading}>

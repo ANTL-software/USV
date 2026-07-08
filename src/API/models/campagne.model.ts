@@ -33,6 +33,7 @@ export class CampagneModel implements Campagne {
   telephone?: string | null;
   pays?: string | null;
   footer_text?: string | null;
+  taux_commission_facturation?: number | null;
   modes_paiement?: ModePaiement[];
   bon_commande_config?: Campagne['bon_commande_config'];
 
@@ -61,6 +62,7 @@ export class CampagneModel implements Campagne {
     this.telephone = data.telephone ?? null;
     this.pays = data.pays ?? null;
     this.footer_text = data.footer_text ?? null;
+    this.taux_commission_facturation = data.taux_commission_facturation ?? null;
     this.modes_paiement = data.modes_paiement ?? [];
     this.bon_commande_config = data.bon_commande_config ?? null;
   }
@@ -103,6 +105,7 @@ export class CampagneModel implements Campagne {
       telephone: this.telephone,
       pays: this.pays,
       footer_text: this.footer_text,
+      taux_commission_facturation: this.taux_commission_facturation,
       modes_paiement: this.modes_paiement,
       bon_commande_config: this.bon_commande_config,
     };

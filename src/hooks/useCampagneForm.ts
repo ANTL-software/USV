@@ -36,6 +36,7 @@ interface CampagneFormState {
   telephone: string;
   pays: string;
   footer_text: string;
+  taux_commission_facturation: string;
   modes_paiement: string;
   invoice_company_name: string;
   invoice_siret: string;
@@ -73,6 +74,7 @@ const INITIAL_FORM: CampagneFormState = {
   telephone: '',
   pays: 'France',
   footer_text: '',
+  taux_commission_facturation: '',
   modes_paiement: 'Prelevement,Cheque,Virement',
   invoice_company_name: '',
   invoice_siret: '',
@@ -153,6 +155,9 @@ export function useCampagneForm() {
           telephone: campagne.telephone || '',
           pays: campagne.pays || 'France',
           footer_text: campagne.footer_text || '',
+          taux_commission_facturation: campagne.taux_commission_facturation != null
+            ? String(campagne.taux_commission_facturation)
+            : '',
           modes_paiement: modesString,
           ...buildInvoiceRecipientForm(campagne.bon_commande_config?.invoice_recipient),
         });
@@ -327,6 +332,10 @@ export function useCampagneForm() {
         .split(',')
         .filter(m => m.trim())
         .map(m => m.trim() as ModePaiement);
+      const parsedCommissionRate = Number.parseFloat(form.taux_commission_facturation);
+      const commissionRate = Number.isNaN(parsedCommissionRate) || parsedCommissionRate <= 0
+        ? null
+        : parsedCommissionRate;
       const invoiceRecipient = buildInvoiceRecipientPayload();
 
       if (isEdit) {
@@ -349,6 +358,7 @@ export function useCampagneForm() {
           telephone: form.telephone || undefined,
           pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
+          taux_commission_facturation: commissionRate,
           modes_paiement: modesArray,
           bon_commande_config: { invoice_recipient: invoiceRecipient },
         };
@@ -375,6 +385,7 @@ export function useCampagneForm() {
           telephone: form.telephone || undefined,
           pays: form.pays || undefined,
           footer_text: form.footer_text || undefined,
+          taux_commission_facturation: commissionRate,
           modes_paiement: modesArray,
           bon_commande_config: { invoice_recipient: invoiceRecipient },
         };

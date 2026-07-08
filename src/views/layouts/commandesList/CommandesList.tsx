@@ -460,29 +460,6 @@ function CommandesList(): ReactElement {
     }
   }, [currentMonthBounds.end, currentMonthBounds.start, previousMonthBounds.end, previousMonthBounds.start]);
 
-  const handleSearch = useCallback(() => {
-    if (isLeadCampaign) {
-      setLeadFilters((previous) => ({
-        ...previous,
-        statut: localLeadStatut || undefined,
-        agent: localAgentId ?? undefined,
-        date_debut: localDateDebut || undefined,
-        date_fin: localDateFin || undefined,
-        page: 1,
-      }));
-      return;
-    }
-
-    setFilters({
-      statut: localStatut || undefined,
-      agent: localAgentId ?? undefined,
-      date_debut: localDateDebut || undefined,
-      date_fin: localDateFin || undefined,
-      soft_deleted: isCorbeille,
-      page: 1,
-    });
-  }, [isLeadCampaign, localLeadStatut, localDateDebut, localDateFin, localStatut, setFilters, isCorbeille]);
-
   const handlePageChange = useCallback((newPage: number) => {
     if (isLeadCampaign) {
       setLeadFilters((previous) => ({ ...previous, page: newPage }));
@@ -537,6 +514,58 @@ function CommandesList(): ReactElement {
   const pageError = isLeadCampaign ? leadError : error;
   const hasCampaignSelection = Boolean(filters.campagne);
 
+  useEffect(() => {
+    if (!hasCampaignSelection) {
+      return;
+    }
+
+    if (isLeadCampaign) {
+      setLeadFilters((previous) => {
+        const nextFilters: LeadClientListParams = {
+          ...previous,
+          statut: localLeadStatut || undefined,
+          agent: localAgentId ?? undefined,
+          date_debut: localDateDebut || undefined,
+          date_fin: localDateFin || undefined,
+          page: 1,
+        };
+
+        if (
+          previous.statut === nextFilters.statut
+          && previous.agent === nextFilters.agent
+          && previous.date_debut === nextFilters.date_debut
+          && previous.date_fin === nextFilters.date_fin
+          && previous.page === nextFilters.page
+        ) {
+          return previous;
+        }
+
+        return nextFilters;
+      });
+
+      return;
+    }
+
+    setFilters({
+      statut: isCorbeille ? undefined : (localStatut || undefined),
+      agent: localAgentId ?? undefined,
+      date_debut: localDateDebut || undefined,
+      date_fin: localDateFin || undefined,
+      soft_deleted: isCorbeille,
+      page: 1,
+    });
+  }, [
+    hasCampaignSelection,
+    isCorbeille,
+    isLeadCampaign,
+    localAgentId,
+    localDateDebut,
+    localDateFin,
+    localLeadStatut,
+    localStatut,
+    setFilters,
+  ]);
+
   return (
     <div id="commandesList">
       <Header />
@@ -554,21 +583,6 @@ function CommandesList(): ReactElement {
           </div>
 
           <div className="commandesList__filters">
-            <div className="commandesList__filter-group">
-              <label>Campagne</label>
-              <Select
-                options={campagneOptions}
-                value={campagneOptions.find((option) => option.value === String(filters.campagne)) ?? null}
-                onChange={(option) => {
-                  const selectedOption = option as SelectOption | null;
-                  handleCampagneChange(selectedOption ? Number(selectedOption.value) : null);
-                }}
-                styles={reactSelectStyles}
-                placeholder="Campagne..."
-                isClearable
-              />
-            </div>
-
             {!isLeadCampaign && (
               <div className="commandesList__filter-group">
                 <label>Vue</label>
@@ -667,11 +681,21 @@ function CommandesList(): ReactElement {
               />
             </div>
 
-            <div className="commandesList__filter-actions">
-              <Button style="gradient" onClick={handleSearch} disabled={!hasCampaignSelection || pageLoading}>
-                {pageLoading ? 'Chargement...' : 'Rechercher'}
-              </Button>
+            <div className="commandesList__filter-group">
+              <label>Campagne</label>
+              <Select
+                options={campagneOptions}
+                value={campagneOptions.find((option) => option.value === String(filters.campagne)) ?? null}
+                onChange={(option) => {
+                  const selectedOption = option as SelectOption | null;
+                  handleCampagneChange(selectedOption ? Number(selectedOption.value) : null);
+                }}
+                styles={reactSelectStyles}
+                placeholder="Campagne..."
+                isClearable
+              />
             </div>
+
           </div>
 
           {pageError && <div className="commandesList__error">{pageError}</div>}
@@ -716,26 +740,30 @@ function CommandesList(): ReactElement {
                 <span className="summary-card__label">Moyenne</span>
               </div>
               <div className="summary-card summary-card--validee">
-                <span className="summary-card__value">
-                  {statsValideesCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsValideesAmount))})</span>
+                <span className="summary-card__value summary-card__value--split">
+                  <span>{formatMontant(String(statsValideesAmount))}</span>
+                  <span className="summary-card__meta">({statsValideesCount})</span>
                 </span>
                 <span className="summary-card__label">Validées</span>
               </div>
               <div className="summary-card summary-card--attente">
-                <span className="summary-card__value">
-                  {statsEnAttenteCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsEnAttenteAmount))})</span>
+                <span className="summary-card__value summary-card__value--split">
+                  <span>{formatMontant(String(statsEnAttenteAmount))}</span>
+                  <span className="summary-card__meta">({statsEnAttenteCount})</span>
                 </span>
                 <span className="summary-card__label">En attente</span>
               </div>
               <div className="summary-card summary-card--annulee">
-                <span className="summary-card__value">
-                  {statsAnnuleesCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsAnnuleesAmount))})</span>
+                <span className="summary-card__value summary-card__value--split">
+                  <span>{formatMontant(String(statsAnnuleesAmount))}</span>
+                  <span className="summary-card__meta">({statsAnnuleesCount})</span>
                 </span>
                 <span className="summary-card__label">Annulées</span>
               </div>
               <div className="summary-card summary-card--frigo">
-                <span className="summary-card__value">
-                  {statsFrigoCount} <span style={{ fontSize: '0.55em', opacity: 0.85, fontWeight: 'normal' }}>({formatMontant(String(statsFrigoAmount))})</span>
+                <span className="summary-card__value summary-card__value--split">
+                  <span>{formatMontant(String(statsFrigoAmount))}</span>
+                  <span className="summary-card__meta">({statsFrigoCount})</span>
                 </span>
                 <span className="summary-card__label">CDE suspendues</span>
               </div>
