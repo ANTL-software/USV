@@ -2,7 +2,9 @@ import './facturation.scss';
 
 import { ReactElement, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MdArrowBack, MdOutlineChecklist, MdOutlineInsights, MdOutlineTune } from 'react-icons/md';
+import { MdArrowBack, MdClose, MdOutlineChecklist, MdOutlineInsights, MdOutlineTune } from 'react-icons/md';
+import CreatableSelect from 'react-select/creatable';
+import type { SingleValue, StylesConfig } from 'react-select';
 
 import WithAuth from '../../../utils/middleware/WithAuth';
 import Header from '../../components/header/Header';
@@ -11,7 +13,10 @@ import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
 import { useCampagnes } from '../../../hooks/useCampagnes';
-import { downloadCampagneFacturationDocumentService } from '../../../API/services/campagne.service.ts';
+import {
+  downloadCampagneFacturationDocumentService,
+  sendCampagneFacturationEmailService,
+} from '../../../API/services/campagne.service.ts';
 import { getVentesService } from '../../../API/services/vente.service.ts';
 import { getLeadClientsService } from '../../../API/services/lead.service.ts';
 import { triggerBlobDownload } from '../../../utils/services/downloadService.ts';
@@ -31,6 +36,8 @@ import {
   getCampaignVariantLabel,
   normalizeCampaignVariant,
 } from '../../../utils/scripts/campaignVariants.ts';
+import { confirm, showError, showSuccess } from '../../../utils/services/alertService';
+import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 
 type PeriodPreset = 'current_month' | 'previous_month' | 'custom';
 
@@ -72,6 +79,65 @@ type BillingSummaryCard = {
   label: string;
   value: string;
   tone: 'primary' | 'success' | 'warning' | 'muted';
+};
+
+type InvoiceEmailOption = {
+  value: string;
+  label: string;
+};
+
+const baseInvoiceEmailSelectStyles = reactSelectStyles as StylesConfig<InvoiceEmailOption, false>;
+
+const invoiceEmailSelectStyles: StylesConfig<InvoiceEmailOption, false> = {
+  ...baseInvoiceEmailSelectStyles,
+  control: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.control ? baseInvoiceEmailSelectStyles.control(provided, state) : provided),
+    minHeight: '48px',
+    height: '48px',
+  }),
+  valueContainer: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.valueContainer
+      ? baseInvoiceEmailSelectStyles.valueContainer(provided, state)
+      : provided),
+    minHeight: '44px',
+    height: '44px',
+    padding: '0 12px',
+    display: 'flex',
+    alignItems: 'center',
+  }),
+  input: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.input ? baseInvoiceEmailSelectStyles.input(provided, state) : provided),
+    margin: '0',
+    padding: '0',
+  }),
+  placeholder: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.placeholder
+      ? baseInvoiceEmailSelectStyles.placeholder(provided, state)
+      : provided),
+    margin: '0',
+  }),
+  singleValue: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.singleValue
+      ? baseInvoiceEmailSelectStyles.singleValue(provided, state)
+      : provided),
+    margin: '0',
+  }),
+  indicatorsContainer: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.indicatorsContainer
+      ? baseInvoiceEmailSelectStyles.indicatorsContainer(provided, state)
+      : provided),
+    height: '44px',
+  }),
+  menuPortal: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.menuPortal
+      ? baseInvoiceEmailSelectStyles.menuPortal(provided, state)
+      : provided),
+    zIndex: 1600,
+  }),
+  menu: (provided, state) => ({
+    ...(baseInvoiceEmailSelectStyles.menu ? baseInvoiceEmailSelectStyles.menu(provided, state) : provided),
+    zIndex: 1600,
+  }),
 };
 
 const PERIOD_PRESET_OPTIONS: { value: PeriodPreset; label: string }[] = [
@@ -218,6 +284,10 @@ function formatDisplayDate(value: string | null | undefined): string {
     month: '2-digit',
     year: 'numeric',
   });
+}
+
+function isValidEmail(value: string): boolean {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
 function formatDisplayDateTime(dateValue: string, timeValue?: string): string {
@@ -453,6 +523,9 @@ function Facturation(): ReactElement {
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState<boolean>(false);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState<boolean>(false);
+  const [selectedRecipientEmail, setSelectedRecipientEmail] = useState<string>('');
+  const [isSendingInvoiceEmail, setIsSendingInvoiceEmail] = useState<boolean>(false);
 
   useEffect(() => {
     if (activeCampagnes.length === 0) {
@@ -499,6 +572,35 @@ function Facturation(): ReactElement {
 
   const missingRequiredFields = resolvedBillingProfile?.missingRequiredFields ?? [];
   const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0;
+  const emailOptions = useMemo<InvoiceEmailOption[]>(() => {
+    if (!selectedCampagne) {
+      return [];
+    }
+
+    const invoiceEmail = selectedCampagne.bon_commande_config?.invoice_recipient?.email?.trim();
+    const campaignEmail = selectedCampagne.email_contact?.trim();
+    const options: InvoiceEmailOption[] = [];
+
+    if (invoiceEmail) {
+      options.push({
+        value: invoiceEmail,
+        label: `Email de facturation — ${invoiceEmail}`,
+      });
+    }
+
+    if (campaignEmail && campaignEmail !== invoiceEmail) {
+      options.push({
+        value: campaignEmail,
+        label: `Email campagne — ${campaignEmail}`,
+      });
+    }
+
+    return options;
+  }, [selectedCampagne]);
+  const resolvedRecipientEmail = selectedRecipientEmail.trim();
+  const canSendInvoiceEmail = canGenerateInvoice
+    && !isSendingInvoiceEmail
+    && isValidEmail(resolvedRecipientEmail);
 
   useEffect(() => {
     if (!selectedCampagne || !resolvedPeriod.start || !resolvedPeriod.end) {
@@ -594,6 +696,64 @@ function Facturation(): ReactElement {
     }
   };
 
+  const openEmailModal = () => {
+    setPreviewError(null);
+    setSelectedRecipientEmail('');
+    setIsEmailModalOpen(true);
+  };
+
+  const closeEmailModal = () => {
+    if (isSendingInvoiceEmail) {
+      return;
+    }
+
+    setIsEmailModalOpen(false);
+    setSelectedRecipientEmail('');
+  };
+
+  const handleSendInvoiceEmail = async () => {
+    if (!selectedCampagne || !canSendInvoiceEmail) {
+      return;
+    }
+
+    const confirmationMessage = `Vous êtes sur le point d'envoyer la facture de la période ${formatDisplayDate(resolvedPeriod.start)} → ${formatDisplayDate(resolvedPeriod.end)} pour un total CA HT de ${formatCurrency(previewTotals.totalHt)} à ${resolvedRecipientEmail}.`;
+    const confirmed = await confirm(
+      confirmationMessage,
+      'Confirmer l’envoi de la facture',
+      'Envoyer',
+      'Annuler',
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setPreviewError(null);
+    setIsSendingInvoiceEmail(true);
+
+    try {
+      const response = await sendCampagneFacturationEmailService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+        recipient_email: resolvedRecipientEmail,
+      });
+
+      setIsEmailModalOpen(false);
+      setSelectedRecipientEmail('');
+      await showSuccess(
+        response.message || `La facture a bien été envoyée à ${resolvedRecipientEmail}.`,
+        'Envoi confirmé',
+      );
+    } catch (sendError) {
+      const message = sendError instanceof Error
+        ? sendError.message
+        : 'Impossible d’envoyer la facture par email.';
+      await showError(message, 'Échec de l’envoi');
+    } finally {
+      setIsSendingInvoiceEmail(false);
+    }
+  };
+
   const summaryCards = useMemo<BillingSummaryCard[]>(() => {
     if (!selectedCampagne) {
       return [];
@@ -682,7 +842,6 @@ function Facturation(): ReactElement {
           </section>
 
           {error && <div className="facturationView__error">{error}</div>}
-
           {isLoading ? (
             <Loader />
           ) : activeCampagnes.length === 0 ? (
@@ -1016,13 +1175,22 @@ function Facturation(): ReactElement {
                       La génération PDF s’appuie sur la campagne active, le type de campagne et la période
                       affichée ci-dessus. Le backend choisit automatiquement le bon modèle de facture.
                     </p>
-                    <Button
-                      style={canGenerateInvoice ? 'gradient' : 'grey'}
-                      onClick={handleGenerateInvoice}
-                      disabled={!canGenerateInvoice || isGeneratingInvoice}
-                    >
-                      {isGeneratingInvoice ? 'Génération...' : 'Télécharger la facture PDF'}
-                    </Button>
+                    <div className="facturationView__placeholder-actions">
+                      <Button
+                        style={canGenerateInvoice ? 'gradient' : 'grey'}
+                        onClick={handleGenerateInvoice}
+                        disabled={!canGenerateInvoice || isGeneratingInvoice}
+                      >
+                        {isGeneratingInvoice ? 'Génération...' : 'Télécharger la facture PDF'}
+                      </Button>
+                      <Button
+                        style={canGenerateInvoice ? 'seaGreen' : 'grey'}
+                        onClick={openEmailModal}
+                        disabled={!canGenerateInvoice}
+                      >
+                        Envoyer la facture par email
+                      </Button>
+                    </div>
                   </div>
                 </article>
               </section>
@@ -1031,6 +1199,77 @@ function Facturation(): ReactElement {
         </div>
       </main>
       <BackToTop />
+
+      {isEmailModalOpen && (
+        <div className="facturationView__modal-backdrop" onClick={closeEmailModal}>
+          <div className="facturationView__modal" onClick={(event) => event.stopPropagation()}>
+            <div className="facturationView__modal-header">
+              <div>
+                <h2>Envoyer la facture</h2>
+                <p>Sélectionne un email proposé ou renseigne un destinataire personnalisé.</p>
+              </div>
+              <button type="button" onClick={closeEmailModal} disabled={isSendingInvoiceEmail}>
+                <MdClose />
+              </button>
+            </div>
+
+            <div className="facturationView__modal-content">
+              <label className="facturationView__field">
+                <span>Destinataire</span>
+                <CreatableSelect<InvoiceEmailOption, false>
+                  inputId="facturationEmailRecipient"
+                  value={emailOptions.find((option) => option.value === selectedRecipientEmail) ?? (selectedRecipientEmail
+                    ? { value: selectedRecipientEmail, label: selectedRecipientEmail }
+                    : null)}
+                  onChange={(option: SingleValue<InvoiceEmailOption>) => setSelectedRecipientEmail(option?.value ?? '')}
+                  onCreateOption={(inputValue: string) => setSelectedRecipientEmail(inputValue.trim())}
+                  options={emailOptions}
+                  placeholder="Sélectionner ou saisir un email"
+                  styles={invoiceEmailSelectStyles}
+                  isClearable
+                  isSearchable
+                  createOptionPosition="first"
+                  formatCreateLabel={(inputValue: string) => `Utiliser "${inputValue}"`}
+                  noOptionsMessage={() => 'Aucune adresse proposée'}
+                  menuPosition="fixed"
+                  menuPortalTarget={document.body}
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                />
+              </label>
+
+              <div className="facturationView__todo">
+                <div>
+                  <span>Expéditeur</span>
+                  <strong>contact@antl.fr</strong>
+                </div>
+                <div>
+                  <span>Objet</span>
+                  <strong>{`antl – Facture ${formatDisplayDate(resolvedPeriod.start)} → ${formatDisplayDate(resolvedPeriod.end)}`}</strong>
+                </div>
+                <div>
+                  <span>Total CA HT</span>
+                  <strong>{formatCurrency(previewTotals.totalHt)}</strong>
+                </div>
+              </div>
+            </div>
+
+            <div className="facturationView__modal-actions">
+              <Button style="grey" type="button" onClick={closeEmailModal} disabled={isSendingInvoiceEmail}>
+                Annuler
+              </Button>
+              <Button
+                style={canSendInvoiceEmail ? 'gradient' : 'grey'}
+                type="button"
+                onClick={handleSendInvoiceEmail}
+                disabled={!canSendInvoiceEmail}
+              >
+                {isSendingInvoiceEmail ? 'Envoi...' : 'Envoyer la facture'}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

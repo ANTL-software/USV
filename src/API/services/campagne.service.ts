@@ -109,3 +109,15 @@ export const downloadCampagneFacturationDocumentService = async (
 
   return response.data;
 };
+
+export const sendCampagneFacturationEmailService = async (
+  idCampagne: number,
+  payload: { date_debut: string; date_fin: string; recipient_email: string }
+): Promise<{ success: boolean; message?: string }> => {
+  const response: AxiosResponse<{ success: boolean; message?: string }> = await postRequest(
+    `/campagnes/${idCampagne}/facturation/email`,
+    payload,
+  );
+
+  return response.data;
+};
