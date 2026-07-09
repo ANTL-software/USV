@@ -2,7 +2,7 @@ import "../centreAppels/centreAppels.scss";
 
 import { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import { IoDocumentTextOutline, IoReceiptOutline } from "react-icons/io5";
+import { IoDocumentTextOutline, IoReceiptOutline, IoSettingsOutline } from "react-icons/io5";
 import { MdArrowBack } from "react-icons/md";
 import WithAuth from "../../../utils/middleware/WithAuth";
 
@@ -38,6 +38,12 @@ function Commercial(): ReactElement {
                 <IoDocumentTextOutline />
               </div>
               <h2>Devis</h2>
+            </section>
+            <section className="centreAppels__card" onClick={() => navigate("/commercial/configuration-antl")}>
+              <div className="centreAppels__card-icon">
+                <IoSettingsOutline />
+              </div>
+              <h2>Configuration antl</h2>
             </section>
           </div>
         </div>

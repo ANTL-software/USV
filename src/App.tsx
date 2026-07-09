@@ -33,6 +33,7 @@ import BookingPageWithAuth from "./views/layouts/booking/BookingPage";
 import CentreAppelsWithAuth from "./views/layouts/centreAppels/CentreAppels";
 import CommercialWithAuth from "./views/layouts/commercial/Commercial";
 import FacturationWithAuth from "./views/layouts/facturation/Facturation";
+import AntlConfigurationWithAuth from "./views/layouts/antlConfiguration/AntlConfiguration";
 import CommerciauxWithAuth from "./views/layouts/commerciaux/Commerciaux";
 import NotesDirectionWithAuth from "./views/layouts/commerciaux/NotesDirection";
 import MonPlanningWithAuth from "./views/layouts/commerciaux/MonPlanning";
@@ -137,6 +138,7 @@ function App(): ReactElement {
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
         <Route path={"commercial"} element={<CommercialWithAuth />}></Route>
         <Route path={"commercial/facturation"} element={<FacturationWithAuth />}></Route>
+        <Route path={"commercial/configuration-antl"} element={<AntlConfigurationWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
         <Route path={"operations/demandes-absence"} element={<AbsenceDemandesWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
