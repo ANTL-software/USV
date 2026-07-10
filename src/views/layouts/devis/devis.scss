@@ -1,0 +1,559 @@
+@use '../../../utils/styles/variables' as vars;
+@use '../../../utils/styles/mixins' as mixins;
+
+#devisView {
+  @include mixins.mainView;
+
+  main {
+    padding: 1.5em 1em 2.5em;
+  }
+
+  .devisView__container {
+    @include mixins.centeredContainer(86em);
+    display: flex;
+    flex-direction: column;
+    gap: 1.25em;
+  }
+
+  .devisView__hero,
+  .devisView__panel,
+  .devisView__summary-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: vars.$shadowLight;
+  }
+
+  .devisView__hero {
+    border-radius: 1.4em;
+    padding: 1.5em;
+    display: grid;
+    gap: 1em;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: minmax(0, 1.8fr) minmax(18em, 0.95fr);
+      align-items: end;
+    }
+
+    h1 {
+      margin: 0.1em 0 0.35em;
+      font-size: clamp(1.9rem, 2vw, 2.75rem);
+      color: vars.$fontColorPrimary;
+    }
+  }
+
+  .devisView__eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: vars.$utilsPrimary;
+  }
+
+  .devisView__subtitle {
+    margin: 0;
+    max-width: 52em;
+    color: vars.$fontColorSecondary;
+    line-height: 1.6;
+  }
+
+  .devisView__hero-kpis {
+    display: grid;
+    gap: 0.75em;
+
+    div {
+      border-radius: 1em;
+      padding: 0.95em 1em;
+      background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(167, 139, 250, 0.16));
+      border: 1px solid rgba(124, 58, 237, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25em;
+    }
+
+    span {
+      color: vars.$fontColorSecondary;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+  }
+
+  .devisView__panel {
+    border-radius: 1.15em;
+    padding: 1.2em;
+  }
+
+  .devisView__sidebar--sticky .devisView__panel {
+    @media (min-width: vars.$laptopWidth) {
+      max-height: calc(100vh - 3em);
+      overflow-y: auto;
+      padding-right: 0.95em;
+    }
+  }
+
+  .devisView__panel-header {
+    display: flex;
+    gap: 0.8em;
+    align-items: flex-start;
+    margin-bottom: 1em;
+
+    svg {
+      font-size: 1.55rem;
+      color: vars.$utilsPrimary;
+      margin-top: 0.1em;
+      flex-shrink: 0;
+    }
+
+    h2 {
+      margin: 0;
+      color: vars.$fontColorPrimary;
+      font-size: 1.15rem;
+    }
+
+    p {
+      margin: 0.2em 0 0;
+      color: vars.$fontColorSecondary;
+      line-height: 1.5;
+    }
+  }
+
+  .devisView__summary {
+    display: grid;
+    gap: 0.85em;
+
+    @media (min-width: vars.$mobileWidth) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    @media (min-width: vars.$laptopWidth) {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .devisView__summary-card {
+    border-radius: 1em;
+    padding: 1em 1.1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+    border-top: 0.3em solid vars.$borderColor;
+
+    span {
+      color: vars.$fontColorSecondary;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+
+    &--primary {
+      border-top-color: vars.$utilsPrimary;
+    }
+
+    &--success {
+      border-top-color: vars.$successColor;
+    }
+
+    &--warning {
+      border-top-color: vars.$warningColor;
+    }
+
+    &--muted {
+      border-top-color: #94a3b8;
+    }
+  }
+
+  .devisView__workspace {
+    display: grid;
+    gap: 1em;
+
+    @media (min-width: vars.$laptopWidth) {
+      grid-template-columns: minmax(0, 1.5fr) minmax(20em, 0.85fr);
+      align-items: start;
+    }
+  }
+
+  .devisView__main,
+  .devisView__sidebar {
+    display: grid;
+    gap: 1em;
+  }
+
+  .devisView__sidebar--sticky {
+    @media (min-width: vars.$laptopWidth) {
+      position: sticky;
+      top: 1.5em;
+      align-self: start;
+    }
+  }
+
+  .devisView__filters-grid,
+  .devisView__form-grid {
+    display: grid;
+    gap: 0.9em;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .devisView__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35em;
+
+    span {
+      color: vars.$fontColorSecondary;
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    input,
+    select,
+    textarea {
+      @include mixins.formInput;
+      min-height: 3rem;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    textarea {
+      min-height: 7rem;
+    }
+  }
+
+  .devisView__field--full {
+    @media (min-width: vars.$tabletWidth) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .devisView__template-grid {
+    display: grid;
+    gap: 0.85em;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .devisView__template-pick {
+    @include mixins.resetButton;
+    text-align: left;
+    border-radius: 1em;
+    border: 1px solid vars.$borderColor;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 248, 252, 0.96));
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7em;
+    transition: transform vars.$transitionMedium, box-shadow vars.$transitionMedium, border-color vars.$transitionMedium;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: vars.$shadowMedium;
+      border-color: rgba(124, 58, 237, 0.18);
+    }
+
+    &.is-selected {
+      border-color: rgba(124, 58, 237, 0.46);
+      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.14), vars.$shadowLight;
+      background: linear-gradient(180deg, rgba(241, 236, 255, 0.98), rgba(255, 255, 255, 0.98));
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      font-size: 1.02rem;
+      line-height: 1.35;
+    }
+
+    p {
+      margin: 0;
+      color: vars.$fontColorSecondary;
+      line-height: 1.5;
+    }
+  }
+
+  .devisView__template-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75em;
+    flex-wrap: wrap;
+
+    small {
+      color: vars.$fontColorSecondary;
+      font-weight: 600;
+    }
+  }
+
+  .devisView__badge {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2rem;
+    padding: 0.2em 0.75em;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+
+    &--primary {
+      background: rgba(124, 58, 237, 0.12);
+      color: vars.$utilsDark;
+    }
+
+    &--warning {
+      background: rgba(243, 156, 18, 0.14);
+      color: #9a6700;
+    }
+  }
+
+  .devisView__offer-columns {
+    display: grid;
+    gap: 1em;
+
+    @media (min-width: vars.$tabletWidth) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .devisView__section-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+    margin-bottom: 0.9em;
+
+    strong {
+      color: vars.$fontColorPrimary;
+      line-height: 1.35;
+    }
+
+    span {
+      color: vars.$fontColorSecondary;
+      line-height: 1.5;
+    }
+  }
+
+  .devisView__line-list {
+    display: grid;
+    gap: 0.75em;
+  }
+
+  .devisView__line-card {
+    border: 1px solid vars.$borderColor;
+    border-radius: 1em;
+    padding: 0.9em;
+    background: vars.$whiteBackground;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 0.8em;
+    align-items: start;
+    cursor: pointer;
+    transition: border-color vars.$transitionMedium, box-shadow vars.$transitionMedium;
+
+    input {
+      margin-top: 0.25em;
+      accent-color: vars.$utilsPrimary;
+    }
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25em;
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      line-height: 1.35;
+    }
+
+    p {
+      margin: 0;
+      color: vars.$fontColorSecondary;
+      line-height: 1.5;
+    }
+
+    > span {
+      grid-column: 2;
+      color: vars.$utilsDark;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    &.is-active {
+      border-color: rgba(124, 58, 237, 0.25);
+      box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+      background: rgba(248, 245, 255, 0.78);
+    }
+  }
+
+  .devisView__assumptions {
+    display: grid;
+    gap: 0.75em;
+    margin-top: 1em;
+
+    div {
+      border-radius: 0.95em;
+      padding: 0.85em 0.95em;
+      background: rgba(124, 58, 237, 0.08);
+      display: flex;
+      gap: 0.7em;
+      align-items: flex-start;
+    }
+
+    svg {
+      color: vars.$utilsPrimary;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+      margin-top: 0.1em;
+    }
+
+    span {
+      color: vars.$fontColorPrimary;
+      line-height: 1.5;
+    }
+  }
+
+  .devisView__preview-card {
+    border-radius: 1.1em;
+    padding: 1em;
+    background: linear-gradient(140deg, rgba(124, 58, 237, 0.95), rgba(91, 33, 182, 0.92));
+    color: vars.$whiteBackground;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45em;
+    margin-bottom: 1em;
+
+    h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
+
+    p {
+      margin: 0;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.86);
+    }
+  }
+
+  .devisView__preview-eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.76);
+  }
+
+  .devisView__preview-block {
+    border: 1px solid vars.$borderColor;
+    border-radius: 0.95em;
+    padding: 0.9em 0.95em;
+    background: vars.$whiteBackground;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    margin-bottom: 0.85em;
+
+    span,
+    small {
+      color: vars.$fontColorSecondary;
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      line-height: 1.45;
+    }
+
+    ul {
+      margin: 0;
+      padding-left: 1.1em;
+      color: vars.$fontColorPrimary;
+      display: grid;
+      gap: 0.35em;
+    }
+  }
+
+  .devisView__pricing {
+    display: grid;
+    gap: 0.75em;
+    margin-bottom: 0.9em;
+
+    div {
+      border: 1px solid vars.$borderColor;
+      border-radius: 0.95em;
+      padding: 0.85em 0.95em;
+      background: vars.$whiteBackground;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75em;
+      align-items: center;
+    }
+
+    span {
+      color: vars.$fontColorSecondary;
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    strong {
+      color: vars.$fontColorPrimary;
+      text-align: right;
+    }
+
+    .is-total {
+      border-color: rgba(124, 58, 237, 0.25);
+      background: rgba(248, 245, 255, 0.75);
+
+      strong {
+        color: vars.$utilsDark;
+      }
+    }
+  }
+
+  .devisView__timeline {
+    display: grid;
+    gap: 0.75em;
+    margin-bottom: 1em;
+
+    div {
+      border-radius: 0.95em;
+      padding: 0.85em 0.95em;
+      background: #f8fafc;
+      display: flex;
+      gap: 0.65em;
+      align-items: center;
+    }
+
+    svg {
+      color: vars.$utilsPrimary;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+    }
+
+    span {
+      color: vars.$fontColorPrimary;
+      line-height: 1.45;
+    }
+  }
+
+  .devisView__sidebar-actions {
+    display: grid;
+    gap: 0.75em;
+
+    button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
