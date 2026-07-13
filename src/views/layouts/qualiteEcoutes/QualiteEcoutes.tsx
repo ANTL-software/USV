@@ -43,6 +43,12 @@ const getErrorMessage = (error: unknown): string => {
 
 const selectStyles = reactSelectStyles as unknown as StylesConfig<FilterOption, false, GroupBase<FilterOption>>;
 
+const getRecordingPhone = (recording: Enregistrement): string => {
+  return recording.appel?.numero_telephone?.trim()
+    || recording.appel?.prospect?.telephone?.trim()
+    || '—';
+};
+
 function QualiteEcoutes(): ReactElement {
   const navigate = useNavigate();
 
@@ -220,7 +226,7 @@ function QualiteEcoutes(): ReactElement {
                   <div className="qualiteEcoutes__search-input-wrapper">
                     <input
                       type="text"
-                      placeholder="Nom, entreprise, ID prospect..."
+                      placeholder="Nom, entreprise, téléphone, ID prospect..."
                       value={recherche}
                       onChange={(e) => setRecherche(e.target.value)}
                     />
@@ -378,7 +384,7 @@ function QualiteEcoutes(): ReactElement {
                             <span className="qualiteEcoutes__text-muted">Particulier</span>
                           )}
                         </td>
-                        <td>{recording.appel?.numero_telephone || '—'}</td>
+                        <td>{getRecordingPhone(recording)}</td>
                         <td>{formatDuration(recording.duree_secondes)}</td>
                         <td>
                           <span className={`qualiteEcoutes__badge-statut qualiteEcoutes__badge-statut--${recording.appel?.statut_appel || 'en_cours'}`}>
@@ -447,7 +453,7 @@ function QualiteEcoutes(): ReactElement {
             <h3>Écoute en cours</h3>
             <p>
               <strong>Agent :</strong> {activeRecording.agent?.prenom} {activeRecording.agent?.nom.toUpperCase()} |{' '}
-              <strong>Appel :</strong> {activeRecording.appel?.numero_telephone} |{' '}
+              <strong>Appel :</strong> {getRecordingPhone(activeRecording)} |{' '}
               <strong>Raison Sociale :</strong>{' '}
               {activeRecording.appel?.prospect?.raison_sociale ||
                 `${activeRecording.appel?.prospect?.prenom || ''} ${
