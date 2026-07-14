@@ -164,6 +164,11 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     setCurrentPage(page);
   }, []);
 
+  const handleSetSelectedCampagne = useCallback((campagne: Campagne | null) => {
+    setSelectedCampagne(campagne);
+    setCurrentPage(1);
+  }, []);
+
   const handleSetSearch = useCallback((s: string) => {
     setSearch(s);
     setCurrentPage(1);
@@ -181,7 +186,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     error,
     campagnes,
     selectedCampagne,
-    setSelectedCampagne,
+    setSelectedCampagne: handleSetSelectedCampagne,
     currentPage: pagination?.page ?? 1,
     setCurrentPage: handleSetPage,
     search,
