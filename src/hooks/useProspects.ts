@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getAllProspectsService } from '../API/services/prospect.service';
+import { getAllProspectsService, getProspectsCountService } from '../API/services/prospect.service';
 import { getProspectsCampagneService } from '../API/services/queue.service';
 import type { Prospect, ProspectFilters } from '../utils/types/prospect.types';
 import type { ProspectCampagneRow } from '../utils/types/queue.types';
@@ -77,8 +77,9 @@ const mapProspectCampagneRowToProspect = (row: ProspectCampagneRow): Prospect =>
 
 export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const [prospects, setProspects] = useState<Prospect[]>([]);
-  const [pagination, setPagination] = useState<{ page: number; limit: number; total: number; totalPages: number } | null>(null);
+  const [pagination, setPagination] = useState<{ page: number; limit: number; total: number | null; totalPages: number | null } | null>(null);
   const [totalProspectsDb, setTotalProspectsDb] = useState<number | null>(null);
+  const [filteredProspectsTotal, setFilteredProspectsTotal] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
@@ -105,6 +106,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
           page: currentPage,
           limit: PROSPECTS_PER_PAGE,
           search: search || undefined,
+          include_total: false,
         };
         const result = await getAllProspectsService(filters);
         const mappedData = result.data.map(p => ({
@@ -134,31 +136,53 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
   useEffect(() => {
     if (selectedCampagne) {
-      setTotalProspectsDb(null);
+      setFilteredProspectsTotal(null);
       return;
     }
 
     let cancelled = false;
 
-    const loadTotalProspectsDb = async () => {
+    setFilteredProspectsTotal(null);
+
+    const loadTotalProspects = async () => {
       try {
-        const result = await getAllProspectsService({ page: 1, limit: 1 });
+        const total = await getProspectsCountService({ search: search || undefined });
         if (!cancelled) {
-          setTotalProspectsDb(result.pagination.total);
+          setFilteredProspectsTotal(total);
+          if (!search) {
+            setTotalProspectsDb(total);
+          }
         }
       } catch {
         if (!cancelled) {
-          setTotalProspectsDb(null);
+          setFilteredProspectsTotal(null);
         }
       }
     };
 
-    loadTotalProspectsDb();
+    loadTotalProspects();
 
     return () => {
       cancelled = true;
     };
-  }, [selectedCampagne, refreshKey]);
+  }, [selectedCampagne, search, refreshKey]);
+
+  const resolvedPagination: UseProspectsReturn['pagination'] = selectedCampagne
+    ? pagination && pagination.total !== null && pagination.totalPages !== null
+      ? {
+          page: pagination.page,
+          limit: pagination.limit,
+          total: pagination.total,
+          totalPages: pagination.totalPages,
+        }
+      : null
+    : pagination && filteredProspectsTotal !== null
+      ? {
+          ...pagination,
+          total: filteredProspectsTotal,
+          totalPages: Math.ceil(filteredProspectsTotal / pagination.limit),
+        }
+      : null;
 
   const handleSetPage = useCallback((page: number) => {
     setCurrentPage(page);
@@ -180,14 +204,14 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
   return {
     prospects,
-    pagination,
+    pagination: resolvedPagination,
     totalProspectsDb,
     isLoading,
     error,
     campagnes,
     selectedCampagne,
     setSelectedCampagne: handleSetSelectedCampagne,
-    currentPage: pagination?.page ?? 1,
+    currentPage: resolvedPagination?.page ?? pagination?.page ?? 1,
     setCurrentPage: handleSetPage,
     search,
     setSearch: handleSetSearch,

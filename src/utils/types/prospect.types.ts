@@ -154,8 +154,8 @@ export interface ProspectsApiResponse {
   pagination: {
     page: number;
     limit: number;
-    total: number;
-    totalPages: number;
+    total: number | null;
+    totalPages: number | null;
   };
 }
 
@@ -165,6 +165,7 @@ export interface ProspectFilters {
   statut?: StatutProspect;
   type_prospect?: TypeProspect;
   search?: string;
+  include_total?: boolean;
 }
 
 export interface ProspectUpdateData {

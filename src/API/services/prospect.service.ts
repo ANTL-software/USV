@@ -59,6 +59,7 @@ export const getAllProspectsService = async (filters?: ProspectFilters): Promise
   if (filters?.statut) queryParams.set('statut', filters.statut);
   if (filters?.type_prospect) queryParams.set('type_prospect', filters.type_prospect);
   if (filters?.search) queryParams.set('search', filters.search);
+  if (filters?.include_total === false) queryParams.set('include_total', 'false');
   // Tri par défaut par ID croissant
   queryParams.set('sort', 'id_prospect');
   queryParams.set('order', 'ASC');
@@ -68,6 +69,20 @@ export const getAllProspectsService = async (filters?: ProspectFilters): Promise
 
   const response: AxiosResponse<ProspectsApiResponse> = await getRequest(url);
   return response.data;
+};
+
+export const getProspectsCountService = async (
+  filters?: Pick<ProspectFilters, 'search'>
+): Promise<number> => {
+  const queryParams = new URLSearchParams();
+  if (filters?.search) queryParams.set('search', filters.search);
+
+  const qs = queryParams.toString();
+  const response: AxiosResponse<{ success: boolean; data?: { total?: number }; message?: string }> = await getRequest(`/prospects/count${qs ? `?${qs}` : ''}`);
+  if (response.data.success && typeof response.data.data?.total === 'number') {
+    return response.data.data.total;
+  }
+  throw new Error(response.data.message || 'Impossible de compter les prospects');
 };
 
 export const getProspectByIdService = async (id: number): Promise<Prospect> => {
