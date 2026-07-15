@@ -44,10 +44,11 @@ interface SelectOption<T> {
   label: string;
 }
 
-type PeriodKey = '7d' | '30d' | 'since-june';
+type PeriodKey = 'today' | '7d' | '30d' | 'since-june';
 type ActionMessageTone = 'success' | 'error' | 'info';
 
 const PERIOD_OPTIONS: SelectOption<PeriodKey>[] = [
+  { value: 'today', label: 'Aujourd’hui' },
   { value: '7d', label: '7 derniers jours' },
   { value: '30d', label: '30 derniers jours' },
   { value: 'since-june', label: 'Depuis le 1er juin 2026' }
@@ -84,6 +85,7 @@ const toIsoDate = (date: Date): string => {
 const buildDateRange = (period: PeriodKey): VigieDateRange => {
   const end = new Date();
   const start = new Date(end);
+  if (period === 'today') return { dateDebut: toIsoDate(end), dateFin: toIsoDate(end) };
   if (period === 'since-june') return { dateDebut: '2026-06-01', dateFin: toIsoDate(end) };
   start.setDate(start.getDate() - (period === '30d' ? 29 : 6));
   return { dateDebut: toIsoDate(start), dateFin: toIsoDate(end) };
@@ -133,7 +135,7 @@ function VigieView(): ReactElement {
     [activeCampaigns]
   );
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
-  const [period, setPeriod] = useState<PeriodKey>('7d');
+  const [period, setPeriod] = useState<PeriodKey>('today');
   const range = useMemo(() => buildDateRange(period), [period]);
   const [segmentDimension, setSegmentDimension] = useState<VigieSegmentDimension>('secteur');
   const [sectorToPrepare, setSectorToPrepare] = useState('');
