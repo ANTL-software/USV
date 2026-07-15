@@ -185,3 +185,10 @@ export const formatPhoneNumber = (phone: string | null | undefined): string => {
 export const sanitizePhoneNumber = (phone: string): string => {
   return phone.replace(/\D/g, '');
 };
+
+/**
+ * Extrait un message sûr depuis une erreur inconnue.
+ */
+export const getErrorMessage = (error: unknown, fallback: string): string => {
+  return error instanceof Error && error.message ? error.message : fallback;
+};

@@ -14,10 +14,10 @@ import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../../components/header/Header.tsx";
-import SubNav from "../../../components/subNav/SubNav.tsx";
-import Button from "../../../components/button/Button.tsx";
-import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
+import Header from "../../components/header/Header.tsx";
+import SubNav from "../../components/subNav/SubNav.tsx";
+import Button from "../../components/button/Button.tsx";
+import CreatableSelectComponent from "../../components/creatableSelect/CreatableSelect.tsx";
 
 // types
 import { ICourrierFormData, ICourrierSelectSuggestion } from "../../../utils/types/courrier.types.ts";

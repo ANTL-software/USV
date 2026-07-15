@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import SimplePDFViewer from '../simplePdfViewer/SimplePDFViewer';
-import ModernPDFViewer from '../modernPdfViewer/ModernPDFViewer';
+import SimplePDFViewer from './SimplePDFViewer';
+import ModernPDFViewer from './ModernPDFViewer';
 
 interface PDFViewerProps {
   pdfUrl: string;

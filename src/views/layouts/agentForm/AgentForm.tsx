@@ -17,7 +17,7 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import PasswordStrengthIndicator from '../../components/passwordStrengthIndicator/PasswordStrengthIndicator';
-import ColorPicker from '../../../components/colorPicker/ColorPicker';
+import ColorPicker from '../../components/colorPicker/ColorPicker';
 
 function AgentForm(): ReactElement {
   const navigate = useNavigate();

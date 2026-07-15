@@ -9,8 +9,8 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 
 import { useCampagnes, useProspects } from '../../../hooks';
 import type { Prospect } from '../../../utils/types/prospect.types';
-import { ProspectDetailModal } from '../../../components/prospectDetailModal';
-import { QueuePreview } from '../../../components/queuePreview/QueuePreview';
+import { ProspectDetailModal } from '../../components/prospectDetailModal';
+import { QueuePreview } from '../../components/queuePreview/QueuePreview';
 
 import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
@@ -19,6 +19,7 @@ import Button from '../../components/button/Button';
 import { useAlert } from '../../../context/alert/AlertContext';
 import { purgeProspectsService } from '../../../API/services/queue.service';
 import { isProspectGloballyFlagged } from '../../../utils/scripts/prospectStatus';
+import { getErrorMessage } from '../../../utils/scripts/utils';
 
 function ProspectsView(): ReactElement {
   const navigate = useNavigate();
@@ -66,9 +67,9 @@ function ProspectsView(): ReactElement {
           "File d'appels vidée"
         );
         handleRefreshAll();
-      } catch (err: any) {
+      } catch (error: unknown) {
         await showError(
-          err.message || "Impossible de vider la file d'appels.",
+          getErrorMessage(error, "Impossible de vider la file d'appels."),
           "Erreur"
         );
       } finally {

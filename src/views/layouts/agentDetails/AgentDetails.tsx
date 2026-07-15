@@ -18,7 +18,7 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Modal from '../../components/modal/Modal';
-import ModernPDFViewer from '../../../components/pdfViewer/ModernPDFViewer.tsx';
+import ModernPDFViewer from '../../components/pdfViewer/ModernPDFViewer.tsx';
 
 // Types pour les actions
 interface ActionItem {

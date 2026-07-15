@@ -28,7 +28,7 @@ import WithAuth from '../../../utils/middleware/WithAuth';
 import { getVenteByIdService, updateVenteStatutService, getVenteDocumentUrl } from '../../../API/services/vente.service.ts';
 import { getProspectAppelsService, getProspectVentesService } from '../../../API/services/prospect.service.ts';
 import { confirm, showSuccess, showError } from '../../../utils/services/alertService';
-import type { VenteComplete, StatutVente } from '../../../utils/types/vente.types';
+import type { VenteComplete, VenteDetail, StatutVente } from '../../../utils/types/vente.types';
 import type { Appel } from '../../../utils/types/appel.types';
 import LeadClientDetails from '../leadClientDetails/LeadClientDetails.tsx';
 
@@ -641,7 +641,7 @@ function CommandeDetails(): ReactElement {
                                     </tr>
                                   </thead>
                                   <tbody>
-                                    {details.map((detail: any, idx: number) => (
+                                    {details.map((detail: VenteDetail, idx: number) => (
                                       <tr key={detail.id_detail || idx}>
                                         <td>{detail.produit?.nom_produit ?? 'Produit inconnu'}</td>
                                         <td style={{ textAlign: 'center' }}>{detail.quantite}</td>

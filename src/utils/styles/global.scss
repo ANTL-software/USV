@@ -1,9 +1,9 @@
 @use "../../utils/styles/mixins" as mixins;
 @use "../../utils/styles/variables" as vars;
 
-@use "../../components/pwaStatus/pwaStatus.scss";
-@use "../../components/pwaInstallButton/pwaInstallButton.scss";
-@use "../../components/pdfViewer/pdfViewer.scss";
+@use "../../views/components/pwaStatus/pwaStatus.scss";
+@use "../../views/components/pwaInstallButton/pwaInstallButton.scss";
+@use "../../views/components/pdfViewer/pdfViewer.scss";
 
 // Classes utilitaires pour remplacer les styles inline
 .errorMessage {

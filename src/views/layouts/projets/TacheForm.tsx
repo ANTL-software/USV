@@ -4,10 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { IoArrowBack, IoSave, IoTrash } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
-import Header from '../../../components/header/Header';
-import SubNav from '../../../components/subNav/SubNav';
-import BackToTop from '../../../components/backToTop/BackToTop';
-import Button from '../../../components/button/Button';
+import Header from '../../components/header/Header';
+import SubNav from '../../components/subNav/SubNav';
+import BackToTop from '../../components/backToTop/BackToTop';
+import Button from '../../components/button/Button';
 
 import { useTache } from '../../../hooks/useTache';
 import { useEmployes } from '../../../hooks/useEmployes';

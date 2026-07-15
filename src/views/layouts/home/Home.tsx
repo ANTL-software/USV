@@ -21,7 +21,7 @@ import { hasAccessToSection } from "../../../utils/scripts/permissions.ts";
 import Header from "../../components/header/Header";
 import SubNav from "../../components/subNav/SubNav";
 import BackToTop from "../../components/backToTop/BackToTop";
-import NotificationBadge from "../../../components/notificationBadge/NotificationBadge";
+import NotificationBadge from "../../components/notificationBadge/NotificationBadge";
 
 function Home(): ReactElement {
   const { user } = useUserContext();

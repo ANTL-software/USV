@@ -10,7 +10,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
-import ModernPDFViewer from '../../../components/pdfViewer/ModernPDFViewer.tsx';
+import ModernPDFViewer from '../../components/pdfViewer/ModernPDFViewer.tsx';
 
 import { useNotesDirection } from '../../../hooks/useNotesDirection';
 

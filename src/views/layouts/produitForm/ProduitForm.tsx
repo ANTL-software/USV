@@ -33,9 +33,15 @@ import type { PanierOption as PanierOptionType } from './PanierSelectComponents'
 // services
 import { addProduitToPanierService, removeProduitFromPanierService } from '../../../API/services/panierProduit.service';
 
+interface ProduitFormLocationState {
+  returnPage?: number;
+  returnScrollPosition?: number;
+}
+
 function ProduitForm(): ReactElement {
   const navigate = useNavigate();
   const location = useLocation();
+  const locationState = location.state as ProduitFormLocationState | null;
   const { id } = useParams<{ id: string }>();
   const {
     form, isEdit, isLoading, isFetching, error, success,
@@ -185,8 +191,8 @@ function ProduitForm(): ReactElement {
     campagneId,
     campagneNom,
     highlightProductId: isEdit && id ? Number(id) : undefined,
-    returnPage: (location.state as any)?.returnPage,
-    returnScrollPosition: (location.state as any)?.returnScrollPosition,
+    returnPage: locationState?.returnPage,
+    returnScrollPosition: locationState?.returnScrollPosition,
   } : undefined;
 
   if (isFetching) {

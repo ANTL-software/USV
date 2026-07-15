@@ -4,10 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { IoAdd, IoSearch, IoFilter, IoArrowBack, IoEye, IoCreate, IoFolderOpen, IoCheckmarkDone } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
-import Header from '../../../components/header/Header';
-import SubNav from '../../../components/subNav/SubNav';
-import BackToTop from '../../../components/backToTop/BackToTop';
-import Button from '../../../components/button/Button';
+import Header from '../../components/header/Header';
+import SubNav from '../../components/subNav/SubNav';
+import BackToTop from '../../components/backToTop/BackToTop';
+import Button from '../../components/button/Button';
 
 import { useProjets } from '../../../hooks/useProjet';
 import type { ListProjetsFilters, StatutProjet, TypeProjet, Priorite } from '../../../utils/types/projet.types';

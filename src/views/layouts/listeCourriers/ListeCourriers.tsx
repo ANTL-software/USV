@@ -29,13 +29,13 @@ import { FiFileText } from "react-icons/fi";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../../components/header/Header.tsx";
-import SubNav from "../../../components/subNav/SubNav.tsx";
-import Button from "../../../components/button/Button.tsx";
-import Modal from "../../../components/modal/Modal.tsx";
-import Loader from "../../../components/loader/Loader.tsx";
-import EmailModal from "../../../components/emailModal/EmailModal.tsx";
-import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
+import Header from "../../components/header/Header.tsx";
+import SubNav from "../../components/subNav/SubNav.tsx";
+import Button from "../../components/button/Button.tsx";
+import Modal from "../../components/modal/Modal.tsx";
+import Loader from "../../components/loader/Loader.tsx";
+import EmailModal from "../../components/emailModal/EmailModal.tsx";
+import ModernPDFViewer from "../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // hooks
 import { useCourrier } from "../../../hooks/useCourrier.ts";

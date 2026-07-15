@@ -1,0 +1,114 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+.filterPanel {
+  // Règles par défaut encapsulées (mobile first)
+  & {
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 1em;
+    margin-bottom: 1.5em;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75em;
+  }
+
+  &__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25em;
+
+    label {
+      font-size: 0.9em;
+      font-weight: 600;
+      color: #2c3e50;
+    }
+
+    input[type="date"] {
+      padding: 0.5em;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1em;
+      font-family: inherit;
+      color: #2c3e50;
+
+      &:focus {
+        outline: none;
+        border-color: vars.$webdevPrimary;
+        box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.1);
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+
+    button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5em;
+    }
+  }
+
+  &__active {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+    padding-top: 0.75em;
+    border-top: 1px solid #e0e0e0;
+    margin-top: 0.5em;
+  }
+
+  &__active-label {
+    font-size: 0.9em;
+    font-weight: 600;
+    color: #7f8c8d;
+  }
+
+  &__active-filter {
+    display: inline-flex;
+    padding: 0.25em 0.75em;
+    background-color: #f0f0f0;
+    border-radius: 16px;
+    font-size: 0.85em;
+    color: #2c3e50;
+  }
+
+  // Responsive tablette
+  @media (min-width: vars.$tabletWidth) {
+    padding: 1.5em;
+
+    &__content {
+      flex-direction: row;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+
+    &__fields {
+      flex-direction: row;
+      flex: 1;
+    }
+
+    &__actions {
+      flex-direction: row;
+    }
+  }
+
+  // Responsive desktop
+  @media (min-width: vars.$desktopWidth) {
+    padding: 2em;
+  }
+}

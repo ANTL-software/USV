@@ -19,7 +19,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
-import Loader from '../../../components/loader/Loader';
+import Loader from '../../components/loader/Loader';
 
 type SelectOption = { value: string; label: string };
 

@@ -15,7 +15,7 @@ import Header from '../../components/header/Header';
 import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
-import NotificationBadge from '../../../components/notificationBadge/NotificationBadge';
+import NotificationBadge from '../../components/notificationBadge/NotificationBadge';
 
 function CentreAppels(): ReactElement {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import React, { ReactNode, useState, useCallback, useEffect, useMemo } from 'react';
 import { AlertContext, ShowAlertOptions } from './AlertContext';
-import Alert, { AlertProps } from '../../components/alert/Alert';
+import Alert, { AlertProps } from '../../views/components/alert/Alert';
 import { initializeAlertService } from '../../utils/services/alertService';
 
 interface AlertProviderProps {

@@ -14,20 +14,20 @@ import SubNav from '../../components/subNav/SubNav';
 import BackToTop from '../../components/backToTop/BackToTop';
 import Button from '../../components/button/Button';
 import Loader from '../../components/loader/Loader';
-import AppelsParHeureChart from '../../../components/appelsParHeureChart/AppelsParHeureChart';
-import TauxAboutiChart from '../../../components/tauxAboutiChart/TauxAboutiChart';
-import DureeMoyenneChart from '../../../components/dureeMoyenneChart/DureeMoyenneChart';
-import TopRaisonsChart from '../../../components/topRaisonsChart/TopRaisonsChart';
-import StatutsAppelsChart from '../../../components/statutsAppelsChart/StatutsAppelsChart';
-import StatutsParHeureChart from '../../../components/statutsParHeureChart/StatutsParHeureChart';
-import AppelsParOrigineChart from '../../../components/appelsParOrigineChart/AppelsParOrigineChart';
-import FilterPanel, { DateFilters } from '../../../components/filterPanel/FilterPanel';
-import ExportButton from '../../../components/exportButton/ExportButton';
-import PrintButton from '../../../components/printButton/PrintButton';
+import AppelsParHeureChart from '../../components/appelsParHeureChart/AppelsParHeureChart';
+import TauxAboutiChart from '../../components/tauxAboutiChart/TauxAboutiChart';
+import DureeMoyenneChart from '../../components/dureeMoyenneChart/DureeMoyenneChart';
+import TopRaisonsChart from '../../components/topRaisonsChart/TopRaisonsChart';
+import StatutsAppelsChart from '../../components/statutsAppelsChart/StatutsAppelsChart';
+import StatutsParHeureChart from '../../components/statutsParHeureChart/StatutsParHeureChart';
+import AppelsParOrigineChart from '../../components/appelsParOrigineChart/AppelsParOrigineChart';
+import FilterPanel, { DateFilters } from '../../components/filterPanel/FilterPanel';
+import ExportButton from '../../components/exportButton/ExportButton';
+import PrintButton from '../../components/printButton/PrintButton';
 import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
 import type { QueueCount, AgentState, CallInProgress } from '../../../utils/types/queue.types';
 import type { Campagne } from '../../../utils/types/campagne.types';
-import type { AmdStats } from '../../../utils/types/graphiques.types';
+import type { AllGraphiquesStats, AmdStats } from '../../../utils/types/graphiques.types';
 import { formatCallDuration, formatSince } from '../../../utils/scripts/formatters';
 import './supervisionView.scss';
 
@@ -101,6 +101,32 @@ const ORIGINE_COLORS: Record<string, string> = {
   auto: '#3498db',
   manuel: '#6366f1',
   rappel: '#f39c12',
+};
+
+const EMPTY_GRAPH_STATS: AllGraphiquesStats = {
+  appelsParHeure: [],
+  tauxAbouti: { aboutis: 0, non_aboutis: 0, taux_abouti: 0 },
+  dureeMoyenne7j: [],
+  topRaisons: [],
+  appelsParStatut: [],
+  statutsParHeure: [],
+  appelsParOrigine: [],
+  amdStats: {
+    totalCalls: 0,
+    qualifiedCalls: 0,
+    humanCount: 0,
+    sviCount: 0,
+    messagingCount: 0,
+    faxCount: 0,
+    filteredMachineStartCount: 0,
+    unknownCount: 0,
+    pendingCount: 0,
+    systemEndedCount: 0,
+    bridgeCount: 0,
+    avgBridgeDelaySeconds: 0,
+    sviDurationSampleCount: 0,
+    avgSviDurationSeconds: 0,
+  },
 };
 
 const formatBridgeLabel = (isoDate: string | null | undefined): string => {
@@ -454,7 +480,7 @@ const SupervisionView = () => {
     selectedCampagne && !selectedEmploye ? 60000 : 0
   );
   
-  const [employeStats, setEmployeStats] = useState<any>(null);
+  const [employeStats, setEmployeStats] = useState<AllGraphiquesStats | null>(null);
   const [employeStatsLoading, setEmployeStatsLoading] = useState<boolean>(false);
 
   // Tick chaque seconde pour animer les chronomètres (durées statuts, etc.)
@@ -644,12 +670,7 @@ const SupervisionView = () => {
                             employe: selectedEmploye ? agentsList.find(a => a.id_employe === selectedEmploye)?.nom + ' ' + agentsList.find(a => a.id_employe === selectedEmploye)?.prenom : 'Tous',
                             dateDebut: dateFilters.dateDebut || undefined,
                             dateFin: dateFilters.dateFin || undefined,
-                            stats: displayStats || {
-                              appelsParHeure: [],
-                              tauxAbouti: { aboutis: 0, non_aboutis: 0, taux_abouti: 0 },
-                              dureeMoyenne7j: [],
-                              topRaisons: []
-                            }
+                            stats: displayStats ?? EMPTY_GRAPH_STATS
                           }}
                           disabled={!displayStats || (graphiquesLoading || employeStatsLoading)}
                         />

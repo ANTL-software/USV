@@ -13,12 +13,12 @@ import { useCourrier } from "../../../hooks/useCourrier.ts";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../../components/header/Header.tsx";
-import SubNav from "../../../components/subNav/SubNav.tsx";
-import Button from "../../../components/button/Button.tsx";
-import CreatableSelectComponent from "../../../components/creatableSelect/CreatableSelect.tsx";
-import Loader from "../../../components/loader/Loader.tsx";
-import ModernPDFViewer from "../../../components/pdfViewer/ModernPDFViewer.tsx";
+import Header from "../../components/header/Header.tsx";
+import SubNav from "../../components/subNav/SubNav.tsx";
+import Button from "../../components/button/Button.tsx";
+import CreatableSelectComponent from "../../components/creatableSelect/CreatableSelect.tsx";
+import Loader from "../../components/loader/Loader.tsx";
+import ModernPDFViewer from "../../components/pdfViewer/ModernPDFViewer.tsx";
 
 // types
 import { ICourrierFormData } from "../../../utils/types/courrier.types.ts";

@@ -27,3 +27,4 @@ dist-ssr
 # Markdown files (keep local only)
 *.md
 !README.md
+!AGENTS.md

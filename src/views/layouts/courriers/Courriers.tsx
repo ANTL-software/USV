@@ -10,8 +10,8 @@ import { FiCalendar, FiFileText } from "react-icons/fi";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../../components/header/Header.tsx";
-import SubNav from "../../../components/subNav/SubNav.tsx";
+import Header from "../../components/header/Header.tsx";
+import SubNav from "../../components/subNav/SubNav.tsx";
 
 // hooks
 import { useCourrier } from "../../../hooks/useCourrier.ts";

@@ -24,7 +24,7 @@ import type { AbsenceRequest } from '../../../utils/types/absence.types';
 import { showError, showSuccess } from '../../../utils/services/alertService';
 import type { UserModel } from '../../../API/models/user.model';
 import { useNotifications } from '../../../hooks/useNotifications';
-import NotificationBadge from '../../../components/notificationBadge/NotificationBadge';
+import NotificationBadge from '../../components/notificationBadge/NotificationBadge';
 import { formatDate } from '../../../utils/scripts/formatters';
 
 const formatPeriod = (request: AbsenceRequest): string => {

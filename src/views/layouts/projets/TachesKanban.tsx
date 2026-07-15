@@ -15,10 +15,10 @@ import {
 } from 'react-icons/io5';
 import WithAuth from '../../../utils/middleware/WithAuth';
 
-import Header from '../../../components/header/Header';
-import SubNav from '../../../components/subNav/SubNav';
-import BackToTop from '../../../components/backToTop/BackToTop';
-import Button from '../../../components/button/Button';
+import Header from '../../components/header/Header';
+import SubNav from '../../components/subNav/SubNav';
+import BackToTop from '../../components/backToTop/BackToTop';
+import Button from '../../components/button/Button';
 
 import { useKanban } from '../../../hooks/useTache';
 import type { Tache, StatutTache } from '../../../utils/types/projet.types';

@@ -19,9 +19,9 @@ import { FiUpload, FiFileText } from "react-icons/fi";
 
 // components
 import WithAuth from "../../../utils/middleware/WithAuth.tsx";
-import Header from "../../../components/header/Header.tsx";
-import SubNav from "../../../components/subNav/SubNav.tsx";
-import Button from "../../../components/button/Button.tsx";
+import Header from "../../components/header/Header.tsx";
+import SubNav from "../../components/subNav/SubNav.tsx";
+import Button from "../../components/button/Button.tsx";
 
 // services
 import { convertImageToPdfService, IConvertCropData } from "../../../API/services/courrier.service.ts";
