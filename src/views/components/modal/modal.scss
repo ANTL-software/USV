@@ -1,118 +1,106 @@
 @use "../../../utils/styles/variables" as vars;
-
-#modal {
-  .modalBackdrop {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    z-index: 99999 !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 2em;
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-    
-    .modalContainer {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-      width: 90dvw;
-      height: 90dvh;
-      max-width: 75em;
-      max-height: 50em;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      
-      .modalHeader {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1em 1.5em;
-        background: vars.$greyBackground;
-        border-bottom: 1px solid vars.$borderColor;
-        
-        h3 {
-          margin: 0;
-          font-size: 1.2em;
-          font-weight: 600;
-          color: vars.$fontColorPrimary;
-        }
-        
-        .closeBtn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 2.5em;
-          height: 2.5em;
-          border: none;
-          border-radius: 50%;
-          background: rgba(231, 76, 60, 0.1);
-          color: vars.$errorColor;
-          cursor: pointer;
-          transition: vars.$transitionMedium;
-          font-size: 1.2em;
-          
-          &:hover {
-            background: vars.$errorColor;
-            color: white;
-            transform: scale(1.1);
-          }
-        }
-      }
-      
-      .modalContent {
-        flex: 1;
-        overflow-y: auto;
-        min-height: 0;
-        padding: 1rem;
-        overscroll-behavior: contain;
-        -webkit-overflow-scrolling: touch;
-        
-        iframe, embed, object {
-          width: 100%;
-          height: 100%;
-          border: none;
-        }
-        
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: contain;
-          border: none;
-        }
-      }
-    }
-    
-    @media (max-width: vars.$tabletWidth) {
-      padding: 1em;
-      
-      .modalContainer {
-        width: 95dvw;
-        height: 85dvh;
-        
-        .modalHeader {
-          padding: 0.75em 1em;
-          
-          h3 {
-            font-size: 1.1em;
-          }
-          
-          .closeBtn {
-            width: 2.2em;
-            height: 2.2em;
-            font-size: 1.1em;
-          }
-        }
-      }
-    }
+#modal .modalBackdrop {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+#modal .modalBackdrop .modalContainer {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 90dvw;
+  height: 90dvh;
+  max-width: 75em;
+  max-height: 50em;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#modal .modalBackdrop .modalContainer .modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 1.5em;
+  background: vars.$greyBackground;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#modal .modalBackdrop .modalContainer .modalHeader h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#modal .modalBackdrop .modalContainer .modalHeader .closeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 50%;
+  background: rgba(231, 76, 60, 0.1);
+  color: vars.$errorColor;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1.2em;
+}
+#modal .modalBackdrop .modalContainer .modalHeader .closeBtn:hover {
+  background: vars.$errorColor;
+  color: white;
+  transform: scale(1.1);
+}
+#modal .modalBackdrop .modalContainer .modalContent {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
+  padding: 1rem;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+#modal .modalBackdrop .modalContainer .modalContent iframe,
+#modal .modalBackdrop .modalContainer .modalContent embed,
+#modal .modalBackdrop .modalContainer .modalContent object {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+#modal .modalBackdrop .modalContainer .modalContent img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border: none;
+}
+@media (max-width: vars.$tabletWidth) {
+  #modal .modalBackdrop {
+    padding: 1em;
+  }
+  #modal .modalBackdrop .modalContainer {
+    width: 95dvw;
+    height: 85dvh;
+  }
+  #modal .modalBackdrop .modalContainer .modalHeader {
+    padding: 0.75em 1em;
+  }
+  #modal .modalBackdrop .modalContainer .modalHeader h3 {
+    font-size: 1.1em;
+  }
+  #modal .modalBackdrop .modalContainer .modalHeader .closeBtn {
+    width: 2.2em;
+    height: 2.2em;
+    font-size: 1.1em;
   }
 }

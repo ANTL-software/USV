@@ -1,376 +1,373 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #posteForm {
   @include mixins.mainView;
+}
+#posteForm main {
+  padding: 1.5em 1em;
+}
+#posteForm .posteForm__container {
+  @include mixins.centeredContainer(680px);
+}
+#posteForm .posteForm__header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+}
+#posteForm .posteForm__header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex: 1;
+}
+#posteForm .posteForm__error {
+  padding: 0.85em 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+#posteForm .posteForm__success {
+  padding: 0.85em 1em;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  color: #16a34a;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+#posteForm .posteForm__loading {
+  text-align: center;
+  padding: 4em;
+  color: vars.$fontColorSecondary;
+}
+#posteForm .posteForm__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+  @include mixins.card(12px, light);
+  padding: 1.5em;
+}
+#posteForm .posteForm__row {
+  display: flex;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+#posteForm .posteForm__field {
+  flex: 1;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+#posteForm .posteForm__field label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+#posteForm .posteForm__field input,
+#posteForm .posteForm__field textarea {
+  padding: 0.6em 0.85em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  background: white;
+  transition: border-color vars.$transitionSmooth;
+  width: 100%;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+#posteForm .posteForm__field input:focus,
+#posteForm .posteForm__field textarea:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+}
+#posteForm .posteForm__field input:disabled,
+#posteForm .posteForm__field textarea:disabled {
+  background: #f8fafc;
+  color: vars.$fontColorSecondary;
+  cursor: not-allowed;
+}
+#posteForm .posteForm__field textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+#posteForm .posteForm__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+#posteForm .posteForm__swatch {
+  border: 2px solid transparent;
+  border-radius: 999px;
+  padding: 0.25em 0.75em;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color vars.$transitionSmooth,
+    transform vars.$transitionSmooth;
+}
+#posteForm .posteForm__swatch:hover:not(:disabled) {
+  transform: scale(1.05);
+}
+#posteForm .posteForm__swatch:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#posteForm .posteForm__swatch--selected {
+  border-color: #334155 !important;
+}
+#posteForm .posteForm__swatch-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140px;
+  display: inline-block;
+  vertical-align: middle;
+}
+#posteForm .posteForm__field .reactSelect__control {
+  border-color: vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  min-height: unset;
+  box-shadow: none;
+  transition: border-color vars.$transitionSmooth;
+}
+#posteForm .posteForm__field .reactSelect__control:hover {
+  border-color: vars.$borderColor;
+}
+#posteForm .posteForm__field .reactSelect__control--is-focused {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
+}
+#posteForm .posteForm__field .reactSelect__control--is-disabled {
+  background: #f8fafc;
+  cursor: not-allowed;
+}
+#posteForm .posteForm__field .reactSelect__value-container {
+  padding: 0.35em 0.85em;
+}
+#posteForm .posteForm__field .reactSelect__placeholder {
+  color: #94a3b8;
+}
+#posteForm .posteForm__field .reactSelect__single-value {
+  color: vars.$fontColorPrimary;
+}
+#posteForm .posteForm__field .reactSelect__option--is-focused {
+  background: #ede9fe;
+}
+#posteForm .posteForm__field .reactSelect__option--is-selected {
+  background: #818cf8;
+}
+#posteForm .posteForm__field .reactSelect__menu {
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+#posteForm .posteForm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75em;
+  padding-top: 0.25em;
+}
+#posteForm .posteForm__btn-cancel {
+  padding: 0.65em 1.5em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  background: white;
+  color: vars.$fontColorSecondary;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth;
+}
+#posteForm .posteForm__btn-cancel:hover:not(:disabled) {
+  background: #f8fafc;
+}
+#posteForm .posteForm__btn-cancel:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#posteForm .posteForm__btn-save {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.65em 1.75em;
+  background: vars.$utilsGradient;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity vars.$transitionSmooth;
+}
+#posteForm .posteForm__btn-save:hover:not(:disabled) {
+  opacity: 0.88;
+}
+#posteForm .posteForm__btn-save:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+// Permissions styling
+#posteForm .permissions-section {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+#posteForm .permissions-section > label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  margin-bottom: 0.75em;
+}
+#posteForm .permissions-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+}
+#posteForm .permission-card {
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  padding: 1.2em;
+  background: #fafafb;
+  transition: all vars.$transitionSmooth;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#posteForm .permission-card:hover {
+  border-color: #cbd5e1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+}
+#posteForm .permission-card--enabled {
+  background: white;
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(129, 140, 248, 0.06);
+}
+#posteForm .permission-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+#posteForm .permission-card-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+#posteForm .permission-toggle {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+}
+#posteForm .permission-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+#posteForm .permission-toggle input:checked + .permission-toggle-slider {
+  background-color: #6366f1;
+}
+#posteForm .permission-toggle input:checked + .permission-toggle-slider:before {
+  transform: translateX(20px);
+}
+#posteForm .permission-toggle input:disabled + .permission-toggle-slider {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#posteForm .permission-toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #cbd5e1;
+  transition: 0.3s;
+  border-radius: 24px;
+}
+#posteForm .permission-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+#posteForm .permission-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+  padding-top: 1em;
+  border-top: 1px dashed #e2e8f0;
+  animation: slideDown 0.25s ease-out;
+}
+#posteForm .permission-sub-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+}
+#posteForm .permission-full-access {
+  font-size: 0.82rem;
+  color: #10b981;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+#posteForm .permission-full-access:before {
+  content: "✓";
+  font-weight: 700;
+}
+#posteForm .permission-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+#posteForm .permission-pill {
+  padding: 0.4em 0.85em;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border-radius: 999px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  color: #475569;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth;
+  outline: none;
+}
+#posteForm .permission-pill:hover:not(:disabled) {
+  border-color: #6366f1;
+  color: #6366f1;
+  background: #f5f3ff;
+}
+#posteForm .permission-pill--active {
+  background: #6366f1;
+  border-color: #6366f1;
+  color: white !important;
+}
+#posteForm .permission-pill--active:hover:not(:disabled) {
+  opacity: 0.9;
+}
+#posteForm .permission-pill:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
-  main { padding: 1.5em 1em; }
-
-  .posteForm__container {
-    @include mixins.centeredContainer(680px);
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
   }
-
-  .posteForm__header {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    margin-bottom: 1.5em;
-
-    h1 { margin: 0; font-size: 1.5rem; font-weight: 700; flex: 1; }
-  }
-
-  .posteForm__error {
-    padding: 0.85em 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: #dc2626;
-    margin-bottom: 1em;
-    font-size: 0.9rem;
-  }
-
-  .posteForm__success {
-    padding: 0.85em 1em;
-    background: #dcfce7;
-    border: 1px solid #86efac;
-    border-radius: 8px;
-    color: #16a34a;
-    margin-bottom: 1em;
-    font-size: 0.9rem;
-  }
-
-  .posteForm__loading {
-    text-align: center;
-    padding: 4em;
-    color: vars.$fontColorSecondary;
-  }
-
-  .posteForm__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25em;
-    @include mixins.card(12px, light);
-    padding: 1.5em;
-  }
-
-  .posteForm__row {
-    display: flex;
-    gap: 1em;
-    flex-wrap: wrap;
-  }
-
-  .posteForm__field {
-    flex: 1;
-    min-width: 180px;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35em;
-
-    label {
-      font-size: 0.85rem;
-      font-weight: 500;
-      color: vars.$fontColorPrimary;
-    }
-
-    input, textarea {
-      padding: 0.6em 0.85em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      background: white;
-      transition: border-color vars.$transitionSmooth;
-      width: 100%;
-      box-sizing: border-box;
-      font-family: inherit;
-
-      &:focus {
-        outline: none;
-        border-color: #818cf8;
-        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
-      }
-
-      &:disabled { background: #f8fafc; color: vars.$fontColorSecondary; cursor: not-allowed; }
-    }
-
-    textarea { resize: vertical; min-height: 80px; }
-  }
-
-  .posteForm__swatches {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-  }
-
-  .posteForm__swatch {
-    border: 2px solid transparent;
-    border-radius: 999px;
-    padding: 0.25em 0.75em;
-    font-size: 0.78rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color vars.$transitionSmooth, transform vars.$transitionSmooth;
-
-    &:hover:not(:disabled) { transform: scale(1.05); }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    &--selected { border-color: #334155 !important; }
-  }
-
-  .posteForm__swatch-preview {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 140px;
-    display: inline-block;
-    vertical-align: middle;
-  }
-
-  .posteForm__field {
-
-    .reactSelect__control {
-      border-color: vars.$borderColor;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      min-height: unset;
-      box-shadow: none;
-      transition: border-color vars.$transitionSmooth;
-
-      &:hover { border-color: vars.$borderColor; }
-      &--is-focused {
-        border-color: #818cf8 !important;
-        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
-      }
-      &--is-disabled { background: #f8fafc; cursor: not-allowed; }
-    }
-
-    .reactSelect__value-container { padding: 0.35em 0.85em; }
-    .reactSelect__placeholder { color: #94a3b8; }
-    .reactSelect__single-value { color: vars.$fontColorPrimary; }
-    .reactSelect__option--is-focused { background: #ede9fe; }
-    .reactSelect__option--is-selected { background: #818cf8; }
-    .reactSelect__menu { border-radius: 8px; font-size: 0.9rem; }
-  }
-
-  .posteForm__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75em;
-    padding-top: 0.25em;
-  }
-
-  .posteForm__btn-cancel {
-    padding: 0.65em 1.5em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 8px;
-    background: white;
-    color: vars.$fontColorSecondary;
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: all vars.$transitionSmooth;
-
-    &:hover:not(:disabled) { background: #f8fafc; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
-  }
-
-  .posteForm__btn-save {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.65em 1.75em;
-    background: vars.$utilsGradient;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity vars.$transitionSmooth;
-
-    &:hover:not(:disabled) { opacity: 0.88; }
-    &:disabled { opacity: 0.5; cursor: not-allowed; }
-  }
-
-  // Permissions styling
-  .permissions-section {
-    margin-top: 0.5em;
-    margin-bottom: 0.5em;
-
-    & > label {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-      margin-bottom: 0.75em;
-    }
-  }
-
-  .permissions-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1em;
-  }
-
-  .permission-card {
-    border: 1px solid vars.$borderColor;
-    border-radius: 12px;
-    padding: 1.2em;
-    background: #fafafb;
-    transition: all vars.$transitionSmooth;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    &:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
-    }
-
-    &--enabled {
-      background: white;
-      border-color: #e2e8f0;
-      box-shadow: 0 4px 12px rgba(129, 140, 248, 0.06);
-    }
-  }
-
-  .permission-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .permission-card-name {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #1e293b;
-  }
-
-  .permission-toggle {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 24px;
-
-    input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-
-      &:checked + .permission-toggle-slider {
-        background-color: #6366f1;
-
-        &:before {
-          transform: translateX(20px);
-        }
-      }
-
-      &:disabled + .permission-toggle-slider {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-    }
-  }
-
-  .permission-toggle-slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #cbd5e1;
-    transition: .3s;
-    border-radius: 24px;
-
-    &:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .3s;
-      border-radius: 50%;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
-  }
-
-  .permission-card-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-    padding-top: 1em;
-    border-top: 1px dashed #e2e8f0;
-    animation: slideDown 0.25s ease-out;
-  }
-
-  .permission-sub-label {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: vars.$fontColorSecondary;
-  }
-
-  .permission-full-access {
-    font-size: 0.82rem;
-    color: #10b981;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 0.25em;
-
-    &:before {
-      content: "✓";
-      font-weight: 700;
-    }
-  }
-
-  .permission-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5em;
-  }
-
-  .permission-pill {
-    padding: 0.4em 0.85em;
-    font-size: 0.8rem;
-    font-weight: 500;
-    border-radius: 999px;
-    border: 1px solid #cbd5e1;
-    background: white;
-    color: #475569;
-    cursor: pointer;
-    transition: all vars.$transitionSmooth;
-    outline: none;
-
-    &:hover:not(:disabled) {
-      border-color: #6366f1;
-      color: #6366f1;
-      background: #f5f3ff;
-    }
-
-    &--active {
-      background: #6366f1;
-      border-color: #6366f1;
-      color: white !important;
-
-      &:hover:not(:disabled) {
-        opacity: 0.9;
-      }
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  }
-
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-8px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

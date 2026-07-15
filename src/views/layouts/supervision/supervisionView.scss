@@ -1,685 +1,592 @@
-@use '../../../utils/styles/variables' as vars;
-@use '../../../utils/styles/mixins' as mixins;
-
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
 #supervisionView {
   @include mixins.mainView;
-
-  main { padding: 1.5em 1em; }
-
-  .supervisionView__container {
-    @include mixins.centeredContainer;
-  }
-
-  .supervisionView__header {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    margin-bottom: 1.5em;
-
-    h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .supervisionView__selector {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    max-width: 30em;
-    margin-bottom: 1.5em;
-
-    label {
-      font-weight: 600;
-      font-size: 0.9em;
-      color: vars.$fontColorSecondary;
-    }
-
-    &--inline {
-      margin-bottom: 0;
-      max-width: 20em;
-      flex: 1;
-      min-width: 15em;
-    }
-  }
-
-  // Filters area
-  .supervisionView__filters {
+}
+#supervisionView main {
+  padding: 1.5em 1em;
+}
+#supervisionView .supervisionView__container {
+  @include mixins.centeredContainer;
+}
+#supervisionView .supervisionView__header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+}
+#supervisionView .supervisionView__header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#supervisionView .supervisionView__selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  max-width: 30em;
+  margin-bottom: 1.5em;
+}
+#supervisionView .supervisionView__selector label {
+  font-weight: 600;
+  font-size: 0.9em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .supervisionView__selector--inline {
+  margin-bottom: 0;
+  max-width: 20em;
+  flex: 1;
+  min-width: 15em;
+}
+// Filters area
+#supervisionView .supervisionView__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  align-items: flex-start;
+}
+#supervisionView .supervisionView__filter-dates {
+  flex: 1;
+  min-width: 20em;
+}
+#supervisionView .supervisionView__content {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+#supervisionView .supervisionView__content section h3 {
+  margin: 0 0 0.75em;
+  font-size: 1.1em;
+  color: vars.$fontColorPrimary;
+}
+// Summary cards
+#supervisionView .supervisionView__summary {
+  display: flex;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+#supervisionView .supervisionView__amd-kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  gap: 0.75em;
+  margin-bottom: 1em;
+}
+#supervisionView .supervisionView__historical-amd {
+  margin-top: 1.5em;
+}
+#supervisionView .amd-kpi-card {
+  background: vars.$greyBackground;
+  border-radius: 10px;
+  padding: 0.9em 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  border-top: 3px solid vars.$fontColorSecondary;
+}
+#supervisionView .amd-kpi-card__value {
+  font-size: 1.5em;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#supervisionView .amd-kpi-card__label {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .amd-kpi-card__meta {
+  font-size: 0.75em;
+  color: vars.$fontColorSecondary;
+  opacity: 0.9;
+}
+#supervisionView .amd-kpi-card--human {
+  border-top-color: #27ae60;
+}
+#supervisionView .amd-kpi-card--human .amd-kpi-card__value {
+  color: #27ae60;
+}
+#supervisionView .amd-kpi-card--svi {
+  border-top-color: #f97316;
+}
+#supervisionView .amd-kpi-card--svi .amd-kpi-card__value {
+  color: #f97316;
+}
+#supervisionView .amd-kpi-card--messaging {
+  border-top-color: #64748b;
+}
+#supervisionView .amd-kpi-card--messaging .amd-kpi-card__value {
+  color: #64748b;
+}
+#supervisionView .amd-kpi-card--unknown {
+  border-top-color: #0ea5e9;
+}
+#supervisionView .amd-kpi-card--unknown .amd-kpi-card__value {
+  color: #0ea5e9;
+}
+#supervisionView .summary-card {
+  background: vars.$greyBackground;
+  border-radius: 8px;
+  padding: 1em 1.25em;
+  flex: 1;
+  min-width: 8em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  border-top: 3px solid vars.$fontColorSecondary;
+}
+#supervisionView .summary-card__value {
+  font-size: 1.8em;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#supervisionView .summary-card__label {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .summary-card--danger {
+  border-top-color: vars.$errorColor;
+}
+#supervisionView .summary-card--danger .summary-card__value {
+  color: vars.$errorColor;
+}
+#supervisionView .summary-card--warning {
+  border-top-color: vars.$warningColor;
+}
+#supervisionView .summary-card--warning .summary-card__value {
+  color: vars.$warningColor;
+}
+#supervisionView .summary-card--info {
+  border-top-color: #27ae60;
+}
+#supervisionView .summary-card--info .summary-card__value {
+  color: #27ae60;
+}
+#supervisionView .summary-card--call {
+  border-top-color: #3498db;
+}
+#supervisionView .summary-card--call .summary-card__value {
+  color: #3498db;
+}
+// Queue cards
+#supervisionView .supervisionView__queue__total {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  margin-bottom: 1em;
+}
+#supervisionView .supervisionView__queue__remaining {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25em;
+}
+#supervisionView .supervisionView__queue__remaining .count {
+  font-size: 2em;
+  font-weight: 700;
+  color: vars.$successColor;
+}
+#supervisionView .supervisionView__queue__remaining .label {
+  font-size: 0.9em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .supervisionView__queue__remaining.danger .count {
+  color: vars.$errorColor;
+}
+#supervisionView .supervisionView__queue__remaining.warning .count {
+  color: vars.$warningColor;
+}
+#supervisionView .supervisionView__queue .separator {
+  font-size: 1.5em;
+  color: vars.$fontColorSecondary;
+  margin: 0 0.25em;
+}
+#supervisionView .supervisionView__queue .total {
+  font-size: 1em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .supervisionView__queue .alert-badge {
+  font-size: 0.75em;
+  padding: 0.2em 0.6em;
+  border-radius: 4px;
+  color: white;
+  margin-left: 0.5em;
+}
+#supervisionView .supervisionView__queue .alert-badge.danger {
+  background: vars.$errorColor;
+}
+#supervisionView .supervisionView__queue .alert-badge.warning {
+  background: vars.$warningColor;
+}
+#supervisionView .supervisionView__queue__cards {
+  display: flex;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+#supervisionView .queue-card {
+  background: vars.$greyBackground;
+  border-radius: 8px;
+  padding: 0.75em 1em;
+  border-left: 4px solid;
+  min-width: 8em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+#supervisionView .queue-card__count {
+  font-size: 1.4em;
+  font-weight: 700;
+}
+#supervisionView .queue-card__label {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+// Agents
+#supervisionView .supervisionView__agents__summary {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  margin-bottom: 0.75em;
+}
+#supervisionView .supervisionView__agents .stat-badge {
+  font-size: 0.8em;
+  padding: 0.25em 0.6em;
+  border-radius: 4px;
+  color: white;
+}
+#supervisionView .supervisionView__agents .stat-badge--alert {
+  background: #dc2626;
+}
+#supervisionView .supervisionView__agents .stat-badge--warning {
+  background: #d97706;
+}
+#supervisionView .supervisionView__agents__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+#supervisionView .agent-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.4em 0.75em;
+  background: vars.$greyBackground;
+  border-radius: 6px;
+}
+#supervisionView .agent-row .agent-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#supervisionView .agent-row .agent-name {
+  font-weight: 500;
+}
+#supervisionView .agent-row .agent-statut {
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+  text-transform: capitalize;
+}
+#supervisionView .agent-row .agent-since {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+  font-family: "Courier New", monospace;
+}
+#supervisionView .agent-row .agent-pause {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .agent-row .agent-runtime-badge,
+#supervisionView .agent-row .agent-runtime-warning,
+#supervisionView .agent-row .agent-runtime-alert {
+  font-size: 0.75em;
+  font-weight: 600;
+  padding: 0.2em 0.55em;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+#supervisionView .agent-row .agent-runtime-badge {
+  background: #e0f2fe;
+  color: #075985;
+}
+#supervisionView .agent-row .agent-runtime-warning {
+  background: #fef3c7;
+  color: #92400e;
+}
+#supervisionView .agent-row .agent-runtime-alert {
+  background: #fee2e2;
+  color: #991b1b;
+}
+// Origin badges
+#supervisionView .origin-badge {
+  display: inline-block;
+  font-size: 0.75em;
+  font-weight: 600;
+  padding: 0.2em 0.6em;
+  border-radius: 12px;
+  color: white;
+  white-space: nowrap;
+}
+#supervisionView .origin-badge--sm {
+  font-size: 0.7em;
+  padding: 0.15em 0.5em;
+}
+#supervisionView .summary-card__origins {
+  display: flex;
+  gap: 0.4em;
+  flex-wrap: wrap;
+  margin-top: 0.25em;
+}
+// Calls table
+#supervisionView .supervisionView__calls table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#supervisionView .supervisionView__calls table th,
+#supervisionView .supervisionView__calls table td {
+  text-align: left;
+  padding: 0.5em 0.75em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+}
+#supervisionView .supervisionView__calls table th {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+#supervisionView .supervisionView__calls .whisper-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 6px;
+  background: rgba(99, 102, 241, 0.08);
+  color: #6366f1;
+  font-size: 0.8em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+#supervisionView .supervisionView__calls .whisper-btn:hover:not(:disabled) {
+  background: #6366f1;
+  color: #ffffff;
+  box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
+  transform: translateY(-1px);
+}
+#supervisionView .supervisionView__calls .whisper-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+#supervisionView .supervisionView__calls .whisper-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(255, 255, 255, 0.05);
+  color: vars.$fontColorSecondary;
+  border-color: transparent;
+  transform: none;
+}
+#supervisionView .supervisionView__calls .whisper-btn.active {
+  background: #2ecc71;
+  color: #ffffff;
+  border-color: #2ecc71;
+  box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
+}
+#supervisionView .supervisionView__calls .whisper-btn.pending {
+  background: rgba(241, 196, 15, 0.1) !important;
+  color: vars.$warningColor !important;
+  border-color: rgba(241, 196, 15, 0.2) !important;
+  opacity: 0.85 !important;
+  cursor: wait !important;
+}
+#supervisionView .supervisionView__calls .no-whisper-badge {
+  display: inline-block;
+  font-size: 0.8em;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+  color: vars.$fontColorSecondary;
+  cursor: help;
+}
+#supervisionView .system-end-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2em 0.55em;
+  border-radius: 999px;
+  background: rgba(100, 116, 139, 0.14);
+  color: #475569;
+  font-size: 0.78em;
+  font-weight: 600;
+}
+#supervisionView .empty,
+#supervisionView .loading {
+  text-align: center;
+  color: vars.$fontColorSecondary;
+  padding: 1em;
+}
+#supervisionView .supervisionView__error {
+  padding: 0.85em 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+// Section headers
+#supervisionView .supervisionView__section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1em;
+}
+#supervisionView .supervisionView__section-header h3 {
+  margin: 0;
+  font-size: 1.1em;
+  color: vars.$fontColorPrimary;
+}
+#supervisionView .supervisionView__section-header--toggle {
+  margin-bottom: 0.75em;
+}
+// Toggle button
+#supervisionView .supervisionView__toggle-btn {
+  padding: 0.4em 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  background: vars.$whiteBackground;
+  color: vars.$fontColorPrimary;
+  font-size: 0.85em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth;
+}
+#supervisionView .supervisionView__toggle-btn:hover {
+  background: vars.$greyBackground;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+// Header actions
+#supervisionView .supervisionView__header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+// Graphiques section
+#supervisionView .supervisionView__graphiques {
+  margin-top: 1em;
+}
+#supervisionView .supervisionView__graphiques-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+}
+#supervisionView .supervisionView__graphique--full {
+  width: 100%;
+}
+#supervisionView .supervisionView__graphique--half {
+  width: 100%;
+}
+@media (min-width: vars.$tabletWidth) {
+  #supervisionView .supervisionView__graphiques-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 1em;
-    margin-bottom: 1.5em;
     align-items: flex-start;
   }
-
-  .supervisionView__filter-dates {
-    flex: 1;
+  #supervisionView .supervisionView__graphique--half {
+    flex: 1 1 calc(50% - 0.75em);
     min-width: 20em;
-  }
-
-  .supervisionView__content {
-    display: flex;
-    flex-direction: column;
-    gap: 2em;
-
-    section {
-      h3 {
-        margin: 0 0 0.75em;
-        font-size: 1.1em;
-        color: vars.$fontColorPrimary;
-      }
-    }
-  }
-
-  // Summary cards
-  .supervisionView__summary {
-    display: flex;
-    gap: 0.75em;
-    flex-wrap: wrap;
-  }
-
-  .supervisionView__amd-kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
-    gap: 0.75em;
-    margin-bottom: 1em;
-  }
-
-  .supervisionView__historical-amd {
-    margin-top: 1.5em;
-  }
-
-  .amd-kpi-card {
-    background: vars.$greyBackground;
-    border-radius: 10px;
-    padding: 0.9em 1em;
-    display: flex;
-    flex-direction: column;
-    gap: 0.2em;
-    border-top: 3px solid vars.$fontColorSecondary;
-
-    &__value {
-      font-size: 1.5em;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-    }
-
-    &__label {
-      font-size: 0.8em;
-      color: vars.$fontColorSecondary;
-    }
-
-    &__meta {
-      font-size: 0.75em;
-      color: vars.$fontColorSecondary;
-      opacity: 0.9;
-    }
-
-    &--human {
-      border-top-color: #27ae60;
-      .amd-kpi-card__value { color: #27ae60; }
-    }
-
-    &--svi {
-      border-top-color: #f97316;
-      .amd-kpi-card__value { color: #f97316; }
-    }
-
-    &--messaging {
-      border-top-color: #64748b;
-      .amd-kpi-card__value { color: #64748b; }
-    }
-
-    &--unknown {
-      border-top-color: #0ea5e9;
-      .amd-kpi-card__value { color: #0ea5e9; }
-    }
-  }
-
-  .summary-card {
-    background: vars.$greyBackground;
-    border-radius: 8px;
-    padding: 1em 1.25em;
-    flex: 1;
-    min-width: 8em;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-    border-top: 3px solid vars.$fontColorSecondary;
-
-    &__value {
-      font-size: 1.8em;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-    }
-
-    &__label {
-      font-size: 0.8em;
-      color: vars.$fontColorSecondary;
-    }
-
-    &--danger {
-      border-top-color: vars.$errorColor;
-      .summary-card__value { color: vars.$errorColor; }
-    }
-
-    &--warning {
-      border-top-color: vars.$warningColor;
-      .summary-card__value { color: vars.$warningColor; }
-    }
-
-    &--info {
-      border-top-color: #27ae60;
-      .summary-card__value { color: #27ae60; }
-    }
-
-    &--call {
-      border-top-color: #3498db;
-      .summary-card__value { color: #3498db; }
-    }
-  }
-
-  // Queue cards
-  .supervisionView__queue {
-    &__total {
-      display: flex;
-      align-items: baseline;
-      gap: 0.5em;
-      margin-bottom: 1em;
-    }
-
-    &__remaining {
-      display: flex;
-      align-items: baseline;
-      gap: 0.25em;
-
-      .count {
-        font-size: 2em;
-        font-weight: 700;
-        color: vars.$successColor;
-      }
-
-      .label {
-        font-size: 0.9em;
-        color: vars.$fontColorSecondary;
-      }
-
-      &.danger .count { color: vars.$errorColor; }
-      &.warning .count { color: vars.$warningColor; }
-    }
-
-    .separator {
-      font-size: 1.5em;
-      color: vars.$fontColorSecondary;
-      margin: 0 0.25em;
-    }
-
-    .total {
-      font-size: 1em;
-      color: vars.$fontColorSecondary;
-    }
-
-    .alert-badge {
-      font-size: 0.75em;
-      padding: 0.2em 0.6em;
-      border-radius: 4px;
-      color: white;
-      margin-left: 0.5em;
-
-      &.danger { background: vars.$errorColor; }
-      &.warning { background: vars.$warningColor; }
-    }
-
-    &__cards {
-      display: flex;
-      gap: 0.75em;
-      flex-wrap: wrap;
-    }
-  }
-
-  .queue-card {
-    background: vars.$greyBackground;
-    border-radius: 8px;
-    padding: 0.75em 1em;
-    border-left: 4px solid;
-    min-width: 8em;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-
-    &__count {
-      font-size: 1.4em;
-      font-weight: 700;
-    }
-
-    &__label {
-      font-size: 0.8em;
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  // Agents
-  .supervisionView__agents {
-    &__summary {
-      display: flex;
-      gap: 0.5em;
-      flex-wrap: wrap;
-      margin-bottom: 0.75em;
-    }
-
-    .stat-badge {
-      font-size: 0.8em;
-      padding: 0.25em 0.6em;
-      border-radius: 4px;
-      color: white;
-
-      &--alert {
-        background: #dc2626;
-      }
-
-      &--warning {
-        background: #d97706;
-      }
-    }
-
-    &__list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5em;
-    }
-  }
-
-  .agent-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.4em 0.75em;
-    background: vars.$greyBackground;
-    border-radius: 6px;
-
-    .agent-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .agent-name {
-      font-weight: 500;
-    }
-
-    .agent-statut {
-      font-size: 0.85em;
-      color: vars.$fontColorSecondary;
-      text-transform: capitalize;
-    }
-
-    .agent-since {
-      font-size: 0.8em;
-      color: vars.$fontColorSecondary;
-      font-family: 'Courier New', monospace;
-    }
-
-    .agent-pause {
-      font-size: 0.8em;
-      color: vars.$fontColorSecondary;
-    }
-
-    .agent-runtime-badge,
-    .agent-runtime-warning,
-    .agent-runtime-alert {
-      font-size: 0.75em;
-      font-weight: 600;
-      padding: 0.2em 0.55em;
-      border-radius: 999px;
-      white-space: nowrap;
-    }
-
-    .agent-runtime-badge {
-      background: #e0f2fe;
-      color: #075985;
-    }
-
-    .agent-runtime-warning {
-      background: #fef3c7;
-      color: #92400e;
-    }
-
-    .agent-runtime-alert {
-      background: #fee2e2;
-      color: #991b1b;
-    }
-  }
-
-  // Origin badges
-  .origin-badge {
-    display: inline-block;
-    font-size: 0.75em;
-    font-weight: 600;
-    padding: 0.2em 0.6em;
-    border-radius: 12px;
-    color: white;
-    white-space: nowrap;
-
-    &--sm {
-      font-size: 0.7em;
-      padding: 0.15em 0.5em;
-    }
-  }
-
-  .summary-card__origins {
-    display: flex;
-    gap: 0.4em;
-    flex-wrap: wrap;
-    margin-top: 0.25em;
-  }
-
-  // Calls table
-  .supervisionView__calls {
-    table {
-      width: 100%;
-      border-collapse: collapse;
-
-      th, td {
-        text-align: left;
-        padding: 0.5em 0.75em;
-        border-bottom: 1px solid vars.$borderColor;
-        vertical-align: middle;
-      }
-
-      th {
-        font-size: 0.85em;
-        font-weight: 600;
-        color: vars.$fontColorSecondary;
-      }
-    }
-
-    .whisper-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 12px;
-      border: 1px solid rgba(99, 102, 241, 0.2);
-      border-radius: 6px;
-      background: rgba(99, 102, 241, 0.08);
-      color: #6366f1;
-      font-size: 0.8em;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-      outline: none;
-
-      &:hover:not(:disabled) {
-        background: #6366f1;
-        color: #ffffff;
-        box-shadow: 0 0 10px rgba(99, 102, 241, 0.25);
-        transform: translateY(-1px);
-      }
-
-      &:active:not(:disabled) {
-        transform: translateY(0);
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: rgba(255, 255, 255, 0.05);
-        color: vars.$fontColorSecondary;
-        border-color: transparent;
-        transform: none;
-      }
-
-      &.active {
-        background: #2ecc71;
-        color: #ffffff;
-        border-color: #2ecc71;
-        box-shadow: 0 0 10px rgba(46, 204, 113, 0.3);
-      }
-
-      &.pending {
-        background: rgba(241, 196, 15, 0.1) !important;
-        color: vars.$warningColor !important;
-        border-color: rgba(241, 196, 15, 0.2) !important;
-        opacity: 0.85 !important;
-        cursor: wait !important;
-      }
-    }
-
-    .no-whisper-badge {
-      display: inline-block;
-      font-size: 0.8em;
-      padding: 4px 8px;
-      border-radius: 4px;
-      background: rgba(255, 255, 255, 0.05);
-      color: vars.$fontColorSecondary;
-      cursor: help;
-    }
-  }
-
-  .system-end-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.2em 0.55em;
-    border-radius: 999px;
-    background: rgba(100, 116, 139, 0.14);
-    color: #475569;
-    font-size: 0.78em;
-    font-weight: 600;
-  }
-
-  .empty, .loading {
-    text-align: center;
-    color: vars.$fontColorSecondary;
-    padding: 1em;
-  }
-
-  .supervisionView__error {
-    padding: 0.85em 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: #dc2626;
-    margin-bottom: 1em;
-    font-size: 0.9rem;
-  }
-
-  // Section headers
-  .supervisionView__section-header {
-    & {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1em;
-    }
-
-    h3 {
-      & {
-        margin: 0;
-        font-size: 1.1em;
-        color: vars.$fontColorPrimary;
-      }
-    }
-
-    &--toggle {
-      margin-bottom: 0.75em;
-    }
-  }
-
-  // Toggle button
-  .supervisionView__toggle-btn {
-    & {
-      padding: 0.4em 1em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 6px;
-      background: vars.$whiteBackground;
-      color: vars.$fontColorPrimary;
-      font-size: 0.85em;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all vars.$transitionSmooth;
-    }
-
-    &:hover {
-      background: vars.$greyBackground;
-      border-color: rgba(0, 0, 0, 0.15);
-    }
-  }
-
-  // Header actions
-  .supervisionView__header-actions {
-    & {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-    }
-  }
-
-  // Graphiques section
-  .supervisionView__graphiques {
-    & {
-      margin-top: 1em;
-    }
-  }
-
-  .supervisionView__graphiques-grid {
-    & {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5em;
-    }
-  }
-
-  .supervisionView__graphique {
-    &--full {
-      width: 100%;
-    }
-
-    &--half {
-      width: 100%;
-    }
-  }
-
-  @media (min-width: vars.$tabletWidth) {
-    .supervisionView__graphiques-grid {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-    }
-
-    .supervisionView__graphique--half {
-      flex: 1 1 calc(50% - 0.75em);
-      min-width: 20em;
-    }
   }
 }
 
 // Styles d'impression
+
 @media print {
-  #supervisionView {
-    // Masquer les éléments non nécessaires
-    #header,
-    #subNav,
-    #backToTop,
-    .supervisionView__header,
-    .supervisionView__selector,
-    .filterPanel,
-    .supervisionView__section-header--toggle,
-    .supervisionView__toggle-btn,
-    .exportButton,
-    .printButton {
-      display: none !important;
-    }
-
-    // Layout optimisé pour l'impression A4
-    main {
-      padding: 0 !important;
-    }
-
-    .supervisionView__container {
-      max-width: none !important;
-      padding: 0 !important;
-    }
-
-    // Titre du rapport
-    .supervisionView__content::before {
-      content: 'Rapport de Supervision - ANTL';
-      display: block;
-      font-size: 18pt;
-      font-weight: 700;
-      text-align: center;
-      margin-bottom: 1em;
-      color: #000;
-    }
-
-    // Afficher toutes les sections
-    .supervisionView__graphiques {
-      page-break-inside: avoid;
-    }
-
-    .supervisionView__graphique {
-      page-break-inside: avoid;
-      margin-bottom: 2em;
-      padding: 1em;
-      border: 1px solid #e0e0e0;
-      background: #fff;
-    }
-
-    // Forcer l'affichage des graphiques même si masqués
-    .supervisionView__graphiques-grid {
-      display: block !important;
-    }
-
-    .supervisionView__graphique--half,
-    .supervisionView__graphique--full {
-      width: 100% !important;
-      flex: none !important;
-      page-break-inside: avoid;
-    }
-
-    // Améliorer la lisibilité des textes
-    h3 {
-      color: #000 !important;
-      font-size: 14pt !important;
-      page-break-after: avoid;
-    }
-
-    // Masquer les couleurs de fond
-    .summary-card,
-    .queue-card,
-    .agent-row,
-    table {
-      background: #fff !important;
-    }
-
-    // Améliorer les tableaux
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      page-break-inside: avoid;
-
-      thead {
-        background: #f0f0f0 !important;
-      }
-
-      th,
-      td {
-        border: 1px solid #ccc;
-        padding: 0.5em;
-        color: #000;
-      }
-    }
-
-    // Pied de page avec numéro de page
-    @page {
+  // Masquer les éléments non nécessaires
+  #supervisionView #header,
+  #supervisionView #subNav,
+  #supervisionView #backToTop,
+  #supervisionView .supervisionView__header,
+  #supervisionView .supervisionView__selector,
+  #supervisionView .filterPanel,
+  #supervisionView .supervisionView__section-header--toggle,
+  #supervisionView .supervisionView__toggle-btn,
+  #supervisionView .exportButton,
+  #supervisionView .printButton {
+    display: none !important;
+  }
+  // Layout optimisé pour l'impression A4
+  #supervisionView main {
+    padding: 0 !important;
+  }
+  #supervisionView .supervisionView__container {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  // Titre du rapport
+  #supervisionView .supervisionView__content::before {
+    content: "Rapport de Supervision - ANTL";
+    display: block;
+    font-size: 18pt;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 1em;
+    color: #000;
+  }
+  // Afficher toutes les sections
+  #supervisionView .supervisionView__graphiques {
+    page-break-inside: avoid;
+  }
+  #supervisionView .supervisionView__graphique {
+    page-break-inside: avoid;
+    margin-bottom: 2em;
+    padding: 1em;
+    border: 1px solid #e0e0e0;
+    background: #fff;
+  }
+  // Forcer l'affichage des graphiques même si masqués
+  #supervisionView .supervisionView__graphiques-grid {
+    display: block !important;
+  }
+  #supervisionView .supervisionView__graphique--half,
+  #supervisionView .supervisionView__graphique--full {
+    width: 100% !important;
+    flex: none !important;
+    page-break-inside: avoid;
+  }
+  // Améliorer la lisibilité des textes
+  #supervisionView h3 {
+    color: #000 !important;
+    font-size: 14pt !important;
+    page-break-after: avoid;
+  }
+  // Masquer les couleurs de fond
+  #supervisionView .summary-card,
+  #supervisionView .queue-card,
+  #supervisionView .agent-row,
+  #supervisionView table {
+    background: #fff !important;
+  }
+  // Améliorer les tableaux
+  #supervisionView table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+  }
+  #supervisionView table thead {
+    background: #f0f0f0 !important;
+  }
+  #supervisionView table th,
+  #supervisionView table td {
+    border: 1px solid #ccc;
+    padding: 0.5em;
+    color: #000;
+  }
+  // Pied de page avec numéro de page
+  @page {
+    #supervisionView {
       size: A4;
       margin: 1.5cm;
     }
-
-    body {
-      font-size: 11pt;
-      color: #000;
-    }
+  }
+  #supervisionView body {
+    font-size: 11pt;
+    color: #000;
   }
 }

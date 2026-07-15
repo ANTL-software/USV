@@ -1,27 +1,22 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #authPage {
-  & {
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
-  }
-
-  main {
-    & {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 2em 1em;
-      gap: 1.5em;
-    }
-
-    @media (min-width: vars.$tabletWidth) {
-      padding: 3em 2em;
-    }
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+}
+#authPage main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2em 1em;
+  gap: 1.5em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #authPage main {
+    padding: 3em 2em;
   }
 }

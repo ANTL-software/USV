@@ -1,584 +1,560 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #campagneForm {
   @include mixins.mainView;
+}
+#campagneForm main {
+  padding: 1.5em 1em;
+}
+#campagneForm .campagneForm__container {
+  @include mixins.centeredContainer(75em);
+}
+#campagneForm .campagneForm__layout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
 
-  main {
-    padding: 1.5em 1em;
+  // Mobile : agents en premier
+}
+@media (max-width: vars.$desktopWidth - 1px) {
+  #campagneForm .campagneForm__layout {
+    flex-direction: column-reverse;
   }
-
-  .campagneForm__container {
-    @include mixins.centeredContainer(75em);
+}
+@media (min-width: vars.$desktopWidth) {
+  #campagneForm .campagneForm__layout {
+    flex-direction: row;
+    align-items: flex-start;
   }
+}
+#campagneForm .campagneForm__form {
+  flex: 1;
+  min-width: 0;
+  // Le formulaire prend l'espace restant
 
-  .campagneForm__layout {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-
-    // Mobile : agents en premier
-    @media (max-width: vars.$desktopWidth - 1px) {
-      flex-direction: column-reverse;
-    }
-
-    @media (min-width: vars.$desktopWidth) {
-      flex-direction: row;
-      align-items: flex-start;
-    }
+  // En desktop, le formulaire est à gauche
+}
+@media (min-width: vars.$desktopWidth) {
+  #campagneForm .campagneForm__form {
+    order: 1;
   }
+}
+#campagneForm .campagneForm__sidebar {
+  flex: 0 0 22em; // Largeur fixe de 22em pour la sidebar agents
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
 
-  .campagneForm__form {
-    flex: 1;
-    min-width: 0;
-    // Le formulaire prend l'espace restant
-
-    // En desktop, le formulaire est à gauche
-    @media (min-width: vars.$desktopWidth) {
-      order: 1;
-    }
+  // Sticky seulement en desktop
+}
+@media (min-width: vars.$desktopWidth) {
+  #campagneForm .campagneForm__sidebar {
+    position: sticky;
+    top: 11dvh;
+    max-height: calc(100dvh - 12dvh);
+    overflow-y: auto;
+    order: 2;
   }
-
-  .campagneForm__sidebar {
-    flex: 0 0 22em; // Largeur fixe de 22em pour la sidebar agents
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    // Sticky seulement en desktop
-    @media (min-width: vars.$desktopWidth) {
-      position: sticky;
-      top: 11dvh;
-      max-height: calc(100dvh - 12dvh);
-      overflow-y: auto;
-      order: 2;
-    }
-
-    // Adapter pour les écrans plus petits
-    @media (max-width: 1400px) {
-      flex: 0 0 18em;
-    }
+}
+// Adapter pour les écrans plus petits
+@media (max-width: 1400px) {
+  #campagneForm .campagneForm__sidebar {
+    flex: 0 0 18em;
   }
-
-  .campagneForm__sidebar-actions {
-    display: flex;
-    gap: 0.5em;
-    flex-wrap: wrap;
-  }
-
-  .campagneForm__loading {
-    text-align: center;
-    padding: 3em;
-    color: vars.$fontColorSecondary;
-  }
-
-  .campagneForm__back {
-    margin-bottom: 1em;
-  }
-
-  h1 {
-    margin: 0 0 1.5em;
-    font-size: 1.6rem;
-    font-weight: 700;
-    color: vars.$fontColorPrimary;
-  }
-
-  .campagneForm__error {
-    padding: 0.85em 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: vars.$errorColor;
-    margin-bottom: 1em;
-    font-size: 0.9rem;
-  }
-
-  .campagneForm__success {
-    padding: 0.85em 1em;
-    background: #dcfce7;
-    border: 1px solid #86efac;
-    border-radius: 8px;
-    color: #16a34a;
-    margin-bottom: 1em;
-    font-size: 0.9rem;
-  }
-
-  .campagneForm__form {
-    fieldset {
-      @include mixins.card(10px, light);
-      border: 1px solid vars.$borderColor;
-      padding: 1.5em;
-      margin-bottom: 1.5em;
-
-      legend {
-        font-weight: 600;
-        padding: 0 0.5em;
-        color: vars.$fontColorPrimary;
-        font-size: 0.95rem;
-      }
-    }
-  }
-
-  .campagneForm__row {
-    display: flex;
-    gap: 1em;
-    margin-bottom: 1em;
-    flex-wrap: wrap;
-
-    label {
-      flex: 1;
-      min-width: 12em;
-    }
-  }
-
-  label {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35em;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: vars.$fontColorSecondary;
-
-    input, textarea, select {
-      @include mixins.formInput;
-      font-family: inherit;
-    }
-  }
-
-  .campagneForm__label-full {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35em;
-    font-size: 0.88rem;
-    font-weight: 500;
-    color: vars.$fontColorSecondary;
-    margin-bottom: 1em;
-
-    textarea {
-      @include mixins.formInput;
-      font-family: inherit;
-      resize: vertical;
-    }
-  }
-
-  .campagneForm__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1em;
-    margin-top: 1.5em;
-    padding-top: 1.25em;
-    border-top: 1px solid vars.$borderColor;
-  }
-
-  // ─── Section agents ─────────────────────────────────────────────────────────
-
-  .campagneForm__agents {
-    @include mixins.card(10px, light);
-    border: 1px solid vars.$borderColor;
-    padding: 1.5em;
-
-    h2 {
-      margin: 0 0 1em;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-    }
-  }
-
-  .campagneForm__agents-count {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: #ede9fe;
-    color: vars.$utilsPrimary;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    min-width: 1.4em;
-    padding: 0 0.4em;
-    height: 1.4em;
-  }
-
-  .campagneForm__agents-add {
-    display: flex;
-    gap: 0.75em;
-    margin-bottom: 1em;
-
-    .reactSelect__container {
-      flex: 1;
-    }
-  }
-
-  .campagneForm__agents-empty {
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-    font-size: 0.9rem;
-  }
-
-  .campagneForm__agents-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-  }
-
-  .campagneForm__agents-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1em;
-    padding: 0.65em 0.9em;
-    background: #f8fafc;
-    border: 1px solid vars.$borderColor;
-    border-radius: 8px;
-    flex-wrap: wrap;
-    transition: background vars.$transitionSmooth;
-
-    &:hover { background: #f1f5f9; }
-
-    em { color: vars.$fontColorSecondary; font-size: 0.85rem; }
-  }
-
-  .campagneForm__agents-info {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    flex-wrap: wrap;
-    flex: 1;
-  }
-
-  .campagneForm__agents-nom {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: vars.$fontColorPrimary;
-  }
-
-  .campagneForm__agents-role {
-    display: inline-block;
-    padding: 0.15em 0.55em;
-    background: #ede9fe;
-    color: vars.$utilsPrimary;
-    border-radius: 999px;
-    font-size: 0.73rem;
-    font-weight: 600;
-  }
-
-  .campagneForm__agents-btns {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-    flex-shrink: 0;
-  }
-
-
-  .campagneForm__agents-transfer-row {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    flex-wrap: wrap;
-    width: 100%;
-    margin-top: 0.25em;
-
-    .reactSelect__container {
-      flex: 1;
-      min-width: 200px;
-      font-size: 0.85rem;
-    }
-  }
-
-  // ─── Checkbox autoriser mobile ────────────────────────────────────────────────
-
-  .campagneForm__checkbox-label {
-    flex-direction: row !important;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.75em 1em;
-    background: vars.$greyBackground;
-    border-radius: 8px;
-    border: 1px solid vars.$borderColor;
-    cursor: pointer;
-    transition: background vars.$transitionFast;
-
-    &:hover {
-      background: #f0f0f0;
-    }
-
-    input[type='checkbox'] {
-      width: 1.25em;
-      height: 1.25em;
-      cursor: pointer;
-      accent-color: vars.$webdevPrimary;
-    }
-
-    span {
-      font-size: 0.95rem;
-      font-weight: 500;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .campagneForm__hint {
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-    padding: 0.5em 0;
-  }
-
+}
+#campagneForm .campagneForm__sidebar-actions {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+#campagneForm .campagneForm__loading {
+  text-align: center;
+  padding: 3em;
+  color: vars.$fontColorSecondary;
+}
+#campagneForm .campagneForm__back {
+  margin-bottom: 1em;
+}
+#campagneForm h1 {
+  margin: 0 0 1.5em;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#campagneForm .campagneForm__error {
+  padding: 0.85em 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: vars.$errorColor;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+#campagneForm .campagneForm__success {
+  padding: 0.85em 1em;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 8px;
+  color: #16a34a;
+  margin-bottom: 1em;
+  font-size: 0.9rem;
+}
+#campagneForm .campagneForm__form fieldset {
+  @include mixins.card(10px, light);
+  border: 1px solid vars.$borderColor;
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+}
+#campagneForm .campagneForm__form fieldset legend {
+  font-weight: 600;
+  padding: 0 0.5em;
+  color: vars.$fontColorPrimary;
+  font-size: 0.95rem;
+}
+#campagneForm .campagneForm__row {
+  display: flex;
+  gap: 1em;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+}
+#campagneForm .campagneForm__row label {
+  flex: 1;
+  min-width: 12em;
+}
+#campagneForm label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+}
+#campagneForm label input,
+#campagneForm label textarea,
+#campagneForm label select {
+  @include mixins.formInput(
+    "#campagneForm label input, #campagneForm label textarea, #campagneForm label select"
+  );
+  font-family: inherit;
+}
+#campagneForm .campagneForm__label-full {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+  margin-bottom: 1em;
+}
+#campagneForm .campagneForm__label-full textarea {
+  @include mixins.formInput("#campagneForm .campagneForm__label-full textarea");
+  font-family: inherit;
+  resize: vertical;
+}
+#campagneForm .campagneForm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+  margin-top: 1.5em;
+  padding-top: 1.25em;
+  border-top: 1px solid vars.$borderColor;
+}
+// ─── Section agents ─────────────────────────────────────────────────────────
+#campagneForm .campagneForm__agents {
+  @include mixins.card(10px, light);
+  border: 1px solid vars.$borderColor;
+  padding: 1.5em;
+}
+#campagneForm .campagneForm__agents h2 {
+  margin: 0 0 1em;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+#campagneForm .campagneForm__agents-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ede9fe;
+  color: vars.$utilsPrimary;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  min-width: 1.4em;
+  padding: 0 0.4em;
+  height: 1.4em;
+}
+#campagneForm .campagneForm__agents-add {
+  display: flex;
+  gap: 0.75em;
+  margin-bottom: 1em;
+}
+#campagneForm .campagneForm__agents-add .reactSelect__container {
+  flex: 1;
+}
+#campagneForm .campagneForm__agents-empty {
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  font-size: 0.9rem;
+}
+#campagneForm .campagneForm__agents-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+#campagneForm .campagneForm__agents-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+  padding: 0.65em 0.9em;
+  background: #f8fafc;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  flex-wrap: wrap;
+  transition: background vars.$transitionSmooth;
+}
+#campagneForm .campagneForm__agents-item:hover {
+  background: #f1f5f9;
+}
+#campagneForm .campagneForm__agents-item em {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85rem;
+}
+#campagneForm .campagneForm__agents-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  flex: 1;
+}
+#campagneForm .campagneForm__agents-nom {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+#campagneForm .campagneForm__agents-role {
+  display: inline-block;
+  padding: 0.15em 0.55em;
+  background: #ede9fe;
+  color: vars.$utilsPrimary;
+  border-radius: 999px;
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+#campagneForm .campagneForm__agents-btns {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  flex-shrink: 0;
+}
+#campagneForm .campagneForm__agents-transfer-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 0.25em;
+}
+#campagneForm .campagneForm__agents-transfer-row .reactSelect__container {
+  flex: 1;
+  min-width: 200px;
+  font-size: 0.85rem;
+}
+// ─── Checkbox autoriser mobile ────────────────────────────────────────────────
+#campagneForm .campagneForm__checkbox-label {
+  flex-direction: row !important;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.75em 1em;
+  background: vars.$greyBackground;
+  border-radius: 8px;
+  border: 1px solid vars.$borderColor;
+  cursor: pointer;
+  transition: background vars.$transitionFast;
+}
+#campagneForm .campagneForm__checkbox-label:hover {
+  background: #f0f0f0;
+}
+#campagneForm .campagneForm__checkbox-label input[type="checkbox"] {
+  width: 1.25em;
+  height: 1.25em;
+  cursor: pointer;
+  accent-color: vars.$webdevPrimary;
+}
+#campagneForm .campagneForm__checkbox-label span {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+#campagneForm .campagneForm__hint {
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  padding: 0.5em 0;
 }
 
-  // --- Section logo de campagne ---
-  .campagneForm__fieldset--logo {
-    position: relative;
-  }
+// --- Section logo de campagne ---
 
-  .campagneForm__logo-section {
-    display: flex;
-    align-items: center;
-    gap: 1.5em;
-    padding: 1.5em;
-    margin-bottom: 1.5em;
-  }
+.campagneForm__fieldset--logo {
+  position: relative;
+}
 
-  .campagneForm__logo-display {
-    display: flex;
-    align-items: center;
-    gap: 1.5em;
-  }
+.campagneForm__logo-section {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+  padding: 1.5em;
+  margin-bottom: 1.5em;
+}
 
-  .campagneForm__logo-preview {
-    width: 80px;
-    height: 80px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: vars.$greyBackground;
-    border: 1px solid vars.$borderColor;
+.campagneForm__logo-display {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+}
 
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
+.campagneForm__logo-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: vars.$greyBackground;
+  border: 1px solid vars.$borderColor;
+}
 
-  .campagneForm__logo-info {
-    flex: 1;
-  }
+.campagneForm__logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
-  .campagneForm__logo-filename {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: vars.$fontColorPrimary;
-    margin-bottom: 0.5em;
-  }
+.campagneForm__logo-info {
+  flex: 1;
+}
 
-  .campagneForm__logo-actions {
-    display: flex;
-    gap: 0.5em;
-  }
+.campagneForm__logo-filename {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+  margin-bottom: 0.5em;
+}
 
-  .campagneForm__no-logo {
-    padding: 1em;
-    background: vars.$greyBackground;
-    border-radius: 8px;
-    border: 1px dashed vars.$borderColor;
-    text-align: center;
+.campagneForm__logo-actions {
+  display: flex;
+  gap: 0.5em;
+}
 
-    p {
-      margin: 0 0 0.5em 0;
-      color: vars.$fontColorSecondary;
-      font-size: 0.9rem;
-    }
-  }
+.campagneForm__no-logo {
+  padding: 1em;
+  background: vars.$greyBackground;
+  border-radius: 8px;
+  border: 1px dashed vars.$borderColor;
+  text-align: center;
+}
 
-  // --- Modal upload logo ---
-  .campagneForm__modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 1em;
-  }
+.campagneForm__no-logo p {
+  margin: 0 0 0.5em 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
 
-  .campagneForm__modal-container {
-    background: white;
-    border-radius: 12px;
-    max-width: 500px;
-    width: 100%;
-    max-height: 90dvh;
-    overflow-y: auto;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
-  }
+// --- Modal upload logo ---
 
-  .campagneForm__modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.5em;
-    border-bottom: 1px solid vars.$borderColor;
+.campagneForm__modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1em;
+}
 
-    h3 {
-      margin: 0;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-    }
+.campagneForm__modal-container {
+  background: white;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+}
 
-    button {
-      background: none;
-      border: none;
-      cursor: pointer;
-      font-size: 1.2rem;
-      color: vars.$fontColorSecondary;
-      padding: 0.25em;
-      border-radius: 4px;
-      transition: background vars.$transitionFast;
+.campagneForm__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5em;
+  border-bottom: 1px solid vars.$borderColor;
+}
 
-      &:hover {
-        background: vars.$greyBackground;
-      }
-    }
-  }
+.campagneForm__modal-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
 
-  .campagneForm__modal-content {
-    padding: 1.5em;
-  }
+.campagneForm__modal-header button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: vars.$fontColorSecondary;
+  padding: 0.25em;
+  border-radius: 4px;
+  transition: background vars.$transitionFast;
+}
 
-  .campagneForm__upload-success {
-    background: #dcfce7;
-    color: #16a34a;
-    padding: 1em;
-    border-radius: 6px;
-    text-align: center;
-    margin-bottom: 1.5em;
-    font-size: 0.9rem;
-  }
+.campagneForm__modal-header button:hover {
+  background: vars.$greyBackground;
+}
 
-  .campagneForm__upload-error {
-    background: #fee2e2;
-    color: #991b1b;
-    padding: 1em;
-    border-radius: 6px;
-    text-align: center;
-    margin-bottom: 1.5em;
-    font-size: 0.9rem;
-  }
+.campagneForm__modal-content {
+  padding: 1.5em;
+}
 
-  .campagneForm__form-group {
-    margin-bottom: 1em;
-  }
+.campagneForm__upload-success {
+  background: #dcfce7;
+  color: #16a34a;
+  padding: 1em;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 1.5em;
+  font-size: 0.9rem;
+}
 
-  .campagneForm__form-label {
-    display: block;
-    margin-bottom: 0.5em;
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: vars.$fontColorSecondary;
-  }
+.campagneForm__upload-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1em;
+  border-radius: 6px;
+  text-align: center;
+  margin-bottom: 1.5em;
+  font-size: 0.9rem;
+}
 
-  .campagneForm__form-input {
-    width: 100%;
-    padding: 0.75em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 6px;
-    font-size: 1rem;
+.campagneForm__form-group {
+  margin-bottom: 1em;
+}
 
-    &:focus {
-      outline: none;
-      border-color: vars.$utilsPrimary;
-      box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-    }
-  }
+.campagneForm__form-label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+}
 
-  .campagneForm__dropzone {
-    border: 2px dashed vars.$borderColor;
-    border-radius: 8px;
-    padding: 2em;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color vars.$transitionSmooth, background vars.$transitionSmooth;
+.campagneForm__form-input {
+  width: 100%;
+  padding: 0.75em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  font-size: 1rem;
+}
 
-    &:hover {
-      border-color: vars.$utilsPrimary;
-      background: vars.$greyBackground;
-    }
+.campagneForm__form-input:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
 
-    &--active {
-      border-color: vars.$utilsPrimary;
-      background: vars.$greyBackground;
-    }
+.campagneForm__dropzone {
+  border: 2px dashed vars.$borderColor;
+  border-radius: 8px;
+  padding: 2em;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color vars.$transitionSmooth,
+    background vars.$transitionSmooth;
+}
 
-    &--has-file {
-      border-color: vars.$successColor;
-      background: #f0fdf4;
-    }
+.campagneForm__dropzone:hover {
+  border-color: vars.$utilsPrimary;
+  background: vars.$greyBackground;
+}
 
-    p {
-      margin: 0.25em 0;
-    }
-  }
+.campagneForm__dropzone--active {
+  border-color: vars.$utilsPrimary;
+  background: vars.$greyBackground;
+}
 
-  .campagneForm__dropzone-icon {
-    font-size: 2.5em;
-    color: vars.$fontColorPrimary;
-    margin-bottom: 0.5em;
-  }
+.campagneForm__dropzone--has-file {
+  border-color: vars.$successColor;
+  background: #f0fdf4;
+}
 
-  .campagneForm__dropzone-filename {
-    font-size: 0.9rem;
-    color: vars.$fontColorPrimary;
-    word-break: break-all;
-  }
+.campagneForm__dropzone p {
+  margin: 0.25em 0;
+}
 
-  .campagneForm__dropzone-size {
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-  }
+.campagneForm__dropzone-icon {
+  font-size: 2.5em;
+  color: vars.$fontColorPrimary;
+  margin-bottom: 0.5em;
+}
 
-  .campagneForm__dropzone-change-hint {
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-  }
+.campagneForm__dropzone-filename {
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+  word-break: break-all;
+}
 
-  .campagneForm__upload-actions {
-    display: flex;
-    gap: 1em;
-    justify-content: flex-end;
-    margin-top: 1.5em;
-  }
+.campagneForm__dropzone-size {
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+}
 
-  // --- Documentation entreprise ---
+.campagneForm__dropzone-change-hint {
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+}
+
+.campagneForm__upload-actions {
+  display: flex;
+  gap: 1em;
+  justify-content: flex-end;
+  margin-top: 1.5em;
+}
+
+// --- Documentation entreprise ---
+
+.campagneForm__doc-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
+}
+
+@media (min-width: vars.$tabletWidth) {
   .campagneForm__doc-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    grid-template-columns: repeat(3, 1fr);
   }
+}
 
-  .campagneForm__modes-select {
-    margin-top: 0.5em;
-  }
+.campagneForm__modes-select {
+  margin-top: 0.5em;
+}
 
-  .campagneForm__modes-description {
-    margin-bottom: 1em;
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-    padding: 0.5em;
-    background: vars.$greyBackground;
-    border-radius: 6px;
-  }
+.campagneForm__modes-description {
+  margin-bottom: 1em;
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  padding: 0.5em;
+  background: vars.$greyBackground;
+  border-radius: 6px;
+}

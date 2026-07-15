@@ -1,6 +1,5 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #pwaStatus {
   position: fixed;
   top: 1em;
@@ -10,162 +9,142 @@
   flex-direction: column;
   gap: 0.5em;
   max-width: 20em;
-
-  .connection-indicator {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.5em 1em;
-    border-radius: 25px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 0.9em;
-    
-    .online-indicator {
-      color: #10b981;
-      display: flex;
-      align-items: center;
-      
-      svg {
-        font-size: 1.2em;
-      }
-    }
-    
-    .offline-indicator {
-      color: #ef4444;
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      background: rgba(239, 68, 68, 0.1);
-      
-      svg {
-        font-size: 1.2em;
-      }
-      
-      .offline-text {
-        font-weight: 500;
-        font-size: 0.8em;
-      }
-    }
-  }
-
-  .install-prompt, .update-prompt {
-    animation: slideIn 0.3s ease-out;
-    
-    button {
-      width: 100%;
-      font-size: 0.9em;
-      padding: 0.75em 1.5em;
-      border-radius: 25px;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-  }
-
-  .update-prompt button {
-    background: rgba(vars.$utilsPrimary, 0.9);
-    color: white;
-    
-    &:hover {
-      background: rgba(vars.$utilsPrimary, 1);
-      transform: translateY(-1px);
-    }
-  }
-
-  .install-prompt button {
-    background: rgba(vars.$webdevPrimary, 0.9);
-    color: white;
-    
-    &:hover {
-      background: rgba(vars.$webdevPrimary, 1);
-      transform: translateY(-1px);
-    }
-  }
-
-  .pwa-details {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 12px;
-    padding: 1em;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-    
-    h3 {
-      margin-bottom: 0.75em;
-      font-size: 0.9em;
-      color: vars.$fontColorPrimary;
-      font-weight: 600;
-    }
-    
-    ul {
-      list-style: none;
-      margin-bottom: 1em;
-      
-      li {
-        padding: 0.25em 0;
-        font-size: 0.8em;
-        color: vars.$fontColorSecondary;
-        display: flex;
-        justify-content: space-between;
-      }
-    }
-    
-    .pwa-actions {
-      display: flex;
-      gap: 0.5em;
-      
-      button {
-        flex: 1;
-        font-size: 0.8em;
-        padding: 0.5em 1em;
-      }
-    }
-  }
-
-  .toggle-details {
-    position: fixed;
-    bottom: 1em;
-    right: 1em;
-    background: rgba(vars.$utilsPrimary, 0.8);
-    color: white;
-    border: none;
-    border-radius: 20px;
-    padding: 0.5em 1em;
-    font-size: 0.7em;
-    font-weight: 600;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    
-    &:hover {
-      background: rgba(vars.$utilsPrimary, 1);
-      transform: scale(1.05);
-    }
-  }
-
-  @media (max-width: vars.$mobileWidth) {
+}
+#pwaStatus .connection-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.9em;
+}
+#pwaStatus .connection-indicator .online-indicator {
+  color: #10b981;
+  display: flex;
+  align-items: center;
+}
+#pwaStatus .connection-indicator .online-indicator svg {
+  font-size: 1.2em;
+}
+#pwaStatus .connection-indicator .offline-indicator {
+  color: #ef4444;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  background: rgba(239, 68, 68, 0.1);
+}
+#pwaStatus .connection-indicator .offline-indicator svg {
+  font-size: 1.2em;
+}
+#pwaStatus .connection-indicator .offline-indicator .offline-text {
+  font-weight: 500;
+  font-size: 0.8em;
+}
+#pwaStatus .install-prompt,
+#pwaStatus .update-prompt {
+  animation: slideIn 0.3s ease-out;
+}
+#pwaStatus .install-prompt button,
+#pwaStatus .update-prompt button {
+  width: 100%;
+  font-size: 0.9em;
+  padding: 0.75em 1.5em;
+  border-radius: 25px;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+#pwaStatus .update-prompt button {
+  background: rgba(vars.$utilsPrimary, 0.9);
+  color: white;
+}
+#pwaStatus .update-prompt button:hover {
+  background: rgba(vars.$utilsPrimary, 1);
+  transform: translateY(-1px);
+}
+#pwaStatus .install-prompt button {
+  background: rgba(vars.$webdevPrimary, 0.9);
+  color: white;
+}
+#pwaStatus .install-prompt button:hover {
+  background: rgba(vars.$webdevPrimary, 1);
+  transform: translateY(-1px);
+}
+#pwaStatus .pwa-details {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 1em;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+#pwaStatus .pwa-details h3 {
+  margin-bottom: 0.75em;
+  font-size: 0.9em;
+  color: vars.$fontColorPrimary;
+  font-weight: 600;
+}
+#pwaStatus .pwa-details ul {
+  list-style: none;
+  margin-bottom: 1em;
+}
+#pwaStatus .pwa-details ul li {
+  padding: 0.25em 0;
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+  display: flex;
+  justify-content: space-between;
+}
+#pwaStatus .pwa-details .pwa-actions {
+  display: flex;
+  gap: 0.5em;
+}
+#pwaStatus .pwa-details .pwa-actions button {
+  flex: 1;
+  font-size: 0.8em;
+  padding: 0.5em 1em;
+}
+#pwaStatus .toggle-details {
+  position: fixed;
+  bottom: 1em;
+  right: 1em;
+  background: rgba(vars.$utilsPrimary, 0.8);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5em 1em;
+  font-size: 0.7em;
+  font-weight: 600;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+#pwaStatus .toggle-details:hover {
+  background: rgba(vars.$utilsPrimary, 1);
+  transform: scale(1.05);
+}
+@media (max-width: vars.$mobileWidth) {
+  #pwaStatus {
     top: 0.5em;
     right: 0.5em;
     max-width: 15em;
-    
-    .connection-indicator,
-    .install-prompt button,
-    .update-prompt button {
-      font-size: 0.8em;
-      padding: 0.5em 1em;
-    }
-    
-    .pwa-details {
-      font-size: 0.8em;
-      padding: 0.75em;
-    }
-    
-    .toggle-details {
-      bottom: 0.5em;
-      right: 0.5em;
-      font-size: 0.6em;
-      padding: 0.4em 0.8em;
-    }
+  }
+  #pwaStatus .connection-indicator,
+  #pwaStatus .install-prompt button,
+  #pwaStatus .update-prompt button {
+    font-size: 0.8em;
+    padding: 0.5em 1em;
+  }
+  #pwaStatus .pwa-details {
+    font-size: 0.8em;
+    padding: 0.75em;
+  }
+  #pwaStatus .toggle-details {
+    bottom: 0.5em;
+    right: 0.5em;
+    font-size: 0.6em;
+    padding: 0.4em 0.8em;
   }
 }
 
@@ -180,21 +159,17 @@
   }
 }
 
-body.offline {
-  .connection-dependent {
-    opacity: 0.6;
-    pointer-events: none;
-  }
-  
-  .offline-notice {
-    display: block !important;
-  }
+body.offline .connection-dependent {
+  opacity: 0.6;
+  pointer-events: none;
 }
 
-body.online {
-  .offline-notice {
-    display: none !important;
-  }
+body.offline .offline-notice {
+  display: block !important;
+}
+
+body.online .offline-notice {
+  display: none !important;
 }
 
 .offline-notice {

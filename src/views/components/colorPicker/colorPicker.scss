@@ -1,56 +1,46 @@
 @use "../../../utils/styles/variables" as vars;
-
-#colorPicker {
-  .colorPicker__container {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    & {
-      width: 100%;
-      max-width: 20em;
-    }
-
-    // Override react-color styles
-    .sketch-picker {
-      width: 100% !important;
-      padding: 0 !important;
-      box-shadow: none !important;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-
-      & {
-        background: vars.$whiteBackground;
-      }
-    }
-  }
-
-  .colorPicker__clear {
-    padding: 0.5em 1em;
-    background: vars.$greyBackground;
-    border: 1px solid vars.$borderColor;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.9em;
-
-    &:hover {
-      background: #e8ecf0;
-      border-color: rgba(0, 0, 0, 0.15);
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-  }
-
-  .colorPicker__preview {
-    padding: 1em;
-    border-radius: 6px;
-    text-align: center;
-    font-family: monospace;
-    font-size: 0.9em;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-  }
+#colorPicker .colorPicker__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#colorPicker .colorPicker__container {
+  width: 100%;
+  max-width: 20em;
+}
+// Override react-color styles
+#colorPicker .colorPicker__container .sketch-picker {
+  width: 100% !important;
+  padding: 0 !important;
+  box-shadow: none !important;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+}
+#colorPicker .colorPicker__container .sketch-picker {
+  background: vars.$whiteBackground;
+}
+#colorPicker .colorPicker__clear {
+  padding: 0.5em 1em;
+  background: vars.$greyBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+#colorPicker .colorPicker__clear:hover {
+  background: #e8ecf0;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+#colorPicker .colorPicker__clear:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+#colorPicker .colorPicker__preview {
+  padding: 1em;
+  border-radius: 6px;
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }

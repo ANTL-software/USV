@@ -1,6 +1,5 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 .pwa-install-btn {
   display: flex;
   align-items: center;
@@ -11,130 +10,109 @@
   font-weight: 500;
   transition: all 0.3s ease;
   text-decoration: none;
-  
-  &.compact {
-    padding: 0.5em 0.75em;
-    gap: 0.4em;
-    font-size: 0.85em;
-    background: rgba(vars.$utilsPrimary, 0.1);
-    color: vars.$utilsPrimary;
-    border: 1px solid rgba(vars.$utilsPrimary, 0.3);
-    
-    &:hover {
-      background: rgba(vars.$utilsPrimary, 0.15);
-      border-color: rgba(vars.$utilsPrimary, 0.5);
-      transform: translateY(-1px);
-    }
-    
-    &:active {
-      transform: translateY(0);
-      background: rgba(vars.$utilsPrimary, 0.2);
-    }
-    
-    svg {
-      font-size: 1.1em;
-    }
-    
-    span {
-      font-size: 0.9em;
-      white-space: nowrap;
-    }
-    
-    &.mobile {
-      width: 100%;
-      justify-content: center;
-      padding: 0.75em 1em;
-      margin: 0.5em 0;
-      background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-weight: 600;
-      
-      &:hover {
-        background: linear-gradient(135deg, vars.$utilsDark, vars.$utilsPrimary);
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(vars.$utilsPrimary, 0.3);
-      }
-      
-      svg {
-        font-size: 1.2em;
-      }
-      
-      span {
-        font-size: 1em;
-      }
-    }
-    
-    &.desktop {
-      background: rgba(255, 255, 255, 0.1);
-      color: rgba(255, 255, 255, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      
-      &:hover {
-        background: rgba(255, 255, 255, 0.2);
-        border-color: rgba(255, 255, 255, 0.4);
-        color: white;
-      }
-      
-      svg {
-        opacity: 0.9;
-      }
-    }
-  }
-  
-  &.full {
-    padding: 1em 1.5em;
-    gap: 0.75em;
-    background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
-    color: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(vars.$utilsPrimary, 0.3);
-    
-    &:hover {
-      background: linear-gradient(135deg, vars.$utilsDark, vars.$utilsPrimary);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(vars.$utilsPrimary, 0.4);
-    }
-    
-    &:active {
-      transform: translateY(0);
-    }
-    
-    svg {
-      font-size: 1.5em;
-    }
-    
-    .install-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.25em;
-      
-      .install-title {
-        font-size: 1em;
-        font-weight: 600;
-        line-height: 1.2;
-      }
-      
-      .install-subtitle {
-        font-size: 0.8em;
-        opacity: 0.9;
-        line-height: 1.2;
-      }
-    }
-  }
-  
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-    transform: none !important;
-  }
-  
-  & {
-    animation: fadeInSlide 0.3s ease-out;
-  }
+}
+.pwa-install-btn.compact {
+  padding: 0.5em 0.75em;
+  gap: 0.4em;
+  font-size: 0.85em;
+  background: rgba(vars.$utilsPrimary, 0.1);
+  color: vars.$utilsPrimary;
+  border: 1px solid rgba(vars.$utilsPrimary, 0.3);
+}
+.pwa-install-btn.compact:hover {
+  background: rgba(vars.$utilsPrimary, 0.15);
+  border-color: rgba(vars.$utilsPrimary, 0.5);
+  transform: translateY(-1px);
+}
+.pwa-install-btn.compact:active {
+  transform: translateY(0);
+  background: rgba(vars.$utilsPrimary, 0.2);
+}
+.pwa-install-btn.compact svg {
+  font-size: 1.1em;
+}
+.pwa-install-btn.compact span {
+  font-size: 0.9em;
+  white-space: nowrap;
+}
+.pwa-install-btn.compact.mobile {
+  width: 100%;
+  justify-content: center;
+  padding: 0.75em 1em;
+  margin: 0.5em 0;
+  background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-weight: 600;
+}
+.pwa-install-btn.compact.mobile:hover {
+  background: linear-gradient(135deg, vars.$utilsDark, vars.$utilsPrimary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(vars.$utilsPrimary, 0.3);
+}
+.pwa-install-btn.compact.mobile svg {
+  font-size: 1.2em;
+}
+.pwa-install-btn.compact.mobile span {
+  font-size: 1em;
+}
+.pwa-install-btn.compact.desktop {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+.pwa-install-btn.compact.desktop:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+  color: white;
+}
+.pwa-install-btn.compact.desktop svg {
+  opacity: 0.9;
+}
+.pwa-install-btn.full {
+  padding: 1em 1.5em;
+  gap: 0.75em;
+  background: linear-gradient(135deg, vars.$utilsPrimary, vars.$utilsSecondary);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(vars.$utilsPrimary, 0.3);
+}
+.pwa-install-btn.full:hover {
+  background: linear-gradient(135deg, vars.$utilsDark, vars.$utilsPrimary);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(vars.$utilsPrimary, 0.4);
+}
+.pwa-install-btn.full:active {
+  transform: translateY(0);
+}
+.pwa-install-btn.full svg {
+  font-size: 1.5em;
+}
+.pwa-install-btn.full .install-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25em;
+}
+.pwa-install-btn.full .install-text .install-title {
+  font-size: 1em;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pwa-install-btn.full .install-text .install-subtitle {
+  font-size: 0.8em;
+  opacity: 0.9;
+  line-height: 1.2;
+}
+.pwa-install-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none !important;
+}
+.pwa-install-btn {
+  animation: fadeInSlide 0.3s ease-out;
 }
 
 @keyframes fadeInSlide {
@@ -149,16 +127,7 @@
 }
 
 @media (max-width: vars.$mobileWidth) {
-  .pwa-install-btn {
-    &.compact.desktop {
-      display: none;
-    }
-  }
-}
-
-@media (min-width: vars.$tabletWidth) {
-  .pwa-install-btn {
-    &.compact.mobile {
-    }
+  .pwa-install-btn.compact.desktop {
+    display: none;
   }
 }

@@ -1,260 +1,246 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #courriers {
   @include mixins.mainView;
-  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
-
-  .courriersContainer {
-    @include mixins.centeredContainer;
-    @include mixins.flexContainer(column, 2em);
-    flex: 1;
-
-    @media (min-width: vars.$tabletWidth) {
-      gap: 2.5em;
-    }
-
-    @media (min-width: vars.$desktopWidth) {
-      gap: 3em;
-    }
+}
+#courriers {
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
+}
+#courriers .courriersContainer {
+  @include mixins.centeredContainer;
+  @include mixins.flexContainer(column, 2em);
+  flex: 1;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersContainer {
+    gap: 2.5em;
   }
-
-  .courriersHeader {
-    text-align: center;
-    color: vars.$fontColorPrimary;
-
-    .courriersTitle {
-      font-size: 2em;
-      font-weight: 700;
-      background: vars.$courrierGradient;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      @media (min-width: vars.$tabletWidth) {
-        font-size: 2.3em;
-      }
-
-      @media (min-width: vars.$desktopWidth) {
-        font-size: 2.5em;
-      }
-    }
-
-    .courriersSubtitle {
-      font-size: 1em;
-      opacity: 0.9;
-      margin: 0.5em 0 0;
-
-      @media (min-width: vars.$tabletWidth) {
-        font-size: 1.1em;
-      }
-    }
+}
+@media (min-width: vars.$desktopWidth) {
+  #courriers .courriersContainer {
+    gap: 3em;
   }
-
-  .courriersActions {
-    .actionsGrid {
-      @include mixins.flexContainer(column, 1em);
-      max-width: 50em;
-      margin: 0 auto;
-
-      @media (min-width: vars.$tabletWidth) {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 1.5em;
-      }
-
-      .actionBtn {
-        @include mixins.card(10px, light);
-
-        & {
-          @include mixins.flexContainer(column, 0.75em);
-          align-items: center;
-          padding: 1.5em 1em;
-          cursor: pointer;
-          flex: 1;
-          min-width: 0;
-          border: none;
-          transition: all vars.$transitionMedium;
-        }
-        
-        @media (min-width: vars.$tabletWidth) {
-          border-radius: 12px;
-          padding: 2em 1.5em;
-          gap: 1em;
-          flex: 1 1 calc(50% - 0.75em);
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        @media (min-width: vars.$desktopWidth) {
-          flex: 1 1 calc(25% - 1.125em);
-        }
-        
-        &:hover {
-          transform: translateY(-0.125em);
-          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-        
-        &.primary {
-          background: vars.$courrierGradient;
-          color: white;
-        }
-        
-        &.active {
-          background: vars.$courrierGradientReverse;
-          color: white;
-        }
-
-        .actionIcon {
-          font-size: 1.75em;
-          color: vars.$courrierPrimary;
-
-          @media (min-width: vars.$tabletWidth) {
-            font-size: 2em;
-          }
-
-          .primary & {
-            color: white;
-          }
-
-          .active & {
-            color: white;
-          }
-        }
-
-        .actionText {
-          font-size: 1em;
-          font-weight: 600;
-          text-align: center;
-
-          @media (min-width: vars.$tabletWidth) {
-            font-size: 1.1em;
-          }
-        }
-      }
-    }
+}
+#courriers .courriersHeader {
+  text-align: center;
+  color: vars.$fontColorPrimary;
+}
+#courriers .courriersHeader .courriersTitle {
+  font-size: 2em;
+  font-weight: 700;
+  background: vars.$courrierGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersHeader .courriersTitle {
+    font-size: 2.3em;
   }
-
-  .courriersStats {
-    .statsTitle {
-      text-align: center;
-      color: vars.$fontColorPrimary;
-      font-size: 1.75em;
-      
-      @media (min-width: vars.$tabletWidth) {
-        font-size: 2em;
-      }
-    }
-
-    .statsGrid {
-      @include mixins.flexContainer(column, 1em);
-      max-width: 62.5em;
-      margin: 1.5em auto 0;
-
-      @media (min-width: vars.$tabletWidth) {
-        flex-direction: row;
-        flex-wrap: wrap;
-        gap: 1.5em;
-        margin-top: 2em;
-      }
-
-      .statCard {
-        @include mixins.card(10px, light);
-
-        & {
-          @include mixins.flexContainer(row, 1em);
-          align-items: center;
-          padding: 1.5em 1em;
-          transition: transform vars.$transitionMedium;
-          flex: 1;
-        }
-        
-        @media (min-width: vars.$tabletWidth) {
-          border-radius: 12px;
-          padding: 2em 1.5em;
-          gap: 1.5em;
-          flex: 1 1 calc(50% - 0.75em);
-        }
-
-        @media (min-width: vars.$desktopWidth) {
-          flex: 1 1 calc(25% - 1.125em);
-        }
-        
-        &:hover {
-          transform: translateY(-0.125em);
-        }
-
-        .statIcon {
-          width: 50px;
-          height: 50px;
-          border-radius: 10px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.25em;
-          color: white;
-          flex-shrink: 0;
-          background: vars.$courrierGradient;
-
-          @media (min-width: vars.$tabletWidth) {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            font-size: 1.5em;
-          }
-        }
-
-        .statContent {
-          flex: 1;
-
-          .statValue {
-            font-size: 1.75em;
-            font-weight: 700;
-            color: vars.$fontColorPrimary;
-            line-height: 1;
-
-            @media (min-width: vars.$tabletWidth) {
-              font-size: 2em;
-            }
-          }
-
-          .statLabel {
-            font-size: 0.85em;
-            color: vars.$fontColorSecondary;
-            margin: 0.25em 0 0;
-
-            @media (min-width: vars.$tabletWidth) {
-              font-size: 0.9em;
-            }
-          }
-        }
-      }
-    }
+}
+@media (min-width: vars.$desktopWidth) {
+  #courriers .courriersHeader .courriersTitle {
+    font-size: 2.5em;
   }
-
-  .courriersContent {
-    .contentCard {
-      @include mixins.card(10px, light);
-      
-      & {
-        padding: 1.5em;
-        text-align: center;
-      }
-
-      @media (min-width: vars.$tabletWidth) {
-        border-radius: 12px;
-        padding: 2em;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      
-      h3 {
-        color: vars.$courrierPrimary;
-        margin: 0 0 1em;
-      }
-      
-      p {
-        color: vars.$fontColorSecondary;
-        margin: 0;
-      }
-    }
+}
+#courriers .courriersHeader .courriersSubtitle {
+  font-size: 1em;
+  opacity: 0.9;
+  margin: 0.5em 0 0;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersHeader .courriersSubtitle {
+    font-size: 1.1em;
   }
+}
+#courriers .courriersActions .actionsGrid {
+  @include mixins.flexContainer(column, 1em);
+  max-width: 50em;
+  margin: 0 auto;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersActions .actionsGrid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5em;
+  }
+}
+#courriers .courriersActions .actionsGrid .actionBtn {
+  @include mixins.card(10px, light);
+}
+#courriers .courriersActions .actionsGrid .actionBtn {
+  @include mixins.flexContainer(column, 0.75em);
+  align-items: center;
+  padding: 1.5em 1em;
+  cursor: pointer;
+  flex: 1;
+  min-width: 0;
+  border: none;
+  transition: all vars.$transitionMedium;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersActions .actionsGrid .actionBtn {
+    border-radius: 12px;
+    padding: 2em 1.5em;
+    gap: 1em;
+    flex: 1 1 calc(50% - 0.75em);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+@media (min-width: vars.$desktopWidth) {
+  #courriers .courriersActions .actionsGrid .actionBtn {
+    flex: 1 1 calc(25% - 1.125em);
+  }
+}
+#courriers .courriersActions .actionsGrid .actionBtn:hover {
+  transform: translateY(-0.125em);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+#courriers .courriersActions .actionsGrid .actionBtn.primary {
+  background: vars.$courrierGradient;
+  color: white;
+}
+#courriers .courriersActions .actionsGrid .actionBtn.active {
+  background: vars.$courrierGradientReverse;
+  color: white;
+}
+#courriers .courriersActions .actionsGrid .actionBtn .actionIcon {
+  font-size: 1.75em;
+  color: vars.$courrierPrimary;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersActions .actionsGrid .actionBtn .actionIcon {
+    font-size: 2em;
+  }
+}
+.primary #courriers .courriersActions .actionsGrid .actionBtn .actionIcon {
+  color: white;
+}
+.active #courriers .courriersActions .actionsGrid .actionBtn .actionIcon {
+  color: white;
+}
+#courriers .courriersActions .actionsGrid .actionBtn .actionText {
+  font-size: 1em;
+  font-weight: 600;
+  text-align: center;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersActions .actionsGrid .actionBtn .actionText {
+    font-size: 1.1em;
+  }
+}
+#courriers .courriersStats .statsTitle {
+  text-align: center;
+  color: vars.$fontColorPrimary;
+  font-size: 1.75em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsTitle {
+    font-size: 2em;
+  }
+}
+#courriers .courriersStats .statsGrid {
+  @include mixins.flexContainer(column, 1em);
+  max-width: 62.5em;
+  margin: 1.5em auto 0;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsGrid {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1.5em;
+    margin-top: 2em;
+  }
+}
+#courriers .courriersStats .statsGrid .statCard {
+  @include mixins.card(10px, light);
+}
+#courriers .courriersStats .statsGrid .statCard {
+  @include mixins.flexContainer(row, 1em);
+  align-items: center;
+  padding: 1.5em 1em;
+  transition: transform vars.$transitionMedium;
+  flex: 1;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsGrid .statCard {
+    border-radius: 12px;
+    padding: 2em 1.5em;
+    gap: 1.5em;
+    flex: 1 1 calc(50% - 0.75em);
+  }
+}
+@media (min-width: vars.$desktopWidth) {
+  #courriers .courriersStats .statsGrid .statCard {
+    flex: 1 1 calc(25% - 1.125em);
+  }
+}
+#courriers .courriersStats .statsGrid .statCard:hover {
+  transform: translateY(-0.125em);
+}
+#courriers .courriersStats .statsGrid .statCard .statIcon {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25em;
+  color: white;
+  flex-shrink: 0;
+  background: vars.$courrierGradient;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsGrid .statCard .statIcon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    font-size: 1.5em;
+  }
+}
+#courriers .courriersStats .statsGrid .statCard .statContent {
+  flex: 1;
+}
+#courriers .courriersStats .statsGrid .statCard .statContent .statValue {
+  font-size: 1.75em;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+  line-height: 1;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsGrid .statCard .statContent .statValue {
+    font-size: 2em;
+  }
+}
+#courriers .courriersStats .statsGrid .statCard .statContent .statLabel {
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+  margin: 0.25em 0 0;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersStats .statsGrid .statCard .statContent .statLabel {
+    font-size: 0.9em;
+  }
+}
+#courriers .courriersContent .contentCard {
+  @include mixins.card(10px, light);
+}
+#courriers .courriersContent .contentCard {
+  padding: 1.5em;
+  text-align: center;
+}
+@media (min-width: vars.$tabletWidth) {
+  #courriers .courriersContent .contentCard {
+    border-radius: 12px;
+    padding: 2em;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+}
+#courriers .courriersContent .contentCard h3 {
+  color: vars.$courrierPrimary;
+  margin: 0 0 1em;
+}
+#courriers .courriersContent .contentCard p {
+  color: vars.$fontColorSecondary;
+  margin: 0;
 }

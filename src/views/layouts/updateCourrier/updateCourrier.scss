@@ -1,292 +1,398 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #updateCourrier {
   @include mixins.mainView;
-  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
-
-  .updateCourrierContainer {
-    @include mixins.centeredContainer(90em);
-    @include mixins.flexContainer(column, 1em);
-    
-    & {
-      flex: 1;
-      padding: 0 0.5em;
-    }
-
-    @media (min-width: vars.$tabletWidth) {
-      padding: 0 1em;
-    }
+}
+#updateCourrier {
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
+}
+#updateCourrier .updateCourrierContainer {
+  @include mixins.centeredContainer(90em);
+  @include mixins.flexContainer(column, 1em);
+}
+#updateCourrier .updateCourrierContainer {
+  flex: 1;
+  padding: 0 0.5em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierContainer {
+    padding: 0 1em;
   }
-
-  .updateCourrierHeader {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    color: vars.$fontColorPrimary;
-
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      align-items: center;
-      gap: 2em;
-    }
-
-    .pageTitle {
-      font-size: 2em;
-      font-weight: 700;
-      margin: 0;
-      background: vars.$courrierGradient;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      @media (min-width: vars.$tabletWidth) {
-        font-size: 2.3em;
-      }
-
-      @media (min-width: vars.$desktopWidth) {
-        font-size: 2.5em;
-      }
-    }
-  }
-
-  .loadingState,
-  .errorState {
-    display: flex;
-    flex-direction: column;
+}
+#updateCourrier .updateCourrierHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: vars.$fontColorPrimary;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierHeader {
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
     gap: 2em;
-    min-height: 20em;
-    text-align: center;
   }
-
-  .updateCourrierContent {
-    display: flex;
-    flex-direction: column;
+}
+#updateCourrier .updateCourrierHeader .pageTitle {
+  font-size: 2em;
+  font-weight: 700;
+  margin: 0;
+  background: vars.$courrierGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierHeader .pageTitle {
+    font-size: 2.3em;
+  }
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierHeader .pageTitle {
+    font-size: 2.5em;
+  }
+}
+#updateCourrier .loadingState,
+#updateCourrier .errorState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  min-height: 20em;
+  text-align: center;
+}
+#updateCourrier .updateCourrierContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  margin: 1.5em 0 0;
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierContent {
+    flex-direction: row;
+    gap: 2em;
+    margin-top: 2em;
+  }
+}
+#updateCourrier .updateCourrierContent .previewSection {
+  @include mixins.card(12px, light);
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierContent .previewSection {
+    flex: 0 0 40%;
+  }
+}
+#updateCourrier .updateCourrierContent .previewSection .previewHeader {
+  padding: 1.5em;
+  background: vars.$courrierGradient;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+#updateCourrier .updateCourrierContent .previewSection .previewHeader h2 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+#updateCourrier .updateCourrierContent .previewSection .previewHeader svg {
+  font-size: 1.3em;
+}
+#updateCourrier .updateCourrierContent .previewSection .previewContainer {
+  padding: 1em;
+  height: 50em;
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierContent .previewSection .previewContainer {
+    height: 60em;
+  }
+}
+#updateCourrier
+  .updateCourrierContent
+  .previewSection
+  .previewContainer
+  .pdfPreview,
+#updateCourrier
+  .updateCourrierContent
+  .previewSection
+  .previewContainer
+  .imagePreview {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+#updateCourrier
+  .updateCourrierContent
+  .previewSection
+  .previewContainer
+  .imagePreview {
+  object-fit: contain;
+  background: vars.$greyBackground;
+}
+#updateCourrier .updateCourrierContent .formSection {
+  @include mixins.card(12px, light);
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierContent .formSection {
+    flex: 1;
+  }
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formGrid {
+  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2em;
+  flex: 1;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierContent .formSection .courrierForm .formGrid {
+    padding: 2em;
     gap: 1.5em;
-    margin: 1.5em 0 0;
-
-    @media (min-width: vars.$desktopWidth) {
-      flex-direction: row;
-      gap: 2em;
-      margin-top: 2em;
-    }
-
-    .previewSection {
-      @include mixins.card(12px, light);
-
-      @media (min-width: vars.$desktopWidth) {
-        flex: 0 0 40%;
-      }
-
-      .previewHeader {
-        padding: 1.5em;
-        background: vars.$courrierGradient;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 0.75em;
-
-        h2 {
-          margin: 0;
-          font-size: 1.2em;
-          font-weight: 600;
-        }
-
-        svg {
-          font-size: 1.3em;
-        }
-      }
-
-      .previewContainer {
-        padding: 1em;
-        height: 50em;
-
-        @media (min-width: vars.$desktopWidth) {
-          height: 60em;
-        }
-
-        .pdfPreview,
-        .imagePreview {
-          width: 100%;
-          height: 100%;
-          border: none;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .imagePreview {
-          object-fit: contain;
-          background: vars.$greyBackground;
-        }
-      }
-    }
-
-    .formSection {
-      @include mixins.card(12px, light);
-
-      @media (min-width: vars.$desktopWidth) {
-        flex: 1;
-      }
-
-      .courrierForm {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .formGrid {
-          padding: 1.5em;
-          display: flex;
-          flex-direction: column;
-          gap: 1.2em;
-          flex: 1;
-
-          @media (min-width: vars.$tabletWidth) {
-            padding: 2em;
-            gap: 1.5em;
-          }
-
-          @media (min-width: vars.$desktopWidth) {
-            gap: 1.8em;
-          }
-        }
-
-        .formSection {
-          background: transparent;
-          box-shadow: none;
-          border-radius: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 1em;
-
-          h3.sectionTitle {
-            display: flex;
-            align-items: center;
-            gap: 0.75em;
-            font-size: 1.2em;
-            font-weight: 600;
-            color: vars.$courrierPrimary;
-            padding: 0 0 0.5em;
-            border-bottom: 2px solid vars.$borderColor;
-            margin: 0;
-
-            @media (min-width: vars.$tabletWidth) {
-              font-size: 1.3em;
-            }
-
-            svg {
-              font-size: 1.3em;
-
-              @media (min-width: vars.$tabletWidth) {
-                font-size: 1.4em;
-              }
-            }
-          }
-
-          .formRow:not(:last-child) {
-            margin-bottom: 0.5em;
-          }
-        }
-
-        .formRow {
-          display: flex;
-          flex-direction: column;
-          gap: 1em;
-
-          @media (min-width: vars.$tabletWidth) {
-            flex-direction: row;
-            gap: 1.5em;
-          }
-        }
-
-        .formGroup {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5em;
-          flex: 1;
-
-          label {
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-            font-weight: 600;
-            color: vars.$fontColorPrimary;
-            font-size: 0.9em;
-
-            svg {
-              font-size: 1em;
-              color: vars.$courrierPrimary;
-            }
-          }
-
-          input,
-          textarea {
-            @include mixins.formInput;
-          }
-
-          .react-select-container {
-            @include mixins.reactSelect;
-          }
-
-          textarea {
-            resize: vertical;
-            min-height: 100px;
-          }
-        }
-
-        .formActions {
-          @include mixins.formActions;
-          
-          & {
-            margin-top: auto;
-          }
-
-          .btnCancel,
-          .btnSubmit {
-            padding: 0.75em 2em;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-
-            @media (min-width: vars.$tabletWidth) {
-              width: auto;
-            }
-
-            &:disabled {
-              opacity: 0.6;
-              cursor: not-allowed;
-            }
-          }
-
-          .btnCancel {
-            background: white;
-            color: vars.$fontColorPrimary;
-            border: 2px solid vars.$borderColor;
-
-            &:hover:not(:disabled) {
-              border-color: vars.$errorColor;
-              color: vars.$errorColor;
-            }
-          }
-
-          .btnSubmit {
-            background: vars.$courrierGradient;
-            color: white;
-            border: none;
-
-            &:hover:not(:disabled) {
-              transform: translateY(-1px);
-              box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
-            }
-          }
-        }
-      }
-    }
   }
+}
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .updateCourrierContent .formSection .courrierForm .formGrid {
+    gap: 1.8em;
+  }
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formSection {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formSection
+  h3.sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: vars.$courrierPrimary;
+  padding: 0 0 0.5em;
+  border-bottom: 2px solid vars.$borderColor;
+  margin: 0;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier
+    .updateCourrierContent
+    .formSection
+    .courrierForm
+    .formSection
+    h3.sectionTitle {
+    font-size: 1.3em;
+  }
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formSection
+  h3.sectionTitle
+  svg {
+  font-size: 1.3em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier
+    .updateCourrierContent
+    .formSection
+    .courrierForm
+    .formSection
+    h3.sectionTitle
+    svg {
+    font-size: 1.4em;
+  }
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formSection
+  .formRow:not(:last-child) {
+  margin-bottom: 0.5em;
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierContent .formSection .courrierForm .formRow {
+    flex-direction: row;
+    gap: 1.5em;
+  }
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  flex: 1;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9em;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  label
+  svg {
+  font-size: 1em;
+  color: vars.$courrierPrimary;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  input,
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  textarea {
+  @include mixins.formInput(
+    "#updateCourrier .updateCourrierContent .formSection .courrierForm .formGroup input, #updateCourrier .updateCourrierContent .formSection .courrierForm .formGroup textarea"
+  );
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  .react-select-container {
+  @include mixins.reactSelect(
+    "#updateCourrier .updateCourrierContent .formSection .courrierForm .formGroup .react-select-container"
+  );
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formGroup
+  textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formActions {
+  @include mixins.formActions;
+}
+#updateCourrier .updateCourrierContent .formSection .courrierForm .formActions {
+  margin-top: auto;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnCancel,
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnSubmit {
+  padding: 0.75em 2em;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier
+    .updateCourrierContent
+    .formSection
+    .courrierForm
+    .formActions
+    .btnCancel,
+  #updateCourrier
+    .updateCourrierContent
+    .formSection
+    .courrierForm
+    .formActions
+    .btnSubmit {
+    width: auto;
+  }
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnCancel:disabled,
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnSubmit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnCancel {
+  background: white;
+  color: vars.$fontColorPrimary;
+  border: 2px solid vars.$borderColor;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnCancel:hover:not(:disabled) {
+  border-color: vars.$errorColor;
+  color: vars.$errorColor;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnSubmit {
+  background: vars.$courrierGradient;
+  color: white;
+  border: none;
+}
+#updateCourrier
+  .updateCourrierContent
+  .formSection
+  .courrierForm
+  .formActions
+  .btnSubmit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
 }

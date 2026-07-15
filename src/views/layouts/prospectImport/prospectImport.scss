@@ -1,238 +1,225 @@
 #prospectImport {
   min-height: 100vh;
-
-  main {
-    padding: 2rem;
-  }
-
-  .prospectImport__container {
-    max-width: 960px;
-    margin: 0 auto;
-  }
-
-  .prospectImport__back {
-    margin-bottom: 1rem;
-    button {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: #555;
-      font-size: 0.9rem;
-      &:hover { text-decoration: underline; }
-    }
-  }
-
-  h1 { margin-bottom: 0.4rem; }
-
-  .prospectImport__subtitle {
-    color: #666;
-    font-size: 0.9rem;
-    margin: 0 0 1.5rem;
-  }
-
-  .prospectImport__format {
-    background: #f8f9fa;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.5rem;
-
-    h3 {
-      margin: 0 0 0.75rem;
-      font-size: 0.95rem;
-      color: #333;
-    }
-
-    code {
-      display: block;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      padding: 0.75rem 1rem;
-      font-size: 0.8rem;
-      color: #333;
-      overflow-x: auto;
-      white-space: nowrap;
-    }
-
-    p {
-      margin: 0.6rem 0 0;
-      font-size: 0.85rem;
-      color: #666;
-    }
-  }
-
-  .prospectImport__dropzone {
-    border: 2px dashed #ccc;
-    border-radius: 8px;
-    padding: 2.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    margin-bottom: 1.5rem;
-
-    &:hover, &--active {
-      border-color: var(--color-primary, #4a90d9);
-      background: #f0f6ff;
-    }
-
-    input[type="file"] { display: none; }
-
-    p {
-      margin: 0.5rem 0 0;
-      color: #888;
-      font-size: 0.9rem;
-    }
-
-    .prospectImport__dropzone-icon {
-      font-size: 2rem;
-      color: #bbb;
-    }
-  }
-
-  .prospectImport__parse-error {
-    background: #fee;
-    border: 1px solid #fcc;
-    border-radius: 4px;
-    padding: 0.75rem 1rem;
-    color: #c00;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .prospectImport__preview {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    overflow: hidden;
-    margin-bottom: 1.5rem;
-
-    h3 {
-      margin: 0;
-      padding: 0.75rem 1rem;
-      background: #f8f8f8;
-      font-size: 0.9rem;
-      border-bottom: 1px solid #e0e0e0;
-    }
-  }
-
-  .prospectImport__preview-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.85rem;
-
-    th, td {
-      padding: 0.5rem 0.75rem;
-      text-align: left;
-      border-bottom: 1px solid #eee;
-      white-space: nowrap;
-    }
-
-    th {
-      background: #fafafa;
-      font-weight: 600;
-      color: #555;
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-  }
-
-  .prospectImport__preview-more {
-    padding: 0.5rem 1rem;
-    color: #888;
-    font-size: 0.85rem;
-    font-style: italic;
-    background: #fafafa;
-    border-top: 1px solid #eee;
-  }
-
-  .prospectImport__actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .prospectImport__import-error {
-    background: #fee;
-    border: 1px solid #fcc;
-    border-radius: 4px;
-    padding: 0.75rem 1rem;
-    color: #c00;
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-  }
-
-  .prospectImport__result {
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.5rem;
-
-    h2 {
-      margin: 0 0 1rem;
-      font-size: 1.1rem;
-    }
-  }
-
-  .prospectImport__result-stats {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 1.25rem;
-    flex-wrap: wrap;
-  }
-
-  .prospectImport__stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 0.75rem 1.25rem;
-    border-radius: 8px;
-    min-width: 100px;
-
-    &--created { background: #d4edda; color: #155724; }
-    &--skipped { background: #fff3cd; color: #856404; }
-    &--errors  { background: #f8d7da; color: #721c24; }
-
-    span:first-child {
-      font-size: 1.75rem;
-      font-weight: 700;
-      line-height: 1;
-    }
-
-    span:last-child {
-      font-size: 0.8rem;
-      margin-top: 0.2rem;
-    }
-  }
-
-  .prospectImport__result-errors {
-    h4 {
-      margin: 0 0 0.5rem;
-      font-size: 0.9rem;
-      color: #721c24;
-    }
-
-    ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      max-height: 200px;
-      overflow-y: auto;
-    }
-
-    li {
-      font-size: 0.85rem;
-      color: #555;
-      padding: 0.3rem 0.5rem;
-      background: #fdf3f3;
-      border-radius: 4px;
-
-      strong { color: #c00; margin-right: 0.3rem; }
-    }
-  }
+}
+#prospectImport main {
+  padding: 2rem;
+}
+#prospectImport .prospectImport__container {
+  max-width: 960px;
+  margin: 0 auto;
+}
+#prospectImport .prospectImport__back {
+  margin-bottom: 1rem;
+}
+#prospectImport .prospectImport__back button {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #555;
+  font-size: 0.9rem;
+}
+#prospectImport .prospectImport__back button:hover {
+  text-decoration: underline;
+}
+#prospectImport h1 {
+  margin-bottom: 0.4rem;
+}
+#prospectImport .prospectImport__subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin: 0 0 1.5rem;
+}
+#prospectImport .prospectImport__format {
+  background: #f8f9fa;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+}
+#prospectImport .prospectImport__format h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  color: #333;
+}
+#prospectImport .prospectImport__format code {
+  display: block;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  font-size: 0.8rem;
+  color: #333;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+#prospectImport .prospectImport__format p {
+  margin: 0.6rem 0 0;
+  font-size: 0.85rem;
+  color: #666;
+}
+#prospectImport .prospectImport__dropzone {
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  padding: 2.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  margin-bottom: 1.5rem;
+}
+#prospectImport .prospectImport__dropzone:hover,
+#prospectImport .prospectImport__dropzone--active {
+  border-color: var(--color-primary, #4a90d9);
+  background: #f0f6ff;
+}
+#prospectImport .prospectImport__dropzone input[type="file"] {
+  display: none;
+}
+#prospectImport .prospectImport__dropzone p {
+  margin: 0.5rem 0 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+#prospectImport .prospectImport__dropzone .prospectImport__dropzone-icon {
+  font-size: 2rem;
+  color: #bbb;
+}
+#prospectImport .prospectImport__parse-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  color: #c00;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+#prospectImport .prospectImport__preview {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 1.5rem;
+}
+#prospectImport .prospectImport__preview h3 {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  background: #f8f8f8;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #e0e0e0;
+}
+#prospectImport .prospectImport__preview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+#prospectImport .prospectImport__preview-table th,
+#prospectImport .prospectImport__preview-table td {
+  padding: 0.5rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  white-space: nowrap;
+}
+#prospectImport .prospectImport__preview-table th {
+  background: #fafafa;
+  font-weight: 600;
+  color: #555;
+}
+#prospectImport .prospectImport__preview-table tbody tr:last-child td {
+  border-bottom: none;
+}
+#prospectImport .prospectImport__preview-more {
+  padding: 0.5rem 1rem;
+  color: #888;
+  font-size: 0.85rem;
+  font-style: italic;
+  background: #fafafa;
+  border-top: 1px solid #eee;
+}
+#prospectImport .prospectImport__actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+#prospectImport .prospectImport__import-error {
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 4px;
+  padding: 0.75rem 1rem;
+  color: #c00;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+#prospectImport .prospectImport__result {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+#prospectImport .prospectImport__result h2 {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+}
+#prospectImport .prospectImport__result-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+#prospectImport .prospectImport__stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  border-radius: 8px;
+  min-width: 100px;
+}
+#prospectImport .prospectImport__stat--created {
+  background: #d4edda;
+  color: #155724;
+}
+#prospectImport .prospectImport__stat--skipped {
+  background: #fff3cd;
+  color: #856404;
+}
+#prospectImport .prospectImport__stat--errors {
+  background: #f8d7da;
+  color: #721c24;
+}
+#prospectImport .prospectImport__stat span:first-child {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+#prospectImport .prospectImport__stat span:last-child {
+  font-size: 0.8rem;
+  margin-top: 0.2rem;
+}
+#prospectImport .prospectImport__result-errors h4 {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: #721c24;
+}
+#prospectImport .prospectImport__result-errors ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  max-height: 200px;
+  overflow-y: auto;
+}
+#prospectImport .prospectImport__result-errors li {
+  font-size: 0.85rem;
+  color: #555;
+  padding: 0.3rem 0.5rem;
+  background: #fdf3f3;
+  border-radius: 4px;
+}
+#prospectImport .prospectImport__result-errors li strong {
+  color: #c00;
+  margin-right: 0.3rem;
 }

@@ -1,1327 +1,1628 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #listeCourriers {
   @include mixins.mainView;
-
-  & {
-    @include mixins.flexContainer(column, 0.75em);
-    position: relative;
+}
+#listeCourriers {
+  @include mixins.flexContainer(column, 0.75em);
+  position: relative;
+}
+#listeCourriers .mobileSearchContainer {
+  position: sticky;
+  top: 6dvh;
+  z-index: 1000;
+  background: rgba(vars.$courrierPrimary, 0.05);
+  backdrop-filter: vars.$blurMedium;
+  -webkit-backdrop-filter: vars.$blurMedium;
+  padding: 0.75em 0;
+  margin: -1em -0.5em 0.75em -0.5em;
+  box-shadow: vars.$shadowMedium;
+}
+#listeCourriers .mobileSearchContainer .searchWrapper {
+  position: relative;
+  width: 95%;
+  margin: 0 auto;
+  padding: 0 0.5em;
+}
+#listeCourriers .mobileSearchContainer .searchWrapper .searchIcon {
+  position: absolute;
+  left: 1.5em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: vars.$fontColorSecondary;
+  font-size: 1.1em;
+}
+#listeCourriers .mobileSearchContainer .searchWrapper .searchInput {
+  padding-left: 2.5em !important;
+  border-radius: 25px !important;
+  font-size: 0.9em !important;
+  width: 100%;
+  @include mixins.formInput(
+    "#listeCourriers .mobileSearchContainer .searchWrapper .searchInput"
+  );
+}
+#listeCourriers .listeCourrierContainer {
+  min-width: 90%;
+  max-width: 95%;
+  margin: 0 auto;
+  padding: 0 0.25em;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .listeCourrierContainer {
+    min-width: 95%;
+    max-width: 98%;
+    padding: 0 0.5em;
+    gap: 1em;
   }
-  .mobileSearchContainer {
-    position: sticky;
-    top: 6dvh;
-    z-index: 1000;
-    background: rgba(vars.$courrierPrimary, 0.05);
-    backdrop-filter: vars.$blurMedium;
-    -webkit-backdrop-filter: vars.$blurMedium;
-    padding: 0.75em 0;
-    margin: -1em -0.5em 0.75em -0.5em;
-    box-shadow: vars.$shadowMedium;
-    
-    .searchWrapper {
-      position: relative;
-      width: 95%;
-      margin: 0 auto;
-      padding: 0 0.5em;
-      
-      .searchIcon {
-        position: absolute;
-        left: 1.5em;
-        top: 50%;
-        transform: translateY(-50%);
-        color: vars.$fontColorSecondary;
-        font-size: 1.1em;
-      }
-      
-      .searchInput {
-        padding-left: 2.5em !important;
-        border-radius: 25px !important;
-        font-size: 0.9em !important;
-        width: 100%;
-        @include mixins.formInput;
-      }
-    }
+}
+@media (min-width: vars.$desktopWidth) {
+  #listeCourriers .listeCourrierContainer {
+    min-width: 98%;
+    max-width: 99%;
+    padding: 0 0.75em;
   }
-  
-  .listeCourrierContainer {
-    min-width: 90%;
-    max-width: 95%;
-    margin: 0 auto;
-    padding: 0 0.25em;
-    flex: 1;
-    display: flex;
+}
+#listeCourriers .listeCourrierHeader {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+}
+#listeCourriers .listeCourrierHeader .pageTitle {
+  color: vars.$courrierPrimary;
+  font-size: 1.8em;
+  font-weight: 700;
+  margin: 0;
+}
+#listeCourriers .searchSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
+#listeCourriers .searchSection .searchContainer {
+  position: relative;
+  max-width: 25em;
+  flex: 1;
+}
+#listeCourriers .searchSection .searchContainer .searchIcon {
+  position: absolute;
+  left: 1em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: vars.$fontColorSecondary;
+  font-size: 1.2em;
+}
+#listeCourriers .searchSection .searchContainer .searchInput {
+  padding-left: 2.5em !important;
+  font-size: 1em !important;
+  @include mixins.formInput(
+    "#listeCourriers .searchSection .searchContainer .searchInput"
+  );
+}
+#listeCourriers .searchSection .paginationControls {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  flex-shrink: 0;
+}
+#listeCourriers .searchSection .paginationControls .paginationBtn {
+  padding: 0.5em 1em !important;
+  font-size: 0.85em !important;
+  white-space: nowrap !important;
+  @include mixins.actionButton(
+    "#listeCourriers .searchSection .paginationControls .paginationBtn",
+    vars.$courrierPrimary,
+    vars.$courrierSecondary
+  );
+}
+#listeCourriers .searchSection .paginationControls .paginationBtn:disabled {
+  background: vars.$borderColor;
+  color: vars.$fontColorSecondary;
+  cursor: not-allowed;
+  transform: none;
+}
+#listeCourriers .searchSection .paginationControls .paginationInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  text-align: center;
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+  min-width: 10em;
+}
+#listeCourriers .searchSection .paginationControls .paginationInfo .totalItems {
+  font-size: 0.8em;
+  opacity: 0.8;
+}
+#listeCourriers .searchSection .filterToggleBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  padding: 0.5em 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  background: white;
+  color: vars.$fontColorSecondary;
+  font-size: 0.85em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  position: relative;
+}
+#listeCourriers .searchSection .filterToggleBtn:hover {
+  border-color: vars.$courrierPrimary;
+  color: vars.$courrierPrimary;
+}
+#listeCourriers .searchSection .filterToggleBtn.active {
+  background: rgba(vars.$courrierPrimary, 0.1);
+  border-color: vars.$courrierPrimary;
+  color: vars.$courrierPrimary;
+}
+#listeCourriers .searchSection .filterToggleBtn .filterBadge {
+  width: 0.5em;
+  height: 0.5em;
+  border-radius: 50%;
+  background: vars.$courrierPrimary;
+  position: absolute;
+  top: 0.4em;
+  right: 0.4em;
+}
+@media (max-width: vars.$tabletWidth) {
+  #listeCourriers .searchSection {
     flex-direction: column;
+    align-items: stretch;
+    gap: 1em;
+  }
+  #listeCourriers .searchSection .filterToggleBtn {
+    align-self: flex-start;
+  }
+  #listeCourriers .searchSection .paginationControls {
+    justify-content: center;
+  }
+  #listeCourriers .searchSection .paginationControls .paginationBtn {
+    font-size: 0.85em;
+    padding: 0.6em 0.8em;
+  }
+  #listeCourriers .searchSection .paginationControls .paginationInfo {
+    min-width: 8em;
+    font-size: 0.8em;
+  }
+}
+#listeCourriers .filterSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding: 0.75em;
+  background: rgba(vars.$courrierPrimary, 0.03);
+  border: 1px solid rgba(vars.$courrierPrimary, 0.1);
+  border-radius: 8px;
+  position: relative;
+  z-index: 20;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .filterSection {
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 0.75em;
-
-    @media (min-width: vars.$tabletWidth) {
-      min-width: 95%;
-      max-width: 98%;
-      padding: 0 0.5em;
-      gap: 1em;
-    }
-
-    @media (min-width: vars.$desktopWidth) {
-      min-width: 98%;
-      max-width: 99%;
-      padding: 0 0.75em;
-    }
-  }
-
-  .listeCourrierHeader {
-    display: flex;
     align-items: center;
-    gap: 1em;
-    
-    
-    .pageTitle {
-      color: vars.$courrierPrimary;
-      font-size: 1.8em;
-      font-weight: 700;
-      margin: 0;
-    }
   }
-
-  .searchSection {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1em;
-
-    
-    .searchContainer {
-      position: relative;
-      max-width: 25em;
-      flex: 1;
-      
-      .searchIcon {
-        position: absolute;
-        left: 1em;
-        top: 50%;
-        transform: translateY(-50%);
-        color: vars.$fontColorSecondary;
-        font-size: 1.2em;
-      }
-      
-      .searchInput {
-        padding-left: 2.5em !important;
-        font-size: 1em !important;
-        @include mixins.formInput;
-      }
-    }
-    
-    .paginationControls {
-      display: flex;
-      align-items: center;
-      gap: 1em;
-      flex-shrink: 0;
-      
-      .paginationBtn {
-        padding: 0.5em 1em !important;
-        font-size: 0.85em !important;
-        white-space: nowrap !important;
-        @include mixins.actionButton(vars.$courrierPrimary, vars.$courrierSecondary);
-        
-        &:disabled {
-          background: vars.$borderColor;
-          color: vars.$fontColorSecondary;
-          cursor: not-allowed;
-          transform: none;
-        }
-      }
-      
-      .paginationInfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.25em;
-        text-align: center;
-        font-size: 0.85em;
-        color: vars.$fontColorSecondary;
-        min-width: 10em;
-        
-        .totalItems {
-          font-size: 0.8em;
-          opacity: 0.8;
-        }
-      }
-    }
-    
-    .filterToggleBtn {
-      & {
-        display: flex;
-        align-items: center;
-        gap: 0.4em;
-        padding: 0.5em 1em;
-        border: 1px solid vars.$borderColor;
-        border-radius: 8px;
-        background: white;
-        color: vars.$fontColorSecondary;
-        font-size: 0.85em;
-        font-weight: 500;
-        cursor: pointer;
-        transition: vars.$transitionMedium;
-        position: relative;
-      }
-
-      &:hover {
-        border-color: vars.$courrierPrimary;
-        color: vars.$courrierPrimary;
-      }
-
-      &.active {
-        background: rgba(vars.$courrierPrimary, 0.1);
-        border-color: vars.$courrierPrimary;
-        color: vars.$courrierPrimary;
-      }
-
-      .filterBadge {
-        & {
-          width: 0.5em;
-          height: 0.5em;
-          border-radius: 50%;
-          background: vars.$courrierPrimary;
-          position: absolute;
-          top: 0.4em;
-          right: 0.4em;
-        }
-      }
-    }
-
-    @media (max-width: vars.$tabletWidth) {
-      flex-direction: column;
-      align-items: stretch;
-      gap: 1em;
-
-      .filterToggleBtn {
-        align-self: flex-start;
-      }
-
-      .paginationControls {
-        justify-content: center;
-
-        .paginationBtn {
-          font-size: 0.85em;
-          padding: 0.6em 0.8em;
-        }
-
-        .paginationInfo {
-          min-width: 8em;
-          font-size: 0.8em;
-        }
-      }
-    }
+}
+#listeCourriers .filterSection .filterSelect {
+  flex: 1;
+  min-width: 8em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .filterSection .filterSelect {
+    max-width: 12em;
   }
-
-  .filterSection {
-    & {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5em;
-      padding: 0.75em;
-      background: rgba(vars.$courrierPrimary, 0.03);
-      border: 1px solid rgba(vars.$courrierPrimary, 0.1);
-      border-radius: 8px;
-      position: relative;
-      z-index: 20;
-    }
-
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      flex-wrap: wrap;
-      gap: 0.75em;
-      align-items: center;
-    }
-
-    .filterSelect {
-      & {
-        flex: 1;
-        min-width: 8em;
-      }
-
-      @media (min-width: vars.$tabletWidth) {
-        max-width: 12em;
-      }
-
-      .react-select-container {
-        @include mixins.reactSelect;
-
-        .react-select__control {
-          min-height: 2.4em;
-          height: 2.4em;
-        }
-
-        .react-select__value-container {
-          height: 2.4em;
-          padding: 0 0.75em;
-          flex-wrap: nowrap;
-        }
-
-        .react-select__single-value {
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          max-width: calc(100% - 0.5em);
-        }
-
-        .react-select__indicators {
-          height: 2.4em;
-        }
-
-        .react-select__menu {
-          z-index: 30;
-        }
-      }
-    }
-
-    .filterDateGroup {
-      & {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3em;
-        flex: 1;
-        min-width: 12em;
-      }
-
-      @media (min-width: vars.$tabletWidth) {
-        min-width: 16em;
-        max-width: 20em;
-      }
-
-      .filterDateLabel {
-        & {
-          display: block;
-          font-size: 0.72em;
-          font-weight: 600;
-          color: vars.$fontColorSecondary;
-          text-transform: uppercase;
-          letter-spacing: 0.5px;
-          padding-left: 0.25em;
-        }
-
-        @media (min-width: vars.$tabletWidth) {
-          display: none;
-        }
-      }
-
-      .filterDateInputs {
-        & {
-          display: flex;
-          align-items: center;
-          gap: 0.4em;
-        }
-
-        .filterDateInput {
-          & {
-            flex: 1;
-            min-width: 0;
-            height: 2.4em;
-            padding: 0 0.5em;
-            border: 1px solid vars.$borderColor;
-            border-radius: 6px;
-            font-size: 0.82em;
-            color: vars.$fontColorPrimary;
-            background: white;
-            cursor: pointer;
-            transition: vars.$transitionMedium;
-            font-family: inherit;
-          }
-
-          &:hover {
-            border-color: vars.$courrierPrimary;
-          }
-
-          &:focus {
-            outline: none;
-            border-color: vars.$courrierPrimary;
-            box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.15);
-          }
-
-          &::-webkit-calendar-picker-indicator {
-            opacity: 0.5;
-            cursor: pointer;
-          }
-        }
-
-        .filterDateSeparator {
-          & {
-            color: vars.$fontColorSecondary;
-            font-size: 0.85em;
-            flex-shrink: 0;
-          }
-        }
-      }
-    }
-
-    .clearFiltersBtn {
-      & {
-        display: flex;
-        align-items: center;
-        gap: 0.3em;
-        padding: 0.5em 0.75em;
-        border: none;
-        border-radius: 6px;
-        background: rgba(vars.$errorColor, 0.1);
-        color: vars.$errorColor;
-        font-size: 0.8em;
-        font-weight: 500;
-        cursor: pointer;
-        transition: vars.$transitionMedium;
-        white-space: nowrap;
-      }
-
-      &:hover {
-        background: vars.$errorColor;
-        color: white;
-      }
-    }
+}
+#listeCourriers .filterSection .filterSelect .react-select-container {
+  @include mixins.reactSelect(
+    "#listeCourriers .filterSection .filterSelect .react-select-container"
+  );
+}
+#listeCourriers
+  .filterSection
+  .filterSelect
+  .react-select-container
+  .react-select__control {
+  min-height: 2.4em;
+  height: 2.4em;
+}
+#listeCourriers
+  .filterSection
+  .filterSelect
+  .react-select-container
+  .react-select__value-container {
+  height: 2.4em;
+  padding: 0 0.75em;
+  flex-wrap: nowrap;
+}
+#listeCourriers
+  .filterSection
+  .filterSelect
+  .react-select-container
+  .react-select__single-value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: calc(100% - 0.5em);
+}
+#listeCourriers
+  .filterSection
+  .filterSelect
+  .react-select-container
+  .react-select__indicators {
+  height: 2.4em;
+}
+#listeCourriers
+  .filterSection
+  .filterSelect
+  .react-select-container
+  .react-select__menu {
+  z-index: 30;
+}
+#listeCourriers .filterSection .filterDateGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3em;
+  flex: 1;
+  min-width: 12em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .filterSection .filterDateGroup {
+    min-width: 16em;
+    max-width: 20em;
   }
-
-  .courriersSection {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-    
-    .loadingState, .emptyState {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 3em 1em;
-      color: vars.$fontColorSecondary;
-      
-      .emptyIcon {
-        font-size: 3em;
-        margin-bottom: 1em;
-        color: vars.$fontColorSecondary;
-        opacity: 0.5;
-      }
-      
-      p {
-        font-size: 1.1em;
-        margin: 0;
-      }
-    }
-    
-    .courriersTable {
-      border: 1px solid vars.$borderColor !important;
-      max-height: calc(100dvh - 6dvh - 4dvh - 12em) !important;
-      overflow: scroll !important;
-      display: flex;
-      flex-direction: column !important;
-      position: relative;
-      z-index: 1;
-      @include mixins.card(12px, medium);
-      
-      .tableWrapper {
-        flex: 1;
-        overflow-x: auto;
-        overflow-y: auto;
-        position: relative;
-      }
-      
-      .courriersGrid {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 0.9em;
-        
-        thead {
-          background: vars.$greyBackground;
-          position: sticky;
-          top: 0;
-          z-index: 10;
-          
-          th {
-            & {
-              padding: 1em 0.5em;
-              text-align: left;
-              font-weight: 600;
-              color: vars.$fontColorPrimary;
-              border-bottom: 2px solid vars.$borderColor;
-              font-size: 0.85em;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-              background: vars.$greyBackground;
-            }
-
-            &:nth-child(1) { min-width: 3em; }
-            &:nth-child(2) { min-width: 15em; }
-            &:nth-child(3) { min-width: 6em; }
-            &:nth-child(4) { min-width: 8em; }
-            &:nth-child(5) { min-width: 10em; }
-            &:nth-child(6) { min-width: 10em; }
-            &:nth-child(7) { min-width: 10em; }
-            &:nth-child(8) { min-width: 8em; }
-            &:nth-child(9) { min-width: 12em; }
-            &:nth-child(10) {
-              min-width: 4em;
-              text-align: center;
-            }
-
-            &.sortable {
-              & {
-                cursor: pointer;
-                user-select: none;
-                transition: vars.$transitionMedium;
-              }
-
-              &:hover {
-                background-color: rgba(vars.$courrierPrimary, 0.08);
-              }
-
-              .sortIcon {
-                & {
-                  font-size: 0.9em;
-                  vertical-align: middle;
-                  opacity: 0.5;
-                }
-              }
-
-              &.sorted {
-                color: vars.$courrierPrimary;
-
-                .sortIcon {
-                  opacity: 1;
-                  color: vars.$courrierPrimary;
-                }
-              }
-            }
-          }
-        }
-        
-        tbody {
-          .courrierRow {
-            transition: vars.$transitionMedium;
-            border-bottom: 1px solid vars.$borderColor;
-            
-            &:hover {
-              background: rgba(38, 208, 206, 0.02);
-            }
-            
-            &:last-child {
-              border-bottom: none;
-            }
-            
-            td {
-              padding: 0.75em 0.5em;
-              vertical-align: middle;
-              
-              &.fileName {
-                .fileNameWrapper {
-                  display: flex;
-                  align-items: center;
-                  gap: 0.5em;
-                  position: relative;
-                  
-                  .fileIcon {
-                    color: vars.$courrierPrimary;
-                    font-size: 1.1em;
-                    flex-shrink: 0;
-                  }
-                  
-                  .fileNameText {
-                    font-weight: 500;
-                    color: vars.$fontColorPrimary;
-                    max-width: 12em;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    white-space: nowrap;
-                    position: relative;
-                    cursor: help;
-                    
-                  }
-                }
-              }
-              
-              &.direction {
-                .directionBadge {
-                  padding: 0.25em 0.625em;
-                  border-radius: 16px;
-                  font-size: 0.75em;
-                  font-weight: 600;
-                  text-transform: uppercase;
-                  letter-spacing: 0.5px;
-                  
-                  &.badge-entrant {
-                    background: rgba(39, 174, 96, 0.1);
-                    color: vars.$successColor;
-                  }
-                  
-                  &.badge-sortant {
-                    background: rgba(38, 208, 206, 0.1);
-                    color: vars.$courrierPrimary;
-                  }
-                  
-                  &.badge-interne {
-                    background: rgba(243, 156, 18, 0.1);
-                    color: vars.$warningColor;
-                  }
-                }
-              }
-              
-              &.kind, &.department, &.emitter {
-                color: vars.$fontColorSecondary;
-                max-width: 10em;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                cursor: help;
-              }
-              
-              &.description {
-                color: vars.$fontColorSecondary;
-                max-width: 14em;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                cursor: help;
-              }
-              
-              &.courrierDate {
-                color: vars.$fontColorSecondary;
-                font-size: 0.85em;
-                min-width: 7em;
-              }
-              
-              &.receptionDate {
-                color: vars.$fontColorSecondary;
-                font-size: 0.85em;
-                min-width: 7em;
-              }
-              
-              &.actions {
-                & {
-                  text-align: center;
-                  position: relative;
-                  overflow: visible;
-                }
-
-                .actionMenuWrapper {
-                  & {
-                    position: relative;
-                    display: inline-block;
-                    overflow: visible;
-                  }
-
-                  .actionMenuTrigger {
-                    & {
-                      display: flex;
-                      align-items: center;
-                      justify-content: center;
-                      width: 2em;
-                      height: 2em;
-                      border: none;
-                      border-radius: 6px;
-                      cursor: pointer;
-                      background: rgba(0, 0, 0, 0.05);
-                      color: vars.$fontColorSecondary;
-                      font-size: 1.2em;
-                      transition: vars.$transitionMedium;
-                    }
-
-                    &:hover {
-                      background: rgba(0, 0, 0, 0.1);
-                      color: vars.$fontColorPrimary;
-                    }
-                  }
-
-                  .actionMenu {
-                    & {
-                      position: absolute;
-                      top: 50%;
-                      right: calc(100% + 0.5em);
-                      transform: translateY(-50%);
-                      display: flex;
-                      gap: 0.375em;
-                      background: white;
-                      border-radius: 8px;
-                      box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.15);
-                      padding: 0.5em;
-                      z-index: 10001;
-                      white-space: nowrap;
-                      border: 1px solid rgba(0, 0, 0, 0.06);
-                      pointer-events: auto;
-                    }
-
-                    .actionBtn {
-                      & {
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        width: 2em;
-                        height: 2em;
-                        border: none;
-                        border-radius: 6px;
-                        cursor: pointer;
-                        transition: vars.$transitionMedium;
-                        font-size: 1em;
-                      }
-
-                      &.download {
-                        background: rgba(38, 208, 206, 0.1);
-                        color: vars.$courrierPrimary;
-
-                        &:hover {
-                          background: vars.$courrierPrimary;
-                          color: white;
-                          transform: translateY(-1px);
-                        }
-                      }
-
-                      &.edit {
-                        background: rgba(243, 156, 18, 0.1);
-                        color: vars.$warningColor;
-
-                        &:hover {
-                          background: vars.$warningColor;
-                          color: white;
-                          transform: translateY(-1px);
-                        }
-                      }
-
-                      &.email {
-                        background: rgba(77, 208, 225, 0.1);
-                        color: vars.$courrierSecondary;
-
-                        &:hover {
-                          background: vars.$courrierSecondary;
-                          color: white;
-                          transform: translateY(-1px);
-                        }
-                      }
-
-                      &.view {
-                        background: rgba(155, 89, 182, 0.1);
-                        color: #9b59b6;
-
-                        &:hover {
-                          background: #9b59b6;
-                          color: white;
-                          transform: translateY(-1px);
-                        }
-                      }
-
-                      &.delete {
-                        background: rgba(231, 76, 60, 0.1);
-                        color: vars.$errorColor;
-
-                        &:hover {
-                          background: vars.$errorColor;
-                          color: white;
-                          transform: translateY(-1px);
-                        }
-                      }
-
-                      &.disabled {
-                        opacity: 0.4;
-                        cursor: not-allowed;
-                        transform: none;
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
+}
+#listeCourriers .filterSection .filterDateGroup .filterDateLabel {
+  display: block;
+  font-size: 0.72em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding-left: 0.25em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .filterSection .filterDateGroup .filterDateLabel {
+    display: none;
   }
-
-
-  @media (min-width: vars.$tabletWidth) {
+}
+#listeCourriers .filterSection .filterDateGroup .filterDateInputs {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+#listeCourriers
+  .filterSection
+  .filterDateGroup
+  .filterDateInputs
+  .filterDateInput {
+  flex: 1;
+  min-width: 0;
+  height: 2.4em;
+  padding: 0 0.5em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  font-size: 0.82em;
+  color: vars.$fontColorPrimary;
+  background: white;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-family: inherit;
+}
+#listeCourriers
+  .filterSection
+  .filterDateGroup
+  .filterDateInputs
+  .filterDateInput:hover {
+  border-color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .filterSection
+  .filterDateGroup
+  .filterDateInputs
+  .filterDateInput:focus {
+  outline: none;
+  border-color: vars.$courrierPrimary;
+  box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.15);
+}
+#listeCourriers
+  .filterSection
+  .filterDateGroup
+  .filterDateInputs
+  .filterDateInput::-webkit-calendar-picker-indicator {
+  opacity: 0.5;
+  cursor: pointer;
+}
+#listeCourriers
+  .filterSection
+  .filterDateGroup
+  .filterDateInputs
+  .filterDateSeparator {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85em;
+  flex-shrink: 0;
+}
+#listeCourriers .filterSection .clearFiltersBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.5em 0.75em;
+  border: none;
+  border-radius: 6px;
+  background: rgba(vars.$errorColor, 0.1);
+  color: vars.$errorColor;
+  font-size: 0.8em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  white-space: nowrap;
+}
+#listeCourriers .filterSection .clearFiltersBtn:hover {
+  background: vars.$errorColor;
+  color: white;
+}
+#listeCourriers .courriersSection {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+#listeCourriers .courriersSection .loadingState,
+#listeCourriers .courriersSection .emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3em 1em;
+  color: vars.$fontColorSecondary;
+}
+#listeCourriers .courriersSection .loadingState .emptyIcon,
+#listeCourriers .courriersSection .emptyState .emptyIcon {
+  font-size: 3em;
+  margin-bottom: 1em;
+  color: vars.$fontColorSecondary;
+  opacity: 0.5;
+}
+#listeCourriers .courriersSection .loadingState p,
+#listeCourriers .courriersSection .emptyState p {
+  font-size: 1.1em;
+  margin: 0;
+}
+#listeCourriers .courriersSection .courriersTable {
+  border: 1px solid vars.$borderColor !important;
+  max-height: calc(100dvh - 6dvh - 4dvh - 12em) !important;
+  overflow: scroll !important;
+  display: flex;
+  flex-direction: column !important;
+  position: relative;
+  z-index: 1;
+  @include mixins.card(12px, medium);
+}
+#listeCourriers .courriersSection .courriersTable .tableWrapper {
+  flex: 1;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
+}
+#listeCourriers .courriersSection .courriersTable .courriersGrid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+#listeCourriers .courriersSection .courriersTable .courriersGrid thead {
+  background: vars.$greyBackground;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+#listeCourriers .courriersSection .courriersTable .courriersGrid thead th {
+  padding: 1em 0.5em;
+  text-align: left;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  border-bottom: 2px solid vars.$borderColor;
+  font-size: 0.85em;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: vars.$greyBackground;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(1) {
+  min-width: 3em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(2) {
+  min-width: 15em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(3) {
+  min-width: 6em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(4) {
+  min-width: 8em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(5) {
+  min-width: 10em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(6) {
+  min-width: 10em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(7) {
+  min-width: 10em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(8) {
+  min-width: 8em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(9) {
+  min-width: 12em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th:nth-child(10) {
+  min-width: 4em;
+  text-align: center;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: vars.$transitionMedium;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th.sortable:hover {
+  background-color: rgba(vars.$courrierPrimary, 0.08);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th.sortable
+  .sortIcon {
+  font-size: 0.9em;
+  vertical-align: middle;
+  opacity: 0.5;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th.sortable.sorted {
+  color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  thead
+  th.sortable.sorted
+  .sortIcon {
+  opacity: 1;
+  color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow {
+  transition: vars.$transitionMedium;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow:hover {
+  background: rgba(38, 208, 206, 0.02);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow:last-child {
+  border-bottom: none;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td {
+  padding: 0.75em 0.5em;
+  vertical-align: middle;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.fileName
+  .fileNameWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  position: relative;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.fileName
+  .fileNameWrapper
+  .fileIcon {
+  color: vars.$courrierPrimary;
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.fileName
+  .fileNameWrapper
+  .fileNameText {
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+  max-width: 12em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  position: relative;
+  cursor: help;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.direction
+  .directionBadge {
+  padding: 0.25em 0.625em;
+  border-radius: 16px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.direction
+  .directionBadge.badge-entrant {
+  background: rgba(39, 174, 96, 0.1);
+  color: vars.$successColor;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.direction
+  .directionBadge.badge-sortant {
+  background: rgba(38, 208, 206, 0.1);
+  color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.direction
+  .directionBadge.badge-interne {
+  background: rgba(243, 156, 18, 0.1);
+  color: vars.$warningColor;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.kind,
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.department,
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.emitter {
+  color: vars.$fontColorSecondary;
+  max-width: 10em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: help;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.description {
+  color: vars.$fontColorSecondary;
+  max-width: 14em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: help;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.courrierDate {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85em;
+  min-width: 7em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.receptionDate {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85em;
+  min-width: 7em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions {
+  text-align: center;
+  position: relative;
+  overflow: visible;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenuTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.05);
+  color: vars.$fontColorSecondary;
+  font-size: 1.2em;
+  transition: vars.$transitionMedium;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenuTrigger:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: vars.$fontColorPrimary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 0.5em);
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.375em;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.15);
+  padding: 0.5em;
+  z-index: 10001;
+  white-space: nowrap;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1em;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.download {
+  background: rgba(38, 208, 206, 0.1);
+  color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.download:hover {
+  background: vars.$courrierPrimary;
+  color: white;
+  transform: translateY(-1px);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.edit {
+  background: rgba(243, 156, 18, 0.1);
+  color: vars.$warningColor;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.edit:hover {
+  background: vars.$warningColor;
+  color: white;
+  transform: translateY(-1px);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.email {
+  background: rgba(77, 208, 225, 0.1);
+  color: vars.$courrierSecondary;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.email:hover {
+  background: vars.$courrierSecondary;
+  color: white;
+  transform: translateY(-1px);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.view {
+  background: rgba(155, 89, 182, 0.1);
+  color: #9b59b6;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.view:hover {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-1px);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.delete {
+  background: rgba(231, 76, 60, 0.1);
+  color: vars.$errorColor;
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.delete:hover {
+  background: vars.$errorColor;
+  color: white;
+  transform: translateY(-1px);
+}
+#listeCourriers
+  .courriersSection
+  .courriersTable
+  .courriersGrid
+  tbody
+  .courrierRow
+  td.actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers {
     padding-left: 0 !important;
     padding-right: 0 !important;
     @include mixins.responsivePadding(1em, 1.5em, 2em);
-    
-    .listeCourrierHeader {
-      .pageTitle {
-        font-size: 2.2em;
-      }
-    }
-    
-    .searchSection {
-      .searchContainer {
-        max-width: 30em;
-      }
-    }
-    
-    .courriersSection {
-      .courriersTable {
-        .courriersGrid {
-          font-size: 0.95em;
-          
-          thead th {
-            padding: 1.25em 1em;
-          }
-          
-          tbody td {
-            padding: 1em;
-            
-            &.fileName .fileNameWrapper .fileNameText {
-              max-width: 15em;
-            }
-            
-            &.kind, &.department, &.emitter {
-              max-width: 10em;
-            }
-            
-            &.description {
-              max-width: 15em;
-            }
-          }
-        }
-      }
-    }
   }
-
-  @media (min-width: vars.$desktopWidth) {    
-    .courriersSection {
-      .courriersTable {
-        .courriersGrid {
-          font-size: 1em;
-          
-          tbody td {
-            &.fileName .fileNameWrapper .fileNameText {
-              max-width: 18em;
-            }
-            
-            &.kind, &.department, &.emitter {
-              max-width: 12em;
-            }
-            
-            &.description {
-              max-width: 20em;
-            }
-          }
-        }
-      }
-    }
-    
-    .paginationSection {
-      .paginationContainer {
-        .paginationInfo {
-          flex-direction: row;
-          gap: 1em;
-        }
-      }
-    }
+  #listeCourriers .listeCourrierHeader .pageTitle {
+    font-size: 2.2em;
   }
-
-  .bulkActions {
-    background: rgba(vars.$courrierPrimary, 0.05);
-    border: 1px solid rgba(vars.$courrierPrimary, 0.15);
-    border-radius: 12px;
+  #listeCourriers .searchSection .searchContainer {
+    max-width: 30em;
+  }
+  #listeCourriers .courriersSection .courriersTable .courriersGrid {
+    font-size: 0.95em;
+  }
+  #listeCourriers .courriersSection .courriersTable .courriersGrid thead th {
+    padding: 1.25em 1em;
+  }
+  #listeCourriers .courriersSection .courriersTable .courriersGrid tbody td {
     padding: 1em;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .selectionInfo {
-      .selectedCount {
-        font-weight: 600;
-        color: vars.$courrierPrimary;
-        font-size: 0.9em;
-      }
-    }
-
-    .bulkActionButtons {
-      display: flex;
-      gap: 0.75em;
-      flex-wrap: wrap;
-
-      .bulkActionBtn {
-        display: flex;
-        align-items: center;
-        gap: 0.5em;
-        padding: 0.75em 1em;
-        border: none;
-        border-radius: 8px;
-        font-weight: 500;
-        font-size: 0.85em;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        text-decoration: none;
-        white-space: nowrap;
-
-        &.download {
-          background: vars.$courrierSecondary;
-          color: white;
-
-          &:hover {
-            background: vars.$courrierDark;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(vars.$courrierSecondary, 0.3);
-          }
-        }
-
-        &.email {
-          background: vars.$courrierPrimary;
-          color: white;
-
-          &:hover {
-            background: vars.$courrierDark;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(vars.$courrierPrimary, 0.3);
-          }
-        }
-
-        svg {
-          font-size: 1.1em;
-        }
-      }
-    }
   }
-
-  .selectColumn {
-    width: 3em !important;
-    text-align: center;
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.fileName
+    .fileNameWrapper
+    .fileNameText {
+    max-width: 15em;
   }
-
-  .checkboxWrapper {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    position: relative;
-
-    .selectAllCheckbox {
-      appearance: none;
-      width: 1.2em;
-      height: 1.2em;
-      border: 2px solid vars.$courrierPrimary;
-      border-radius: 4px;
-      background: white;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-
-      &:checked {
-        background: vars.$courrierPrimary;
-        border-color: vars.$courrierPrimary;
-      }
-
-      &:checked::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 0.3em;
-        height: 0.6em;
-        border: 2px solid white;
-        border-left: none;
-        border-top: none;
-        transform: translate(-50%, -60%) rotate(45deg);
-      }
-
-      &:hover {
-        border-color: vars.$courrierDark;
-        transform: scale(1.05);
-      }
-    }
-
-    .selectCheckbox {
-      appearance: none;
-      width: 1.1em;
-      height: 1.1em;
-      border: 2px solid vars.$borderColor;
-      border-radius: 3px;
-      background: white;
-      cursor: pointer;
-      position: relative;
-      transition: all 0.2s ease;
-
-      &:checked {
-        background: vars.$courrierPrimary;
-        border-color: vars.$courrierPrimary;
-      }
-
-      &:checked::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 0.25em;
-        height: 0.5em;
-        border: 2px solid white;
-        border-left: none;
-        border-top: none;
-        transform: translate(-50%, -60%) rotate(45deg);
-      }
-
-      &:hover {
-        border-color: vars.$courrierPrimary;
-        transform: scale(1.05);
-      }
-    }
-
-    .checkboxLabel {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: vars.$courrierPrimary;
-      font-size: 1.1em;
-    }
-
-    .checkmark {
-      display: none;
-    }
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.kind,
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.department,
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.emitter {
+    max-width: 10em;
   }
-
-  .courrierRow.selected {
-    background: rgba(vars.$courrierPrimary, 0.08) !important;
-    border-left: 3px solid vars.$courrierPrimary;
-    
-    &:hover {
-      background: rgba(vars.$courrierPrimary, 0.12) !important;
-    }
-  }
-
-  .courriersCards {
-    @include mixins.flexContainer(column, 0.75em);
-
-    .mobileSelectAll {
-      display: flex;
-      align-items: center;
-      gap: 0.75em;
-      padding: 1em;
-      background: white;
-      border-radius: 12px;
-      border: 1px solid vars.$borderColor;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-
-      .selectAllText {
-        font-size: 0.9em;
-        font-weight: 500;
-        color: vars.$courrierPrimary;
-      }
-    }
-
-    .cardsList {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75em;
-    }
-
-    .courrierCard {
-      border: 1px solid vars.$borderColor !important;
-      overflow: hidden !important;
-      transition: vars.$transitionMedium !important;
-      @include mixins.card(12px, light);
-
-      &:hover {
-        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-        transform: translateY(-1px);
-      }
-
-      &.selected {
-        border-color: vars.$courrierPrimary;
-        box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.1);
-        background: rgba(vars.$courrierPrimary, 0.02);
-      }
-
-      .cardHeader {
-        display: flex;
-        align-items: flex-start;
-        gap: 1em;
-        padding: 1em;
-        background: vars.$greyBackground;
-        border-bottom: 1px solid vars.$borderColor;
-
-        .cardSelect {
-          flex-shrink: 0;
-          padding-top: 0.2em;
-        }
-
-        .cardTitle {
-          flex: 1;
-          display: flex;
-          align-items: center;
-          gap: 0.5em;
-          min-width: 0;
-
-          .fileIcon {
-            color: vars.$courrierPrimary;
-            font-size: 1.2em;
-            flex-shrink: 0;
-          }
-
-          .fileName {
-            font-size: 0.95em;
-            font-weight: 600;
-            color: vars.$fontColorPrimary;
-            margin: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            cursor: help;
-            position: relative;
-            
-            &:hover::after {
-              content: attr(title);
-              position: absolute;
-              top: -2.5em;
-              left: 50%;
-              transform: translateX(-50%);
-              background: rgba(44, 62, 80, 0.95);
-              color: white;
-              padding: 0.5em 0.75em;
-              border-radius: 6px;
-              font-size: 0.8em;
-              white-space: nowrap;
-              z-index: 1001;
-              box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-              pointer-events: none;
-            }
-          }
-        }
-
-        .cardDirection {
-          flex-shrink: 0;
-          
-          .directionBadge {
-            padding: 0.3em 0.7em;
-            border-radius: 16px;
-            font-size: 0.75em;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            
-            &.badge-entrant {
-              background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
-              color: white;
-              box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
-            }
-            
-            &.badge-sortant {
-              background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
-              color: white;
-              box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
-            }
-            
-            &.badge-interne {
-              background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
-              color: white;
-              box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
-            }
-          }
-        }
-      }
-
-      .cardBody {
-        padding: 1em;
-
-        .cardInfo {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5em;
-
-          .infoRow {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 0.5em;
-
-            .infoLabel {
-              font-size: 0.8em;
-              font-weight: 600;
-              color: vars.$fontColorSecondary;
-              min-width: 5em;
-              flex-shrink: 0;
-              text-transform: uppercase;
-              letter-spacing: 0.5px;
-            }
-
-            .infoValue {
-              font-size: 0.85em;
-              color: vars.$fontColorPrimary;
-              text-align: right;
-              word-break: break-word;
-            }
-
-            &.description {
-              .infoValue {
-                color: vars.$fontColorSecondary;
-                font-style: italic;
-                line-height: 1.4;
-              }
-            }
-          }
-        }
-      }
-
-      .cardActions {
-        display: flex;
-        justify-content: center;
-        gap: 0.5em;
-        padding: 0.75em 1em;
-        background: vars.$greyBackground;
-        border-top: 1px solid vars.$borderColor;
-
-        .actionBtn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 2.5em;
-          height: 2.5em;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          transition: vars.$transitionMedium;
-          font-size: 1.1em;
-
-          &.download {
-            background: rgba(vars.$courrierPrimary, 0.1);
-            color: vars.$courrierPrimary;
-
-            &:hover:not(.disabled) {
-              background: vars.$courrierPrimary;
-              color: white;
-              transform: translateY(-2px);
-            }
-          }
-
-          &.edit {
-            background: rgba(vars.$warningColor, 0.1);
-            color: vars.$warningColor;
-
-            &:hover:not(.disabled) {
-              background: vars.$warningColor;
-              color: white;
-              transform: translateY(-2px);
-            }
-          }
-
-          &.email {
-            background: rgba(vars.$courrierSecondary, 0.1);
-            color: vars.$courrierSecondary;
-
-            &:hover:not(.disabled) {
-              background: vars.$courrierSecondary;
-              color: white;
-              transform: translateY(-2px);
-            }
-          }
-
-          &.view {
-            background: rgba(#9b59b6, 0.1);
-            color: #9b59b6;
-
-            &:hover:not(.disabled) {
-              background: #9b59b6;
-              color: white;
-              transform: translateY(-2px);
-            }
-          }
-
-          &.delete {
-            background: rgba(vars.$errorColor, 0.1);
-            color: vars.$errorColor;
-
-            &:hover:not(.disabled) {
-              background: vars.$errorColor;
-              color: white;
-              transform: translateY(-2px);
-            }
-          }
-
-          &.disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-            pointer-events: none;
-          }
-        }
-      }
-    }
-  }
-
-  .actionBtn.disabled {
-    opacity: 0.3 !important;
-    cursor: not-allowed !important;
-    pointer-events: none !important;
-    
-    &:hover {
-      transform: none !important;
-      background: inherit !important;
-      color: inherit !important;
-    }
-  }
-  
-  .mobilePagination {
-    position: sticky;
-    bottom: 0;
-    z-index: 999;
-    background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 100%);
-    border-top: 1px solid vars.$borderColor;
-    padding: 0.75em 0.5em;
-    margin: 0 -0.5em -1em -0.5em;
-    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
-    
-    .paginationControls {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1em;
-      
-      .paginationBtn {
-        padding: 0.6em 1em !important;
-        border-radius: 20px !important;
-        font-size: 0.8em !important;
-        white-space: nowrap !important;
-        @include mixins.actionButton(vars.$courrierPrimary, vars.$courrierSecondary);
-        
-        &:disabled {
-          background: vars.$borderColor;
-          color: vars.$fontColorSecondary;
-          cursor: not-allowed;
-          transform: none;
-        }
-      }
-      
-      .paginationInfo {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.2em;
-        text-align: center;
-        font-size: 0.8em;
-        color: vars.$fontColorSecondary;
-        min-width: 8em;
-        
-        .totalItems {
-          font-size: 0.75em;
-          opacity: 0.8;
-        }
-      }
-    }
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.description {
+    max-width: 15em;
   }
 }
-
+@media (min-width: vars.$desktopWidth) {
+  #listeCourriers .courriersSection .courriersTable .courriersGrid {
+    font-size: 1em;
+  }
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.fileName
+    .fileNameWrapper
+    .fileNameText {
+    max-width: 18em;
+  }
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.kind,
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.department,
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.emitter {
+    max-width: 12em;
+  }
+  #listeCourriers
+    .courriersSection
+    .courriersTable
+    .courriersGrid
+    tbody
+    td.description {
+    max-width: 20em;
+  }
+  #listeCourriers .paginationSection .paginationContainer .paginationInfo {
+    flex-direction: row;
+    gap: 1em;
+  }
+}
+#listeCourriers .bulkActions {
+  background: rgba(vars.$courrierPrimary, 0.05);
+  border: 1px solid rgba(vars.$courrierPrimary, 0.15);
+  border-radius: 12px;
+  padding: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #listeCourriers .bulkActions {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+#listeCourriers .bulkActions .selectionInfo .selectedCount {
+  font-weight: 600;
+  color: vars.$courrierPrimary;
+  font-size: 0.9em;
+}
+#listeCourriers .bulkActions .bulkActionButtons {
+  display: flex;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.75em 1em;
+  border: none;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 0.85em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn.download {
+  background: vars.$courrierSecondary;
+  color: white;
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn.download:hover {
+  background: vars.$courrierDark;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(vars.$courrierSecondary, 0.3);
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn.email {
+  background: vars.$courrierPrimary;
+  color: white;
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn.email:hover {
+  background: vars.$courrierDark;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(vars.$courrierPrimary, 0.3);
+}
+#listeCourriers .bulkActions .bulkActionButtons .bulkActionBtn svg {
+  font-size: 1.1em;
+}
+#listeCourriers .selectColumn {
+  width: 3em !important;
+  text-align: center;
+}
+#listeCourriers .checkboxWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+}
+#listeCourriers .checkboxWrapper .selectAllCheckbox {
+  appearance: none;
+  width: 1.2em;
+  height: 1.2em;
+  border: 2px solid vars.$courrierPrimary;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+#listeCourriers .checkboxWrapper .selectAllCheckbox:checked {
+  background: vars.$courrierPrimary;
+  border-color: vars.$courrierPrimary;
+}
+#listeCourriers .checkboxWrapper .selectAllCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.3em;
+  height: 0.6em;
+  border: 2px solid white;
+  border-left: none;
+  border-top: none;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+#listeCourriers .checkboxWrapper .selectAllCheckbox:hover {
+  border-color: vars.$courrierDark;
+  transform: scale(1.05);
+}
+#listeCourriers .checkboxWrapper .selectCheckbox {
+  appearance: none;
+  width: 1.1em;
+  height: 1.1em;
+  border: 2px solid vars.$borderColor;
+  border-radius: 3px;
+  background: white;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+#listeCourriers .checkboxWrapper .selectCheckbox:checked {
+  background: vars.$courrierPrimary;
+  border-color: vars.$courrierPrimary;
+}
+#listeCourriers .checkboxWrapper .selectCheckbox:checked::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0.25em;
+  height: 0.5em;
+  border: 2px solid white;
+  border-left: none;
+  border-top: none;
+  transform: translate(-50%, -60%) rotate(45deg);
+}
+#listeCourriers .checkboxWrapper .selectCheckbox:hover {
+  border-color: vars.$courrierPrimary;
+  transform: scale(1.05);
+}
+#listeCourriers .checkboxWrapper .checkboxLabel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: vars.$courrierPrimary;
+  font-size: 1.1em;
+}
+#listeCourriers .checkboxWrapper .checkmark {
+  display: none;
+}
+#listeCourriers .courrierRow.selected {
+  background: rgba(vars.$courrierPrimary, 0.08) !important;
+  border-left: 3px solid vars.$courrierPrimary;
+}
+#listeCourriers .courrierRow.selected:hover {
+  background: rgba(vars.$courrierPrimary, 0.12) !important;
+}
+#listeCourriers .courriersCards {
+  @include mixins.flexContainer(column, 0.75em);
+}
+#listeCourriers .courriersCards .mobileSelectAll {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 1em;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid vars.$borderColor;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+#listeCourriers .courriersCards .mobileSelectAll .selectAllText {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: vars.$courrierPrimary;
+}
+#listeCourriers .courriersCards .cardsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+#listeCourriers .courriersCards .courrierCard {
+  border: 1px solid vars.$borderColor !important;
+  overflow: hidden !important;
+  transition: vars.$transitionMedium !important;
+  @include mixins.card(12px, light);
+}
+#listeCourriers .courriersCards .courrierCard:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-1px);
+}
+#listeCourriers .courriersCards .courrierCard.selected {
+  border-color: vars.$courrierPrimary;
+  box-shadow: 0 0 0 2px rgba(vars.$courrierPrimary, 0.1);
+  background: rgba(vars.$courrierPrimary, 0.02);
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 1em;
+  padding: 1em;
+  background: vars.$greyBackground;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader .cardSelect {
+  flex-shrink: 0;
+  padding-top: 0.2em;
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader .cardTitle {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  min-width: 0;
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader .cardTitle .fileIcon {
+  color: vars.$courrierPrimary;
+  font-size: 1.2em;
+  flex-shrink: 0;
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader .cardTitle .fileName {
+  font-size: 0.95em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: help;
+  position: relative;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardHeader
+  .cardTitle
+  .fileName:hover::after {
+  content: attr(title);
+  position: absolute;
+  top: -2.5em;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(44, 62, 80, 0.95);
+  color: white;
+  padding: 0.5em 0.75em;
+  border-radius: 6px;
+  font-size: 0.8em;
+  white-space: nowrap;
+  z-index: 1001;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+#listeCourriers .courriersCards .courrierCard .cardHeader .cardDirection {
+  flex-shrink: 0;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardHeader
+  .cardDirection
+  .directionBadge {
+  padding: 0.3em 0.7em;
+  border-radius: 16px;
+  font-size: 0.75em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardHeader
+  .cardDirection
+  .directionBadge.badge-entrant {
+  background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(39, 174, 96, 0.3);
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardHeader
+  .cardDirection
+  .directionBadge.badge-sortant {
+  background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardHeader
+  .cardDirection
+  .directionBadge.badge-interne {
+  background: linear-gradient(135deg, #f39c12 0%, #f1c40f 100%);
+  color: white;
+  box-shadow: 0 2px 4px rgba(243, 156, 18, 0.3);
+}
+#listeCourriers .courriersCards .courrierCard .cardBody {
+  padding: 1em;
+}
+#listeCourriers .courriersCards .courrierCard .cardBody .cardInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+#listeCourriers .courriersCards .courrierCard .cardBody .cardInfo .infoRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5em;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardBody
+  .cardInfo
+  .infoRow
+  .infoLabel {
+  font-size: 0.8em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  min-width: 5em;
+  flex-shrink: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardBody
+  .cardInfo
+  .infoRow
+  .infoValue {
+  font-size: 0.85em;
+  color: vars.$fontColorPrimary;
+  text-align: right;
+  word-break: break-word;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardBody
+  .cardInfo
+  .infoRow.description
+  .infoValue {
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  line-height: 1.4;
+}
+#listeCourriers .courriersCards .courrierCard .cardActions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.75em 1em;
+  background: vars.$greyBackground;
+  border-top: 1px solid vars.$borderColor;
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1.1em;
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.download {
+  background: rgba(vars.$courrierPrimary, 0.1);
+  color: vars.$courrierPrimary;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardActions
+  .actionBtn.download:hover:not(.disabled) {
+  background: vars.$courrierPrimary;
+  color: white;
+  transform: translateY(-2px);
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.edit {
+  background: rgba(vars.$warningColor, 0.1);
+  color: vars.$warningColor;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardActions
+  .actionBtn.edit:hover:not(.disabled) {
+  background: vars.$warningColor;
+  color: white;
+  transform: translateY(-2px);
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.email {
+  background: rgba(vars.$courrierSecondary, 0.1);
+  color: vars.$courrierSecondary;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardActions
+  .actionBtn.email:hover:not(.disabled) {
+  background: vars.$courrierSecondary;
+  color: white;
+  transform: translateY(-2px);
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.view {
+  background: rgba(#9b59b6, 0.1);
+  color: #9b59b6;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardActions
+  .actionBtn.view:hover:not(.disabled) {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-2px);
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.delete {
+  background: rgba(vars.$errorColor, 0.1);
+  color: vars.$errorColor;
+}
+#listeCourriers
+  .courriersCards
+  .courrierCard
+  .cardActions
+  .actionBtn.delete:hover:not(.disabled) {
+  background: vars.$errorColor;
+  color: white;
+  transform: translateY(-2px);
+}
+#listeCourriers .courriersCards .courrierCard .cardActions .actionBtn.disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+#listeCourriers .actionBtn.disabled {
+  opacity: 0.3 !important;
+  cursor: not-allowed !important;
+  pointer-events: none !important;
+}
+#listeCourriers .actionBtn.disabled:hover {
+  transform: none !important;
+  background: inherit !important;
+  color: inherit !important;
+}
+#listeCourriers .mobilePagination {
+  position: sticky;
+  bottom: 0;
+  z-index: 999;
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 100%);
+  border-top: 1px solid vars.$borderColor;
+  padding: 0.75em 0.5em;
+  margin: 0 -0.5em -1em -0.5em;
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+}
+#listeCourriers .mobilePagination .paginationControls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+}
+#listeCourriers .mobilePagination .paginationControls .paginationBtn {
+  padding: 0.6em 1em !important;
+  border-radius: 20px !important;
+  font-size: 0.8em !important;
+  white-space: nowrap !important;
+  @include mixins.actionButton(
+    "#listeCourriers .mobilePagination .paginationControls .paginationBtn",
+    vars.$courrierPrimary,
+    vars.$courrierSecondary
+  );
+}
+#listeCourriers .mobilePagination .paginationControls .paginationBtn:disabled {
+  background: vars.$borderColor;
+  color: vars.$fontColorSecondary;
+  cursor: not-allowed;
+  transform: none;
+}
+#listeCourriers .mobilePagination .paginationControls .paginationInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2em;
+  text-align: center;
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+  min-width: 8em;
+}
+#listeCourriers
+  .mobilePagination
+  .paginationControls
+  .paginationInfo
+  .totalItems {
+  font-size: 0.75em;
+  opacity: 0.8;
+}
 .mobileOnly {
   display: block !important;
-  
-  @media (min-width: vars.$tabletWidth) {
+}
+@media (min-width: vars.$tabletWidth) {
+  .mobileOnly {
     display: none !important;
   }
 }
-
 .desktopOnly {
   display: none !important;
-  
-  @media (min-width: vars.$tabletWidth) {
+}
+@media (min-width: vars.$tabletWidth) {
+  .desktopOnly {
     display: block !important;
   }
 }
-
 .backToTopBtn {
   position: fixed;
   bottom: 5.5em;
@@ -1340,41 +1641,42 @@
   transition: all vars.$transitionMedium;
   box-shadow: 0 3px 10px rgba(vars.$courrierPrimary, 0.3);
   z-index: 1001;
-  
-  &:hover {
-    background: vars.$courrierDark;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(vars.$courrierPrimary, 0.4);
+}
+.backToTopBtn:hover {
+  background: vars.$courrierDark;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(vars.$courrierPrimary, 0.4);
+}
+.backToTopBtn:active {
+  transform: translateY(0);
+}
+.backToTopBtn {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1em);
   }
-  
-  &:active {
+  to {
+    opacity: 1;
     transform: translateY(0);
   }
-  
-  & {
-    animation: fadeInUp 0.3s ease-out;
-  }
-  
-  @keyframes fadeInUp {
-    from {
-      opacity: 0;
-      transform: translateY(1em);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @media (max-width: 480px) {
+}
+
+@media (max-width: 480px) {
+  .backToTopBtn {
     width: 2.5em;
     height: 2.5em;
     bottom: 5em;
     right: 1.2em;
     font-size: 1.1em;
   }
-  
-  @media (min-width: vars.$tabletWidth) {
+}
+
+@media (min-width: vars.$tabletWidth) {
+  .backToTopBtn {
     bottom: 2em;
     z-index: 1000;
   }

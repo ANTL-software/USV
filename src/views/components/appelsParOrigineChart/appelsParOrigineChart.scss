@@ -1,133 +1,113 @@
-@use '../../../utils/styles/variables' as vars;
-@use '../../../utils/styles/mixins' as mixins;
-
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
 #appelsParOrigineChart {
   @include mixins.card(12px, light);
-
-  & {
-    margin-bottom: 2em;
-  }
-
-  .appelsParOrigineChart__container {
-    & {
-      display: flex;
-      flex-direction: column;
-      gap: 1em;
-      padding: 1.5em;
-    }
-  }
-
-  .appelsParOrigineChart__header {
-    & {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    h3 {
-      & {
-        margin: 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-        color: vars.$fontColorPrimary;
-      }
-    }
-
-    .appelsParOrigineChart__total {
-      font-size: 0.9em;
-      color: vars.$fontColorSecondary;
-      font-weight: 500;
-    }
-  }
-
-  .appelsParOrigineChart__chart {
-    & {
-      position: relative;
-      min-height: 20em;
-    }
-  }
-
-  .appelsParOrigineChart__empty {
-    & {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 20em;
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      font-size: 0.95rem;
-    }
-  }
-
-  // Tooltip
-  .appelsParOrigineChart__tooltip {
-    background: #2c3e50;
-    border-radius: 8px;
-    padding: 0.75em 1em;
-    border: none;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-
-    &-label {
-      display: block;
-      font-weight: 600;
-      color: #fff;
-      margin-bottom: 0.25em;
-    }
-
-    &-value {
-      display: block;
-      font-size: 1.1em;
-      font-weight: 700;
-      color: #3498db;
-      font-family: 'Courier New', monospace;
-      margin-bottom: 0.25em;
-    }
-
-    &-percentage {
-      display: block;
-      font-size: 0.9em;
-      color: #ffd700;
-    }
-  }
-
-  // Details list
-  .appelsParOrigineChart__details {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-    margin-top: 1em;
-    padding-top: 1em;
-    border-top: 1px solid vars.$borderColor;
-  }
-
-  .appelsParOrigineChart__detail {
-    display: flex;
-    align-items: center;
-    gap: 0.75em;
-    font-size: 0.9em;
-
-    .appelsParOrigineChart__dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .appelsParOrigineChart__detail-label {
-      flex: 1;
-      color: vars.$fontColorPrimary;
-      font-weight: 500;
-    }
-
-    .appelsParOrigineChart__detail-value {
-      color: vars.$fontColorSecondary;
-      font-family: 'Courier New', monospace;
-    }
-  }
-
-  @media (min-width: vars.$tabletWidth) {
-    .appelsParOrigineChart__container {
-      padding: 2em;
-    }
+}
+#appelsParOrigineChart {
+  margin-bottom: 2em;
+}
+#appelsParOrigineChart .appelsParOrigineChart__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1.5em;
+}
+#appelsParOrigineChart .appelsParOrigineChart__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#appelsParOrigineChart .appelsParOrigineChart__header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#appelsParOrigineChart
+  .appelsParOrigineChart__header
+  .appelsParOrigineChart__total {
+  font-size: 0.9em;
+  color: vars.$fontColorSecondary;
+  font-weight: 500;
+}
+#appelsParOrigineChart .appelsParOrigineChart__chart {
+  position: relative;
+  min-height: 20em;
+}
+#appelsParOrigineChart .appelsParOrigineChart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20em;
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.95rem;
+}
+// Tooltip
+#appelsParOrigineChart .appelsParOrigineChart__tooltip {
+  background: #2c3e50;
+  border-radius: 8px;
+  padding: 0.75em 1em;
+  border: none;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+#appelsParOrigineChart .appelsParOrigineChart__tooltip-label {
+  display: block;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.25em;
+}
+#appelsParOrigineChart .appelsParOrigineChart__tooltip-value {
+  display: block;
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #3498db;
+  font-family: "Courier New", monospace;
+  margin-bottom: 0.25em;
+}
+#appelsParOrigineChart .appelsParOrigineChart__tooltip-percentage {
+  display: block;
+  font-size: 0.9em;
+  color: #ffd700;
+}
+// Details list
+#appelsParOrigineChart .appelsParOrigineChart__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px solid vars.$borderColor;
+}
+#appelsParOrigineChart .appelsParOrigineChart__detail {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  font-size: 0.9em;
+}
+#appelsParOrigineChart
+  .appelsParOrigineChart__detail
+  .appelsParOrigineChart__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+#appelsParOrigineChart
+  .appelsParOrigineChart__detail
+  .appelsParOrigineChart__detail-label {
+  flex: 1;
+  color: vars.$fontColorPrimary;
+  font-weight: 500;
+}
+#appelsParOrigineChart
+  .appelsParOrigineChart__detail
+  .appelsParOrigineChart__detail-value {
+  color: vars.$fontColorSecondary;
+  font-family: "Courier New", monospace;
+}
+@media (min-width: vars.$tabletWidth) {
+  #appelsParOrigineChart .appelsParOrigineChart__container {
+    padding: 2em;
   }
 }

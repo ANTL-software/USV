@@ -11,13 +11,13 @@
   border-radius: 4px;
   font-size: 0.9em;
   max-width: 150px;
+}
 
-  &-label {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: white !important; // Force le texte en blanc
-  }
+.panier-select__chip-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: white !important; // Force le texte en blanc
 }
 
 // ─── Option dans la liste déroulante ───────────────────────────────────
@@ -29,49 +29,49 @@
   padding: 0.75em 1em;
   cursor: pointer;
   transition: background vars.$transitionFast;
+}
 
-  &:hover {
-    background: vars.$greyBackground;
-  }
+.panier-select__option:hover {
+  background: vars.$greyBackground;
+}
+// Panier sélectionné (fond bleu, pas de hover)
 
-  // Panier sélectionné (fond bleu, pas de hover)
-  &--selected {
-    background: vars.$utilsPrimary;
-    color: white;
+.panier-select__option--selected {
+  background: vars.$utilsPrimary;
+  color: white;
+}
 
-    &:hover {
-      background: vars.$utilsPrimary;
-    }
+.panier-select__option--selected:hover {
+  background: vars.$utilsPrimary;
+}
 
-    .panier-select__option-label {
-      font-weight: 500;
-    }
-  }
+.panier-select__option--selected .panier-select__option-label {
+  font-weight: 500;
+}
 
-  &-label {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.panier-select__option-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  &-remove {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.8em;
-    height: 1.8em;
-    border: none;
-    border-radius: 4px;
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    cursor: pointer;
-    transition: background vars.$transitionFast;
+.panier-select__option-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8em;
+  height: 1.8em;
+  border: none;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  cursor: pointer;
+  transition: background vars.$transitionFast;
+}
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.3);
-    }
-  }
+.panier-select__option-remove:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 // ─── Container du select ───────────────────────────────────────────────

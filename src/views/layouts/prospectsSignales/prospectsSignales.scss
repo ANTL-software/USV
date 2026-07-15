@@ -1,132 +1,113 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #prospectsSignales {
   @include mixins.mainView;
-
-  main {
-    padding: 1.5em 1em;
-  }
-
-  .prospectsSignales__container {
-    @include mixins.centeredContainer(1200px);
-  }
-
-  .prospectsSignales__header {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    margin-bottom: 1.5em;
-    flex-wrap: wrap;
-
-    h1 {
-      font-size: 1.25em;
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .prospectsSignales__count {
-    font-size: 0.85em;
-    color: vars.$fontColorSecondary;
-    margin-left: auto;
-  }
-
-  .prospectsSignales__filters {
-    display: flex;
-    gap: 0.75em;
-    margin-bottom: 1em;
-    flex-wrap: wrap;
-    align-items: center;
-
-    .prospectsSignales__filter-group {
-      min-width: 180px;
-    }
-  }
-
-  .prospectsSignales__error {
-    color: vars.$errorColor;
-    font-size: 0.9em;
-    padding: 0.5em 0;
-  }
-
-  .prospectsSignales__loading,
-  .prospectsSignales__empty {
-    text-align: center;
-    padding: 2em;
-    color: vars.$fontColorSecondary;
-    font-size: 0.95em;
-  }
-
-  .prospectsSignales__table-wrap {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-  }
-
-  .prospectsSignales__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8em;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr:hover {
-      background: vars.$greyBackground;
-    }
-  }
-
-  .prospectsSignales__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.78em;
-    font-weight: 500;
-    white-space: nowrap;
-
-    &--doublon {
-      background: #fef9c3;
-      color: #a16207;
-    }
-
-    &--optout {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-  }
-
-  .prospectsSignales__pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1em;
-    margin-top: 1em;
-  }
-
-  .prospectsSignales__page-info {
-    font-size: 0.85em;
-    color: vars.$fontColorSecondary;
-  }
+}
+#prospectsSignales main {
+  padding: 1.5em 1em;
+}
+#prospectsSignales .prospectsSignales__container {
+  @include mixins.centeredContainer(1200px);
+}
+#prospectsSignales .prospectsSignales__header {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  flex-wrap: wrap;
+}
+#prospectsSignales .prospectsSignales__header h1 {
+  font-size: 1.25em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#prospectsSignales .prospectsSignales__count {
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+  margin-left: auto;
+}
+#prospectsSignales .prospectsSignales__filters {
+  display: flex;
+  gap: 0.75em;
+  margin-bottom: 1em;
+  flex-wrap: wrap;
+  align-items: center;
+}
+#prospectsSignales
+  .prospectsSignales__filters
+  .prospectsSignales__filter-group {
+  min-width: 180px;
+}
+#prospectsSignales .prospectsSignales__error {
+  color: vars.$errorColor;
+  font-size: 0.9em;
+  padding: 0.5em 0;
+}
+#prospectsSignales .prospectsSignales__loading,
+#prospectsSignales .prospectsSignales__empty {
+  text-align: center;
+  padding: 2em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.95em;
+}
+#prospectsSignales .prospectsSignales__table-wrap {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+}
+#prospectsSignales .prospectsSignales__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+}
+#prospectsSignales .prospectsSignales__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#prospectsSignales .prospectsSignales__table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+#prospectsSignales .prospectsSignales__table tbody tr:last-child td {
+  border-bottom: none;
+}
+#prospectsSignales .prospectsSignales__table tbody tr:hover {
+  background: vars.$greyBackground;
+}
+#prospectsSignales .prospectsSignales__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  font-size: 0.78em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+#prospectsSignales .prospectsSignales__badge--doublon {
+  background: #fef9c3;
+  color: #a16207;
+}
+#prospectsSignales .prospectsSignales__badge--optout {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#prospectsSignales .prospectsSignales__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 1em;
+}
+#prospectsSignales .prospectsSignales__page-info {
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
 }

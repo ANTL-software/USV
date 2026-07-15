@@ -1,288 +1,458 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
+#emailModal .emailModalOverlay {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 99999 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
+}
+#emailModal .emailModalOverlay .emailModalContent {
+  background: white;
+  border-radius: 16px;
+  max-width: 32em;
+  width: 100%;
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  animation: slideInUp 0.3s ease-out;
+}
 
-#emailModal {
-  .emailModalOverlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    bottom: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    z-index: 99999 !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 2em;
-
-    .emailModalContent {
-      background: white;
-      border-radius: 16px;
-      max-width: 32em;
-      width: 100%;
-      max-height: 90dvh;
-      overflow-y: auto;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-      animation: slideInUp 0.3s ease-out;
-
-      @keyframes slideInUp {
-        from {
-          opacity: 0;
-          transform: translateY(2em);
-        }
-
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      .emailModalHeader {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        padding: 1.5em;
-        border-bottom: 1px solid vars.$borderColor;
-        background: vars.$courrierGradient;
-        color: white;
-        border-radius: 16px 16px 0 0;
-
-        .modalTitle {
-          display: flex;
-          align-items: center;
-          gap: 0.5em;
-
-          .titleIcon {
-            font-size: 1.5em;
-          }
-
-          h2 {
-            font-size: 1.25em;
-            font-weight: 500;
-            margin: 0;
-          }
-        }
-
-        .closeBtn {
-          color: rgba(255, 255, 255, 0.8) !important;
-          font-size: 1.5em;
-          padding: 0.25em;
-          border-radius: 50%;
-          transition: all vars.$transitionFast;
-          @include mixins.resetButton;
-
-          &:hover {
-            color: white !important;
-            background: rgba(255, 255, 255, 0.1) !important;
-          }
-        }
-      }
-
-      .courrierInfo, .bulkCourrierInfo {
-        display: flex;
-        align-items: center;
-        gap: 1em;
-        padding: 1em 1.5em;
-        background: vars.$greyBackground;
-        border-bottom: 1px solid vars.$borderColor;
-
-        .courrierIcon {
-          font-size: 1.5em;
-          color: vars.$courrierPrimary;
-          flex-shrink: 0;
-        }
-
-        .courrierDetails, .bulkDetails {
-          display: flex;
-          flex-direction: column;
-          gap: 0.25em;
-
-          .fileName {
-            font-weight: 500;
-            color: vars.$fontColorPrimary;
-          }
-
-          .fileInfo {
-            font-size: 0.8em;
-            color: vars.$fontColorSecondary;
-          }
-
-          h3 {
-            margin: 0 0 0.25em 0;
-            font-weight: 500;
-            color: vars.$fontColorPrimary;
-            font-size: 1em;
-          }
-
-          .bulkDescription {
-            margin: 0;
-            color: vars.$fontColorSecondary;
-            font-size: 0.8em;
-            line-height: 1.4;
-          }
-        }
-      }
-
-      .emailForm {
-        padding: 1.5em;
-        display: flex;
-        flex-direction: column;
-        gap: 1.25em;
-
-        .formGroup {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5em;
-
-          .formLabel {
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-            font-weight: 500;
-            color: vars.$fontColorPrimary;
-            font-size: 0.9em;
-
-            .labelIcon {
-              font-size: 1em;
-              color: vars.$courrierPrimary;
-            }
-          }
-
-          .formInput {
-            padding: 0.75em 1em !important;
-            border: 2px solid vars.$borderColor !important;
-            border-radius: 8px;
-            font-size: 0.95em;
-            transition: all vars.$transitionFast;
-            @include mixins.inputBase;
-
-            &:focus {
-              border-color: vars.$courrierPrimary !important;
-              box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
-            }
-
-            &::placeholder {
-              color: vars.$fontColorSecondary;
-            }
-          }
-
-          .formTextarea {
-            padding: 0.75em 1em !important;
-            border: 2px solid vars.$borderColor !important;
-            border-radius: 8px;
-            font-size: 0.95em;
-            font-family: inherit;
-            resize: vertical;
-            min-height: 6em;
-            transition: all vars.$transitionFast;
-            @include mixins.inputBase;
-
-            &:focus {
-              border-color: vars.$courrierPrimary !important;
-              box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
-            }
-
-            &::placeholder {
-              color: vars.$fontColorSecondary;
-            }
-          }
-        }
-
-        .errorMessage {
-          background: #fef2f2;
-          color: #dc2626;
-          padding: 0.75em 1em;
-          border-radius: 8px;
-          border-left: 4px solid #dc2626;
-          font-size: 0.9em;
-        }
-
-        .formActions {
-          display: flex;
-          gap: 0.75em;
-          justify-content: flex-end;
-          margin-top: 0.5em;
-
-          @media (max-width: vars.$mobileWidth) {
-            flex-direction: column-reverse;
-          }
-
-          .loadingSpinner {
-            display: inline-block;
-            width: 1em;
-            height: 1em;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-right: 0.5em;
-
-            @keyframes spin {
-              to {
-                transform: rotate(360deg);
-              }
-            }
-          }
-        }
-      }
-
-      .infoNote {
-        display: flex;
-        align-items: flex-start;
-        gap: 0.75em;
-        padding: 1em 1.5em;
-        background: #f0f9ff;
-        border-top: 1px solid vars.$borderColor;
-        border-radius: 0 0 16px 16px;
-
-        .infoIcon {
-          font-size: 1.1em;
-          flex-shrink: 0;
-        }
-
-        p {
-          margin: 0;
-          font-size: 0.85em;
-          color: #0369a1;
-          line-height: 1.4;
-        }
-      }
-    }
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(2em);
   }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailModalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5em;
+  border-bottom: 1px solid vars.$borderColor;
+  background: vars.$courrierGradient;
+  color: white;
+  border-radius: 16px 16px 0 0;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailModalHeader
+  .modalTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailModalHeader
+  .modalTitle
+  .titleIcon {
+  font-size: 1.5em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailModalHeader
+  .modalTitle
+  h2 {
+  font-size: 1.25em;
+  font-weight: 500;
+  margin: 0;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailModalHeader .closeBtn {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 1.5em;
+  padding: 0.25em;
+  border-radius: 50%;
+  transition: all vars.$transitionFast;
+  @include mixins.resetButton;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailModalHeader
+  .closeBtn:hover {
+  color: white !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .courrierInfo,
+#emailModal .emailModalOverlay .emailModalContent .bulkCourrierInfo {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 1em 1.5em;
+  background: vars.$greyBackground;
+  border-bottom: 1px solid vars.$borderColor;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .courrierInfo .courrierIcon,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierIcon {
+  font-size: 1.5em;
+  color: vars.$courrierPrimary;
+  flex-shrink: 0;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .courrierDetails,
+#emailModal .emailModalOverlay .emailModalContent .courrierInfo .bulkDetails,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierDetails,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .bulkDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .courrierDetails
+  .fileName,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .bulkDetails
+  .fileName,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierDetails
+  .fileName,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .bulkDetails
+  .fileName {
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .courrierDetails
+  .fileInfo,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .bulkDetails
+  .fileInfo,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierDetails
+  .fileInfo,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .bulkDetails
+  .fileInfo {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .courrierDetails
+  h3,
+#emailModal .emailModalOverlay .emailModalContent .courrierInfo .bulkDetails h3,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierDetails
+  h3,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .bulkDetails
+  h3 {
+  margin: 0 0 0.25em 0;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+  font-size: 1em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .courrierDetails
+  .bulkDescription,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .courrierInfo
+  .bulkDetails
+  .bulkDescription,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .courrierDetails
+  .bulkDescription,
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .bulkCourrierInfo
+  .bulkDetails
+  .bulkDescription {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8em;
+  line-height: 1.4;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailForm {
+  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailForm .formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9em;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formLabel
+  .labelIcon {
+  font-size: 1em;
+  color: vars.$courrierPrimary;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formInput {
+  padding: 0.75em 1em !important;
+  border: 2px solid vars.$borderColor !important;
+  border-radius: 8px;
+  font-size: 0.95em;
+  transition: all vars.$transitionFast;
+  @include mixins.inputBase;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formInput:focus {
+  border-color: vars.$courrierPrimary !important;
+  box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formInput::placeholder {
+  color: vars.$fontColorSecondary;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formTextarea {
+  padding: 0.75em 1em !important;
+  border: 2px solid vars.$borderColor !important;
+  border-radius: 8px;
+  font-size: 0.95em;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 6em;
+  transition: all vars.$transitionFast;
+  @include mixins.inputBase;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formTextarea:focus {
+  border-color: vars.$courrierPrimary !important;
+  box-shadow: 0 0 0 3px rgba(vars.$courrierPrimary, 0.1) !important;
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formGroup
+  .formTextarea::placeholder {
+  color: vars.$fontColorSecondary;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailForm .errorMessage {
+  background: #fef2f2;
+  color: #dc2626;
+  padding: 0.75em 1em;
+  border-radius: 8px;
+  border-left: 4px solid #dc2626;
+  font-size: 0.9em;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .emailForm .formActions {
+  display: flex;
+  gap: 0.75em;
+  justify-content: flex-end;
+  margin-top: 0.5em;
+}
+
+@media (max-width: vars.$mobileWidth) {
+  #emailModal .emailModalOverlay .emailModalContent .emailForm .formActions {
+    flex-direction: column-reverse;
+  }
+}
+
+#emailModal
+  .emailModalOverlay
+  .emailModalContent
+  .emailForm
+  .formActions
+  .loadingSpinner {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top: 2px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-right: 0.5em;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#emailModal .emailModalOverlay .emailModalContent .infoNote {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75em;
+  padding: 1em 1.5em;
+  background: #f0f9ff;
+  border-top: 1px solid vars.$borderColor;
+  border-radius: 0 0 16px 16px;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .infoNote .infoIcon {
+  font-size: 1.1em;
+  flex-shrink: 0;
+}
+
+#emailModal .emailModalOverlay .emailModalContent .infoNote p {
+  margin: 0;
+  font-size: 0.85em;
+  color: #0369a1;
+  line-height: 1.4;
 }
 
 @media (max-width: vars.$mobileWidth) {
   #emailModal .emailModalOverlay {
     padding: 0.5em;
-
-    .emailModalContent {
-      max-height: 95dvh;
-      border-radius: 12px;
-
-      .emailModalHeader {
-        padding: 1em;
-        border-radius: 12px 12px 0 0;
-
-        .modalTitle h2 {
-          font-size: 1.1em;
-        }
-      }
-
-      .courrierInfo, .bulkCourrierInfo {
-        padding: 0.75em 1em;
-      }
-
-      .emailForm {
-        padding: 1em;
-        gap: 1em;
-      }
-
-      .infoNote {
-        padding: 0.75em 1em;
-      }
-    }
+  }
+  #emailModal .emailModalOverlay .emailModalContent {
+    max-height: 95dvh;
+    border-radius: 12px;
+  }
+  #emailModal .emailModalOverlay .emailModalContent .emailModalHeader {
+    padding: 1em;
+    border-radius: 12px 12px 0 0;
+  }
+  #emailModal
+    .emailModalOverlay
+    .emailModalContent
+    .emailModalHeader
+    .modalTitle
+    h2 {
+    font-size: 1.1em;
+  }
+  #emailModal .emailModalOverlay .emailModalContent .courrierInfo,
+  #emailModal .emailModalOverlay .emailModalContent .bulkCourrierInfo {
+    padding: 0.75em 1em;
+  }
+  #emailModal .emailModalOverlay .emailModalContent .emailForm {
+    padding: 1em;
+    gap: 1em;
+  }
+  #emailModal .emailModalOverlay .emailModalContent .infoNote {
+    padding: 0.75em 1em;
   }
 }

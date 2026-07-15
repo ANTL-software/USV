@@ -1,372 +1,363 @@
-@use '../../../utils/styles/variables' as vars;
-@use '../../../utils/styles/mixins' as mixins;
-
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
 #projetsList {
   @include mixins.mainView;
+}
+#projetsList main {
+  padding: 1.5em 1em;
+}
+#projetsList .projetsList__container {
+  @include mixins.centeredContainer(1400px);
+}
+// Header
+#projetsList .projetsList__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  margin-bottom: 2em;
+  flex-wrap: wrap;
+}
+#projetsList .projetsList__header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: vars.$utilsPrimary;
+}
+#projetsList .projetsList__header .projetsList__header-actions {
+  display: flex;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+// Filtres et recherche
+#projetsList .projetsList__filters {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  margin-bottom: 2em;
+  flex-wrap: wrap;
+}
+#projetsList .projetsList__filters .projetsList__search {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex: 1;
+  min-width: 250px;
+}
+#projetsList .projetsList__filters .projetsList__search input {
+  @include mixins.formInput(
+    "#projetsList .projetsList__filters .projetsList__search input"
+  );
+  flex: 1;
+}
+#projetsList .projetsList__filters .projetsList__filter-selects {
+  display: flex;
+  gap: 0.5em;
+  flex-wrap: wrap;
+}
+#projetsList .projetsList__filters .projetsList__filter-selects select {
+  @include mixins.formInput(
+    "#projetsList .projetsList__filters .projetsList__filter-selects select"
+  );
+  min-width: 150px;
+}
+// Loading
+#projetsList .projetsList__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1em;
+  padding: 3em;
+  text-align: center;
+}
+#projetsList .projetsList__loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid vars.$greyBackground;
+  border-top-color: vars.$utilsPrimary;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
 
-  main {
-    padding: 1.5em 1em;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
+}
+// Erreur
 
-  .projetsList__container {
-    @include mixins.centeredContainer(1400px);
-  }
+#projetsList .projetsList__error {
+  @include mixins.card(12px, light);
+  padding: 2em;
+  text-align: center;
+  background: vars.$errorColor;
+  color: white;
+  border-radius: 8px;
+}
+// Liste vide
 
-  // Header
-  .projetsList__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1em;
-    margin-bottom: 2em;
-    flex-wrap: wrap;
+#projetsList .projetsList__empty {
+  @include mixins.card(12px, light);
+  padding: 3em;
+  text-align: center;
+  color: vars.$fontColorSecondary;
+}
 
-    h1 {
-      margin: 0;
-      font-size: 1.8rem;
-      color: vars.$utilsPrimary;
-    }
+#projetsList .projetsList__empty svg {
+  color: vars.$utilsSecondary;
+  margin-bottom: 1em;
+}
 
-    .projetsList__header-actions {
-      display: flex;
-      gap: 0.75em;
-      flex-wrap: wrap;
-    }
-  }
+#projetsList .projetsList__empty p {
+  margin: 0.5em 0;
+}
+// Tableau
 
-  // Filtres et recherche
-  .projetsList__filters {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    margin-bottom: 2em;
-    flex-wrap: wrap;
+#projetsList .projetsList__table-wrapper {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+}
 
-    .projetsList__search {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      flex: 1;
-      min-width: 250px;
+#projetsList .projetsList__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
 
-      input {
-        @include mixins.formInput;
-        flex: 1;
-      }
-    }
+#projetsList .projetsList__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
 
-    .projetsList__filter-selects {
-      display: flex;
-      gap: 0.5em;
-      flex-wrap: wrap;
+#projetsList .projetsList__table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+}
 
-      select {
-        @include mixins.formInput;
-        min-width: 150px;
-      }
-    }
-  }
+#projetsList .projetsList__table tbody tr {
+  transition: background vars.$transitionSmooth;
+}
 
-  // Loading
-  .projetsList__loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1em;
-    padding: 3em;
-    text-align: center;
+#projetsList .projetsList__table tbody tr.projetsList__row-clickable {
+  cursor: pointer;
+}
 
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid vars.$greyBackground;
-      border-top-color: vars.$utilsPrimary;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
+#projetsList .projetsList__table tbody tr:hover {
+  background: vars.$greyBackground;
+}
 
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-  }
+#projetsList .projetsList__table tbody tr:last-child td {
+  border-bottom: none;
+}
+// Titre et description
 
-  // Erreur
-  .projetsList__error {
-    @include mixins.card(12px, light);
-    padding: 2em;
-    text-align: center;
-    background: vars.$errorColor;
-    color: white;
-    border-radius: 8px;
-  }
+#projetsList .projetsList__title strong {
+  display: block;
+  color: vars.$fontColorPrimary;
+}
 
-  // Liste vide
-  .projetsList__empty {
-    @include mixins.card(12px, light);
-    padding: 3em;
-    text-align: center;
-    color: vars.$fontColorSecondary;
+#projetsList .projetsList__description {
+  margin: 0.25em 0 0;
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+// Badges
 
-    svg {
-      color: vars.$utilsSecondary;
-      margin-bottom: 1em;
-    }
+#projetsList .projetsList__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
 
-    p {
-      margin: 0.5em 0;
-    }
-  }
+#projetsList .projetsList__badge--brouillon {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+}
 
-  // Tableau
-  .projetsList__table-wrapper {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-  }
+#projetsList .projetsList__badge--actif {
+  background: #dcfce7;
+  color: #16a34a;
+}
 
-  .projetsList__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
+#projetsList .projetsList__badge--pause {
+  background: #fef9c3;
+  color: #a16207;
+}
 
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
+#projetsList .projetsList__badge--termine {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
 
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-    }
+#projetsList .projetsList__badge--annule {
+  background: #fee2e2;
+  color: #dc2626;
+}
 
-    tbody tr {
-      transition: background vars.$transitionSmooth;
+#projetsList .projetsList__badge--critique {
+  background: #fecaca;
+  color: #991b1b;
+}
 
-      &.projetsList__row-clickable {
-        cursor: pointer;
-      }
+#projetsList .projetsList__badge--haute {
+  background: #fed7aa;
+  color: #9a3412;
+}
 
-      &:hover {
-        background: vars.$greyBackground;
-      }
-    }
+#projetsList .projetsList__badge--normale {
+  background: #e5e7eb;
+  color: #374151;
+}
 
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-  }
+#projetsList .projetsList__badge--basse {
+  background: #dbeafe;
+  color: #1e40af;
+}
 
-  // Titre et description
-  .projetsList__title {
-    strong {
-      display: block;
-      color: vars.$fontColorPrimary;
-    }
-  }
+#projetsList .projetsList__badge--dev {
+  background: #e0e7ff;
+  color: #4338ca;
+}
 
-  .projetsList__description {
-    margin: 0.25em 0 0;
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
+#projetsList .projetsList__badge--commercial {
+  background: #dcfce7;
+  color: #15803d;
+}
 
-  // Badges
-  .projetsList__badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.75rem;
-    font-weight: 500;
-    white-space: nowrap;
+#projetsList .projetsList__badge--admin {
+  background: #fce7f3;
+  color: #be185d;
+}
 
-    &--brouillon {
-      background: vars.$greyBackground;
-      color: vars.$fontColorSecondary;
-    }
+#projetsList .projetsList__badge--marketing {
+  background: #fef3c7;
+  color: #a16207;
+}
 
-    &--actif {
-      background: #dcfce7;
-      color: #16a34a;
-    }
+#projetsList .projetsList__badge--rh {
+  background: #e0e7ff;
+  color: #4338ca;
+}
 
-    &--pause {
-      background: #fef9c3;
-      color: #a16207;
-    }
+#projetsList .projetsList__badge--technique {
+  background: #ffedd5;
+  color: #c2410c;
+}
 
-    &--termine {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
+#projetsList .projetsList__badge--autre {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+}
+// Progression
 
-    &--annule {
-      background: #fee2e2;
-      color: #dc2626;
-    }
+#projetsList .projetsList__progression {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
 
-    &--critique {
-      background: #fecaca;
-      color: #991b1b;
-    }
+#projetsList .projetsList__progression-bar {
+  width: 100px;
+  height: 8px;
+  background: vars.$greyBackground;
+  border-radius: 4px;
+  overflow: hidden;
+}
 
-    &--haute {
-      background: #fed7aa;
-      color: #9a3412;
-    }
+#projetsList .projetsList__progression-fill {
+  height: 100%;
+  background: linear-gradient(90deg, vars.$utilsPrimary, vars.$utilsSecondary);
+  transition: width vars.$transitionSmooth;
+}
+// Dates
 
-    &--normale {
-      background: #e5e7eb;
-      color: #374151;
-    }
+#projetsList .projetsList__dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  font-size: 0.85rem;
+  color: vars.$fontColorSecondary;
+}
+// Actions
 
-    &--basse {
-      background: #dbeafe;
-      color: #1e40af;
-    }
+#projetsList .projetsList__actions-cell {
+  white-space: nowrap;
+}
 
-    &--dev {
-      background: #e0e7ff;
-      color: #4338ca;
-    }
+#projetsList .projetsList__btn-view,
+#projetsList .projetsList__btn-edit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background vars.$transitionSmooth;
+  margin-right: 0.5em;
+}
 
-    &--commercial {
-      background: #dcfce7;
-      color: #15803d;
-    }
+#projetsList .projetsList__btn-view {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
 
-    &--admin {
-      background: #fce7f3;
-      color: #be185d;
-    }
+#projetsList .projetsList__btn-view:hover {
+  background: #c7d2fe;
+}
 
-    &--marketing {
-      background: #fef3c7;
-      color: #a16207;
-    }
+#projetsList .projetsList__btn-edit {
+  background: #e0f2fe;
+  color: #0284c7;
+}
 
-    &--rh {
-      background: #e0e7ff;
-      color: #4338ca;
-    }
+#projetsList .projetsList__btn-edit:hover {
+  background: #bae6fd;
+}
+// Pagination
 
-    &--technique {
-      background: #ffedd5;
-      color: #c2410c;
-    }
+#projetsList .projetsList__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  margin-top: 2em;
+  padding: 1em;
+}
 
-    &--autre {
-      background: vars.$greyBackground;
-      color: vars.$fontColorSecondary;
-    }
-  }
+#projetsList .projetsList__pagination button {
+  @include mixins.actionButton(
+    "#projetsList .projetsList__pagination button",
+    vars.$utilsPrimary,
+    vars.$utilsSecondary
+  );
+}
 
-  // Progression
-  .projetsList__progression {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
+#projetsList .projetsList__pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+// Responsive
 
-  .projetsList__progression-bar {
-    width: 100px;
-    height: 8px;
-    background: vars.$greyBackground;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .projetsList__progression-fill {
-    height: 100%;
-    background: linear-gradient(90deg, vars.$utilsPrimary, vars.$utilsSecondary);
-    transition: width vars.$transitionSmooth;
-  }
-
-  // Dates
-  .projetsList__dates {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-    font-size: 0.85rem;
-    color: vars.$fontColorSecondary;
-  }
-
-  // Actions
-  .projetsList__actions-cell {
-    white-space: nowrap;
-  }
-
-  .projetsList__btn-view,
-  .projetsList__btn-edit {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background vars.$transitionSmooth;
-    margin-right: 0.5em;
-  }
-
-  .projetsList__btn-view {
-    background: #e0e7ff;
-    color: #4f46e5;
-
-    &:hover {
-      background: #c7d2fe;
-    }
-  }
-
-  .projetsList__btn-edit {
-    background: #e0f2fe;
-    color: #0284c7;
-
-    &:hover {
-      background: #bae6fd;
-    }
-  }
-
-  // Pagination
-  .projetsList__pagination {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1em;
-    margin-top: 2em;
-    padding: 1em;
-
-    button {
-      @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-    }
-  }
-
-  // Responsive
-  @media (min-width: vars.$tabletWidth) {
-    .projetsList__filters {
-      .projetsList__search {
-        flex: 0 0 400px;
-      }
-    }
+@media (min-width: vars.$tabletWidth) {
+  #projetsList .projetsList__filters .projetsList__search {
+    flex: 0 0 400px;
   }
 }
