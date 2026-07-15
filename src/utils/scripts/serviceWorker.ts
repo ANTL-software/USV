@@ -113,6 +113,22 @@ export const unregisterServiceWorker = async (): Promise<boolean> => {
   }
 };
 
+export const cleanupDevelopmentPWA = async (): Promise<void> => {
+  if (isProduction) return;
+
+  if (isServiceWorkerSupported()) {
+    const registrations = await navigator.serviceWorker.getRegistrations();
+    await Promise.all(registrations.map((registration) => registration.unregister()));
+  }
+
+  if ('caches' in window) {
+    const cacheNames = await caches.keys();
+    await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
+  }
+
+  console.log('[PWA] Development service workers and caches cleared');
+};
+
 // Envoyer un message au Service Worker
 export const sendMessageToServiceWorker = async (
   message: ServiceWorkerMessage

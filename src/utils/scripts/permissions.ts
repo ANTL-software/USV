@@ -204,6 +204,7 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   ) {
     if (!hasAccessToSection(user, 'operations')) return false;
     
+    if (cleanPath.startsWith('/operations/vigie')) return hasAccessToSubsection(user, 'operations', 'supervision');
     if (cleanPath.startsWith('/supervision')) return hasAccessToSubsection(user, 'operations', 'supervision');
     if (cleanPath.startsWith('/operations/commandes')) return hasAccessToSubsection(user, 'operations', 'commandes');
     if (cleanPath.startsWith('/campagnes')) return hasAccessToSubsection(user, 'operations', 'campagnes');

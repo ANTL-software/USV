@@ -59,7 +59,7 @@ const generateCSP = () => {
       let cspValue;
       if (isDev) {
         // CSP pour développement - plus permissive pour Vite HMR et API locale
-        cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data: http://localhost:8800 https://api.antl.fr; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800; connect-src 'self' http://localhost:8800 http://localhost:8800/api ws: ws://localhost:* http://localhost:* https://localhost:* https://fonts.googleapis.com https://unpkg.com https://*.twilio.com wss://*.twilio.com https://eventgw.twilio.com https://media.twiliocdn.com https://sdk.twilio.com wss://voice-js.roaming.twilio.com; worker-src 'self' blob:; media-src 'self' mediastream: http://localhost:8800 https://api.antl.fr https://media.twiliocdn.com https://sdk.twilio.com https://*.twiliocdn.com; base-uri 'self'; form-action 'self';";
+        cspValue = "default-src 'self'; script-src 'self' 'unsafe-eval' 'unsafe-inline' blob:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' blob: data: http://localhost:8800 http://127.0.0.1:8800 https://api.antl.fr; object-src 'self' blob:; frame-src 'self' blob: http://localhost:8800 http://127.0.0.1:8800; connect-src 'self' http://localhost:8800 http://127.0.0.1:8800 ws: ws://localhost:* ws://127.0.0.1:* http://localhost:* http://127.0.0.1:* https://localhost:* https://127.0.0.1:* https://fonts.googleapis.com https://unpkg.com https://*.twilio.com wss://*.twilio.com https://eventgw.twilio.com https://media.twiliocdn.com https://sdk.twilio.com wss://voice-js.roaming.twilio.com; worker-src 'self' blob:; media-src 'self' mediastream: http://localhost:8800 http://127.0.0.1:8800 https://api.antl.fr https://media.twiliocdn.com https://sdk.twilio.com https://*.twiliocdn.com; base-uri 'self'; form-action 'self';";
         console.log(`🔧 Development CSP applied`);
       } else {
         // CSP pour production - frame-ancestors retiré car ne fonctionne que dans headers HTTP
@@ -139,6 +139,8 @@ export default defineConfig({
     // HTTPS nécessaire pour certaines fonctionnalités PWA en dev
     // https: true, // Décommenter si besoin
     port: 5173,
+    host: '127.0.0.1',
+    strictPort: true,
   },
   // Optimisations
   define: {

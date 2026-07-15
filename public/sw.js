@@ -6,7 +6,8 @@ const STATIC_CACHE = `antl-static-v${BUILD_VERSION}`;
 const DYNAMIC_CACHE = `antl-dynamic-v${BUILD_VERSION}`;
 
 // Vérifier si nous sommes en mode développement
-const isDevelopment = self.location.hostname === 'localhost' && self.location.port === '5173';
+const isDevelopment = ['localhost', '127.0.0.1'].includes(self.location.hostname)
+  && ['5173', '5174', '5175'].includes(self.location.port);
 
 // Mode minimal pour débugger les problèmes de performance
 const MINIMAL_MODE = false; // Passer à true pour désactiver temporairement le cache

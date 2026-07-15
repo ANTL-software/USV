@@ -45,7 +45,9 @@ test('CampagneModel conserve Cigales en variante vente pour le workflow historiq
     telephone: null,
     pays: null,
     footer_text: null,
+    taux_commission_facturation: null,
     modes_paiement: [],
+    bon_commande_config: null,
   });
 });
 

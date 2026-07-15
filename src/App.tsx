@@ -55,6 +55,7 @@ import PaniersListWithAuth from "./views/layouts/paniersList/PaniersList";
 import PanierProduitsListWithAuth from "./views/layouts/panierProduitsList/PanierProduitsList";
 import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
 import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
+import VigieViewWithAuth from "./views/layouts/vigie/VigieView";
 import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
 import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHistoryView";
 import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
@@ -142,6 +143,7 @@ function App(): ReactElement {
         <Route path={"commercial/devis"} element={<DevisWithAuth />}></Route>
         <Route path={"commercial/configuration-antl"} element={<AntlConfigurationWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
+        <Route path={"operations/vigie"} element={<VigieViewWithAuth />}></Route>
         <Route path={"operations/demandes-absence"} element={<AbsenceDemandesWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
         <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>

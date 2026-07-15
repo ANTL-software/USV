@@ -12,7 +12,7 @@ import { VenteProvider } from "./context/vente/VenteProvider.tsx";
 import { ProjetProvider } from "./context/projet/ProjetProvider.tsx";
 
 // PWA initialization
-import { initializePWA } from "./utils/scripts/serviceWorker.ts";
+import { cleanupDevelopmentPWA, initializePWA } from "./utils/scripts/serviceWorker.ts";
 import { getEnvironment, shouldEnablePWA } from "./utils/scripts/browserDetection.ts";
 
 // Initialize PWA features only in production and compatible browsers
@@ -24,6 +24,10 @@ try {
   if (environment === 'production' && canUsePWA) {
     initializePWA().catch((error) => {
       console.warn('[PWA] Failed to initialize:', error);
+    });
+  } else if (environment === 'development') {
+    cleanupDevelopmentPWA().catch((error) => {
+      console.warn('[PWA] Failed to clear development caches:', error);
     });
   }
   // En développement, pas d'initialisation PWA mais l'app fonctionne

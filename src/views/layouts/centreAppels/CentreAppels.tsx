@@ -4,7 +4,7 @@ import './centreAppels.scss';
 // hooks | library
 import { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoPersonCircleOutline, IoCheckmarkCircleOutline, IoCalendarClear } from 'react-icons/io5';
+import { IoPeople, IoCallOutline, IoBriefcase, IoPricetag, IoLaptopOutline, IoEyeOutline, IoReceipt, IoPersonCircleOutline, IoCheckmarkCircleOutline, IoCalendarClear, IoStatsChartOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import WithAuth from '../../../utils/middleware/WithAuth';
 import { useUserContext } from '../../../hooks/useUserContext.ts';
@@ -41,6 +41,15 @@ function CentreAppels(): ReactElement {
                   <IoEyeOutline />
                 </div>
                 <h2>Supervision</h2>
+              </section>
+            )}
+
+            {hasAccessToSubsection(user, 'operations', 'supervision') && (
+              <section className="centreAppels__card" onClick={() => navigate('/operations/vigie')}>
+                <div className="centreAppels__card-icon">
+                  <IoStatsChartOutline />
+                </div>
+                <h2>Vigie</h2>
               </section>
             )}
 
