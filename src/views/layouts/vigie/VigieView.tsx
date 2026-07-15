@@ -5,6 +5,8 @@ import {
   IoAnalyticsOutline,
   IoBulbOutline,
   IoCheckmarkCircleOutline,
+  IoChevronDownOutline,
+  IoChevronUpOutline,
   IoEyeOutline,
   IoFlagOutline,
   IoPeopleOutline,
@@ -141,6 +143,7 @@ function VigieView(): ReactElement {
   const [period, setPeriod] = useState<PeriodKey>('today');
   const range = useMemo(() => buildDateRange(period), [period]);
   const [segmentDimension, setSegmentDimension] = useState<VigieSegmentDimension>('secteur');
+  const [isScoringExpanded, setIsScoringExpanded] = useState(false);
   const [sectorToPrepare, setSectorToPrepare] = useState('');
   const [selectedProspectIds, setSelectedProspectIds] = useState<number[]>([]);
   const [priorityAgentId, setPriorityAgentId] = useState<number | null>(null);
@@ -451,66 +454,82 @@ function VigieView(): ReactElement {
                 <div className="vigieView__panel-title vigieView__panel-title--split">
                   <IoStatsChartOutline />
                   <div><h2>Potentiel relatif des fiches</h2><p>{snapshot.scoring.disclaimer}</p></div>
-                  <span className="vigieView__version">{snapshot.scoring.version}</span>
+                  <div className="vigieView__scoring-controls">
+                    <span className="vigieView__version">{snapshot.scoring.version}</span>
+                    <button
+                      className="vigieView__disclosure"
+                      type="button"
+                      aria-expanded={isScoringExpanded}
+                      aria-controls="vigie-scoring-detail"
+                      onClick={() => setIsScoringExpanded((isExpanded) => !isExpanded)}
+                    >
+                      <span>{isScoringExpanded ? 'Masquer le détail' : 'Voir le détail'}</span>
+                      {isScoringExpanded ? <IoChevronUpOutline aria-hidden="true" /> : <IoChevronDownOutline aria-hidden="true" />}
+                    </button>
+                  </div>
                 </div>
-                <div className="vigieView__score-distribution">
-                  {(['P1', 'P2', 'P3', 'P4', 'P5'] as const).map((scoreClass) => {
-                    const distribution = snapshot.scoring.distribution.find((item) => item.classe === scoreClass);
-                    return (
-                      <article key={scoreClass} className={`vigieView__score-card vigieView__score-card--${scoreClass.toLowerCase()}`}>
-                        <strong>{scoreClass}</strong>
-                        <span>{formatNumber(distribution?.fiches || 0)} fiches</span>
-                        <small>{distribution ? `score ${distribution.score_min}–${distribution.score_max}` : 'aucune fiche'}</small>
-                      </article>
-                    );
-                  })}
-                </div>
-                <div className="vigieView__selection-bar">
-                  <strong>{selectedCandidates.length} fiche(s) sélectionnée(s)</strong>
-                  <span>L’ordre du classement P1–P5 devient l’ordre de distribution au commercial.</span>
-                  <button
-                    className="vigieView__button vigieView__button--ghost"
-                    type="button"
-                    disabled={selectedCandidates.length === 0}
-                    onClick={() => setSelectedProspectIds([])}
-                  >Vider la sélection</button>
-                </div>
-                <div className="vigieView__table-wrap">
-                  <table>
-                    <thead><tr>
-                      <th className="vigieView__check-cell">
-                        <input
-                          type="checkbox"
-                          aria-label="Sélectionner toutes les fiches proposées"
-                          checked={snapshot.scoring.candidats.length > 0 && selectedCandidates.length === snapshot.scoring.candidats.length}
-                          onChange={(event) => setSelectedProspectIds(event.target.checked
-                            ? snapshot.scoring.candidats.map((candidate) => candidate.id_prospect)
-                            : [])}
-                        />
-                      </th>
-                      <th>Classe</th><th>Fiche</th><th>Segment / distance</th><th>Pourquoi</th><th>Score</th>
-                    </tr></thead>
-                    <tbody>
-                      {snapshot.scoring.candidats.map((candidate) => (
-                        <tr key={candidate.id_prospect} className={selectedProspectIds.includes(candidate.id_prospect) ? 'vigieView__candidate--selected' : undefined}>
-                          <td className="vigieView__check-cell">
+                {isScoringExpanded && (
+                  <div id="vigie-scoring-detail" className="vigieView__scoring-detail">
+                    <div className="vigieView__score-distribution">
+                      {(['P1', 'P2', 'P3', 'P4', 'P5'] as const).map((scoreClass) => {
+                        const distribution = snapshot.scoring.distribution.find((item) => item.classe === scoreClass);
+                        return (
+                          <article key={scoreClass} className={`vigieView__score-card vigieView__score-card--${scoreClass.toLowerCase()}`}>
+                            <strong>{scoreClass}</strong>
+                            <span>{formatNumber(distribution?.fiches || 0)} fiches</span>
+                            <small>{distribution ? `score ${distribution.score_min}–${distribution.score_max}` : 'aucune fiche'}</small>
+                          </article>
+                        );
+                      })}
+                    </div>
+                    <div className="vigieView__selection-bar">
+                      <strong>{selectedCandidates.length} fiche(s) sélectionnée(s)</strong>
+                      <span>L’ordre du classement P1–P5 devient l’ordre de distribution au commercial.</span>
+                      <button
+                        className="vigieView__button vigieView__button--ghost"
+                        type="button"
+                        disabled={selectedCandidates.length === 0}
+                        onClick={() => setSelectedProspectIds([])}
+                      >Vider la sélection</button>
+                    </div>
+                    <div className="vigieView__table-wrap">
+                      <table>
+                        <thead><tr>
+                          <th className="vigieView__check-cell">
                             <input
                               type="checkbox"
-                              aria-label={`Sélectionner ${candidate.raison_sociale}`}
-                              checked={selectedProspectIds.includes(candidate.id_prospect)}
-                              onChange={() => toggleCandidate(candidate.id_prospect)}
+                              aria-label="Sélectionner toutes les fiches proposées"
+                              checked={snapshot.scoring.candidats.length > 0 && selectedCandidates.length === snapshot.scoring.candidats.length}
+                              onChange={(event) => setSelectedProspectIds(event.target.checked
+                                ? snapshot.scoring.candidats.map((candidate) => candidate.id_prospect)
+                                : [])}
                             />
-                          </td>
-                          <td><span className={`vigieView__score-badge vigieView__score-badge--${candidate.classe.toLowerCase()}`}>{candidate.classe}</span></td>
-                          <td><strong>{candidate.raison_sociale}</strong><small>{candidate.telephone_contact || candidate.telephone}</small></td>
-                          <td>{candidate.segment}<small>{formatDistance(candidate.distance_km)} du client campagne</small></td>
-                          <td>{candidate.raisons.join(' · ')}</td>
-                          <td><b>{candidate.score}</b><small>+{candidate.score_proximite} proximité · {candidate.nb_tentatives} tentative(s)</small></td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
+                          </th>
+                          <th>Classe</th><th>Fiche</th><th>Segment / distance</th><th>Pourquoi</th><th>Score</th>
+                        </tr></thead>
+                        <tbody>
+                          {snapshot.scoring.candidats.map((candidate) => (
+                            <tr key={candidate.id_prospect} className={selectedProspectIds.includes(candidate.id_prospect) ? 'vigieView__candidate--selected' : undefined}>
+                              <td className="vigieView__check-cell">
+                                <input
+                                  type="checkbox"
+                                  aria-label={`Sélectionner ${candidate.raison_sociale}`}
+                                  checked={selectedProspectIds.includes(candidate.id_prospect)}
+                                  onChange={() => toggleCandidate(candidate.id_prospect)}
+                                />
+                              </td>
+                              <td><span className={`vigieView__score-badge vigieView__score-badge--${candidate.classe.toLowerCase()}`}>{candidate.classe}</span></td>
+                              <td><strong>{candidate.raison_sociale}</strong><small>{candidate.telephone_contact || candidate.telephone}</small></td>
+                              <td>{candidate.segment}<small>{formatDistance(candidate.distance_km)} du client campagne</small></td>
+                              <td>{candidate.raisons.join(' · ')}</td>
+                              <td><b>{candidate.score}</b><small>+{candidate.score_proximite} proximité · {candidate.nb_tentatives} tentative(s)</small></td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
               </section>
 
               <section id="vigie-actions" className="vigieView__panel vigieView__actions">

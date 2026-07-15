@@ -362,6 +362,47 @@
     font-weight: 700;
   }
 
+  .vigieView__scoring-controls {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .55em;
+  }
+
+  .vigieView__disclosure {
+    display: inline-flex;
+    align-items: center;
+    gap: .35em;
+    border: 1px solid vars.$borderColor;
+    border-radius: 999px;
+    padding: .36em .62em;
+    background: transparent;
+    color: vars.$utilsPrimary;
+    font: inherit;
+    font-size: .78rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+
+    &:hover {
+      border-color: rgba(124, 58, 237, .35);
+      background: var(--vigie-purple-soft);
+    }
+
+    &:focus-visible {
+      outline: 2px solid vars.$utilsPrimary;
+      outline-offset: 2px;
+    }
+
+    svg {
+      font-size: 1rem;
+    }
+  }
+
+  .vigieView__scoring-detail {
+    padding-top: .15em;
+  }
+
   .vigieView__recommendations {
     display: grid;
     gap: .75em;
