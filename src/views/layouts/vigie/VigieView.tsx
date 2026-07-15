@@ -21,6 +21,7 @@ import { useVigie } from '../../../hooks/useVigie';
 import {
   cancelVigieActionService,
   createVigieActionService,
+  createVigieManualPriorityService,
   createVigiePriorityBatchService,
   type CreateVigieActionData
 } from '../../../API/services/vigie.service';
@@ -117,6 +118,8 @@ const getPayloadLabel = (action: VigieAction): string | null => {
   if (typeof sector === 'string' && sector.trim()) return sector;
   const recommendation = action.payload.titre;
   if (typeof recommendation === 'string' && recommendation.trim()) return recommendation;
+  const manualLabel = action.payload.libelle;
+  if (typeof manualLabel === 'string' && manualLabel.trim()) return manualLabel;
   return null;
 };
 
@@ -141,6 +144,8 @@ function VigieView(): ReactElement {
   const [sectorToPrepare, setSectorToPrepare] = useState('');
   const [selectedProspectIds, setSelectedProspectIds] = useState<number[]>([]);
   const [priorityAgentId, setPriorityAgentId] = useState<number | null>(null);
+  const [manualPriorityTelephone, setManualPriorityTelephone] = useState('');
+  const [manualPriorityLabel, setManualPriorityLabel] = useState('');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionMessageTone, setActionMessageTone] = useState<ActionMessageTone>('info');
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -228,6 +233,29 @@ function VigieView(): ReactElement {
       await refresh();
     } catch (actionError: unknown) {
       setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’enregistrer le lot prioritaire.');
+      setActionMessageTone('error');
+    } finally {
+      setPendingAction(null);
+    }
+  };
+
+  const submitManualPriority = async (): Promise<void> => {
+    if (!selectedCampaignId || !priorityAgentId || !manualPriorityTelephone.trim()) return;
+    try {
+      setPendingAction('priorite-manuelle');
+      setActionMessage(null);
+      await createVigieManualPriorityService(selectedCampaignId, {
+        id_agent_cible: priorityAgentId,
+        telephone_prospect: manualPriorityTelephone.trim(),
+        libelle_prospect: manualPriorityLabel.trim() || undefined
+      });
+      setActionMessage('Numéro injecté : il sera appelé en priorité dès le prochain passage disponible du commercial, après les rappels échus.');
+      setActionMessageTone('success');
+      setManualPriorityTelephone('');
+      setManualPriorityLabel('');
+      await refresh();
+    } catch (actionError: unknown) {
+      setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’injecter ce numéro.');
       setActionMessageTone('error');
     } finally {
       setPendingAction(null);
@@ -548,6 +576,31 @@ function VigieView(): ReactElement {
                       disabled={selectedCandidates.length === 0 || !priorityAgentId || pendingAction === 'priorite-lot'}
                       onClick={() => { void submitPriorityBatch(); }}
                     >Envoyer {selectedCandidates.length || ''} fiche(s) au commercial</button>
+                    <div className="vigieView__manual-priority">
+                      <div><span>ou</span><strong>Injecter un numéro manuel</strong></div>
+                      <p>Pour un rappel transmis au superviseur : la fiche est créée ou rattachée à la campagne, puis servie en priorité au commercial choisi.</p>
+                      <label htmlFor="vigie-manual-priority-phone">Numéro à appeler</label>
+                      <input
+                        id="vigie-manual-priority-phone"
+                        type="tel"
+                        value={manualPriorityTelephone}
+                        onChange={(event) => setManualPriorityTelephone(event.target.value)}
+                        placeholder="Ex. 06 12 34 56 78"
+                      />
+                      <label htmlFor="vigie-manual-priority-label">Nom ou société <em>facultatif</em></label>
+                      <input
+                        id="vigie-manual-priority-label"
+                        value={manualPriorityLabel}
+                        onChange={(event) => setManualPriorityLabel(event.target.value)}
+                        placeholder="Ex. Mme Martin — rappel demandé"
+                      />
+                      <button
+                        className="vigieView__button vigieView__button--secondary"
+                        type="button"
+                        disabled={!manualPriorityTelephone.trim() || !priorityAgentId || pendingAction === 'priorite-manuelle'}
+                        onClick={() => { void submitManualPriority(); }}
+                      >Injecter et prioriser ce numéro</button>
+                    </div>
                   </div>
                 </div>
 

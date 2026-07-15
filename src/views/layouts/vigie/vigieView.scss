@@ -802,6 +802,45 @@
     }
   }
 
+  .vigieView__manual-priority {
+    display: grid;
+    gap: .5em;
+    margin-top: .35em;
+    padding-top: .9em;
+    border-top: 1px solid vars.$borderColor;
+
+    > div {
+      display: flex;
+      align-items: center;
+      gap: .55em;
+    }
+
+    > div span {
+      border-radius: 999px;
+      padding: .22em .5em;
+      background: white;
+      color: vars.$fontColorSecondary;
+      font-size: .7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    p {
+      min-height: 0;
+      margin: 0;
+    }
+
+    em {
+      color: vars.$fontColorSecondary;
+      font-style: normal;
+      font-weight: 500;
+    }
+
+    > .vigieView__button {
+      margin-top: .1em;
+    }
+  }
+
   .vigieView__step {
     display: grid;
     width: 30px;

@@ -26,6 +26,12 @@ export interface CreateVigiePriorityBatchData {
   id_prospects: number[];
 }
 
+export interface CreateVigieManualPriorityData {
+  id_agent_cible: number;
+  telephone_prospect: string;
+  libelle_prospect?: string;
+}
+
 export const getVigieSnapshotService = async (
   idCampagne: number,
   range: VigieDateRange
@@ -66,6 +72,18 @@ export const createVigiePriorityBatchService = async (
   );
   if (response.data.success && response.data.data) return response.data.data;
   throw new Error(response.data.message || 'Impossible d’enregistrer le lot prioritaire');
+};
+
+export const createVigieManualPriorityService = async (
+  idCampagne: number,
+  data: CreateVigieManualPriorityData
+): Promise<VigieAction> => {
+  const response = await postRequest<CreateVigieManualPriorityData, ApiResponse<VigieAction>>(
+    `/supervision/vigie/${idCampagne}/actions/priorites/manuelle`,
+    data
+  );
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible d’injecter ce numéro dans la priorité');
 };
 
 export const cancelVigieActionService = async (
