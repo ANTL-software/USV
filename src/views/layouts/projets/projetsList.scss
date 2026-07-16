@@ -271,18 +271,22 @@
   gap: 0.5em;
 }
 
-#projetsList .projetsList__progression-bar {
+#projetsList .projetsList__progression progress {
   width: 100px;
   height: 8px;
-  background: vars.$greyBackground;
+  border: 0;
   border-radius: 4px;
-  overflow: hidden;
+  accent-color: vars.$utilsPrimary;
 }
 
-#projetsList .projetsList__progression-fill {
-  height: 100%;
+#projetsList .projetsList__progression progress::-webkit-progress-bar {
+  background: vars.$greyBackground;
+  border-radius: 4px;
+}
+
+#projetsList .projetsList__progression progress::-webkit-progress-value {
   background: linear-gradient(90deg, vars.$utilsPrimary, vars.$utilsSecondary);
-  transition: width vars.$transitionSmooth;
+  border-radius: 4px;
 }
 // Dates
 

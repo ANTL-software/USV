@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { getRequest, postRequest, patchRequest, deleteRequest } from '../APICalls.ts';
-import type { ApiResponse } from '../../utils/types/user.types.ts';
-import type { Planning, PlanningAssignation, PlanningCalendarEvent, PlanningPayload } from '../../utils/types/planning.types.ts';
+import type { ApiResponse } from '../../utils/types/index.ts';
+import type { CalendarPlanningEvent, Planning, PlanningAssignation, PlanningCalendarEvent, PlanningPayload } from '../../utils/types/index.ts';
 
 type PlanningsResponse = {
   plannings: Planning[];
@@ -16,11 +16,6 @@ type MyPlanningResponse = {
   date_fin: string;
   assignations: PlanningAssignation[];
   events: PlanningCalendarEvent[];
-};
-
-export type CalendarPlanningEvent = Omit<PlanningCalendarEvent, 'start' | 'end'> & {
-  start: Date;
-  end: Date;
 };
 
 const parseLocalDateTime = (dateTime: string, time: string): Date => {

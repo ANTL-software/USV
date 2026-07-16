@@ -4,9 +4,8 @@ import {
   getAllTypes,
   categoriesToOptions,
   typesToOptions,
-  CategorieOption,
-  TypeOption,
-} from '../API/services/categorieType.service';
+} from '../API/services/index.ts';
+import type { CategorieOption, TypeOption } from '../utils/types/index.ts';
 
 interface UseCategoriesAndTypesReturn {
   categorieOptions: CategorieOption[];

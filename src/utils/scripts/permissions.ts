@@ -1,4 +1,4 @@
-import type { Employe } from '../types/user.types';
+import type { Employe } from '../types/index.ts';
 
 export interface SubsectionConfig {
   id: string;

@@ -1,6 +1,6 @@
 import { getRequest, postRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
-import type { Panier, CreatePanierData, UpdatePanierData, PanierProduit } from '../../utils/types/panier.types.ts';
+import type { Panier, CreatePanierData, UpdatePanierData, PanierProduit } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -40,7 +40,7 @@ export const deletePanierService = async (id: number): Promise<void> => {
 };
 
 export const togglePanierActifService = async (id: number): Promise<Panier> => {
-  const res: AxiosResponse<ApiResponse<Panier>> = await postRequest<{}, ApiResponse<Panier>>(`/paniers/${id}/toggle`, {});
+  const res: AxiosResponse<ApiResponse<Panier>> = await postRequest<Record<string, never>, ApiResponse<Panier>>(`/paniers/${id}/toggle`, {});
   if (res.data.success && res.data.data) return res.data.data;
   throw new Error(res.data.message || 'Erreur toggle actif');
 };

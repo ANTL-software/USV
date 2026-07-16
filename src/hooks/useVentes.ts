@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
-import { getVentesService } from '../API/services/vente.service';
-import type { Vente, StatutVente } from '../utils/types/vente.types';
+import { getVentesService } from '../API/services/index.ts';
+import type { Vente, StatutVente } from '../utils/types/index.ts';
 
 interface UseVentesReturn {
   ventes: Vente[];

@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import type { StatutAppelParHeure } from '../../../utils/types/graphiques.types';
-import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/graphiques.types';
+import type { StatutAppelParHeure } from '../../../utils/types/index.ts';
+import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/index.ts';
 import './statutsParHeureChart.scss';
 
 interface StatutsParHeureChartProps {
@@ -12,6 +12,48 @@ interface StatutsParHeureTooltipProps {
   active?: boolean;
   payload?: readonly unknown[];
   label?: string | number;
+  data: StatutAppelParHeure[];
+  displayStatuts: string[];
+}
+
+function StatutsParHeureTooltip({ active, payload, label, data, displayStatuts }: StatutsParHeureTooltipProps): ReactElement | null {
+  if (!active || !payload?.length) return null;
+  const tooltipHour = typeof label === 'number' ? label : Number.parseInt(label ?? '', 10);
+  const hourData = data.find((entry) => entry.heure === tooltipHour);
+  if (!hourData) return null;
+  return (
+    <div className="statutsParHeureChart__tooltip">
+      <span className="statutsParHeureChart__tooltip-hour">Heure: {label}h</span>
+      <div className="statutsParHeureChart__tooltip-statuts">
+        {displayStatuts.map((statut) => {
+          const count = hourData.statuts?.[statut] ?? 0;
+          return count === 0 ? null : (
+            <div key={statut} className="statutsParHeureChart__tooltip-statut">
+              <span className="statutsParHeureChart__tooltip-dot" style={{ backgroundColor: STATUT_COLORS[statut] || '#95a5a6' }} />
+              <span className="statutsParHeureChart__tooltip-label">{STATUT_LABELS[statut] || statut}</span>
+              <span className="statutsParHeureChart__tooltip-value">{count.toLocaleString('fr-FR')}</span>
+            </div>
+          );
+        })}
+      </div>
+      <span className="statutsParHeureChart__tooltip-total">
+        Total: {Object.values(hourData.statuts || {}).reduce((sum, count) => sum + count, 0).toLocaleString('fr-FR')}
+      </span>
+    </div>
+  );
+}
+
+function StatutsParHeureLegend({ displayStatuts }: { displayStatuts: string[] }): ReactElement {
+  return (
+    <div className="statutsParHeureChart__legend">
+      {displayStatuts.map((statut) => (
+        <div key={statut} className="statutsParHeureChart__legend-item">
+          <span className="statutsParHeureChart__legend-dot" style={{ backgroundColor: STATUT_COLORS[statut] || '#95a5a6' }} />
+          <span>{STATUT_LABELS[statut] || statut}</span>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 /**
@@ -58,60 +100,6 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
     return hourObj;
   });
 
-  // Custom tooltip pour afficher les détails
-  const CustomTooltip = ({ active, payload, label }: StatutsParHeureTooltipProps): ReactElement | null => {
-    if (active && payload && payload.length) {
-      const tooltipHour = typeof label === 'number' ? label : Number.parseInt(label ?? '', 10);
-      const hourData = data.find(d => d.heure === tooltipHour);
-      if (!hourData) return null;
-
-      return (
-        <div className="statutsParHeureChart__tooltip">
-          <span className="statutsParHeureChart__tooltip-hour">Heure: {label}h</span>
-          <div className="statutsParHeureChart__tooltip-statuts">
-            {displayStatuts.map(statut => {
-              const count = hourData?.statuts?.[statut] ?? 0;
-              if (count === 0) return null;
-              return (
-                <div key={statut} className="statutsParHeureChart__tooltip-statut">
-                  <span
-                    className="statutsParHeureChart__tooltip-dot"
-                    style={{ backgroundColor: STATUT_COLORS[statut] || '#95a5a6' }}
-                  />
-                  <span className="statutsParHeureChart__tooltip-label">
-                    {STATUT_LABELS[statut] || statut}
-                  </span>
-                  <span className="statutsParHeureChart__tooltip-value">
-                    {count.toLocaleString('fr-FR')}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-          <span className="statutsParHeureChart__tooltip-total">
-            Total: {Object.values(hourData?.statuts || {}).reduce((a, b) => a + b, 0).toLocaleString('fr-FR')}
-          </span>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  // Custom legend
-  const CustomLegend = () => (
-    <div className="statutsParHeureChart__legend">
-      {displayStatuts.map(statut => (
-        <div key={statut} className="statutsParHeureChart__legend-item">
-          <span
-            className="statutsParHeureChart__legend-dot"
-            style={{ backgroundColor: STATUT_COLORS[statut] || '#95a5a6' }}
-          />
-          <span>{STATUT_LABELS[statut] || statut}</span>
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div id="statutsParHeureChart">
       <div className="statutsParHeureChart__container">
@@ -135,11 +123,11 @@ function StatutsParHeureChart({ data }: StatutsParHeureChartProps): ReactElement
                   stroke="#5a6c7d"
                   tickFormatter={(value) => value.toLocaleString('fr-FR')}
                 />
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<StatutsParHeureTooltip data={data} displayStatuts={displayStatuts} />} />
                 <Legend
                   verticalAlign="top"
                   height={40}
-                  content={<CustomLegend />}
+                  content={<StatutsParHeureLegend displayStatuts={displayStatuts} />}
                 />
                 {displayStatuts.map(statut => (
                   <Bar

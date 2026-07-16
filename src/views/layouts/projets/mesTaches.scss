@@ -95,6 +95,10 @@
   border-radius: 8px;
   overflow: hidden;
 }
+#mesTaches .mesTaches__column--a_faire { background: #e5e7eb; }
+#mesTaches .mesTaches__column--en_cours { background: #dbeafe; }
+#mesTaches .mesTaches__column--en_attente { background: #fef9c3; }
+#mesTaches .mesTaches__column--termine { background: #dcfce7; }
 
 #mesTaches .mesTaches__column-header {
   display: flex;

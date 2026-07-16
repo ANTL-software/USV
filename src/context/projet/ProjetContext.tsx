@@ -9,7 +9,7 @@ import type {
   ProjetDashboard,
   ProjetStats,
   StatutProjet,
-} from '../../utils/types/projet.types';
+} from '../../utils/types/index.ts';
 
 export interface ProjetContextType {
   // État

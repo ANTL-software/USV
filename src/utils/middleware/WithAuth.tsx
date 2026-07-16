@@ -1,7 +1,7 @@
 import { useEffect, ReactElement, ComponentType } from "react";
 import { useNavigate, NavigateFunction, useLocation } from "react-router-dom";
-import { useUserContext } from "../../hooks/useUserContext.ts";
-import { hasAccessToPath, getFirstAllowedPath, getAllowedSections } from "../scripts/permissions.ts";
+import { useUserContext } from '../../hooks/index.ts';
+import { getAllowedSections, getFirstAllowedPath, hasAccessToPath } from '../scripts/index.ts';
 
 export default function WithAuth<P extends object>(
   WrappedComponent: ComponentType<P>,

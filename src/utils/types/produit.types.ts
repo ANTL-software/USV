@@ -16,6 +16,17 @@ export interface TypeProduit {
   categorie?: Categorie;
 }
 
+export interface CategorieOption {
+  value: number;
+  label: string;
+}
+
+export interface TypeOption {
+  value: number;
+  label: string;
+  id_categorie: number;
+}
+
 export interface Panier {
   id_panier: number;
   label: string;

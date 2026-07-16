@@ -1,9 +1,33 @@
-import { ICourrierFormData } from "../types/courrier.types";
+import type { ICourrierFormData } from "../types/index.ts";
 
 export interface ValidationResult {
   isValid: boolean;
   errorMessage: string;
 }
+
+export const MAX_COURRIER_FILE_SIZE = 50 * 1024 * 1024;
+export const ALLOWED_COURRIER_FILE_EXTENSIONS = ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'] as const;
+
+export const validateCourrierFile = (file: File): ValidationResult => {
+  if (file.size > MAX_COURRIER_FILE_SIZE) {
+    return {
+      isValid: false,
+      errorMessage: 'Le fichier dépasse la taille maximale de 50 Mo',
+    };
+  }
+
+  const extension = file.name.includes('.') ? file.name.split('.').pop()?.toLowerCase() : undefined;
+  if (!extension || !ALLOWED_COURRIER_FILE_EXTENSIONS.includes(
+    extension as (typeof ALLOWED_COURRIER_FILE_EXTENSIONS)[number],
+  )) {
+    return {
+      isValid: false,
+      errorMessage: 'Format de fichier non autorisé. Utilisez PDF, DOC, DOCX, JPG ou PNG.',
+    };
+  }
+
+  return { isValid: true, errorMessage: '' };
+};
 
 // Fonction utilitaire pour nettoyer le nom de fichier
 export const sanitizeFileName = (fileName: string): string => {
@@ -38,6 +62,9 @@ export const validateCourrierForm = (formData: ICourrierFormData): ValidationRes
       errorMessage: "Veuillez sélectionner un fichier"
     };
   }
+
+  const fileValidation = validateCourrierFile(formData.fichierJoint);
+  if (!fileValidation.isValid) return fileValidation;
   
   if (!formData.customFileName.trim()) {
     return {

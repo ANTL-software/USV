@@ -454,11 +454,17 @@
     border-color 0.15s,
     background 0.15s;
   margin-bottom: 1.5rem;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-height: 180px;
   -webkit-user-select: none;
   user-select: none;
+  background: transparent;
+  color: vars.$fontColorPrimary;
+  font: inherit;
 }
 #agentDetails .agentDetails__dropzone:hover,
 #agentDetails .agentDetails__dropzone--active {
@@ -487,10 +493,8 @@
   font-style: italic;
   margin: 0;
 }
-#agentDetails .agentDetails__dropzone p {
-  margin: 0 0 0.5em;
-  color: vars.$fontColorPrimary;
-  font-size: 1rem;
+#agentDetails .agentDetails__hiddenInput {
+  display: none;
 }
 #agentDetails .agentDetails__upload-actions {
   display: flex;

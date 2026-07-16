@@ -339,6 +339,15 @@
   flex: 1;
 }
 
+.campagneForm__logo-info--full {
+  width: 100%;
+}
+
+.campagneForm__file-link {
+  margin-bottom: 1rem;
+  color: #64748b;
+}
+
 .campagneForm__logo-filename {
   font-size: 0.9rem;
   font-weight: 500;
@@ -423,6 +432,16 @@
 
 .campagneForm__modal-content {
   padding: 1.5em;
+}
+
+.campagneForm__hidden-input {
+  display: none;
+}
+
+.campagneForm__dropzone-hint {
+  margin-top: 0.5em;
+  color: #64748b;
+  font-size: 0.85rem;
 }
 
 .campagneForm__upload-success {
@@ -522,6 +541,16 @@
 .campagneForm__dropzone-change-hint {
   font-size: 0.85rem;
   color: vars.$fontColorSecondary;
+}
+
+.campagneForm__dropzone-formats {
+  margin-top: 0.5em;
+  color: #64748b;
+  font-size: 0.85rem;
+}
+
+.campagneForm__file-input {
+  display: none;
 }
 
 .campagneForm__upload-actions {

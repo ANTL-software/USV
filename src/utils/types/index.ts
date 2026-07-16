@@ -6,6 +6,7 @@ export type {
   Departement,
   RangCommercial,
   Employe,
+  EmployeFilter,
   LoginCredentials,
   LoginResponse,
   ApiResponse,
@@ -21,10 +22,17 @@ export type {
   AgentAffecte,
   AddAgentCampagneData,
   TransfertAgentData,
+  BonCommandeConfig,
+  BonCommandeInvoiceRecipient,
+  CampagneLogoDeleteResult,
+  CampagneLogoUploadResult,
 } from './campagne.types.ts';
 
 export type {
   Categorie,
+  CategorieOption,
+  TypeProduit,
+  TypeOption,
   Produit,
   CreateProduitData,
   UpdateProduitData,
@@ -33,12 +41,22 @@ export type {
   CampagneProduit,
   AddProduitCampagneData,
   UpdateProduitCampagneData,
+  ImportProduitRow,
+  ImportProduitResult,
 } from './produit.types.ts';
 
 export type {
   Panier,
+  PanierFormState,
+  PanierOrigin,
+  PanierOriginOption,
   CreatePanierData,
   UpdatePanierData,
+  ProduitInPanier,
+  PanierProduit,
+  AddProduitToPanierData,
+  PanierProduitAssociation,
+  UpdatePanierProduitData,
 } from './panier.types.ts';
 
 export type {
@@ -50,6 +68,7 @@ export type {
   IncidentSecteur,
   IncidentSource,
   IncidentImpact,
+  IncidentImpactUtilisateurs,
   IncidentCriticite,
   IncidentPriorite,
   IncidentUrgence,
@@ -60,12 +79,15 @@ export type {
   IncidentCommentaire,
   Incident,
   IncidentPagination,
+  ApiIncidentCommentaireResponse,
+  ApiIncidentResponse,
   IncidentListResult,
   IncidentFilters,
   CreateIncidentPayload,
   QualifierIncidentPayload,
   TraiterIncidentPayload,
   AddIncidentCommentairePayload,
+  CreateIncidentResult,
 } from './incident.types.ts';
 
 export {
@@ -80,6 +102,7 @@ export {
   INCIDENT_SECTEUR_OPTIONS,
   INCIDENT_SOURCE_OPTIONS,
   INCIDENT_IMPACT_OPTIONS,
+  INCIDENT_IMPACT_UTILISATEURS_OPTIONS,
   INCIDENT_CRITICITE_OPTIONS,
   INCIDENT_PRIORITE_OPTIONS,
   INCIDENT_URGENCE_OPTIONS,
@@ -87,6 +110,7 @@ export {
   INCIDENT_ENVIRONNEMENT_OPTIONS,
   INCIDENT_CLASSIFICATION_OPTIONS,
   formatIncidentEmploye,
+  formatIncidentUtilisateursImpactes,
 } from './incident.types.ts';
 
 export type {
@@ -110,7 +134,14 @@ export {
 
 export type {
   EmployeBasic,
+  EmployeOption,
   Booking,
+  BookingFormState,
+  BookingMoveFormState,
+  BookingPayloadResult,
+  BookingTimeOption,
+  BookingViewMode,
+  CalendarEvent,
   CreateBookingPayload,
   UpdateBookingPayload,
   BookingFilters,
@@ -121,6 +152,9 @@ export type {
 
 export type {
   ICourrier,
+  EmailComposerCopy,
+  EmailComposerForm,
+  EmailData,
   IUserBasic,
   ICourrierFormData,
   ICourrierUploadData,
@@ -132,6 +166,9 @@ export type {
   SortOrder,
   ICourrierListParams,
   IColumnFilters,
+  IConvertCropData,
+  ICourrierSelectSuggestion,
+  ICourrierAnalysisResult,
 } from './courrier.types.ts';
 
 export type {
@@ -157,6 +194,15 @@ export type {
   ImportError,
   ImportResult,
   ImportApiResponse,
+  Prospect,
+  ProspectsApiResponse,
+  ProspectFilters,
+  ProspectUpdateData,
+  SignalementType,
+  ProspectSignale,
+  EnrichissementStatut,
+  ProspectEnrichmentSnapshot,
+  ProspectEnrichmentPreview,
 } from './prospect.types.ts';
 
 export type {
@@ -170,7 +216,60 @@ export type {
   VenteDetail,
   VenteComplete,
   VenteListParams,
+  VenteStats,
 } from './vente.types.ts';
+
+export type {
+  BillingAmounts,
+  BillingField,
+  BillingPeriod,
+  BillingPreview,
+  BillingSummaryCard,
+  CampaignBillingSettings,
+  FacturationPeriodPreset,
+  InvoiceEmailOption,
+  InvoiceRecipient,
+  ResolvedBillingProfile,
+} from './facturation.types.ts';
+
+export type {
+  AddMembreData,
+  CreateDependanceData,
+  CreateCommentaireData,
+  CreateProjetData,
+  CreateTacheData,
+  CreateTagData,
+  CreateTempsData,
+  ListTachesFilters,
+  Priorite,
+  Projet,
+  ProjetDashboard,
+  ProjetStats,
+  ProjetMembre,
+  StatutProjet,
+  StatutTache,
+  Tache,
+  TacheCommentaire,
+  TacheDependance,
+  TacheTag,
+  TacheTemps,
+  TypeProjet,
+  UpdateProjetData,
+  UpdateTacheData,
+  ListProjetsFilters,
+  ListProjetsResponse,
+  ListTachesResponse,
+  EmployeMini,
+} from './projet.types.ts';
+
+export type {
+  ProgpaCommercialStats,
+  ProgpaDistributionItem,
+  ProgpaEvolutionDay,
+  ProgpaEvolutionMonth,
+  ProgpaSummary,
+  QualiteProgpaStatsResponse,
+} from './qualite.types.ts';
 
 export {
   STATUT_VENTE_LABELS,
@@ -190,6 +289,7 @@ export type {
   ProspectCampagneRow,
   CampaignAgentStats,
   GlobalStats,
+  SupervisionAgentOption,
 } from './queue.types.ts';
 
 export type {
@@ -198,15 +298,78 @@ export type {
   DureeMoyenneParJour,
   RaisonEchec,
   AllGraphiquesStats,
+  SupervisionExportData,
+  DateFilters,
+  AmdStats,
+  AppelsParOrigine,
+  StatutAppelCount,
+  StatutAppelParHeure,
 } from './graphiques.types.ts';
 
 export { STATUT_LABELS, STATUT_COLORS } from './graphiques.types.ts';
+
+export type {
+  AlerteType,
+  AlerteStatut,
+  AlerteDestinataire,
+  AlerteConfig,
+  CreateAlerteConfigPayload,
+  UpdateAlerteConfigPayload,
+  AlerteHistory,
+  AlerteHistoryFilters,
+  AlerteTypeMetadata,
+} from './alerte.types.ts';
+
+export type {
+  CreateVigieActionData,
+  CreateVigieManualPriorityData,
+  CreateVigiePriorityBatchData,
+  VigieAction,
+  VigieDateRange,
+  VigieHourlyPerformance,
+  VigieRecommendation,
+  VigieSegmentDimension,
+  VigieSnapshot,
+} from './vigie.types.ts';
+
+export {
+  ALERTE_TYPES,
+  ALERTE_TYPE_LABELS,
+  ALERTE_TYPE_COLORS,
+  ALERTE_STATUT_LABELS,
+  ALERTE_STATUT_COLORS,
+} from './alerte.types.ts';
 
 export type {
   StatutAppel,
   OrigineAppel,
   Appel,
 } from './appel.types.ts';
+
+export type {
+  Enregistrement,
+  EnregistrementFilters,
+  EnregistrementsApiResponse,
+  RecordingFilterOption,
+} from './enregistrement.types.ts';
+
+export type {
+  CalendarPlanningEvent,
+  Planning,
+  PlanningAssignation,
+  PlanningCalendarEvent,
+  PlanningCreneau,
+  PlanningDisplayEvent,
+  PlanningPayload,
+} from './planning.types.ts';
+
+export type {
+  AbsenceMotifOption,
+  AbsenceRequest,
+  AbsenceRequestStatus,
+  AbsenceRequestType,
+  CreateAbsenceRequestPayload,
+} from './absence.types.ts';
 
 export type {
   StatutRendezVous,
@@ -225,3 +388,33 @@ export {
   STATUT_RENDEZ_VOUS_COLORS,
   STATUT_RENDEZ_VOUS_OPTIONS,
 } from './rendezVous.types.ts';
+
+export type {
+  NotificationContextType,
+  NotificationItem,
+  NotificationType,
+} from './notification.types.ts';
+
+export type {
+  AntlConfiguration,
+  AntlConfigurationLogoDeleteResult,
+  AntlConfigurationLogoUploadResult,
+  AntlConfigurationRibDeleteResult,
+  AntlConfigurationRibUploadResult,
+  UpdateAntlConfigurationData,
+} from './antlConfiguration.types.ts';
+
+export type {
+  BillingRhythm,
+  BudgetBand,
+  Engagement,
+  PriceMode,
+  QuoteFormChangeHandler,
+  QuoteFormState,
+  QuoteLine,
+  QuoteTemplate,
+  TemplateAssumption,
+  TemplateFamily,
+  TemplateStatus,
+  Timeline,
+} from './devis.types.ts';

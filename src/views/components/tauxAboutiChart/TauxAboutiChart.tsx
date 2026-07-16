@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import type { TauxAbouti } from '../../../utils/types/graphiques.types';
+import type { TauxAbouti } from '../../../utils/types/index.ts';
 import './tauxAboutiChart.scss';
 
 interface TauxAboutiChartProps {

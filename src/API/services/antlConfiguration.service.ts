@@ -7,7 +7,7 @@ import type {
   AntlConfigurationLogoDeleteResult,
   AntlConfigurationRibUploadResult,
   AntlConfigurationRibDeleteResult,
-} from '../../utils/types/antlConfiguration.types.ts';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

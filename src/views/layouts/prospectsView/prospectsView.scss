@@ -165,10 +165,10 @@
 #prospectsView .prospectsView__table tbody tr:hover {
   background: #f8fafc;
 }
-#prospectsView .prospectsView__table tbody tr--alert {
+#prospectsView .prospectsView__row--alert {
   background: #fef3c7;
 }
-#prospectsView .prospectsView__table tbody tr--alert:hover {
+#prospectsView .prospectsView__row--alert:hover {
   background: #fde68a;
 }
 #prospectsView .prospectsView__table tbody tr {
@@ -181,6 +181,10 @@
   white-space: nowrap;
   text-align: center;
 }
+#prospectsView .prospectsView__center { text-align: center; }
+#prospectsView .prospectsView__purge,
+#prospectsView .prospectsView__purge span,
+#prospectsView .prospectsView__purge svg { color: #fff; }
 #prospectsView .prospectsView__id code {
   font-family: monospace;
   font-size: 0.88em;

@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { DureeMoyenneParJour } from '../../../utils/types/graphiques.types';
+import type { DureeMoyenneParJour } from '../../../utils/types/index.ts';
 import './dureeMoyenneChart.scss';
 
 interface DureeMoyenneChartProps {

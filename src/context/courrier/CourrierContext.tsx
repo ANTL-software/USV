@@ -1,4 +1,4 @@
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
+import type { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from '../../utils/types/index.ts';
 import { createContext, Context } from "react";
 
 interface ICourrierContext {

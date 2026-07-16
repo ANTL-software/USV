@@ -1,11 +1,9 @@
 import './queuePreview.scss';
 
-import { ReactElement, useState, useEffect, useCallback } from 'react';
+import type { ReactElement } from 'react';
 import { IoRefreshOutline, IoLayersOutline, IoEyeOutline } from 'react-icons/io5';
-import { getProspectsCampagneService } from '../../../API/services/queue.service';
-import type { Prospect } from '../../../utils/types/prospect.types';
-import type { ProspectCampagneRow } from '../../../utils/types/queue.types';
-import { getErrorMessage } from '../../../utils/scripts/utils';
+import { useQueuePreview } from '../../../hooks/index.ts';
+import type { Prospect } from '../../../utils/types/index.ts';
 
 interface QueuePreviewProps {
   idCampagne: number;
@@ -13,89 +11,8 @@ interface QueuePreviewProps {
   refreshKey?: number;
 }
 
-const mapRowToProspect = (row: ProspectCampagneRow): Prospect => ({
-  id_prospect: row.prospect.id_prospect,
-  type_prospect: row.prospect.type_prospect,
-  nom: row.prospect.nom,
-  prenom: row.prospect.prenom,
-  raison_sociale: row.prospect.raison_sociale,
-  email: row.prospect.email,
-  telephone: row.prospect.telephone,
-  type_telephone: row.prospect.type_telephone,
-  adresse: row.prospect.adresse,
-  code_postal: row.prospect.code_postal,
-  ville: row.prospect.ville,
-  pays: row.prospect.pays,
-  statut: (row.prospect.statut_global ?? row.prospect.statut) as Prospect['statut'],
-  statut_global: (row.prospect.statut_global ?? row.prospect.statut) as Prospect['statut'],
-  siret: row.prospect.siret,
-  code_naf: row.prospect.code_naf,
-  activite: row.prospect.activite,
-  secteur: row.prospect.secteur,
-  region: row.prospect.region,
-  civilite: row.prospect.civilite,
-  telephone_contact: row.prospect.telephone_contact,
-  est_doublon: row.prospect.est_doublon,
-  optout: row.prospect.optout,
-  doublon_date: null,
-  optout_date: null,
-  doublon_signale_par: null,
-  optout_signale_par: null,
-  maturite_commerciale: row.prospect.maturite_commerciale,
-  created_at: row.prospect.created_at,
-  updated_at: row.prospect.updated_at,
-  id_prospection: row.id_prospection,
-  statut_campagne: row.statut_file ?? row.statut,
-  statut_prospect_campagne: (row.statut_prospect_campagne ?? null) as Prospect['statut_prospect_campagne'],
-  statut_file: row.statut_file ?? row.statut,
-  nb_tentatives: row.nb_tentatives,
-  max_tentatives: row.max_tentatives,
-  derniere_tentative: row.derniere_tentative,
-  id_agent_assigne: row.id_agent_assigne,
-  agent_assigne: row.agentAssignee ? {
-    id_employe: row.agentAssignee.id_employe,
-    nom: row.agentAssignee.nom,
-    prenom: row.agentAssignee.prenom,
-  } : null,
-  date_injection: row.date_injection,
-  date_traitement: row.date_traitement,
-});
-
 export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: QueuePreviewProps): ReactElement {
-  const [prospects, setProspects] = useState<ProspectCampagneRow[]>([]);
-  const [total, setTotal] = useState(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [localRefresh, setLocalRefresh] = useState(0);
-
-  const fetchQueue = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      // On récupère les 6 premières fiches prioritaires de la file en attente
-      const res = await getProspectsCampagneService(idCampagne, {
-        page: 1,
-        limit: 6,
-        statut: 'en_attente',
-        sort: 'queue_priority',
-        order: 'ASC',
-      });
-      setProspects(res.data);
-      setTotal(res.pagination.total);
-    } catch (error: unknown) {
-      setError(getErrorMessage(error, 'Erreur de chargement de la file'));
-    } finally {
-      setIsLoading(false);
-    }
-  }, [idCampagne]);
-
-  useEffect(() => {
-    fetchQueue();
-  }, [fetchQueue, refreshKey, localRefresh]);
-
-  const handleRefresh = () => {
-    setLocalRefresh(prev => prev + 1);
-  };
+  const { items, total, isLoading, error, refresh } = useQueuePreview(idCampagne, refreshKey);
 
   const formatObfuscatedPhone = (phone: string) => {
     if (!phone) return '—';
@@ -124,7 +41,7 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
         </div>
         <button
           className={`queue-preview__refresh-btn ${isLoading ? 'queue-preview__refresh-btn--loading' : ''}`}
-          onClick={handleRefresh}
+          onClick={refresh}
           disabled={isLoading}
           title="Rafraîchir la file"
         >
@@ -144,7 +61,7 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
             </div>
           ))}
         </div>
-      ) : prospects.length === 0 ? (
+      ) : items.length === 0 ? (
         <div className="queue-preview__empty">
           <p>Aucune fiche prête à être appelée dans la file d'attente pour cette campagne.</p>
           <span className="queue-preview__empty-hint">
@@ -153,13 +70,13 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
         </div>
       ) : (
         <div className="queue-preview__grid">
-          {prospects.map((row, index) => {
+          {items.map(({ row, prospect }, index) => {
             const isPrioritaire = row.nb_tentatives === 0;
             return (
               <div
                 key={row.id_prospection}
                 className="queue-preview-card"
-                onClick={() => onOpenProspect(mapRowToProspect(row))}
+                onClick={() => onOpenProspect(prospect)}
               >
                 <div className="queue-preview-card__index">#{index + 1}</div>
                 <div className="queue-preview-card__body">

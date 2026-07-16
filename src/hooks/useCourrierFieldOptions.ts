@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCourrierFieldOptionsService } from '../API/services/courrier.service';
+import { getCourrierFieldOptionsService } from '../API/services/index.ts';
 
 type FieldType = 'kind' | 'department' | 'emitter' | 'recipient';
 

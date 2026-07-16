@@ -3,10 +3,10 @@ import {
   deleteRequest,
 } from "../APICalls.ts";
 import type { AxiosResponse } from "axios";
-import {
+import type {
   CampagneLogoUploadResult,
   CampagneLogoDeleteResult,
-} from "../../utils/types/campagne.types";
+} from "../../utils/types/index.ts";
 
 /**
  * Upload le logo d'une campagne

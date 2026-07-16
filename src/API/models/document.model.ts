@@ -1,4 +1,4 @@
-import { EmployeeDocument } from '../../utils/types/document.types';
+import type { EmployeeDocument } from '../../utils/types/index.ts';
 
 /**
  * Modèle pour les documents employés

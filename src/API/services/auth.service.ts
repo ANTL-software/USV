@@ -1,9 +1,9 @@
 // Adapté depuis script/src/API/services/User.service.ts
 // Différence : pas de localStorage — tokens gérés via cookies httpOnly par Olympe
 import { postRequest, getRequest } from '../APICalls.ts';
-import { UserModel } from '../models/user.model.ts';
-import { csrfService } from '../../utils/services/csrfService.ts';
-import type { LoginCredentials, ApiResponse, Employe } from '../../utils/types/user.types.ts';
+import { UserModel } from '../models/index.ts';
+import { csrfService } from '../../utils/services/index.ts';
+import type { LoginCredentials, ApiResponse, Employe } from '../../utils/types/index.ts';
 
 interface LoginResponseData {
   token: string;

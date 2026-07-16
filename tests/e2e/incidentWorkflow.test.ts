@@ -1,3 +1,5 @@
+import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 import { mock } from 'node:test';
 
 interface ApiResponse<T> {
@@ -73,12 +75,17 @@ const state: {
   commentaires: []
 };
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APICalls.ts', {
+const listFilters: unknown[] = [];
+
+const apiModuleUrl = pathToFileURL(path.resolve('src/API/APICalls.ts')).href;
+mock.module(apiModuleUrl, {
   namedExports: {
     getRequest: async (
-      url: string
+      url: string,
+      config?: unknown,
     ): Promise<ApiResponse<IncidentResponse>> => {
       if (url === '/incidents') {
+        listFilters.push(config);
         return {
           data: {
             success: true,
@@ -159,7 +166,10 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
       }
 
       return { data: { success: true, data: state.incident } };
-    }
+    },
+    putRequest: async (): Promise<ApiResponse<{ success: boolean }>> => ({ data: { success: true } }),
+    deleteRequest: async (): Promise<ApiResponse<{ success: boolean }>> => ({ data: { success: true } }),
+    postFormDataRequest: async (): Promise<ApiResponse<{ success: boolean }>> => ({ data: { success: true } }),
   }
 });
 
@@ -174,31 +184,50 @@ test('flux e2e USV déclaration qualification traitement consultation', async ()
     getIncidentsService,
     qualifierIncidentService,
     traiterIncidentService
-  } = await import('../../src/API/services/incident.service.ts');
+  } = await import('../../src/API/services/index.ts');
+  const {
+    buildIncidentDeclarationPayload,
+    buildIncidentQualificationPayload,
+    buildIncidentTreatmentPayload,
+    createIncidentDeclarationInitialForm,
+    createIncidentQualificationInitialForm,
+    createIncidentTreatmentInitialForm,
+  } = await import('../../src/utils/scripts/index.ts');
 
-  const declared = await createIncidentService({
+  const declaration = buildIncidentDeclarationPayload({
+    ...createIncidentDeclarationInitialForm(),
     titre: 'Twilio ne compose plus',
     description: 'Les appels sortants restent bloqués',
     secteur: 'dialer',
-    source: 'script'
+    source: 'script',
   });
+  assert.ok(declaration.payload);
+
+  const declared = await createIncidentService(declaration.payload);
 
   assert.equal(declared.incident.statut, 'declare');
 
-  const qualified = await qualifierIncidentService(declared.incident.id_incident, {
+  const qualification = buildIncidentQualificationPayload({
+    ...createIncidentQualificationInitialForm(),
     secteur: 'dialer',
     priorite: 'haute',
     criticite: 'bloquante',
-    id_intervenant: 4
+    id_intervenant: '4',
   });
+  assert.ok(qualification.payload);
+
+  const qualified = await qualifierIncidentService(declared.incident.id_incident, qualification.payload);
 
   assert.equal(qualified.statut, 'qualifie');
   assert.equal(qualified.id_intervenant, 4);
 
-  const resolved = await traiterIncidentService(declared.incident.id_incident, {
+  const treatment = buildIncidentTreatmentPayload({
+    ...createIncidentTreatmentInitialForm(),
     statut: 'resolu',
-    solution: 'Nouveau token Twilio appliqué'
+    solution: 'Nouveau token Twilio appliqué',
+    temps_passe_minutes: '25',
   });
+  const resolved = await traiterIncidentService(declared.incident.id_incident, treatment);
 
   assert.equal(resolved.statut, 'resolu');
   assert.equal(resolved.solution, 'Nouveau token Twilio appliqué');
@@ -216,4 +245,5 @@ test('flux e2e USV déclaration qualification traitement consultation', async ()
   assert.equal(detail.reference, 'INC-20260625-00001');
   assert.equal(list.incidents.length, 1);
   assert.equal(list.incidents[0].statut, 'resolu');
+  assert.deepEqual(listFilters.at(-1), { statut: 'resolu', search: 'Twilio' });
 });

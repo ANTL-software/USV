@@ -1,117 +1,37 @@
 import './prospectDetailModal.scss';
 
-import { ReactElement, useState, useEffect } from 'react';
+import type { ReactElement } from 'react';
 import { IoCallOutline, IoMailOutline, IoBusiness, IoPersonOutline, IoCalendarOutline } from 'react-icons/io5';
-import type { Prospect, ProspectUpdateData, TypeProspect, StatutProspect } from '../../../utils/types/prospect.types';
-import { updateProspectService } from '../../../API/services/prospect.service';
-import { useAlert } from '../../../context/alert/AlertContext';
-import {
-  getLegacyOptoutLabel,
-  getProspectCampaignStatusHeading,
-  getProspectStatusHeading,
-  isProspectGloballyFlagged,
-} from '../../../utils/scripts/prospectStatus';
+import type { ProspectDetailViewModel } from '../../../hooks/index.ts';
+import type { ProspectUpdateData } from '../../../utils/types/index.ts';
+import { formatProspectStatusText } from '../../../utils/scripts/index.ts';
 
 interface ProspectDetailModalProps {
-  prospect: Prospect;
-  onClose: () => void;
-  onProspectUpdated?: (updatedProspect: Prospect) => void;
+  viewModel: ProspectDetailViewModel;
 }
 
-export default function ProspectDetailModal({ prospect, onClose, onProspectUpdated }: Readonly<ProspectDetailModalProps>): ReactElement {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [editedProspect, setEditedProspect] = useState<ProspectUpdateData>({});
-  const { showSuccess, showError } = useAlert();
-
-  const formattedDate = new Date(prospect.created_at).toLocaleDateString('fr-FR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-  });
-
-  useEffect(() => {
-    if (isEditing) {
-      setEditedProspect({
-        type_prospect: prospect.type_prospect,
-        nom: prospect.nom,
-        prenom: prospect.prenom,
-        raison_sociale: prospect.raison_sociale,
-        email: prospect.email,
-        telephone: prospect.telephone,
-        adresse: prospect.adresse,
-        code_postal: prospect.code_postal,
-        ville: prospect.ville,
-        pays: prospect.pays,
-        statut: prospect.statut,
-        notes: undefined,
-        siret: prospect.siret,
-        code_naf: prospect.code_naf,
-        activite: prospect.activite,
-        secteur: prospect.secteur,
-        region: prospect.region,
-        civilite: prospect.civilite,
-        telephone_contact: prospect.telephone_contact,
-      });
-    }
-  }, [isEditing, prospect]);
-
-  const handleEdit = (): void => {
-    setIsEditing(true);
-  };
-
-  const handleCancel = (): void => {
-    setIsEditing(false);
-    setEditedProspect({});
-  };
-
-  const handleSave = async (): Promise<void> => {
-    setIsSubmitting(true);
-    try {
-      // Validation des champs obligatoires
-      const nomValue = editedProspect.nom ?? prospect.nom;
-      if (!nomValue || nomValue.trim().length < 2) {
-        await showError('Le nom est obligatoire (2-100 caractères)', 'Erreur de validation');
-        return;
-      }
-
-      const telephoneValue = editedProspect.telephone ?? prospect.telephone;
-      if (!telephoneValue || telephoneValue.trim().length < 6) {
-        await showError('Le téléphone est obligatoire', 'Erreur de validation');
-        return;
-      }
-
-      // Convertir les chaînes vides en null pour le backend
-      const dataToSend = Object.fromEntries(
-        Object.entries(editedProspect).map(([key, value]) => [
-          key,
-          value === '' ? null : value
-        ])
-      ) as ProspectUpdateData;
-
-      console.log('[ProspectDetailModal] Envoi des données:', JSON.stringify(dataToSend, null, 2));
-
-      const updatedProspect = await updateProspectService(prospect.id_prospect, dataToSend);
-      await showSuccess('Prospect mis à jour avec succès', 'Succès');
-      onProspectUpdated?.(updatedProspect);
-      setIsEditing(false);
-    } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : 'Erreur lors de la mise à jour du prospect';
-      await showError(message, 'Erreur');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleChange = (field: keyof ProspectUpdateData, value: string): void => {
-    setEditedProspect(prev => ({ ...prev, [field]: value }));
-  };
+export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDetailModalProps>): ReactElement | null {
+  const {
+    isEditing,
+    isSubmitting,
+    editedProspect,
+    startEditing,
+    cancelEditing,
+    changeField,
+    save,
+    close,
+    presentation,
+    prospect,
+    statusOptions,
+    typeOptions,
+  } = viewModel;
+  if (!prospect || !presentation) return null;
 
   const renderInput = (field: keyof ProspectUpdateData, value: string | null, type: 'text' | 'email' | 'tel' = 'text'): ReactElement => (
     <input
       type={type}
       value={editedProspect[field] ?? value ?? ''}
-      onChange={e => handleChange(field, e.target.value)}
+      onChange={e => changeField(field, e.target.value)}
       className="detailInput"
       disabled={!isEditing}
     />
@@ -124,7 +44,7 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
   ): ReactElement => (
     <select
       value={editedProspect[field] ?? value}
-      onChange={e => handleChange(field, e.target.value)}
+      onChange={e => changeField(field, e.target.value)}
       className="detailSelect"
       disabled={!isEditing}
     >
@@ -134,26 +54,12 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
     </select>
   );
 
-  const typeOptions: readonly { value: TypeProspect; label: string }[] = [
-    { value: 'Particulier', label: 'Particulier' },
-    { value: 'Entreprise', label: 'Entreprise' },
-  ] as const;
-
-  const statutOptions: readonly { value: StatutProspect; label: string }[] = [
-    { value: 'nouveau', label: 'Nouveau' },
-    { value: 'contacte', label: 'Contacté' },
-    { value: 'interesse', label: 'Intéressé' },
-    { value: 'rappel', label: 'Rappel' },
-    { value: 'non_interesse', label: 'Non intéressé' },
-    { value: 'vente_conclue', label: 'Vente conclue' },
-  ] as const;
-
   return (
-    <div id="prospectDetailOverlay" onClick={isEditing ? undefined : onClose}>
+    <div id="prospectDetailOverlay" onClick={isEditing ? undefined : close}>
       <div id="prospectDetailModal" onClick={e => e.stopPropagation()}>
         <div className="modalHeader">
           <h2>Détail du prospect</h2>
-          <button className="closeBtn" onClick={isEditing ? handleCancel : onClose} aria-label={isEditing ? 'Annuler' : 'Fermer'}>
+          <button className="closeBtn" onClick={close} aria-label={isEditing ? 'Annuler' : 'Fermer'}>
             {isEditing ? '✕' : '✕'}
           </button>
         </div>
@@ -313,13 +219,13 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
           <div className="prospectDetail__section">
             <h3>Statut</h3>
             <div className="detailRow">
-              <span className="detailLabel">{getProspectStatusHeading(prospect.id_prospection !== undefined)}</span>
+              <span className="detailLabel">{presentation.statusHeading}</span>
               <span className="detailValue">
                 {isEditing ? (
-                  renderSelect('statut', prospect.statut, statutOptions)
+                  renderSelect('statut', prospect.statut, statusOptions)
                 ) : (
                   <span className={`badge badge--statut badge--${prospect.statut}`}>
-                    {prospect.statut.replace(/_/g, ' ')}
+                    {formatProspectStatusText(prospect.statut)}
                   </span>
                 )}
               </span>
@@ -328,7 +234,7 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
               <span className="detailLabel">Date de création</span>
               <span className="detailValue">
                 <IoCalendarOutline />
-                {formattedDate}
+                {presentation.createdAt}
               </span>
             </div>
           </div>
@@ -337,10 +243,10 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
             <div className="prospectDetail__section">
               <h3>Détails d'appel (Campagne)</h3>
               <div className="detailRow">
-                <span className="detailLabel">{getProspectCampaignStatusHeading(prospect.id_prospection !== undefined)}</span>
+                <span className="detailLabel">{presentation.campaignStatusHeading}</span>
                 <span className="detailValue">
                   <span className={`badge badge--statut badge--${prospect.statut_prospect_campagne || 'nouveau'}`}>
-                    {(prospect.statut_prospect_campagne || 'nouveau').replace(/_/g, ' ')}
+                    {formatProspectStatusText(prospect.statut_prospect_campagne || 'nouveau')}
                   </span>
                 </span>
               </div>
@@ -348,7 +254,7 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
                 <span className="detailLabel">État file</span>
                 <span className="detailValue">
                   <span className={`badge badge--${prospect.statut_file || prospect.statut_campagne || 'en_attente'}`}>
-                    {(prospect.statut_file || prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}
+                    {formatProspectStatusText(prospect.statut_file || prospect.statut_campagne || 'en_attente')}
                   </span>
                 </span>
               </div>
@@ -358,37 +264,34 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
                   <code>{prospect.nb_tentatives ?? 0}</code> / <code>{prospect.max_tentatives ?? 5}</code>
                 </span>
               </div>
-              {prospect.derniere_tentative && (
+              {presentation.lastAttemptAt && (
                 <div className="detailRow">
                   <span className="detailLabel">Dernier appel</span>
                   <span className="detailValue">
                     <IoCalendarOutline />
-                    {new Date(prospect.derniere_tentative).toLocaleString('fr-FR')}
+                    {presentation.lastAttemptAt}
                   </span>
                 </div>
               )}
               <div className="detailRow">
                 <span className="detailLabel">Agent assigné</span>
                 <span className="detailValue">
-                  {prospect.agent_assigne
-                    ? `${prospect.agent_assigne.nom.toUpperCase()} ${prospect.agent_assigne.prenom || ''}`
-                    : 'Aucun'
-                  }
+                  {presentation.agentLabel}
                 </span>
               </div>
-              {prospect.date_injection && (
+              {presentation.injectedAt && (
                 <div className="detailRow">
                   <span className="detailLabel">Date d'injection</span>
                   <span className="detailValue">
                     <IoCalendarOutline />
-                    {new Date(prospect.date_injection).toLocaleDateString('fr-FR')}
+                    {presentation.injectedAt}
                   </span>
                 </div>
               )}
             </div>
           )}
 
-          {(isProspectGloballyFlagged(prospect) || prospect.optout) && (
+          {presentation.showGlobalAlerts && (
             <div className="prospectDetail__section prospectDetail__section--alert">
               <h3>Alertes globales</h3>
               {prospect.est_doublon && (
@@ -396,19 +299,19 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
                   <span className="detailLabel">Doublon</span>
                   <span className="detailValue">
                     <span className="badge badge--warning">Oui</span>
-                    {prospect.doublon_date && (
-                      <span className="alertDate">Depuis le {new Date(prospect.doublon_date).toLocaleDateString('fr-FR')}</span>
+                    {presentation.duplicateSince && (
+                      <span className="alertDate">Depuis le {presentation.duplicateSince}</span>
                     )}
                   </span>
                 </div>
               )}
               {prospect.optout && (
                 <div className="detailRow">
-                  <span className="detailLabel">{getLegacyOptoutLabel()}</span>
+                  <span className="detailLabel">{presentation.optoutLabel}</span>
                   <span className="detailValue">
                     <span className="badge badge--danger">Oui</span>
-                    {prospect.optout_date && (
-                      <span className="alertDate">Depuis le {new Date(prospect.optout_date).toLocaleDateString('fr-FR')}</span>
+                    {presentation.optoutSince && (
+                      <span className="alertDate">Depuis le {presentation.optoutSince}</span>
                     )}
                   </span>
                 </div>
@@ -420,13 +323,13 @@ export default function ProspectDetailModal({ prospect, onClose, onProspectUpdat
         <div className="modalFooter">
           {isEditing ? (
             <>
-              <button className="btnSecondary" onClick={handleCancel} disabled={isSubmitting}>Annuler</button>
-              <button className="btnPrimary" onClick={handleSave} disabled={isSubmitting}>Enregistrer</button>
+              <button className="btnSecondary" onClick={cancelEditing} disabled={isSubmitting}>Annuler</button>
+              <button className="btnPrimary" onClick={() => void save()} disabled={isSubmitting}>Enregistrer</button>
             </>
           ) : (
             <>
-              <button className="btnSecondary" onClick={handleEdit}>Modifier</button>
-              <button className="btnSecondary" onClick={onClose}>Fermer</button>
+              <button className="btnSecondary" onClick={startEditing}>Modifier</button>
+              <button className="btnSecondary" onClick={close}>Fermer</button>
             </>
           )}
         </div>

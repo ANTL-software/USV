@@ -144,6 +144,18 @@
   gap: 1rem;
   margin-bottom: 2rem;
 }
+#prospectImport .prospectImport__secondary-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: none;
+  cursor: pointer;
+}
+#prospectImport .prospectImport__result-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
 #prospectImport .prospectImport__import-error {
   background: #fee;
   border: 1px solid #fcc;

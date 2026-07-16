@@ -1,6 +1,6 @@
 import { MdDownload } from 'react-icons/md';
-import { csvService } from '../../../utils/services/csvService';
-import type { SupervisionExportData } from '../../../utils/services/csvService';
+import { useSupervisionExport } from '../../../hooks/index.ts';
+import type { SupervisionExportData } from '../../../utils/types/index.ts';
 import './exportButton.scss';
 
 interface ExportButtonProps {
@@ -9,13 +9,7 @@ interface ExportButtonProps {
 }
 
 const ExportButton = ({ data, disabled = false }: ExportButtonProps) => {
-  const handleExport = (): void => {
-    try {
-      csvService.exportSupervisionData(data);
-    } catch (error) {
-      console.error('[ExportButton] Erreur lors de l\'export:', error);
-    }
-  };
+  const handleExport = useSupervisionExport(data);
 
   return (
     <button

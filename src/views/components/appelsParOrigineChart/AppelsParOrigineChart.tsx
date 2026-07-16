@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import type { AppelsParOrigine } from '../../../utils/types/graphiques.types';
+import type { AppelsParOrigine } from '../../../utils/types/index.ts';
 import './appelsParOrigineChart.scss';
 
 // Constantes locales pour les origines d'appels
@@ -33,6 +33,18 @@ interface OrigineTooltipProps {
   payload?: Array<{ payload: OrigineChartEntry }>;
 }
 
+function OrigineTooltip({ active, payload }: OrigineTooltipProps): ReactElement | null {
+  if (!active || !payload?.length) return null;
+  const entry = payload[0].payload;
+  return (
+    <div className="appelsParOrigineChart__tooltip">
+      <span className="appelsParOrigineChart__tooltip-label">{entry.name}</span>
+      <span className="appelsParOrigineChart__tooltip-value">{entry.value.toLocaleString('fr-FR')} appels</span>
+      <span className="appelsParOrigineChart__tooltip-percentage">({entry.percentage.toFixed(1)}%)</span>
+    </div>
+  );
+}
+
 /**
  * Composant graphique Appels par origine (Pie Chart)
  * Affiche la répartition des appels par origine: auto, manuel, rappel
@@ -49,25 +61,6 @@ function AppelsParOrigineChart({ data }: AppelsParOrigineChartProps): ReactEleme
     origine: item.origine,
     percentage: total > 0 ? ((item.nombre ?? 0) / total) * 100 : 0
   }));
-
-  // Custom tooltip pour afficher le nombre et le pourcentage
-  const CustomTooltip = ({ active, payload }: OrigineTooltipProps): ReactElement | null => {
-    if (active && payload && payload.length) {
-      const entry = payload[0].payload;
-      return (
-        <div className="appelsParOrigineChart__tooltip">
-          <span className="appelsParOrigineChart__tooltip-label">{entry.name}</span>
-          <span className="appelsParOrigineChart__tooltip-value">
-            {entry.value != null ? entry.value.toLocaleString('fr-FR') : '0'} appels
-          </span>
-          <span className="appelsParOrigineChart__tooltip-percentage">
-            ({entry.percentage.toFixed(1)}%)
-          </span>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div id="appelsParOrigineChart">
@@ -101,7 +94,7 @@ function AppelsParOrigineChart({ data }: AppelsParOrigineChartProps): ReactEleme
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<OrigineTooltip />} />
                 <Legend
                   verticalAlign="bottom"
                   height={36}

@@ -1,5 +1,5 @@
-import { getRequest } from '../APICalls';
-import type { QualiteProgpaStatsResponse } from '../../utils/types/qualite.types';
+import { getRequest } from '../APICalls.ts';
+import type { QualiteProgpaStatsResponse } from '../../utils/types/index.ts';
 
 class QualiteService {
   private static instance: QualiteService;

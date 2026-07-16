@@ -3,7 +3,7 @@ import { ReactElement, useState, useEffect } from "react";
 import { MdDownload, MdPhoneIphone } from "react-icons/md";
 
 // hooks
-import { usePWAInstall } from "../../../hooks/usePWA";
+import { usePWAInstall } from "../../../hooks/index.ts";
 
 interface PWAInstallButtonProps {
   className?: string;

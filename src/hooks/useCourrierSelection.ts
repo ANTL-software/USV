@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { ICourrier } from '../utils/types/courrier.types';
+import type { ICourrier } from '../utils/types/index.ts';
 
 export function useCourrierSelection(courriers: ICourrier[]) {
   const [selected, setSelected] = useState<Set<number>>(new Set());

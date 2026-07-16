@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
-import type { StatutAppelCount } from '../../../utils/types/graphiques.types';
-import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/graphiques.types';
+import type { StatutAppelCount } from '../../../utils/types/index.ts';
+import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/index.ts';
 import './statutsAppelsChart.scss';
 
 interface StatutsAppelsChartProps {
@@ -21,6 +21,18 @@ interface StatutTooltipProps {
   payload?: Array<{ payload: StatutChartEntry }>;
 }
 
+function StatutTooltip({ active, payload }: StatutTooltipProps): ReactElement | null {
+  if (!active || !payload?.length) return null;
+  const entry = payload[0].payload;
+  return (
+    <div className="statutsAppelsChart__tooltip">
+      <span className="statutsAppelsChart__tooltip-label">{entry.name}</span>
+      <span className="statutsAppelsChart__tooltip-value">{entry.value.toLocaleString('fr-FR')} appels</span>
+      <span className="statutsAppelsChart__tooltip-percentage">({entry.percentage.toFixed(1)}%)</span>
+    </div>
+  );
+}
+
 /**
  * Composant graphique Répartition des appels par statut (Pie Chart)
  * Affiche la répartition de tous les statuts d'appels
@@ -37,25 +49,6 @@ function StatutsAppelsChart({ data }: StatutsAppelsChartProps): ReactElement {
     statut: item.statut,
     percentage: total > 0 ? (item.nombre / total) * 100 : 0
   }));
-
-  // Custom tooltip pour afficher le nombre et le pourcentage
-  const CustomTooltip = ({ active, payload }: StatutTooltipProps): ReactElement | null => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <div className="statutsAppelsChart__tooltip">
-          <span className="statutsAppelsChart__tooltip-label">{data.name}</span>
-          <span className="statutsAppelsChart__tooltip-value">
-            {data.value.toLocaleString('fr-FR')} appels
-          </span>
-          <span className="statutsAppelsChart__tooltip-percentage">
-            ({data.percentage.toFixed(1)}%)
-          </span>
-        </div>
-      );
-    }
-    return null;
-  };
 
   return (
     <div id="statutsAppelsChart">
@@ -89,7 +82,7 @@ function StatutsAppelsChart({ data }: StatutsAppelsChartProps): ReactElement {
                     <Cell key={`cell-${index}`} fill={entry.color} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                <Tooltip content={<StatutTooltip />} />
                 <Legend
                   verticalAlign="bottom"
                   height={40}

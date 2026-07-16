@@ -1,6 +1,6 @@
 import { useContext } from 'react';
-import { BookingContext } from '../context/booking/BookingContext.tsx';
-import type { BookingContextType } from '../context/booking/BookingContext.tsx';
+import { BookingContext } from '../context/booking/index.ts';
+import type { BookingContextType } from '../context/booking/index.ts';
 
 export const useBookingContext = (): BookingContextType => {
   const context = useContext(BookingContext);

@@ -1,9 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getAllEmployesService, deactivateEmployeService } from '../API/services/user.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { Employe } from '../utils/types/user.types';
-
-export type EmployeFilter = 'actifs' | 'inactifs' | 'tous';
+import { getAllEmployesService, deactivateEmployeService } from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { Employe, EmployeFilter } from '../utils/types/index.ts';
 
 export function useEmployes() {
   const [employes, setEmployes] = useState<Employe[]>([]);

@@ -1,6 +1,6 @@
 // Aligné avec script/src/context/userContext/UserContext.tsx
 import { createContext } from 'react';
-import type { Employe, LoginCredentials } from '../../utils/types/user.types.ts';
+import type { Employe, LoginCredentials } from '../../utils/types/index.ts';
 
 export interface UserContextType {
   user: Employe | null;

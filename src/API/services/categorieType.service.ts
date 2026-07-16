@@ -1,30 +1,5 @@
 import axios from 'axios';
-
-export interface Categorie {
-  id_categorie: number;
-  nom_categorie: string;
-  description: string | null;
-  id_parent: number | null;
-  niveau: number;
-}
-
-export interface TypeProduit {
-  id_type_produit: number;
-  id_categorie: number;
-  libelle_type: string;
-  actif: boolean;
-}
-
-export interface CategorieOption {
-  value: number;
-  label: string;
-}
-
-export interface TypeOption {
-  value: number;
-  label: string;
-  id_categorie: number;
-}
+import type { Categorie, CategorieOption, TypeOption, TypeProduit } from '../../utils/types/index.ts';
 
 /**
  * Récupérer toutes les catégories de produits

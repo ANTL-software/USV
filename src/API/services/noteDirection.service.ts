@@ -3,10 +3,10 @@ import {
   postFormDataRequest,
   deleteRequest,
 } from "../APICalls.ts";
-import { AxiosResponse } from "axios";
-import { NoteDirectionModel } from "../models/noteDirection.model";
-import type { NoteDirectionData } from "../models/noteDirection.model";
-import { IViewUrlResponse } from "./viewUrl.service";
+import type { AxiosResponse } from "axios";
+import { NoteDirectionModel } from '../models/index.ts';
+import type { NoteDirectionData } from '../models/index.ts';
+import type { IViewUrlResponse } from './viewUrl.service.ts';
 
 export interface NoteDirectionUploadResult {
   success: boolean;

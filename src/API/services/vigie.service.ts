@@ -1,35 +1,18 @@
 import type { AxiosResponse } from 'axios';
-import { getRequest, patchRequest, postRequest } from '../APICalls';
+import { getRequest, patchRequest, postRequest } from '../APICalls.ts';
 import type {
   VigieAction,
-  VigieActionType,
+  CreateVigieActionData,
+  CreateVigieManualPriorityData,
+  CreateVigiePriorityBatchData,
   VigieDateRange,
   VigieSnapshot
-} from '../../utils/types/vigie.types';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
   message?: string;
-}
-
-export interface CreateVigieActionData {
-  type_action: VigieActionType;
-  recommendation_key?: string;
-  payload?: Record<string, unknown>;
-  telephone_prospect?: string;
-  id_agent_cible?: number;
-}
-
-export interface CreateVigiePriorityBatchData {
-  id_agent_cible: number;
-  id_prospects: number[];
-}
-
-export interface CreateVigieManualPriorityData {
-  id_agent_cible: number;
-  telephone_prospect: string;
-  libelle_prospect?: string;
 }
 
 export const getVigieSnapshotService = async (

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
-import { createMyAbsenceRequestService, getMyAbsenceRequestsService } from '../API/services/absence.service';
-import { ABSENCE_MOTIFS } from '../utils/constants/absence.constants';
-import type { AbsenceRequest, AbsenceRequestType, CreateAbsenceRequestPayload } from '../utils/types/absence.types';
+import { createMyAbsenceRequestService, getMyAbsenceRequestsService } from '../API/services/index.ts';
+import { ABSENCE_MOTIFS } from '../utils/constants/index.ts';
+import type { AbsenceRequest, AbsenceRequestType, CreateAbsenceRequestPayload } from '../utils/types/index.ts';
 
 interface AbsenceFormState {
   motif_code: string;

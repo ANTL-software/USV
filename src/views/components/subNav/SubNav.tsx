@@ -1,122 +1,26 @@
-// styles
-import "./subNav.scss";
+import './subNav.scss';
+import type { ReactElement } from 'react';
+import { IoAlertCircleOutline, IoCalendar, IoCallOutline, IoFolder, IoHome, IoMail, IoPeopleCircle, IoReceiptOutline } from 'react-icons/io5';
+import { useSubNavView } from '../../../hooks/index.ts';
+import type { SubNavViewModel } from '../../../hooks/index.ts';
+import type { NavigationIconKey } from '../../../utils/scripts/index.ts';
 
-// hooks | libraries
-import { ReactElement } from "react";
-import { useNavigate } from "react-router-dom";
-import { IoHome, IoMail, IoCalendar, IoCallOutline, IoFolder, IoPeopleCircle, IoAlertCircleOutline, IoReceiptOutline } from "react-icons/io5";
-import { useUserContext } from "../../../hooks/useUserContext.ts";
-import { hasAccessToSection, getAllowedSections } from "../../../utils/scripts/permissions.ts";
+function NavigationIcon({ icon }: { icon: NavigationIconKey }): ReactElement {
+  if (icon === 'booking') return <IoCalendar />;
+  if (icon === 'commercial') return <IoReceiptOutline />;
+  if (icon === 'commerciaux') return <IoPeopleCircle />;
+  if (icon === 'incidents') return <IoAlertCircleOutline />;
+  if (icon === 'mail') return <IoMail />;
+  if (icon === 'operations') return <IoCallOutline />;
+  if (icon === 'projects') return <IoFolder />;
+  return <IoHome />;
+}
 
-interface ISection {
-  id: string;
-  name: string;
-  path: string;
-  aliases?: string[];
-  icon: ReactElement;
+export function SubNavContent({ viewModel }: { viewModel: SubNavViewModel }): ReactElement | null {
+  if (!viewModel.visible) return null;
+  return <div id="subNav" className="subNav"><div className="subNavContainer">{viewModel.items.map((item) => <button type="button" key={item.id} className={`subNavItem ${item.active ? 'active' : ''}`} onClick={() => viewModel.navigateTo(item.path)}><span className="subNavIcon"><NavigationIcon icon={item.icon} /></span><span className="subNavText">{item.label}</span></button>)}</div></div>;
 }
 
 export default function SubNav(): ReactElement | null {
-  const navigate = useNavigate();
-  const { user } = useUserContext();
-
-  const sections: ISection[] = [
-    {
-      id: "1",
-      name: "Accueil",
-      path: "/home",
-      icon: <IoHome />,
-    },
-    {
-      id: "2",
-      name: "Courriers",
-      path: "/mail",
-      icon: <IoMail />,
-    },
-    {
-      id: "3",
-      name: "Booking",
-      path: "/booking",
-      icon: <IoCalendar />,
-    },
-    {
-      id: "4",
-      name: "Gestion opérationnelle",
-      path: "/operations",
-      aliases: ["/campagnes", "/prospects", "/produits"],
-      icon: <IoCallOutline />,
-    },
-    {
-      id: "5",
-      name: "Commercial",
-      path: "/commercial",
-      icon: <IoReceiptOutline />,
-    },
-    {
-      id: "6",
-      name: "Gestion des incidents",
-      path: "/incidents",
-      icon: <IoAlertCircleOutline />,
-    },
-    {
-      id: "7",
-      name: "Gestion commerciaux",
-      path: "/commerciaux",
-      icon: <IoPeopleCircle />,
-    },
-    {
-      id: "8",
-      name: "Gestion de projets",
-      path: "/projets",
-      icon: <IoFolder />,
-    },
-  ];
-
-  const allowedSections = sections.filter((app: ISection) => {
-    if (app.id === "1") return getAllowedSections(user).length > 1;
-    if (app.id === "2") return hasAccessToSection(user, 'mail');
-    if (app.id === "3") return hasAccessToSection(user, 'booking');
-    if (app.id === "4") return hasAccessToSection(user, 'operations');
-    if (app.id === "5") return hasAccessToSection(user, 'commercial');
-    if (app.id === "6") return hasAccessToSection(user, 'incidents');
-    if (app.id === "7") return hasAccessToSection(user, 'commerciaux');
-    if (app.id === "8") return hasAccessToSection(user, 'projets');
-    return false;
-  });
-
-  const getCurrentSection = (): ISection | undefined => {
-    return sections.find((app) =>
-      window.location.pathname.startsWith(app.path) ||
-      app.aliases?.some(alias => window.location.pathname.startsWith(alias))
-    );
-  };
-
-  const currentApp = getCurrentSection();
-
-  const handleAppChange = (app: ISection) => {
-    navigate(app.path);
-  };
-
-  if (allowedSections.length <= 1 && allowedSections.every(s => s.id !== "1")) {
-    return null; // Pas de barre de navigation si seulement 1 app et pas d'accueil
-  }
-
-  return (
-    <div id="subNav" className={`subNav`}>
-      <div className="subNavContainer">
-        {allowedSections.map((app: ISection) => (
-          <button
-            key={app.id}
-            className={`subNavItem ${
-              app?.id === currentApp?.id ? "active" : ""
-            }`}
-            onClick={() => handleAppChange(app)}
-          >
-            <span className="subNavIcon">{app.icon}</span>
-            <span className="subNavText">{app.name}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  );
+  return <SubNavContent viewModel={useSubNavView()} />;
 }

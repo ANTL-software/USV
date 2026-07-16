@@ -1,7 +1,7 @@
 import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
-import { CampagneModel } from '../models/campagne.model.ts';
+import { CampagneModel } from '../models/index.ts';
 import type {
   Campagne,
   CreateCampagneData,
@@ -10,7 +10,7 @@ import type {
   AddAgentCampagneData,
   TransfertAgentData,
   StatutCampagne,
-} from '../../utils/types/campagne.types.ts';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

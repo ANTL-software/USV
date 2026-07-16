@@ -6,9 +6,9 @@ import {
   updateEmployeService,
   getPostesService,
   getRangsCommerciauxService,
-} from '../API/services/user.service';
-import type { Employe, Poste, RangCommercial } from '../utils/types/user.types';
-import { sanitizePhoneNumber } from '../utils/scripts/utils';
+} from '../API/services/index.ts';
+import type { Employe, Poste, RangCommercial } from '../utils/types/index.ts';
+import { sanitizePhoneNumber } from '../utils/scripts/index.ts';
 
 interface AgentFormState {
   nom:                 string;
@@ -159,5 +159,8 @@ export function useAgentForm() {
     isEdit, isLoading, isFetching,
     error, success,
     handleChange, handleSubmit,
+    navigateBack: () => void navigate('/operations/employes'),
   };
 }
+
+export type AgentFormViewModel = ReturnType<typeof useAgentForm>;

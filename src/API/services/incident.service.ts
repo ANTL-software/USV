@@ -11,7 +11,7 @@ import type {
   IncidentListResult,
   QualifierIncidentPayload,
   TraiterIncidentPayload,
-} from '../../utils/types/incident.types.ts';
+} from '../../utils/types/index.ts';
 
 const buildIncidentParams = (filters: IncidentFilters = {}): Record<string, string | number> => {
   const params: Record<string, string | number> = {};

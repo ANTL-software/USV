@@ -5,9 +5,9 @@ import {
   updatePanierService,
   deletePanierService,
   togglePanierActifService,
-} from '../API/services/panier.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { Panier, CreatePanierData, UpdatePanierData } from '../utils/types/panier.types';
+} from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { Panier, CreatePanierData, UpdatePanierData } from '../utils/types/index.ts';
 
 export function usePaniers() {
   const [paniers, setPaniers] = useState<Panier[]>([]);
@@ -18,7 +18,7 @@ export function usePaniers() {
     try {
       setIsLoading(true);
       setError(null);
-      const data = await getAllPaniersService({ actif: true });
+      const data = await getAllPaniersService();
       setPaniers(data);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Erreur lors du chargement des paniers');

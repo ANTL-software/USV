@@ -39,14 +39,11 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
   }
 });
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/utils/scripts/utils.ts', {
+mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/utils/scripts/index.ts', {
   namedExports: {
     getApiBaseUrl: () => {
       return 'http://localhost:8800/api';
     },
-    isOnProduction: () => {
-      return false;
-    }
   }
 });
 

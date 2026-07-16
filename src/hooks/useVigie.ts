@@ -2,8 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   getVigieActionsService,
   getVigieSnapshotService
-} from '../API/services/vigie.service';
-import type { VigieAction, VigieDateRange, VigieSnapshot } from '../utils/types/vigie.types';
+} from '../API/services/index.ts';
+import type { VigieAction, VigieDateRange, VigieSnapshot } from '../utils/types/index.ts';
 
 const REFRESH_INTERVAL = 60000;
 

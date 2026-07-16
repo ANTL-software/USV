@@ -1,7 +1,7 @@
 // Service pour faciliter l'utilisation des alertes depuis n'importe où dans l'application
 // Ce service remplace les alert(), confirm() et console.log() natifs
 
-import type { AlertContextType } from '../../context/alert/AlertContext';
+import type { AlertContextType } from '../../context/alert/index.ts';
 
 // Interface pour les alertes PWA/Service Worker
 interface PWAAlertOptions {

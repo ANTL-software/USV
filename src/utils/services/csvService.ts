@@ -1,18 +1,10 @@
 import type {
-  AllGraphiquesStats,
   AppelsParHeure,
   TauxAbouti,
   DureeMoyenneParJour,
   RaisonEchec
 } from '../types/graphiques.types';
-
-export interface SupervisionExportData {
-  campagne?: string;
-  employe?: string;
-  dateDebut?: string;
-  dateFin?: string;
-  stats: AllGraphiquesStats;
-}
+import type { SupervisionExportData } from '../types/graphiques.types.ts';
 
 class CsvService {
   private static instance: CsvService;

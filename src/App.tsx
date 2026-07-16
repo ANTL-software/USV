@@ -6,8 +6,7 @@ import 'aos/dist/aos.css';
 import { ReactElement, useEffect } from "react";
 
 // utils
-import { logEnvironmentInfo } from "./utils/scripts/utils.ts";
-import { testEnvironmentConfig } from "./utils/scripts/testEnvironment.ts";
+import { logEnvironmentInfo, testEnvironmentConfig } from "./utils/scripts/index.ts";
 
 // hooks | library
 import {
@@ -19,63 +18,62 @@ import {
 } from "react-router-dom";
 import AOS from 'aos';
 
-// components
-
-// views
-import AuthPage from "./views/layouts/authPage/AuthPage";
-import HomeWithAuth from "./views/layouts/home/Home";
-import CourriersWithAuth from "./views/layouts/courriers/Courriers";
-import NouveauCourrierWithAuth from "./views/layouts/nouveauCourrier/NouveauCourrier";
-import ListeCourriersWithAuth from "./views/layouts/listeCourriers/ListeCourriers";
-import UpdateCourrierWithAuth from "./views/layouts/updateCourrier/UpdateCourrier";
-import ConvertisseurImageWithAuth from "./views/layouts/convertisseurImage/ConvertisseurImage";
-import BookingPageWithAuth from "./views/layouts/booking/BookingPage";
-import CentreAppelsWithAuth from "./views/layouts/centreAppels/CentreAppels";
-import CommercialWithAuth from "./views/layouts/commercial/Commercial";
-import DevisWithAuth from "./views/layouts/devis/Devis";
-import FacturationWithAuth from "./views/layouts/facturation/Facturation";
-import AntlConfigurationWithAuth from "./views/layouts/antlConfiguration/AntlConfiguration";
-import CommerciauxWithAuth from "./views/layouts/commerciaux/Commerciaux";
-import NotesDirectionWithAuth from "./views/layouts/commerciaux/NotesDirection";
-import MonPlanningWithAuth from "./views/layouts/commerciaux/MonPlanning";
-import AbsenceDemandesWithAuth from "./views/layouts/absenceDemandes/AbsenceDemandes";
-import AgentsListWithAuth from "./views/layouts/agentsList/AgentsList";
-import AgentDetailsWithAuth from "./views/layouts/agentDetails/AgentDetails";
-import AgentFormWithAuth from "./views/layouts/agentForm/AgentForm";
-import PostesListWithAuth from "./views/layouts/postesList/PostesList";
-import PosteFormWithAuth from "./views/layouts/posteForm/PosteForm";
-import CampagnesListWithAuth from "./views/layouts/campagnesList/CampagnesList";
-import CampagneFormWithAuth from "./views/layouts/campagneForm/CampagneForm";
-import ProspectImportWithAuth from "./views/layouts/prospectImport/ProspectImport";
-import ProspectInjectionWithAuth from "./views/layouts/prospectInjection/ProspectInjection";
-import ProspectEnrichmentWithAuth from "./views/layouts/prospectEnrichment/ProspectEnrichment";
-import ProduitsListWithAuth from "./views/layouts/produitsList/ProduitsList";
-import ProduitFormWithAuth from "./views/layouts/produitForm/ProduitForm";
-import PaniersListWithAuth from "./views/layouts/paniersList/PaniersList";
-import PanierProduitsListWithAuth from "./views/layouts/panierProduitsList/PanierProduitsList";
-import MaterielListWithAuth from "./views/layouts/materielList/MaterielList";
-import SupervisionViewWithAuth from "./views/layouts/supervision/SupervisionView";
-import VigieViewWithAuth from "./views/layouts/vigie/VigieView";
-import AlertesConfigViewWithAuth from "./views/layouts/alertesConfig/AlertesConfigView";
-import AlertesHistoryViewWithAuth from "./views/layouts/alertesHistory/AlertesHistoryView";
-import CommandesListWithAuth from "./views/layouts/commandesList/CommandesList";
-import CommandeDetailsWithAuth from "./views/layouts/commandeDetails/CommandeDetails";
-import QualiteWithAuth from "./views/layouts/qualite/Qualite";
-import QualiteStatsWithAuth from "./views/layouts/qualiteStats/QualiteStats";
-import ProspectsSignalesWithAuth from "./views/layouts/prospectsSignales/ProspectsSignales";
-import ProspectsViewWithAuth from "./views/layouts/prospectsView/ProspectsView";
-import QualiteEcoutesWithAuth from "./views/layouts/qualiteEcoutes/QualiteEcoutes";
-import ProjetsListWithAuth from "./views/layouts/projets/ProjetsList";
-import ProjetFormWithAuth from "./views/layouts/projets/ProjetForm";
-import ProjetDetailsWithAuth from "./views/layouts/projets/ProjetDetails";
-import TacheFormWithAuth from "./views/layouts/projets/TacheForm";
-import TachesKanbanWithAuth from "./views/layouts/projets/TachesKanban";
-import MesTachesWithAuth from "./views/layouts/projets/MesTaches";
-import IncidentsHubWithAuth from "./views/layouts/incidents/IncidentsHub";
-import IncidentDeclarationWithAuth from "./views/layouts/incidents/IncidentDeclaration";
-import IncidentQualificationWithAuth from "./views/layouts/incidents/IncidentQualification";
-import IncidentTraitementWithAuth from "./views/layouts/incidents/IncidentTraitement";
-import IncidentListWithAuth from "./views/layouts/incidents/IncidentList";
+import {
+  AbsenceDemandes as AbsenceDemandesWithAuth,
+  AgentDetails as AgentDetailsWithAuth,
+  AgentForm as AgentFormWithAuth,
+  AgentsList as AgentsListWithAuth,
+  AlertesConfigView as AlertesConfigViewWithAuth,
+  AlertesHistoryView as AlertesHistoryViewWithAuth,
+  AntlConfiguration as AntlConfigurationWithAuth,
+  AuthPage,
+  BookingPage as BookingPageWithAuth,
+  CampagneForm as CampagneFormWithAuth,
+  CampagnesList as CampagnesListWithAuth,
+  CentreAppels as CentreAppelsWithAuth,
+  CommandeDetails as CommandeDetailsWithAuth,
+  CommandesList as CommandesListWithAuth,
+  Commercial as CommercialWithAuth,
+  Commerciaux as CommerciauxWithAuth,
+  ConvertisseurImage as ConvertisseurImageWithAuth,
+  Courriers as CourriersWithAuth,
+  Devis as DevisWithAuth,
+  Facturation as FacturationWithAuth,
+  Home as HomeWithAuth,
+  IncidentDeclaration as IncidentDeclarationWithAuth,
+  IncidentList as IncidentListWithAuth,
+  IncidentQualification as IncidentQualificationWithAuth,
+  IncidentTraitement as IncidentTraitementWithAuth,
+  IncidentsHub as IncidentsHubWithAuth,
+  ListeCourriers as ListeCourriersWithAuth,
+  MaterielList as MaterielListWithAuth,
+  MesTaches as MesTachesWithAuth,
+  MonPlanning as MonPlanningWithAuth,
+  NotesDirection as NotesDirectionWithAuth,
+  NouveauCourrier as NouveauCourrierWithAuth,
+  PanierProduitsList as PanierProduitsListWithAuth,
+  PaniersList as PaniersListWithAuth,
+  PosteForm as PosteFormWithAuth,
+  PostesList as PostesListWithAuth,
+  ProduitForm as ProduitFormWithAuth,
+  ProduitsList as ProduitsListWithAuth,
+  ProjetDetails as ProjetDetailsWithAuth,
+  ProjetForm as ProjetFormWithAuth,
+  ProjetsList as ProjetsListWithAuth,
+  ProspectEnrichment as ProspectEnrichmentWithAuth,
+  ProspectImport as ProspectImportWithAuth,
+  ProspectInjection as ProspectInjectionWithAuth,
+  ProspectsSignales as ProspectsSignalesWithAuth,
+  ProspectsView as ProspectsViewWithAuth,
+  Qualite as QualiteWithAuth,
+  QualiteEcoutes as QualiteEcoutesWithAuth,
+  QualiteStats as QualiteStatsWithAuth,
+  SupervisionView as SupervisionViewWithAuth,
+  TacheForm as TacheFormWithAuth,
+  TachesKanban as TachesKanbanWithAuth,
+  UpdateCourrier as UpdateCourrierWithAuth,
+  VigieView as VigieViewWithAuth,
+} from "./views/layouts/index.ts";
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {

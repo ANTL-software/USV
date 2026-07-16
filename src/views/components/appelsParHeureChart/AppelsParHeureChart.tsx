@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import type { AppelsParHeure } from '../../../utils/types/graphiques.types';
+import type { AppelsParHeure } from '../../../utils/types/index.ts';
 import './appelsParHeureChart.scss';
 
 interface AppelsParHeureChartProps {

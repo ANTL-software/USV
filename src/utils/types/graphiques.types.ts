@@ -116,3 +116,16 @@ export interface AppelsParOrigine {
   origine: string;
   nombre: number;
 }
+
+export interface SupervisionExportData {
+  campagne?: string;
+  employe?: string;
+  dateDebut?: string;
+  dateFin?: string;
+  stats: AllGraphiquesStats;
+}
+
+export interface DateFilters {
+  dateDebut: string | null;
+  dateFin: string | null;
+}

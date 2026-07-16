@@ -1,7 +1,12 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getAllCategoriesService, getCategoriesFromProduitsService, createCategorieService } from '../API/services/produit.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { Categorie, CreateCategorieData } from '../utils/types/produit.types';
+import {
+  createCategorieService,
+  deleteCategorieService,
+  getAllCategoriesService,
+  getCategoriesFromProduitsService,
+} from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { Categorie, CreateCategorieData } from '../utils/types/index.ts';
 
 export function useCategories() {
   const [categories, setCategories] = useState<Categorie[]>([]);
@@ -35,7 +40,6 @@ export function useCategories() {
   const deleteCategorie = useCallback(async (cat: Categorie) => {
     if (!await confirm(`Supprimer la catégorie "${cat.nom_categorie}" ?`, 'Confirmation')) return;
     try {
-      const { deleteCategorieService } = await import('../API/services/produit.service');
       await deleteCategorieService(cat.id_categorie);
       await load();
     } catch (err) {
@@ -65,18 +69,11 @@ export function useCategories() {
 }
 
 export async function createCategorieIfNotExists(nomCategorie: string): Promise<number> {
-  try {
-    // Chercher si la catégorie existe déjà
-    const { getAllCategoriesService } = await import('../API/services/produit.service');
-    const existing = await getAllCategoriesService();
-    const found = existing.find(c => c.nom_categorie.toLowerCase() === nomCategorie.toLowerCase());
-    if (found) return found.id_categorie;
+  const existing = await getAllCategoriesService();
+  const found = existing.find(c => c.nom_categorie.toLowerCase() === nomCategorie.toLowerCase());
+  if (found) return found.id_categorie;
 
-    // Créer la nouvelle catégorie
-    const data: CreateCategorieData = { nom_categorie: nomCategorie };
-    const nouvelle = await createCategorieService(data);
-    return nouvelle.id_categorie;
-  } catch (err) {
-    throw err;
-  }
+  const data: CreateCategorieData = { nom_categorie: nomCategorie };
+  const nouvelle = await createCategorieService(data);
+  return nouvelle.id_categorie;
 }

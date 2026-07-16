@@ -102,6 +102,11 @@
   height: 1.1em;
   cursor: pointer;
 }
+#produitForm .produitForm__checkbox-label {
+  flex-direction: row;
+  gap: 0.35em;
+  color: inherit;
+}
 #produitForm .produitForm__campagne-info {
   margin: 0;
   font-size: 0.95rem;

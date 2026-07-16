@@ -11,6 +11,13 @@
   @include mixins.flexContainer(column, 2em);
   flex: 1;
 }
+#courriers .courriersError {
+  padding: 1em;
+  border-radius: 0.75em;
+  background: #fee2e2;
+  color: #b91c1c;
+  text-align: center;
+}
 @media (min-width: vars.$tabletWidth) {
   #courriers .courriersContainer {
     gap: 2.5em;

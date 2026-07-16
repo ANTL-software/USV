@@ -297,6 +297,10 @@
 #commandesList .commandesList__actions-cell {
   text-align: center;
 }
+
+#commandesList .commandesList__actions-heading {
+  text-align: center;
+}
 // Ligne soft-deleted : fond rouge pastel
 #commandesList .commandesList__row--deleted {
   background-color: #fff1f2 !important;

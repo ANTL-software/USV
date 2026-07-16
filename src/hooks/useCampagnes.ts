@@ -6,16 +6,16 @@ import {
   addAgentCampagneService,
   removeAgentCampagneService,
   transfererAgentService,
-} from '../API/services/campagne.service';
+} from '../API/services/index.ts';
 import {
   getCampagneProduitsService,
   addProduitCampagneService,
   updateProduitCampagneService,
   removeProduitCampagneService,
-} from '../API/services/produit.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { Campagne, AgentAffecte, AddAgentCampagneData, StatutCampagne } from '../utils/types/campagne.types';
-import type { CampagneProduit, AddProduitCampagneData, UpdateProduitCampagneData } from '../utils/types/produit.types';
+} from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { Campagne, AgentAffecte, AddAgentCampagneData, StatutCampagne } from '../utils/types/index.ts';
+import type { CampagneProduit, AddProduitCampagneData, UpdateProduitCampagneData } from '../utils/types/index.ts';
 
 export function useCampagnes() {
   const [campagnes, setCampagnes] = useState<Campagne[]>([]);

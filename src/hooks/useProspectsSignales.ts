@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getProspectsSignalesService } from '../API/services/prospect.service';
-import type { ProspectSignale, SignalementType } from '../utils/types/prospect.types';
+import { getProspectsSignalesService } from '../API/services/index.ts';
+import type { ProspectSignale, SignalementType } from '../utils/types/index.ts';
 
 interface UseProspectsSignalesReturn {
   rows: ProspectSignale[];

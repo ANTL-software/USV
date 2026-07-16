@@ -2,9 +2,9 @@
 // Différence : auth par cookies httpOnly (pas de hasValidToken/localStorage)
 import { useState, useEffect, useCallback } from 'react';
 import type { ReactNode } from 'react';
-import type { Employe, LoginCredentials } from '../../utils/types/user.types.ts';
+import type { Employe, LoginCredentials } from '../../utils/types/index.ts';
 import { UserContext } from './UserContext.tsx';
-import { loginService, getCurrentUserService, logoutService } from '../../API/services/auth.service.ts';
+import { getCurrentUserService, loginService, logoutService } from '../../API/services/index.ts';
 
 interface UserProviderProps {
   children: ReactNode;

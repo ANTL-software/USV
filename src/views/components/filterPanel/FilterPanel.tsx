@@ -1,12 +1,8 @@
 import { useState } from 'react';
 import { MdClose, MdRefresh } from 'react-icons/md';
-import Button from '../button/Button';
+import { Button } from '../button/index.ts';
+import type { DateFilters } from '../../../utils/types/index.ts';
 import './filterPanel.scss';
-
-export interface DateFilters {
-  dateDebut: string | null;
-  dateFin: string | null;
-}
 
 interface FilterPanelProps {
   filters: DateFilters;

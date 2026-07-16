@@ -1,4 +1,5 @@
 export const isOnProduction = (): boolean => {
+  if (typeof window === 'undefined') return false;
   const isDev = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const isDevPort = ["5173", "5174", "5175"].includes(window.location.port); // Ports de développement Vite
   return !(isDev && isDevPort);
@@ -92,7 +93,7 @@ export const isTestEnvironment = (): boolean => {
   return getEnvironment() === 'development';
 };
 
-export function getGreetingName(prenom?: string, _userId?: number): string | undefined {
+export function getGreetingName(prenom?: string): string | undefined {
   return prenom;
 }
 
@@ -165,6 +166,14 @@ export function toSelectOptions<T>(
   }));
 }
 
+export function prependSelectOption<Value extends string>(
+  options: Array<{ value: Value; label: string }>,
+  value: string,
+  label: string,
+): Array<{ value: Value | string; label: string }> {
+  return [{ value, label }, ...options];
+}
+
 /**
  * Formate un numéro de téléphone sous la forme xx.xx.xx.xx.xx
  * @param phone - Le numéro de téléphone à formater
@@ -192,3 +201,10 @@ export const sanitizePhoneNumber = (phone: string): string => {
 export const getErrorMessage = (error: unknown, fallback: string): string => {
   return error instanceof Error && error.message ? error.message : fallback;
 };
+
+export function toLocalIsoDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}

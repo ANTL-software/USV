@@ -1,6 +1,14 @@
-import { useState, useCallback, useEffect } from 'react';
-import { useContext } from 'react';
-import { ProjetContext } from '../context/projet/ProjetContext';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { ProjetContext } from '../context/projet/index.ts';
+import {
+  addMembreService,
+  createProjetService,
+  getMembresService,
+  getProjetByIdService,
+  getProjetDashboardService,
+  removeMembreService,
+  updateProjetService,
+} from '../API/services/index.ts';
 import type {
   Projet,
   CreateProjetData,
@@ -8,7 +16,7 @@ import type {
   ProjetDashboard,
   ProjetMembre,
   AddMembreData,
-} from '../utils/types/projet.types';
+} from '../utils/types/index.ts';
 
 /**
  * Hook principal pour la gestion des projets
@@ -51,7 +59,6 @@ export function useProjet(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getProjetByIdService } = await import('../API/services/projet.service');
       const data = await getProjetByIdService(id);
       setProjet(data);
     } catch (err) {
@@ -84,7 +91,6 @@ export function useProjetDashboard(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getProjetDashboardService } = await import('../API/services/projet.service');
       const data = await getProjetDashboardService(id);
       setDashboard(data);
     } catch (err) {
@@ -117,7 +123,6 @@ export function useProjetMembres(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getMembresService } = await import('../API/services/projet.service');
       const data = await getMembresService(id);
       setMembres(data);
     } catch (err) {
@@ -135,7 +140,6 @@ export function useProjetMembres(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { addMembreService } = await import('../API/services/projet.service');
       const membre = await addMembreService(id, data);
 
       setMembres(prev => [...prev, membre]);
@@ -157,7 +161,6 @@ export function useProjetMembres(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { removeMembreService } = await import('../API/services/projet.service');
       await removeMembreService(id, idMembre);
 
       setMembres(prev => prev.filter(m => m.id_membre !== idMembre));
@@ -232,8 +235,6 @@ export function useProjetForm(projetId: number | null = null) {
     setIsSubmitting(true);
 
     try {
-      const { createProjetService, updateProjetService } = await import('../API/services/projet.service');
-
       let projet: Projet;
 
       if (projetId) {

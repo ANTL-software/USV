@@ -87,6 +87,15 @@
   border-collapse: collapse;
   font-size: 0.9rem;
 }
+#agentsList .agentsList__table tbody tr {
+  cursor: pointer;
+}
+#agentsList .agentsList__cell--center {
+  text-align: center;
+}
+#agentsList .agentsList__name {
+  text-transform: uppercase;
+}
 #agentsList .agentsList__table th {
   text-align: left;
   padding: 0.85em 1em;
@@ -280,6 +289,9 @@
   transform: translateY(-1px);
 }
 #agentsList .agentsList__photo-tooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
   background: white;
   border: 1px solid vars.$borderColor;
   border-radius: 12px;

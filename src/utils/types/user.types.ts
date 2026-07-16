@@ -54,6 +54,8 @@ export interface Employe {
   photo_file_name?: string | null;
 }
 
+export type EmployeFilter = 'actifs' | 'inactifs' | 'tous';
+
 export interface CreateEmployeData {
   nom: string;
   prenom: string;

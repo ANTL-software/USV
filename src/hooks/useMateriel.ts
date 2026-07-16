@@ -7,16 +7,16 @@ import {
   affecterMaterielService,
   restituerMaterielService,
   getMarquesService,
-} from '../API/services/materiel.service';
-import { showError } from '../utils/services/alertService';
-import type { MaterielModel } from '../API/models/materiel.model';
+} from '../API/services/index.ts';
+import { showError } from '../utils/services/index.ts';
+import type { MaterielModel } from '../API/models/index.ts';
 import type {
   MaterielAffectation,
   CreateMaterielPayload,
   UpdateMaterielPayload,
   AffecterMaterielPayload,
   RestituerMaterielPayload,
-} from '../utils/types/materiel.types';
+} from '../utils/types/index.ts';
 
 export function useMateriel() {
   const [materiels, setMateriels] = useState<MaterielModel[]>([]);

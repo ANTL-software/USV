@@ -4,9 +4,9 @@ import {
   deletePlanningService,
   getPlanningsService,
   updatePlanningService,
-} from '../API/services/planning.service';
-import type { Planning, PlanningPayload } from '../utils/types/planning.types';
-import { confirm } from '../utils/services/alertService';
+} from '../API/services/index.ts';
+import type { Planning, PlanningPayload } from '../utils/types/index.ts';
+import { confirm } from '../utils/services/index.ts';
 
 type SlotForm = {
   id: string;

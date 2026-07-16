@@ -1,4 +1,4 @@
-import type { Materiel, MaterielAffectation, EmployeMaterielBasic } from '../../utils/types/materiel.types.ts';
+import type { Materiel, MaterielAffectation, EmployeMaterielBasic } from '../../utils/types/index.ts';
 
 export class MaterielModel implements Materiel {
   id_materiel: number;

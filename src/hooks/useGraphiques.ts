@@ -1,12 +1,12 @@
-import { useState, useEffect } from 'react';
-import { graphiquesService } from '../API/services/graphiques.service';
+import { useCallback, useEffect, useState } from 'react';
+import { graphiquesService } from '../API/services/index.ts';
 import type {
   AllGraphiquesStats,
   AppelsParHeure,
   TauxAbouti,
   DureeMoyenneParJour,
   RaisonEchec
-} from '../utils/types/graphiques.types';
+} from '../utils/types/index.ts';
 
 interface UseGraphiquesResult {
   stats: AllGraphiquesStats | null;
@@ -26,13 +26,21 @@ export function useGraphiques(
   idCampagne?: number,
   dateDebut?: string,
   dateFin?: string,
-  refreshInterval: number = 60000
+  refreshInterval: number = 60000,
+  enabled: boolean = true,
 ): UseGraphiquesResult {
   const [stats, setStats] = useState<AllGraphiquesStats | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStats = async (): Promise<void> => {
+  const fetchStats = useCallback(async (): Promise<void> => {
+    if (!enabled) {
+      setStats(null);
+      setIsLoading(false);
+      setError(null);
+      return;
+    }
+
     try {
       setIsLoading(true);
       setError(null);
@@ -44,16 +52,16 @@ export function useGraphiques(
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [dateDebut, dateFin, enabled, idCampagne]);
 
   useEffect(() => {
     fetchStats();
 
-    if (refreshInterval > 0) {
+    if (enabled && refreshInterval > 0) {
       const interval = setInterval(fetchStats, refreshInterval);
       return () => clearInterval(interval);
     }
-  }, [idCampagne, dateDebut, dateFin, refreshInterval]);
+  }, [enabled, fetchStats, refreshInterval]);
 
   return {
     stats,

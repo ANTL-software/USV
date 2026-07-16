@@ -1,11 +1,11 @@
-import { getRequest } from '../APICalls';
+import { getRequest } from '../APICalls.ts';
 import type {
   AppelsParHeure,
   TauxAbouti,
   DureeMoyenneParJour,
   RaisonEchec,
   AllGraphiquesStats
-} from '../../utils/types/graphiques.types';
+} from '../../utils/types/index.ts';
 
 class GraphiquesService {
   private static instance: GraphiquesService;
@@ -136,4 +136,3 @@ class GraphiquesService {
 }
 
 export const graphiquesService = GraphiquesService.getInstance();
-

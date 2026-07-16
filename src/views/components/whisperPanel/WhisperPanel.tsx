@@ -1,6 +1,6 @@
 import React from 'react';
 import { MdMic, MdMicOff, MdCallEnd } from 'react-icons/md';
-import { formatCallDuration } from '../../../utils/scripts/formatters';
+import { formatCallDuration } from '../../../utils/scripts/index.ts';
 import './whisperPanel.scss';
 
 interface WhisperPanelProps {

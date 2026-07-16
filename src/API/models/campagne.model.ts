@@ -1,6 +1,6 @@
-import type { Campagne, StatutCampagne, ModePaiement } from '../../utils/types/campagne.types';
-import { normalizeCampaignVariant } from '../../utils/scripts/campaignVariants.ts';
-import type { CampaignVariant } from '../../utils/scripts/campaignVariants.ts';
+import type { Campagne, ModePaiement, StatutCampagne } from '../../utils/types/index.ts';
+import { normalizeCampaignVariant } from '../../utils/scripts/index.ts';
+import type { CampaignVariant } from '../../utils/scripts/index.ts';
 
 const STATUT_LABELS: Record<StatutCampagne, string> = {
   inactive: 'Inactive',

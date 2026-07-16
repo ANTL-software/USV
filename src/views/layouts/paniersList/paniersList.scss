@@ -59,8 +59,16 @@
   font-weight: 500;
   color: vars.$fontColorSecondary;
 }
-#paniersList .paniersList__form label input {
-  @include mixins.formInput("#paniersList .paniersList__form label input");
+#paniersList .paniersList__form label input:not([type="checkbox"]) {
+  @include mixins.formInput("#paniersList .paniersList__form label input:not([type='checkbox'])");
+}
+#paniersList .paniersList__form label.paniersList__checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+#paniersList .paniersList__form label.paniersList__checkbox input {
+  width: auto;
+  min-height: auto;
 }
 #paniersList .paniersList__form label .reactSelect__container {
   font-size: 0.9rem;
@@ -122,7 +130,6 @@
   padding: 1em;
   background: transparent;
   border: none;
-  cursor: pointer;
   transition: background vars.$transitionSmooth;
 }
 #paniersList .paniersList__dropdown-header:hover {
@@ -133,6 +140,17 @@
   align-items: center;
   gap: 0.75em;
   flex: 1;
+}
+#paniersList .paniersList__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.75em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
 }
 #paniersList .paniersList__dropdown-label {
   font-weight: 600;

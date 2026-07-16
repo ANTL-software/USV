@@ -1,5 +1,5 @@
 import React, { ReactElement } from 'react';
-import { useNotifications } from '../../../hooks/useNotifications';
+import { useNotifications } from '../../../hooks/index.ts';
 import './notificationBadge.scss';
 
 interface NotificationBadgeProps {

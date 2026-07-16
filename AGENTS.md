@@ -24,11 +24,22 @@ Le chemin d'organisation obligatoire est :
 services → types → models → context → hooks → components → layouts
 ```
 
+`views` n'est pas une couche : `src/views/` est uniquement le dossier conteneur de `components/` et `layouts/`.
+
 - Les services portent les accès externes; les types décrivent les contrats; les models normalisent le domaine.
 - Les contexts portent uniquement l'état global partagé.
 - Les hooks encapsulent la logique et exposent des actions typées aux composants.
-- Les composants et layouts restent des couches de présentation et n'appellent pas directement les services.
+- Les composants et layouts restent des couches de présentation pure : aucune logique métier, aucun calcul ou validation métier, aucune orchestration de workflow et aucun appel direct aux services.
+- Les handlers des vues délèguent aux actions typées des hooks; seul l'état strictement visuel peut rester local.
 - Toutes les fonctions génériques réellement transverses vivent dans `src/utils/scripts/utils.ts`. Les helpers métier restent dans un fichier de domaine sous `src/utils/scripts/` afin d'éviter un fichier fourre-tout.
+
+### Imports et exports centralisés
+
+- Chaque couche expose son API publique depuis son `index.ts` : services, types, models, context, hooks, components et layouts.
+- Tout import provenant d'un autre dossier passe par cet `index.ts`; les imports profonds vers les fichiers d'implémentation sont interdits.
+- Chaque module public est réexporté une seule fois par le barrel de sa couche; les réexports dispersés sont interdits.
+- Les composants et layouts possèdent un `index.ts` local, puis sont agrégés dans `src/views/components/index.ts` ou `src/views/layouts/index.ts`.
+- Aucun fichier sous `src/views/` ne doit importer un service. Une vue dépend des hooks et des contrats publics, jamais des implémentations d'accès aux données.
 
 ### Emplacements uniques
 

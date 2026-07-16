@@ -8,14 +8,16 @@ interface SimplePDFViewerProps {
 const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
-  const [iframeSrc, setIframeSrc] = useState<string>('');
   const cspTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     console.log('SimplePDFViewer - pdfUrl:', pdfUrl);
-    setIframeSrc(pdfUrl);
-    setLoading(true);
-    setError('');
+    let isActive = true;
+    queueMicrotask(() => {
+      if (!isActive) return;
+      setLoading(true);
+      setError('');
+    });
     
     // Détecter les erreurs CSP plus rapidement
     cspTimeoutRef.current = setTimeout(() => {
@@ -25,6 +27,7 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
     }, 1500); // Réduit à 1.5s pour détecter plus vite
     
     return () => {
+      isActive = false;
       if (cspTimeoutRef.current) {
         clearTimeout(cspTimeoutRef.current);
       }
@@ -47,14 +50,6 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
     setError('Impossible de charger le PDF');
   };
 
-  if (loading) {
-    return (
-      <div className="pdf-viewer-loading">
-        <p>Chargement du PDF...</p>
-      </div>
-    );
-  }
-
   if (error) {
     return (
       <div className="pdf-viewer-error">
@@ -72,9 +67,15 @@ const SimplePDFViewer: React.FC<SimplePDFViewerProps> = ({ pdfUrl, fileName }) =
 
   return (
     <div className="simple-pdf-viewer">
+      {loading && (
+        <div className="pdf-viewer-loading">
+          <p>Chargement du PDF...</p>
+        </div>
+      )}
       <div className="pdf-iframe-container">
         <iframe
-          src={iframeSrc}
+          key={pdfUrl}
+          src={pdfUrl}
           width="100%"
           height="100%"
           className="pdf-iframe"

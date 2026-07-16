@@ -1,4 +1,4 @@
-import type { Produit, Categorie, TypeProduit } from '../../utils/types/produit.types';
+import type { Categorie, Produit, TypeProduit } from '../../utils/types/index.ts';
 
 export class ProduitModel implements Produit {
   id_produit: number;

@@ -39,6 +39,17 @@
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+#commandeDetails .statut-badge--planifie { background: #2563eb; }
+#commandeDetails .statut-badge--effectue { background: vars.$successColor; }
+#commandeDetails .statut-badge--annule { background: vars.$errorColor; }
+#commandeDetails .statut-badge--reporte { background: vars.$warningColor; }
+#commandeDetails .statut-badge--non_honore { background: #6b7280; }
+#commandeDetails .leadClientDetails__contact {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+}
+#commandeDetails .leadClientDetails__contact svg { font-size: 0.9em; }
 #commandeDetails .commandeDetails__error {
   text-align: center;
   padding: 3em 1.5em;
@@ -134,6 +145,10 @@
   color: vars.$utilsPrimary;
   font-size: 1.1em;
 }
+#commandeDetails .commandeDetails__contact-icon {
+  margin-right: 4px;
+  font-size: 0.9em;
+}
 #commandeDetails .address-text {
   line-height: 1.5;
   font-style: normal;
@@ -207,6 +222,22 @@
 #commandeDetails .products-table-wrapper table .name-cell {
   font-weight: 500;
   color: vars.$fontColorPrimary;
+}
+#commandeDetails .cell-center {
+  text-align: center;
+}
+#commandeDetails .cell-right {
+  text-align: right;
+}
+#commandeDetails .cell-bold {
+  font-weight: 700;
+}
+#commandeDetails .empty-table-cell {
+  padding: 2em;
+  text-align: center;
+}
+#commandeDetails .empty-table-cell.compact {
+  padding: 1em;
 }
 #commandeDetails .order-total-block {
   display: flex;
@@ -685,6 +716,10 @@
   background: vars.$greyBackground;
   cursor: pointer;
   transition: background 0.2s ease;
+  width: 100%;
+  border: 0;
+  color: inherit;
+  text-align: left;
 }
 #commandeDetails .vente-history-header:hover {
   background: color.adjust(vars.$greyBackground, $lightness: -2%);

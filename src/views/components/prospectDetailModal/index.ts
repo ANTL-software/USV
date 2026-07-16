@@ -1,1 +1,1 @@
-export { default as ProspectDetailModal } from './ProspectDetailModal';
+export { default as ProspectDetailModal } from './ProspectDetailModal.tsx';

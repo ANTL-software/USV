@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback, ReactElement } from "react";
 import { CourrierContext } from "./CourrierContext.tsx";
-import { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
+import type { ICourrier, ICourrierUploadData, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from '../../utils/types/index.ts';
 import {
   uploadCourrierService,
   getAllCourriersService,
@@ -13,7 +13,7 @@ import {
   getCourrierStatsService,
   analyzeCourrierService,
   checkCourrierNameService
-} from "../../API/services/courrier.service.ts";
+} from '../../API/services/index.ts';
 
 export const CourrierProvider = ({
   children,

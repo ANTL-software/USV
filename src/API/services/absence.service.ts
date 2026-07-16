@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
-import type { ApiResponse } from '../../utils/types/user.types.ts';
-import type { AbsenceRequest, CreateAbsenceRequestPayload } from '../../utils/types/absence.types.ts';
+import type { ApiResponse } from '../../utils/types/index.ts';
+import type { AbsenceRequest, CreateAbsenceRequestPayload } from '../../utils/types/index.ts';
 
 type AbsenceRequestsResponse = {
   demandes: AbsenceRequest[];

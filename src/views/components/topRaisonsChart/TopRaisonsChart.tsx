@@ -1,7 +1,7 @@
 import { ReactElement } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import type { RaisonEchec } from '../../../utils/types/graphiques.types';
-import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/graphiques.types';
+import type { RaisonEchec } from '../../../utils/types/index.ts';
+import { STATUT_LABELS, STATUT_COLORS } from '../../../utils/types/index.ts';
 import './topRaisonsChart.scss';
 
 interface TopRaisonsChartProps {

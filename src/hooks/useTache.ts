@@ -1,4 +1,21 @@
 import { useState, useCallback, useEffect } from 'react';
+import {
+  addCommentaireService,
+  addTempsService,
+  createTacheService,
+  createTagService,
+  deleteTacheService,
+  getAllTagsService,
+  getCommentairesService,
+  getTacheByIdService,
+  getTempsService,
+  listTachesByEmployeService,
+  listTachesService,
+  updateOrdreTacheService,
+  updateProgressionTacheService,
+  updateStatutTacheService,
+  updateTacheService,
+} from '../API/services/index.ts';
 import type {
   Tache,
   CreateTacheData,
@@ -10,7 +27,7 @@ import type {
   TacheTemps,
   CreateTempsData,
   TacheTag,
-} from '../utils/types/projet.types';
+} from '../utils/types/index.ts';
 
 /**
  * Hook pour gérer les tâches d'un projet
@@ -33,7 +50,6 @@ export function useTaches(projetId: number | null) {
         setIsLoading(true);
         setError(null);
 
-        const { listTachesService } = await import('../API/services/tache.service');
         const response = await listTachesService(projetId, filters, page, limit);
 
         setTaches(response.taches);
@@ -61,7 +77,6 @@ export function useTaches(projetId: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { createTacheService } = await import('../API/services/tache.service');
       const tache = await createTacheService(data);
 
       setTaches(prev => [tache, ...prev]);
@@ -81,7 +96,6 @@ export function useTaches(projetId: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { updateTacheService } = await import('../API/services/tache.service');
       const tache = await updateTacheService(id, data);
 
       setTaches(prev =>
@@ -103,7 +117,6 @@ export function useTaches(projetId: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { deleteTacheService } = await import('../API/services/tache.service');
       await deleteTacheService(id);
 
       setTaches(prev => prev.filter(t => t.id_tache !== id));
@@ -143,7 +156,6 @@ export function useTache(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getTacheByIdService } = await import('../API/services/tache.service');
       const data = await getTacheByIdService(id);
       setTache(data);
     } catch (err) {
@@ -165,7 +177,6 @@ export function useTache(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { updateStatutTacheService } = await import('../API/services/tache.service');
       const { tache: updatedTache } = await updateStatutTacheService(id, statut);
 
       setTache(updatedTache);
@@ -185,7 +196,6 @@ export function useTache(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { updateProgressionTacheService } = await import('../API/services/tache.service');
       const updatedTache = await updateProgressionTacheService(id, progression);
 
       setTache(updatedTache);
@@ -216,7 +226,6 @@ export function useTacheCommentaires(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getCommentairesService } = await import('../API/services/tache.service');
       const data = await getCommentairesService(id);
       setCommentaires(data);
     } catch (err) {
@@ -234,7 +243,6 @@ export function useTacheCommentaires(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { addCommentaireService } = await import('../API/services/tache.service');
       const commentaire = await addCommentaireService(id, data);
 
       setCommentaires(prev => [commentaire, ...prev]);
@@ -263,7 +271,6 @@ export function useTacheTags() {
       setIsLoading(true);
       setError(null);
 
-      const { getAllTagsService } = await import('../API/services/tache.service');
       const data = await getAllTagsService();
       setTags(data);
     } catch (err) {
@@ -283,7 +290,6 @@ export function useTacheTags() {
       setIsLoading(true);
       setError(null);
 
-      const { createTagService } = await import('../API/services/tache.service');
       const tag = await createTagService({ libelle, couleur });
 
       setTags(prev => [...prev, tag]);
@@ -316,7 +322,6 @@ export function useTacheTemps(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { getTempsService } = await import('../API/services/tache.service');
       const data = await getTempsService(id);
       setTemps(data);
     } catch (err) {
@@ -334,7 +339,6 @@ export function useTacheTemps(id: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { addTempsService } = await import('../API/services/tache.service');
       const temps = await addTempsService(id, data);
 
       setTemps(prev => [temps, ...prev]);
@@ -396,8 +400,6 @@ export function useTacheForm(projetId: number, tacheId: number | null = null) {
     setIsSubmitting(true);
 
     try {
-      const { createTacheService, updateTacheService } = await import('../API/services/tache.service');
-
       let tache: Tache;
 
       if (tacheId) {
@@ -414,7 +416,7 @@ export function useTacheForm(projetId: number, tacheId: number | null = null) {
     } finally {
       setIsSubmitting(false);
     }
-  }, [formData, projetId, tacheId, validate]);
+  }, [formData, tacheId, validate]);
 
   const reset = useCallback(() => {
     setFormData({
@@ -460,7 +462,6 @@ export function useMesTachesKanban() {
       setIsLoading(true);
       setError(null);
 
-      const { listTachesByEmployeService } = await import('../API/services/tache.service');
       const response = await listTachesByEmployeService({}, 1, 100);
 
       // Répartir les tâches par statut
@@ -493,7 +494,6 @@ export function useMesTachesKanban() {
 
   const moveTache = useCallback(async (tacheId: number, nouveauStatut: StatutTache) => {
     try {
-      const { updateStatutTacheService } = await import('../API/services/tache.service');
       await updateStatutTacheService(tacheId, nouveauStatut);
 
       // Mettre à jour localement
@@ -552,7 +552,6 @@ export function useKanban(projetId: number | null) {
       setIsLoading(true);
       setError(null);
 
-      const { listTachesService } = await import('../API/services/tache.service');
       const response = await listTachesService(projetId, {}, 1, 100);
 
       // Répartir les tâches par statut
@@ -585,7 +584,6 @@ export function useKanban(projetId: number | null) {
 
   const moveTache = useCallback(async (tacheId: number, nouveauStatut: StatutTache) => {
     try {
-      const { updateStatutTacheService } = await import('../API/services/tache.service');
       await updateStatutTacheService(tacheId, nouveauStatut);
 
       // Mettre à jour localement
@@ -618,7 +616,6 @@ export function useKanban(projetId: number | null) {
     if (currentOrdre <= 0) return;
 
     try {
-      const { updateOrdreTacheService } = await import('../API/services/tache.service');
       const updatedTache = await updateOrdreTacheService(tacheId, currentOrdre - 1);
 
       // Mettre à jour localement
@@ -657,7 +654,6 @@ export function useKanban(projetId: number | null) {
 
   const moveTacheDown = useCallback(async (tacheId: number, currentOrdre: number) => {
     try {
-      const { updateOrdreTacheService } = await import('../API/services/tache.service');
       const updatedTache = await updateOrdreTacheService(tacheId, currentOrdre + 1);
 
       // Mettre à jour localement

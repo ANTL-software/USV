@@ -294,6 +294,7 @@ export const startUpdateChecker = (): (() => void) => {
 
 // Vérifier si l'app est installée (PWA)
 export const isPWAInstalled = (): boolean => {
+  if (typeof window === 'undefined') return false;
   return window.matchMedia('(display-mode: standalone)').matches ||
          window.matchMedia('(display-mode: fullscreen)').matches ||
          // @ts-expect-error - standalone est spécifique à Safari
