@@ -1175,6 +1175,16 @@ Ce fichier AGENTS.md doit être mis à jour dans les cas suivants :
    - Documenter les breaking changes
    - Mettre à jour les exemples de code si nécessaire
 
+### Tests de non-régression
+
+- `npm run test:unit` couvre les helpers, hooks et contrats isolés.
+- `npm run test:e2e` couvre les orchestrations et workflows sans navigateur.
+- `npm run test:browser` exécute les parcours React réels avec Playwright.
+- Toute modification d'un parcours critique (navigation, réservation, courrier/email, import produit, détail prospect, lead ou facturation) doit conserver ou étendre le scénario Playwright correspondant.
+- Les appels réseau des tests navigateur sont interceptés avec des contrats réalistes et les mutations métier sont vérifiées sur leur payload exact.
+- Après une mutation réussie, l'état React doit refléter immédiatement la réponse API ; l'affichage d'une notification ne doit pas retarder la mise à jour de la vue.
+- `playwright-report/` et `test-results/` sont des artefacts locaux et ne doivent jamais être commités.
+
 ### Comment mettre à jour
 
 1. Ajouter une entrée dans le tableau d'historique en bas du fichier
@@ -1188,6 +1198,7 @@ Ce fichier AGENTS.md doit être mis à jour dans les cas suivants :
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-07-18 | Ajout des tests navigateur Playwright sur les parcours critiques et synchronisation immédiate du détail prospect après modification | AI Agent |
 | 2026-05-20 | **Refactor "Booking salle de production" → "Agenda ANTL"** : Couleur par employé (SketchPicker), chevauchement RDV autorisé, champs personne_externe/description, renommage view `/home` | AI Agent |
 | 2026-04-25 | Contexte métier global : rôles USV/Script, flux agent complet, vente sans CB | AI Agent |
 | 2026-04-24 | Sprint E : Graphiques supervision USV (Recharts) + Endpoints backend stats | AI Agent |

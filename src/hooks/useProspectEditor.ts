@@ -73,9 +73,9 @@ export function useProspectEditor(
     setIsSubmitting(true);
     try {
       const updated = await updateProspectService(prospect.id_prospect, normalizeDraft(editedProspect));
-      await showSuccess('Prospect mis à jour avec succès', 'Succès');
       onProspectUpdated?.(updated);
       setIsEditing(false);
+      await showSuccess('Prospect mis à jour avec succès', 'Succès');
     } catch (requestError) {
       await showError(
         requestError instanceof Error ? requestError.message : 'Erreur lors de la mise à jour du prospect',

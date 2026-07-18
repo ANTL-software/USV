@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:e2e && npm run test:browser",
     "test:unit": "node --test --experimental-strip-types --experimental-test-module-mocks tests/unit/*.test.ts",
     "test:e2e": "node --test --experimental-strip-types --experimental-test-module-mocks tests/e2e/*.test.ts",
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -34,6 +36,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "1.58.2",
     "@types/aos": "^3.0.7",
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
