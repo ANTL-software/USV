@@ -96,6 +96,14 @@ test('les views ne dépendent jamais directement des services ou des contexts', 
   assert.deepEqual(violations, []);
 });
 
+test('le viewer PDF désactive explicitement l évaluation JavaScript de PDF.js', async () => {
+  const viewerPath = path.join(COMPONENTS_ROOT, 'pdfViewer', 'ModernPDFViewer.tsx');
+  const source = await readFile(viewerPath, 'utf8');
+
+  assert.equal(source.includes('transformGetDocumentParams'), true);
+  assert.equal(/isEvalSupported\s*:\s*false/.test(source), true);
+});
+
 test('les composants délèguent contexte services et routage tout en gardant leur état visuel local', async () => {
   const files = (await listFiles(COMPONENTS_ROOT)).filter((file) => /\.tsx?$/.test(file));
   const forbiddenImportMarkers = [

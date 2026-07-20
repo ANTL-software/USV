@@ -51,6 +51,10 @@ const ModernPDFViewer: React.FC<ModernPDFViewerProps> = ({ pdfUrl }) => {
           <Viewer
             fileUrl={pdfUrl}
             plugins={[defaultLayoutPluginInstance]}
+            transformGetDocumentParams={(options) => ({
+              ...options,
+              isEvalSupported: false,
+            })}
             onDocumentLoad={handleDocumentLoad}
           />
         </Worker>

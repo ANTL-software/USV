@@ -53,6 +53,12 @@ services → types → models → context → hooks → components → layouts
 - L'imbrication est limitée à trois niveaux maximum.
 - L'esperluette `&` est interdite pour les classes SCSS, y compris pour BEM, les modificateurs et les pseudo-classes; écrire les sélecteurs explicitement.
 
+### Sécurité des dépendances et compatibilité PDF
+
+- Les mises à jour de sécurité doivent être validées par les tests unitaires, le build et les parcours Playwright concernés; ne jamais utiliser `npm audit fix --force` sans analyser les ruptures proposées.
+- Le viewer historique `@react-pdf-viewer` reste sur sa version compatible tant qu'une migration visuelle complète n'est pas validée. Son moteur PDF doit conserver `isEvalSupported: false` dans `ModernPDFViewer` pour neutraliser l'évaluation dynamique vulnérable.
+- Toute évolution du viewer PDF doit exécuter le scénario navigateur `courrier-email.spec.ts` avec un vrai document PDF et vérifier le chargement du viewer ainsi que de sa toolbar.
+
 ---
 
 ## 🎯 Contexte Métier Global — ANTL Call Center
@@ -1198,6 +1204,7 @@ Ce fichier AGENTS.md doit être mis à jour dans les cas suivants :
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-07-20 | Mise à jour des dépendances vulnérables, neutralisation de l'évaluation dynamique PDF et ajout d'un test navigateur avec document réel | AI Agent |
 | 2026-07-18 | Ajout des tests navigateur Playwright sur les parcours critiques et synchronisation immédiate du détail prospect après modification | AI Agent |
 | 2026-05-20 | **Refactor "Booking salle de production" → "Agenda ANTL"** : Couleur par employé (SketchPicker), chevauchement RDV autorisé, champs personne_externe/description, renommage view `/home` | AI Agent |
 | 2026-04-25 | Contexte métier global : rôles USV/Script, flux agent complet, vente sans CB | AI Agent |
