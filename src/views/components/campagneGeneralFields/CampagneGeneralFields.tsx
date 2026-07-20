@@ -1,0 +1,54 @@
+import type { ReactElement } from 'react';
+import { IoCloudUpload, IoTrash } from 'react-icons/io5';
+
+import type { CampagneFormViewModel } from '../../../hooks/index.ts';
+import { CAMPAIGN_VARIANT_OPTIONS, getCampagneLogoUrl } from '../../../utils/scripts/index.ts';
+import { Button } from '../index.ts';
+
+interface CampagneGeneralFieldsProps {
+  viewModel: CampagneFormViewModel;
+}
+
+export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps): ReactElement {
+  const { form, existing, handleChange, handleDeleteLogo, handleOpenLogoModal } = viewModel.campaignForm;
+  return (
+    <>
+      <div className="campagneForm__row">
+        <label>Nom de la campagne *<input name="nom_campagne" value={form.nom_campagne} onChange={handleChange} required placeholder="Ex : Campagne fenêtres PVC 2026" /></label>
+        <label>Variante du script *
+          <select name="type_campagne" value={form.type_campagne} onChange={handleChange} required>
+            {CAMPAIGN_VARIANT_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+          </select>
+          <span className="campagneForm__hint">Ce réglage pilote le rendu fonctionnel du script vendeur pour cette campagne.</span>
+        </label>
+      </div>
+      <div className="campagneForm__row">
+        <label>Date de début *<input type="date" name="date_debut" value={form.date_debut} onChange={handleChange} required /></label>
+        <label>Date de fin<input type="date" name="date_fin" value={form.date_fin} onChange={handleChange} /></label>
+      </div>
+      <div className="campagneForm__row"><label>Budget (€)<input type="number" name="budget" value={form.budget} onChange={handleChange} min="0" step="0.01" placeholder="0.00" /></label></div>
+      <div className="campagneForm__row">
+        <label className="campagneForm__checkbox-label"><input type="checkbox" name="autoriser_mobile" checked={form.autoriser_mobile} onChange={handleChange} /><span>Autoriser les appels sur mobile (06/07)</span></label>
+        <span className="campagneForm__hint">{form.autoriser_mobile ? 'Les agents pourront appeler les numéros mobiles' : 'Les agents ne pourront pas appeler les numéros mobiles (verrouillé)'}</span>
+      </div>
+      <label className="campagneForm__label-full">Objectifs<textarea name="objectifs" value={form.objectifs} onChange={handleChange} rows={3} placeholder="Décrivez les objectifs de la campagne..." /></label>
+
+      <fieldset className="campagneForm__fieldset campagneForm__fieldset--logo">
+        <legend>Logo de la campagne</legend>
+        <div className="campagneForm__logo-section">
+          {existing?.logo_path && existing.logo_file_name ? (
+            <div className="campagneForm__logo-display">
+              <div className="campagneForm__logo-preview"><img src={getCampagneLogoUrl(existing.logo_path) || ''} alt={`Logo ${existing.nom_campagne}`} onError={(event) => { event.currentTarget.src = ''; }} /></div>
+              <div className="campagneForm__logo-info"><p className="campagneForm__logo-filename">{existing.logo_file_name}</p><div className="campagneForm__logo-actions">
+                <Button style="seaGreen" type="button" onClick={handleOpenLogoModal}><IoCloudUpload /> Changer le logo</Button>
+                <Button style="red" type="button" onClick={handleDeleteLogo}><IoTrash /> Supprimer</Button>
+              </div></div>
+            </div>
+          ) : (
+            <div className="campagneForm__no-logo"><p>Aucun logo n&apos;est configuré pour cette campagne.</p><Button style="gradient" type="button" onClick={handleOpenLogoModal}><IoCloudUpload /> Ajouter un logo</Button></div>
+          )}
+        </div>
+      </fieldset>
+    </>
+  );
+}

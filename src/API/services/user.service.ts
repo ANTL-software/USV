@@ -1,7 +1,7 @@
 import { getRequest, postRequest, patchRequest, deleteRequest, postFormDataRequest } from '../APICalls.ts';
-import { AxiosResponse } from 'axios';
-import { UserModel } from '../models/user.model.ts';
-import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse } from '../../utils/types/user.types.ts';
+import type { AxiosResponse } from 'axios';
+import { UserModel } from '../models/index.ts';
+import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse } from '../../utils/types/index.ts';
 
 export const getAllEmployesService = async (): Promise<UserModel[]> => {
   const response: AxiosResponse<ApiResponse<{ employes: Employe[] }>> = await getRequest('/employes');

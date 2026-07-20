@@ -6,7 +6,7 @@ import type {
   CreateCategorieData, UpdateCategorieData,
   CampagneProduit, AddProduitCampagneData, UpdateProduitCampagneData,
   ImportProduitRow, ImportProduitResult,
-} from '../../utils/types/produit.types.ts';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

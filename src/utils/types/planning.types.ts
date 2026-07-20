@@ -40,6 +40,20 @@ export interface PlanningCalendarEvent {
   absence_label: string | null;
 }
 
+export type CalendarPlanningEvent = Omit<PlanningCalendarEvent, 'start' | 'end'> & {
+  start: Date;
+  end: Date;
+};
+
+export interface PlanningDisplayEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  event_type?: 'work' | 'holiday' | 'absence';
+  holiday_name?: string | null;
+  absence_label?: string | null;
+}
+
 export interface PlanningPayload {
   code_planning: string;
   nom_planning: string;

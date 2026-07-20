@@ -1,460 +1,414 @@
-@use '../../../utils/styles/variables' as vars;
-@use '../../../utils/styles/mixins' as mixins;
-
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
 #facturationView {
   @include mixins.mainView;
-
-  main {
-    padding: 1.5em 1em 2.5em;
+}
+#facturationView main {
+  padding: 1.5em 1em 2.5em;
+}
+#facturationView .facturationView__container {
+  @include mixins.centeredContainer(82em);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+}
+#facturationView .facturationView__hero,
+#facturationView .facturationView__panel,
+#facturationView .facturationView__summary-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: vars.$shadowLight;
+}
+#facturationView .facturationView__hero {
+  border-radius: 1.25em;
+  padding: 1.5em;
+  display: grid;
+  gap: 1em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #facturationView .facturationView__hero {
+    grid-template-columns: minmax(0, 2fr) minmax(20em, 1fr);
+    align-items: start;
   }
-
-  .facturationView__container {
-    @include mixins.centeredContainer(82em);
-    display: flex;
-    flex-direction: column;
-    gap: 1.25em;
+}
+#facturationView .facturationView__hero h1 {
+  margin: 0.1em 0 0.35em;
+  font-size: clamp(1.85rem, 2vw, 2.6rem);
+  color: vars.$fontColorPrimary;
+}
+#facturationView .facturationView__eyebrow {
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: vars.$utilsPrimary;
+}
+#facturationView .facturationView__subtitle {
+  margin: 0;
+  max-width: 48em;
+  color: vars.$fontColorSecondary;
+  line-height: 1.6;
+}
+#facturationView .facturationView__panel {
+  border-radius: 1.1em;
+  padding: 1.2em;
+}
+#facturationView .facturationView__panel-header {
+  display: flex;
+  gap: 0.8em;
+  align-items: flex-start;
+  margin-bottom: 1em;
+}
+#facturationView .facturationView__panel-header svg {
+  font-size: 1.55rem;
+  color: vars.$utilsPrimary;
+  margin-top: 0.1em;
+  flex-shrink: 0;
+}
+#facturationView .facturationView__panel-header h2 {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  font-size: 1.15rem;
+}
+#facturationView .facturationView__panel-header p {
+  margin: 0.2em 0 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.5;
+}
+#facturationView .facturationView__filters-grid {
+  display: grid;
+  gap: 0.9em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #facturationView .facturationView__filters-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .facturationView__hero,
-  .facturationView__panel,
-  .facturationView__summary-card {
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    box-shadow: vars.$shadowLight;
+}
+#facturationView .facturationView__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+#facturationView .facturationView__field span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.86rem;
+  font-weight: 600;
+}
+#facturationView .facturationView__field select,
+#facturationView .facturationView__field input {
+  @include mixins.formInput(
+    "#facturationView .facturationView__field select, #facturationView .facturationView__field input"
+  );
+  min-height: 3rem;
+}
+#facturationView .facturationView__summary {
+  display: grid;
+  gap: 0.85em;
+}
+@media (min-width: vars.$mobileWidth) {
+  #facturationView .facturationView__summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .facturationView__hero {
-    border-radius: 1.25em;
-    padding: 1.5em;
-    display: grid;
-    gap: 1em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: minmax(0, 2fr) minmax(20em, 1fr);
-      align-items: start;
-    }
-
-    h1 {
-      margin: 0.1em 0 0.35em;
-      font-size: clamp(1.85rem, 2vw, 2.6rem);
-      color: vars.$fontColorPrimary;
-    }
+}
+@media (min-width: vars.$laptopWidth) {
+  #facturationView .facturationView__summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .facturationView__eyebrow {
-    margin: 0;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: vars.$utilsPrimary;
+}
+#facturationView .facturationView__summary-card {
+  border-radius: 1em;
+  padding: 1em 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+  border-top: 0.3em solid vars.$borderColor;
+}
+#facturationView .facturationView__summary-card span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+#facturationView .facturationView__summary-card strong {
+  color: vars.$fontColorPrimary;
+  font-size: 1.02rem;
+  line-height: 1.35;
+}
+#facturationView .facturationView__summary-card--primary {
+  border-top-color: vars.$utilsPrimary;
+}
+#facturationView .facturationView__summary-card--success {
+  border-top-color: vars.$successColor;
+}
+#facturationView .facturationView__summary-card--warning {
+  border-top-color: vars.$warningColor;
+}
+#facturationView .facturationView__summary-card--muted {
+  border-top-color: #94a3b8;
+}
+#facturationView .facturationView__grid {
+  display: grid;
+  gap: 1em;
+}
+@media (min-width: vars.$laptopWidth) {
+  #facturationView .facturationView__grid {
+    grid-template-columns: minmax(0, 1.4fr) minmax(22em, 0.9fr);
   }
-
-  .facturationView__subtitle {
-    margin: 0;
-    max-width: 48em;
-    color: vars.$fontColorSecondary;
-    line-height: 1.6;
+}
+#facturationView .facturationView__campaign-meta,
+#facturationView .facturationView__todo,
+#facturationView .facturationView__kpis {
+  display: grid;
+  gap: 0.75em;
+}
+@media (min-width: vars.$mobileWidth) {
+  #facturationView .facturationView__campaign-meta,
+  #facturationView .facturationView__todo,
+  #facturationView .facturationView__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .facturationView__panel {
-    border-radius: 1.1em;
-    padding: 1.2em;
+}
+#facturationView .facturationView__campaign-meta,
+#facturationView .facturationView__todo {
+  margin-bottom: 1em;
+}
+#facturationView .facturationView__campaign-meta > div,
+#facturationView .facturationView__todo > div,
+#facturationView .facturationView__kpi {
+  border: 1px solid vars.$borderColor;
+  border-radius: 0.9em;
+  padding: 0.85em 0.95em;
+  background: vars.$whiteBackground;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+#facturationView .facturationView__campaign-meta > div span,
+#facturationView .facturationView__todo > div span,
+#facturationView .facturationView__kpi span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+#facturationView .facturationView__campaign-meta > div strong,
+#facturationView .facturationView__todo > div strong,
+#facturationView .facturationView__kpi strong {
+  color: vars.$fontColorPrimary;
+  line-height: 1.4;
+}
+#facturationView .facturationView__document-grid {
+  display: grid;
+  gap: 0.75em;
+}
+@media (min-width: vars.$mobileWidth) {
+  #facturationView .facturationView__document-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .facturationView__panel-header {
-    display: flex;
-    gap: 0.8em;
-    align-items: flex-start;
-    margin-bottom: 1em;
-
-    svg {
-      font-size: 1.55rem;
-      color: vars.$utilsPrimary;
-      margin-top: 0.1em;
-      flex-shrink: 0;
-    }
-
-    h2 {
-      margin: 0;
-      color: vars.$fontColorPrimary;
-      font-size: 1.15rem;
-    }
-
-    p {
-      margin: 0.2em 0 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.5;
-    }
-  }
-
-  .facturationView__filters-grid {
-    display: grid;
-    gap: 0.9em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .facturationView__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.35em;
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: 0.86rem;
-      font-weight: 600;
-    }
-
-    select,
-    input {
-      @include mixins.formInput;
-      min-height: 3rem;
-    }
-  }
-
-  .facturationView__summary {
-    display: grid;
-    gap: 0.85em;
-
-    @media (min-width: vars.$mobileWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (min-width: vars.$laptopWidth) {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  .facturationView__summary-card {
-    border-radius: 1em;
-    padding: 1em 1.1em;
-    display: flex;
-    flex-direction: column;
-    gap: 0.45em;
-    border-top: 0.3em solid vars.$borderColor;
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
-      font-size: 1.02rem;
-      line-height: 1.35;
-    }
-
-    &--primary {
-      border-top-color: vars.$utilsPrimary;
-    }
-
-    &--success {
-      border-top-color: vars.$successColor;
-    }
-
-    &--warning {
-      border-top-color: vars.$warningColor;
-    }
-
-    &--muted {
-      border-top-color: #94a3b8;
-    }
-  }
-
-  .facturationView__grid {
-    display: grid;
-    gap: 1em;
-
-    @media (min-width: vars.$laptopWidth) {
-      grid-template-columns: minmax(0, 1.4fr) minmax(22em, 0.9fr);
-    }
-  }
-
-  .facturationView__campaign-meta,
-  .facturationView__todo,
-  .facturationView__kpis {
-    display: grid;
-    gap: 0.75em;
-
-    @media (min-width: vars.$mobileWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .facturationView__campaign-meta,
-  .facturationView__todo {
-    margin-bottom: 1em;
-  }
-
-  .facturationView__campaign-meta > div,
-  .facturationView__todo > div,
-  .facturationView__kpi {
-    border: 1px solid vars.$borderColor;
-    border-radius: 0.9em;
-    padding: 0.85em 0.95em;
-    background: vars.$whiteBackground;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
-      line-height: 1.4;
-    }
-  }
-
-  .facturationView__document-grid {
-    display: grid;
-    gap: 0.75em;
-
-    @media (min-width: vars.$mobileWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .facturationView__document-item {
-    border-radius: 0.9em;
-    padding: 0.9em 1em;
-    border: 1px solid vars.$borderColor;
-    background: vars.$whiteBackground;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35em;
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: 0.82rem;
-      font-weight: 600;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
-      line-height: 1.45;
-      white-space: pre-line;
-      word-break: break-word;
-    }
-
-    small {
-      color: vars.$fontColorSecondary;
-      font-size: 0.76rem;
-      font-weight: 600;
-    }
-
-    &.is-complete {
-      border-color: rgba(39, 174, 96, 0.25);
-      box-shadow: inset 0 0 0 1px rgba(39, 174, 96, 0.12);
-    }
-
-    &.is-missing {
-      border-color: rgba(243, 156, 18, 0.28);
-      background: rgba(243, 156, 18, 0.06);
-    }
-  }
-
-  .facturationView__warning,
-  .facturationView__error,
-  .facturationView__empty {
-    border-radius: 0.9em;
-    padding: 0.95em 1em;
-  }
-
-  .facturationView__warning {
-    background: rgba(243, 156, 18, 0.12);
-    color: #9a6700;
-    border: 1px solid rgba(243, 156, 18, 0.22);
-    line-height: 1.5;
-  }
-
-  .facturationView__warning--spaced-top {
-    margin-top: 1em;
-  }
-
-  .facturationView__warning--spaced-bottom {
-    margin-bottom: 1em;
-  }
-
-  .facturationView__error {
-    background: rgba(231, 76, 60, 0.1);
-    color: #b42318;
-    border: 1px solid rgba(231, 76, 60, 0.22);
-  }
-
-  .facturationView__success {
-    border-radius: 0.9em;
-    padding: 0.95em 1em;
-    background: rgba(39, 174, 96, 0.12);
-    color: #166534;
-    border: 1px solid rgba(39, 174, 96, 0.2);
-  }
-
-  .facturationView__error--inline {
-    margin-bottom: 1em;
-  }
-
-  .facturationView__empty {
-    background: rgba(148, 163, 184, 0.1);
-    color: vars.$fontColorSecondary;
-    border: 1px dashed rgba(148, 163, 184, 0.4);
-
-    h2 {
-      margin: 0 0 0.35em;
-      color: vars.$fontColorPrimary;
-    }
-
-    p {
-      margin: 0;
-      line-height: 1.5;
-    }
-  }
-
-  .facturationView__empty--inline {
-    text-align: center;
-  }
-
-  .facturationView__placeholder {
-    border-radius: 0.95em;
-    padding: 1.05em;
-    background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(167, 139, 250, 0.08));
-    border: 1px dashed rgba(124, 58, 237, 0.28);
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    p {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.6;
-    }
-  }
-
-  .facturationView__placeholder-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em;
-  }
-
-  .facturationView__table-wrapper {
-    overflow-x: auto;
-    border: 1px solid vars.$borderColor;
-    border-radius: 0.95em;
-    background: vars.$whiteBackground;
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 42em;
-    }
-
-    th,
-    td {
-      padding: 0.8em 0.95em;
-      text-align: left;
-      border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-      white-space: nowrap;
-    }
-
-    th {
-      background: vars.$greyBackground;
-      color: vars.$fontColorSecondary;
-      font-size: 0.83rem;
-      font-weight: 700;
-    }
-
-    tbody tr:hover {
-      background: rgba(124, 58, 237, 0.04);
-    }
-  }
-
-  .facturationView__table-empty {
-    text-align: center;
-    color: vars.$fontColorSecondary;
-    padding: 1.2em;
-  }
-
-  .facturationView__modal-backdrop {
-    position: fixed;
-    inset: 0;
-    z-index: 1200;
-    background: rgba(15, 23, 42, 0.5);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1.2em;
-  }
-
-  .facturationView__modal {
-    width: min(100%, 34em);
-    border-radius: 1.2em;
-    background: rgba(255, 255, 255, 0.97);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 32px 64px rgba(15, 23, 42, 0.18);
-    overflow: hidden;
-  }
-
-  .facturationView__modal-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1em;
-    padding: 1.2em 1.2em 1em;
-    border-bottom: 1px solid rgba(148, 163, 184, 0.18);
-
-    h3 {
-      margin: 0;
-      color: vars.$fontColorPrimary;
-      font-size: 1.1rem;
-    }
-
-    p {
-      margin: 0.25em 0 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.5;
-    }
-
-    button {
-      border: none;
-      background: transparent;
-      color: vars.$fontColorSecondary;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      padding: 0.2em;
-      border-radius: 999px;
-      transition: background 0.2s ease, color 0.2s ease;
-
-      &:hover {
-        background: rgba(124, 58, 237, 0.08);
-        color: vars.$utilsPrimary;
-      }
-    }
-  }
-
-  .facturationView__modal-content {
-    padding: 1.2em;
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-  }
-
-  .facturationView__modal-actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.75em;
-    padding: 0 1.2em 1.2em;
-  }
+}
+#facturationView .facturationView__document-item {
+  border-radius: 0.9em;
+  padding: 0.9em 1em;
+  border: 1px solid vars.$borderColor;
+  background: vars.$whiteBackground;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+#facturationView .facturationView__document-item span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+#facturationView .facturationView__document-item strong {
+  color: vars.$fontColorPrimary;
+  line-height: 1.45;
+  white-space: pre-line;
+  word-break: break-word;
+}
+#facturationView .facturationView__document-item small {
+  color: vars.$fontColorSecondary;
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+#facturationView .facturationView__document-item.is-complete {
+  border-color: rgba(39, 174, 96, 0.25);
+  box-shadow: inset 0 0 0 1px rgba(39, 174, 96, 0.12);
+}
+#facturationView .facturationView__document-item.is-missing {
+  border-color: rgba(243, 156, 18, 0.28);
+  background: rgba(243, 156, 18, 0.06);
+}
+#facturationView .facturationView__warning,
+#facturationView .facturationView__error,
+#facturationView .facturationView__empty {
+  border-radius: 0.9em;
+  padding: 0.95em 1em;
+}
+#facturationView .facturationView__warning {
+  background: rgba(243, 156, 18, 0.12);
+  color: #9a6700;
+  border: 1px solid rgba(243, 156, 18, 0.22);
+  line-height: 1.5;
+}
+#facturationView .facturationView__warning--spaced-top {
+  margin-top: 1em;
+}
+#facturationView .facturationView__warning--spaced-bottom {
+  margin-bottom: 1em;
+}
+#facturationView .facturationView__error {
+  background: rgba(231, 76, 60, 0.1);
+  color: #b42318;
+  border: 1px solid rgba(231, 76, 60, 0.22);
+}
+#facturationView .facturationView__success {
+  border-radius: 0.9em;
+  padding: 0.95em 1em;
+  background: rgba(39, 174, 96, 0.12);
+  color: #166534;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+}
+#facturationView .facturationView__error--inline {
+  margin-bottom: 1em;
+}
+#facturationView .facturationView__empty {
+  background: rgba(148, 163, 184, 0.1);
+  color: vars.$fontColorSecondary;
+  border: 1px dashed rgba(148, 163, 184, 0.4);
+}
+#facturationView .facturationView__empty h2 {
+  margin: 0 0 0.35em;
+  color: vars.$fontColorPrimary;
+}
+#facturationView .facturationView__empty p {
+  margin: 0;
+  line-height: 1.5;
+}
+#facturationView .facturationView__empty--inline {
+  text-align: center;
+}
+#facturationView .facturationView__placeholder {
+  border-radius: 0.95em;
+  padding: 1.05em;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.08),
+    rgba(167, 139, 250, 0.08)
+  );
+  border: 1px dashed rgba(124, 58, 237, 0.28);
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#facturationView .facturationView__placeholder p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.6;
+}
+#facturationView .facturationView__placeholder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+}
+#facturationView .facturationView__table-wrapper {
+  overflow-x: auto;
+  border: 1px solid vars.$borderColor;
+  border-radius: 0.95em;
+  background: vars.$whiteBackground;
+}
+#facturationView .facturationView__table-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 42em;
+}
+#facturationView .facturationView__table-wrapper th,
+#facturationView .facturationView__table-wrapper td {
+  padding: 0.8em 0.95em;
+  text-align: left;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+  white-space: nowrap;
+}
+#facturationView .facturationView__table-wrapper th {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+  font-size: 0.83rem;
+  font-weight: 700;
+}
+#facturationView .facturationView__table-wrapper tbody tr:hover {
+  background: rgba(124, 58, 237, 0.04);
+}
+#facturationView .facturationView__table-empty {
+  text-align: center;
+  color: vars.$fontColorSecondary;
+  padding: 1.2em;
+}
+#facturationView .facturationView__modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.2em;
+}
+#facturationView .facturationView__modal {
+  width: min(100%, 34em);
+  border-radius: 1.2em;
+  background: rgba(255, 255, 255, 0.97);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 32px 64px rgba(15, 23, 42, 0.18);
+  overflow: hidden;
+}
+#facturationView .facturationView__modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 1.2em 1.2em 1em;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+}
+#facturationView .facturationView__modal-header h3 {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  font-size: 1.1rem;
+}
+#facturationView .facturationView__modal-header p {
+  margin: 0.25em 0 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.5;
+}
+#facturationView .facturationView__modal-header button {
+  border: none;
+  background: transparent;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  padding: 0.2em;
+  border-radius: 999px;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
+}
+#facturationView .facturationView__modal-header button:hover {
+  background: rgba(124, 58, 237, 0.08);
+  color: vars.$utilsPrimary;
+}
+#facturationView .facturationView__modal-content {
+  padding: 1.2em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#facturationView .facturationView__modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75em;
+  padding: 0 1.2em 1.2em;
 }

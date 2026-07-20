@@ -1,5 +1,6 @@
 // libraries
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
+import type { AxiosResponse } from "axios";
 
 // utils
 import { getApiBaseUrl } from "../utils/scripts/utils.ts";
@@ -10,9 +11,11 @@ axios.defaults.baseURL = getApiBaseUrl();
 axios.defaults.withCredentials = true; // Nécessaire pour les cookies httpOnly
 
 // Initialiser le token CSRF dès le chargement de l'application
-csrfService.getToken().catch((error) => {
-  console.warn('Impossible d\'initialiser le token CSRF:', error);
-});
+if (typeof window !== 'undefined') {
+  csrfService.getToken().catch((error) => {
+    console.warn('Impossible d\'initialiser le token CSRF:', error);
+  });
+}
 
 // Interceptor pour ajouter le token CSRF automatiquement (JWT dans cookies httpOnly cross-domain)
 axios.interceptors.request.use(async (config) => {

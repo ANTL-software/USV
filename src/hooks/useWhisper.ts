@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { Device, Call } from '@twilio/voice-sdk';
 import { getRequest, postRequest } from '../API/APICalls';
-import { UserContext } from '../context/userContext/UserContext.tsx';
+import { UserContext } from '../context/user/index.ts';
 
 interface WhisperResponse {
   success: boolean;

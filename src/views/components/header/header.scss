@@ -1,6 +1,5 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #header {
   position: fixed;
   inset: 0 0 auto;
@@ -10,75 +9,62 @@
   backdrop-filter: vars.$blurMedium;
   -webkit-backdrop-filter: vars.$blurMedium;
   transition: all vars.$transitionSmooth;
-
-  &.webdev {
-    background: rgba(vars.$webdevPrimary, 0.05);
-  }
-
-  &.utils {
-    background: rgba(vars.$utilsPrimary, 0.05);
-  }
 }
-
-.headerContainer {
-  @media (min-width: 1980px) {
+#header.webdev {
+  background: rgba(vars.$webdevPrimary, 0.05);
+}
+#header.utils {
+  background: rgba(vars.$utilsPrimary, 0.05);
+}
+@media (min-width: 1980px) {
+  .headerContainer {
     padding: 0 !important;
   }
-
-  & {
-
-    display: flex !important;
-    align-items: center !important;
-    padding: 0 1rem !important;
-    justify-content: space-between !important;
-    height: 100% !important;
-    @include mixins.centeredContainer(1980px);
-  }
 }
-
+.headerContainer {
+  display: flex !important;
+  align-items: center !important;
+  padding: 0 1rem !important;
+  justify-content: space-between !important;
+  height: 100% !important;
+  @include mixins.centeredContainer(1980px);
+}
 .headerBrand {
   text-decoration: none;
   transition: all vars.$transitionFast;
 }
-
 .brandLogo {
   margin: 0;
   display: flex;
   align-items: center;
   height: 3rem;
   padding: 0.25rem 0;
-
-  img {
-    height: 100%;
-    width: auto;
-    object-fit: contain;
-  }
 }
-
+.brandLogo img {
+  height: 100%;
+  width: auto;
+  object-fit: contain;
+}
 .headerRight {
   align-items: center !important;
   @include mixins.flexContainer(row, 1rem);
 }
-
 .headerActions {
-  & {
-    display: none;
-    align-items: center;
-    gap: 0.75rem;
-  }
-
-  @media (min-width: vars.$mobileWidth) {
+  display: none;
+  align-items: center;
+  gap: 0.75rem;
+}
+@media (min-width: vars.$mobileWidth) {
+  .headerActions {
     display: flex;
     gap: 1rem;
   }
-
-  .pwa-install-btn.compact.desktop {
-    font-size: 0.8em;
-    padding: 0.4em 0.6em;
-    border-radius: 6px;
-  }
 }
-
+.headerActions .pwa-install-btn.compact.desktop {
+  font-size: 0.8em;
+  padding: 0.4em 0.6em;
+  border-radius: 6px;
+}
 .userGreeting {
   position: absolute;
   left: 50%;
@@ -90,12 +76,12 @@
   pointer-events: none;
   font-size: 0.85em;
   color: vars.$fontColorPrimary;
-
-  @media (min-width: vars.$mobileWidth) {
+}
+@media (min-width: vars.$mobileWidth) {
+  .userGreeting {
     font-size: 0.9em;
   }
 }
-
 .envBadge {
   display: inline-flex;
   align-items: center;
@@ -110,18 +96,15 @@
   color: #fff;
   pointer-events: none;
 }
-
 .envBadge--test {
   background: #c62828;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.04);
 }
-
 .mobileUserGreeting {
   display: inline-flex;
   align-items: center;
   gap: 0.65rem;
 }
-
 .logoutButton {
   display: flex;
   align-items: center;
@@ -133,33 +116,29 @@
   background: transparent;
   color: vars.$fontColorSecondary;
   cursor: pointer;
-  transition: background vars.$transitionFast, color vars.$transitionFast;
-
-  &:hover {
-    background: rgba(vars.$errorColor, 0.08);
-    color: vars.$errorColor;
-  }
-
-  &:active {
-    background: rgba(vars.$errorColor, 0.15);
-  }
+  transition:
+    background vars.$transitionFast,
+    color vars.$transitionFast;
 }
-
-.headerDesktop {
-  @media (max-width: vars.$mobileWidth) {
+.logoutButton:hover {
+  background: rgba(vars.$errorColor, 0.08);
+  color: vars.$errorColor;
+}
+.logoutButton:active {
+  background: rgba(vars.$errorColor, 0.15);
+}
+@media (max-width: vars.$mobileWidth) {
+  .headerDesktop {
     display: none;
   }
-
-  & {
-    align-items: center !important;
-    @include mixins.flexContainer(row, 0.5rem);
-  }
-
 }
-
+.headerDesktop {
+  align-items: center !important;
+  @include mixins.flexContainer(row, 0.5rem);
+}
 .navItem {
   align-items: center !important;
-  padding: 0.2em .5em !important;
+  padding: 0.2em 0.5em !important;
   border: none !important;
   background: transparent !important;
   color: vars.$navTextColor !important;
@@ -171,89 +150,74 @@
   position: relative !important;
   overflow: hidden !important;
   @include mixins.flexContainer(row, 0.5rem);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    transition: left vars.$transitionMedium;
-    z-index: -1;
-  }
-
-  &:hover:not(.active) {
-    transform: translateY(-0.125em);
-    background: rgba(255, 255, 255, 0.1);
-    box-shadow: vars.$shadowLight;
-  }
-
-  &.active {
-    color: vars.$navTextColorActive;
-    transform: translateY(-0.125em);
-    box-shadow: vars.$shadowMedium;
-
-    #header.utils & {
-      background: vars.$utilsGradient;
-
-      &::before {
-        background: vars.$utilsGradientReverse;
-        left: 0;
-      }
-    }
-
-    #header.webdev & {
-      background: vars.$webdevGradient;
-
-      &::before {
-        background: vars.$webdevGradientReverse;
-        left: 0;
-      }
-    }
-  }
-
-  .navIcon {
-    font-size: 1.1rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .navText {
-    white-space: nowrap;
-  }
 }
-
+.navItem::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  transition: left vars.$transitionMedium;
+  z-index: -1;
+}
+.navItem:hover:not(.active) {
+  transform: translateY(-0.125em);
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: vars.$shadowLight;
+}
+.navItem.active {
+  color: vars.$navTextColorActive;
+  transform: translateY(-0.125em);
+  box-shadow: vars.$shadowMedium;
+}
+#header.utils .navItem.active {
+  background: vars.$utilsGradient;
+}
+#header.utils .navItem.active::before {
+  background: vars.$utilsGradientReverse;
+  left: 0;
+}
+#header.webdev .navItem.active {
+  background: vars.$webdevGradient;
+}
+#header.webdev .navItem.active::before {
+  background: vars.$webdevGradientReverse;
+  left: 0;
+}
+.navItem .navIcon {
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+}
+.navItem .navText {
+  white-space: nowrap;
+}
 .headerToggle {
-  & {
-    display: none;
-    align-items: center;
-    justify-content: center;
-    width: 2.5em;
-    height: 1.5em;
-    border: none;
-    background: transparent;
-    color: vars.$navTextColor;
-    font-size: 1.5rem;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: all vars.$transitionFast;
-  }
-
-  @media (max-width: vars.$mobileWidth) {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 1.5em;
+  border: none;
+  background: transparent;
+  color: vars.$navTextColor;
+  font-size: 1.5rem;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all vars.$transitionFast;
+}
+@media (max-width: vars.$mobileWidth) {
+  .headerToggle {
     display: flex;
   }
-
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.05);
-  }
-
-  &:active {
-    transform: scale(0.95);
-  }
 }
-
+.headerToggle:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+.headerToggle:active {
+  transform: scale(0.95);
+}
 .mobileMenuOverlay {
   position: fixed;
   top: 0;
@@ -267,7 +231,6 @@
   justify-content: center;
   padding-top: 4em;
 }
-
 .mobileMenu {
   width: 90%;
   max-width: 25em;
@@ -276,40 +239,31 @@
   box-shadow: vars.$shadowHeavy;
   overflow: hidden;
   animation: slideInDown 0.3s ease;
-
-  &.utils {
-    border-top: 4px solid vars.$utilsPrimary;
-  }
-
-  &.webdev {
-    border-top: 4px solid vars.$webdevPrimary;
-  }
 }
-
+.mobileMenu.utils {
+  border-top: 4px solid vars.$utilsPrimary;
+}
+.mobileMenu.webdev {
+  border-top: 4px solid vars.$webdevPrimary;
+}
 .mobileMenuHeader {
   align-items: center !important;
   justify-content: space-between !important;
   padding: 1rem 1.5rem !important;
   background: vars.$greyBackground !important;
   @include mixins.flexContainer(row, 1rem);
-
-  .mobileMenu & {
-    &.utils {
-      background: rgba(38, 208, 206, 0.1);
-    }
-
-    &.webdev {
-      background: rgba(255, 107, 71, 0.1);
-    }
-  }
 }
-
+.mobileMenu .mobileMenuHeader.utils {
+  background: rgba(38, 208, 206, 0.1);
+}
+.mobileMenu .mobileMenuHeader.webdev {
+  background: rgba(255, 107, 71, 0.1);
+}
 .mobileMenuTitle {
   font-size: 1.1rem;
   font-weight: 600;
   color: vars.$fontColorPrimary;
 }
-
 .mobileMenuClose {
   display: flex;
   align-items: center;
@@ -322,65 +276,57 @@
   border-radius: 50%;
   cursor: pointer;
   transition: all vars.$transitionFast;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.2);
-    transform: rotate(90deg);
-  }
 }
-
+.mobileMenuClose:hover {
+  background: rgba(0, 0, 0, 0.2);
+  transform: rotate(90deg);
+}
 .mobileMenuContent {
   padding: 1rem;
 }
-
 .mobileUserInfo {
   background: rgba(0, 0, 0, 0.05) !important;
   border-radius: 12px !important;
   padding: 1rem !important;
   margin-bottom: 1rem !important;
   @include mixins.flexContainer(column, 0.75rem);
-
-  .mobileUserGreeting {
-    font-size: 0.9rem;
-    color: vars.$fontColorPrimary;
-    font-weight: 500;
-    text-align: center;
-  }
-
-  .pwa-install-btn.compact.mobile {
-    align-self: center;
-    min-width: 150px;
-  }
-
-  .mobileLogoutButton {
-    display: flex !important;
-    align-items: center !important;
-    gap: 0.5rem !important;
-    padding: 0.5em 0.75em !important;
-    font-size: 0.85rem !important;
-    font-weight: 500 !important;
-    border: none !important;
-    border-radius: 8px !important;
-    background: transparent !important;
-    color: vars.$fontColorSecondary !important;
-    cursor: pointer !important;
-    transition: background vars.$transitionFast, color vars.$transitionFast !important;
-
-    &:hover {
-      background: rgba(vars.$errorColor, 0.08) !important;
-      color: vars.$errorColor !important;
-    }
-  }
 }
-
+.mobileUserInfo .mobileUserGreeting {
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+  font-weight: 500;
+  text-align: center;
+}
+.mobileUserInfo .pwa-install-btn.compact.mobile {
+  align-self: center;
+  min-width: 150px;
+}
+.mobileUserInfo .mobileLogoutButton {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0.5em 0.75em !important;
+  font-size: 0.85rem !important;
+  font-weight: 500 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  background: transparent !important;
+  color: vars.$fontColorSecondary !important;
+  cursor: pointer !important;
+  transition:
+    background vars.$transitionFast,
+    color vars.$transitionFast !important;
+}
+.mobileUserInfo .mobileLogoutButton:hover {
+  background: rgba(vars.$errorColor, 0.08) !important;
+  color: vars.$errorColor !important;
+}
 .mobileSection {
   margin-bottom: 1rem;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
-
+.mobileSection:last-child {
+  margin-bottom: 0;
+}
 .mobileSectionTitle {
   font-size: 0.9rem;
   font-weight: 600;
@@ -389,7 +335,6 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
-
 .mobileNavItem {
   align-items: center !important;
   width: 100% !important;
@@ -404,32 +349,26 @@
   transition: all vars.$transitionFast !important;
   text-align: left !important;
   @include mixins.flexContainer(row, 1rem);
-
-  &:hover:not(.active) {
-    background: vars.$greyBackground;
-    transform: translateX(0.25em);
-  }
-
-  &.active {
-    color: vars.$whiteBackground;
-
-    .mobileMenu.utils & {
-      background: vars.$utilsGradient;
-    }
-
-    .mobileMenu.webdev & {
-      background: vars.$webdevGradient;
-    }
-  }
-
-  .mobileNavIcon {
-    font-size: 1.3rem;
-    min-width: 1.5em;
-  }
-
-  .mobileNavText {
-    flex: 1;
-  }
+}
+.mobileNavItem:hover:not(.active) {
+  background: vars.$greyBackground;
+  transform: translateX(0.25em);
+}
+.mobileNavItem.active {
+  color: vars.$whiteBackground;
+}
+.mobileMenu.utils .mobileNavItem.active {
+  background: vars.$utilsGradient;
+}
+.mobileMenu.webdev .mobileNavItem.active {
+  background: vars.$webdevGradient;
+}
+.mobileNavItem .mobileNavIcon {
+  font-size: 1.3rem;
+  min-width: 1.5em;
+}
+.mobileNavItem .mobileNavText {
+  flex: 1;
 }
 
 @keyframes slideInDown {

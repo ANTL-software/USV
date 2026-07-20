@@ -1,17 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { ICourrier, ICourrierFormData } from "../utils/types/courrier.types";
+import { ICourrier, ICourrierFormData } from "../utils/types/index.ts";
 import {
   downloadCourrierService,
   getCourrierByIdService,
-} from "../API/services/courrier.service";
-import { generateViewUrlService } from "../API/services/viewUrl.service";
+} from "../API/services/index.ts";
+import { generateViewUrlService } from "../API/services/index.ts";
 import {
   handleCourrierLoadError,
   logError,
   showErrorNotification,
-} from "../utils/scripts/errorHandling";
+} from "../utils/scripts/index.ts";
 
 export interface CourrierEditPreviewResult {
   courrier: ICourrier | null;

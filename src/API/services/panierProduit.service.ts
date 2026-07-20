@@ -1,11 +1,11 @@
-import { getRequest, postRequest, patchRequest, deleteRequest } from '../APICalls';
+import { getRequest, postRequest, patchRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import type {
   PanierProduitAssociation,
   ProduitInPanier,
   AddProduitToPanierData,
   UpdatePanierProduitData
-} from '../../utils/types/panier.types';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

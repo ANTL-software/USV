@@ -1,7 +1,7 @@
 import type { AxiosResponse } from 'axios';
 import { getRequest, patchRequest } from '../APICalls.ts';
-import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
-import type { LeadClient, LeadClientListParams, LeadClientStats } from '../../utils/types/rendezVous.types.ts';
+import { getApiBaseUrl } from '../../utils/scripts/index.ts';
+import type { LeadClient, LeadClientListParams, LeadClientStats } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

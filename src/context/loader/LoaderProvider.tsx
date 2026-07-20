@@ -5,7 +5,7 @@ import { ReactElement, ReactNode, useState, useCallback, useMemo } from "react";
 import { LoaderContext } from "./LoaderContext.tsx";
 
 // components
-import Loader from "../../components/loader/Loader.tsx";
+import { Loader } from '../../views/components/index.ts';
 
 interface ILoaderProviderProps {
   children: ReactNode;

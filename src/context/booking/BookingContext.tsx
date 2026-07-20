@@ -1,11 +1,6 @@
 import { createContext } from 'react';
-import type { BookingModel } from '../../API/models/booking.model.ts';
-import type { CreateBookingPayload, BookingFilters, BookingConfig, UpdateBookingPayload } from '../../utils/types/booking.types.ts';
-
-export interface EmployeOption {
-  value: number;
-  label: string;
-}
+import type { BookingModel } from '../../API/models/index.ts';
+import type { BookingConfig, BookingFilters, CreateBookingPayload, EmployeOption, UpdateBookingPayload } from '../../utils/types/index.ts';
 
 export interface BookingContextType {
   bookings: BookingModel[];

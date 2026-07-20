@@ -1,28 +1,9 @@
-// styles
-import "./authPage.scss";
+import './authPage.scss';
 
-// hooks | libraries
-import { ReactElement, useState } from "react";
-
-// components
-import SignInForm from "../../components/signInForm/SignInForm.tsx";
-import Footer from "../../components/footer/Footer";
+import type { ReactElement } from 'react';
+import { useSignInForm } from '../../../hooks/index.ts';
+import { Footer, SignInForm } from '../../components/index.ts';
 
 export default function AuthPage(): ReactElement {
-  const [identifiant, setIdentifiant] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-
-  return (
-    <div id="authPage" className="authPageContainer">
-      <main>
-        <SignInForm
-          identifiant={identifiant}
-          password={password}
-          setIdentifiant={setIdentifiant}
-          setPassword={setPassword}
-        />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <div id="authPage" className="authPageContainer"><main><SignInForm viewModel={useSignInForm()} /></main><Footer /></div>;
 }

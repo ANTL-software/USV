@@ -6,8 +6,8 @@ import {
   getIncidentsService,
   qualifierIncidentService,
   traiterIncidentService,
-} from '../API/services/incident.service';
-import { showError } from '../utils/services/alertService';
+} from '../API/services/index.ts';
+import { showError } from '../utils/services/index.ts';
 import type {
   AddIncidentCommentairePayload,
   CreateIncidentPayload,
@@ -17,7 +17,7 @@ import type {
   IncidentPagination,
   QualifierIncidentPayload,
   TraiterIncidentPayload,
-} from '../utils/types/incident.types';
+} from '../utils/types/index.ts';
 
 const DEFAULT_PAGINATION: IncidentPagination = {
   page: 1,

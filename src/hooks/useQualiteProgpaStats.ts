@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { qualiteService } from '../API/services/qualite.service';
-import type { QualiteProgpaStatsResponse } from '../utils/types/qualite.types';
+import { qualiteService } from '../API/services/index.ts';
+import type { QualiteProgpaStatsResponse } from '../utils/types/index.ts';
 
 export const useQualiteProgpaStats = (
   dateDebut: string | null,

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEmployes } from './useEmployes';
-import { useAlert } from '../context/alert/AlertContext';
+import { useAlert } from '../context/alert/index.ts';
 
 // Services
 import {
@@ -10,23 +10,23 @@ import {
   deleteDocumentService,
   downloadDocumentService,
   generateDocumentViewUrlService,
-} from '../API/services/document.service';
+} from '../API/services/index.ts';
 import {
   getPlanningsService,
   getEmployePlanningAssignationService,
   assignPlanningToEmployeService,
-} from '../API/services/planning.service';
+} from '../API/services/index.ts';
 
 // Models
-import { DocumentModel } from '../API/models/document.model';
+import { DocumentModel } from '../API/models/index.ts';
 // Types
-import { PdfModalState } from '../utils/types/document.types';
-import type { Planning, PlanningAssignation } from '../utils/types/planning.types';
+import { PdfModalState } from '../utils/types/index.ts';
+import type { Planning, PlanningAssignation } from '../utils/types/index.ts';
 import {
   uploadEmployePhotoService,
   deleteEmployePhotoService,
   exportEmployeDataService,
-} from '../API/services/user.service';
+} from '../API/services/index.ts';
 
 /**
  * Hook pour gérer les détails d'un employé et ses documents
@@ -207,17 +207,17 @@ export const useEmployeeDetails = () => {
     setUploadSuccess(null);
   }, []);
 
-  const handleDragOver = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = useCallback((e: React.DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setDragging(true);
   }, []);
 
-  const handleDragLeave = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = useCallback((e: React.DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setDragging(false);
   }, []);
 
-  const handleDrop = useCallback((e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = useCallback((e: React.DragEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setDragging(false);
 
@@ -451,5 +451,7 @@ export const useEmployeeDetails = () => {
     handleExportData,
   };
 };
+
+export type EmployeeDetailsState = ReturnType<typeof useEmployeeDetails>;
 
 export default useEmployeeDetails;

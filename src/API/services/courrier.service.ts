@@ -1,9 +1,9 @@
 import { getRequest, postRequest, postFormDataRequest, patchRequest, deleteRequest } from "../APICalls.ts";
-import { AxiosResponse } from "axios";
+import type { AxiosResponse } from "axios";
 import axios from "axios";
-import { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult } from "../../utils/types/courrier.types.ts";
-import { courrierModel } from "../models/courrier.model.ts";
-import { csrfService } from "../../utils/services/csrfService.ts";
+import type { ICourrier, ICourrierUploadData, IApiResponse, ICourrierSearchParams, IPagination, ICourrierStats, ICourrierListParams, ICourrierAnalysisResult, IConvertCropData } from "../../utils/types/index.ts";
+import { courrierModel } from "../models/index.ts";
+import { csrfService } from "../../utils/services/index.ts";
 
 export const uploadCourrierService = async (
   file: File,
@@ -168,13 +168,6 @@ export const downloadBulkCourriersService = async (courrierIds: number[]): Promi
   const response = await axios.post(`/courriers/download-bulk`, { courrierIds }, config);
   return response.data;
 };
-
-export interface IConvertCropData {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
 
 /**
  * Convertit une image en PDF (téléchargement direct — rien conservé sur le serveur)

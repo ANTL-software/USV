@@ -1,0 +1,17 @@
+import type { ReactElement } from 'react';
+import { MdAdd, MdDelete, MdEmail, MdWebhook } from 'react-icons/md';
+import { useAlerteConfigCard } from '../../../hooks/index.ts';
+import type { AlerteConfig, AlerteDestinataire, UpdateAlerteConfigPayload } from '../../../utils/types/index.ts';
+import { Button } from '../button/index.ts';
+
+interface AlerteConfigCardProps { alerte: AlerteConfig; onDelete: (id: number) => void; onUpdate: (id: number, payload: UpdateAlerteConfigPayload) => void }
+
+export function AlerteConfigCard({ alerte, onDelete, onUpdate }: AlerteConfigCardProps): ReactElement {
+  const viewModel = useAlerteConfigCard(alerte, onUpdate);
+  return (
+    <article className={`alerteCard ${!alerte.actif ? 'alerteCard--inactive' : ''}`}>
+      <div className="alerteCard__header"><div className="alerteCard__title"><h3>{viewModel.metadata?.label}</h3><p className="alerteCard__description">{viewModel.metadata?.description}</p></div><div className="alerteCard__actions"><label className="alerteCard__toggle"><input type="checkbox" checked={alerte.actif} onChange={viewModel.toggleActive} /><span>{alerte.actif ? 'Actif' : 'Inactif'}</span></label><Button style="grey" onClick={viewModel.toggleEditing}>{viewModel.isEditing ? 'Annuler' : 'Modifier'}</Button><Button style="red" onClick={() => onDelete(alerte.id_alerte)}><MdDelete /></Button></div></div>
+      {viewModel.isEditing ? <div className="alerteCard__edit"><div className="alerteCard__field"><label htmlFor={`threshold-${alerte.id_alerte}`}>Seuil ({viewModel.metadata?.unit})</label><input id={`threshold-${alerte.id_alerte}`} type="number" value={viewModel.threshold} onChange={(event) => viewModel.updateThreshold(Number(event.target.value))} min="0" /></div><div className="alerteCard__destinataires"><span>Destinataires</span>{viewModel.draft.destinataires.map((recipient, index) => <div key={`${recipient.type}-${index}`} className="alerteCard__destinataire"><select value={recipient.type} onChange={(event) => viewModel.updateRecipient(index, { ...recipient, type: event.target.value as AlerteDestinataire['type'] })}><option value="email">Email</option><option value="webhook">Webhook</option></select><input type="text" placeholder={recipient.type === 'email' ? 'email@exemple.com' : 'https://webhook.exemple.com'} value={recipient.value} onChange={(event) => viewModel.updateRecipient(index, { ...recipient, value: event.target.value })} /><Button style="red" onClick={() => viewModel.removeRecipient(index)}><MdDelete /></Button></div>)}<Button style="grey" onClick={viewModel.addRecipient}><MdAdd /> Ajouter destinataire</Button></div><div className="alerteCard__edit-actions"><Button style="orange" onClick={viewModel.save}>Enregistrer</Button><Button style="grey" onClick={viewModel.cancel}>Annuler</Button></div></div> : <div className="alerteCard__info"><div className="alerteCard__seuil"><span className="alerteCard__seuil-label">Seuil :</span><span className="alerteCard__seuil-value">{viewModel.threshold} {viewModel.metadata?.unit}</span></div><div className="alerteCard__destinataires-list"><span className="alerteCard__destinataires-label">Destinataires :</span>{alerte.destinataires.length > 0 ? alerte.destinataires.map((recipient, index) => <span key={`${recipient.type}-${recipient.value}-${index}`} className="alerteCard__destinataire-badge">{recipient.type === 'email' ? <MdEmail /> : <MdWebhook />}{recipient.value}</span>) : <span className="alerteCard__no-destinataires">Aucun destinataire configuré</span>}</div></div>}
+    </article>
+  );
+}

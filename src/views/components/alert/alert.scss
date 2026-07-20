@@ -1,7 +1,6 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
 @use "sass:color";
-
 .alert-overlay {
   position: fixed;
   top: 0;
@@ -15,10 +14,9 @@
   justify-content: center;
   z-index: 9999;
   padding: 1em;
-  
+
   animation: fadeIn vars.$transitionMedium;
 }
-
 .alert {
   background: vars.$whiteBackground;
   border-radius: 12px;
@@ -28,34 +26,29 @@
   max-height: 80dvh;
   overflow: hidden;
   position: relative;
-  
+
   animation: slideIn vars.$transitionMedium cubic-bezier(0.34, 1.56, 0.64, 1);
-  
-  @media (min-width: vars.$tabletWidth) {
+}
+@media (min-width: vars.$tabletWidth) {
+  .alert {
     max-width: 28em;
   }
-  
-  &--info {
-    border-top: 4px solid vars.$utilsPrimary;
-  }
-  
-  &--success {
-    border-top: 4px solid vars.$successColor;
-  }
-  
-  &--warning {
-    border-top: 4px solid vars.$warningColor;
-  }
-  
-  &--error {
-    border-top: 4px solid vars.$errorColor;
-  }
-  
-  &--confirm {
-    border-top: 4px solid vars.$warningColor;
-  }
 }
-
+.alert--info {
+  border-top: 4px solid vars.$utilsPrimary;
+}
+.alert--success {
+  border-top: 4px solid vars.$successColor;
+}
+.alert--warning {
+  border-top: 4px solid vars.$warningColor;
+}
+.alert--error {
+  border-top: 4px solid vars.$errorColor;
+}
+.alert--confirm {
+  border-top: 4px solid vars.$warningColor;
+}
 .alert__header {
   display: flex;
   align-items: flex-start;
@@ -63,40 +56,32 @@
   padding: 1.5em 1.5em 0;
   gap: 1em;
 }
-
 .alert__header-content {
   display: flex;
   align-items: flex-start;
   gap: 0.75em;
   flex: 1;
 }
-
 .alert__icon {
   font-size: 1.5em;
   flex-shrink: 0;
   margin-top: 0.125em;
-  
-  &--info {
-    color: vars.$utilsPrimary;
-  }
-  
-  &--success {
-    color: vars.$successColor;
-  }
-  
-  &--warning {
-    color: vars.$warningColor;
-  }
-  
-  &--error {
-    color: vars.$errorColor;
-  }
-  
-  &--confirm {
-    color: vars.$warningColor;
-  }
 }
-
+.alert__icon--info {
+  color: vars.$utilsPrimary;
+}
+.alert__icon--success {
+  color: vars.$successColor;
+}
+.alert__icon--warning {
+  color: vars.$warningColor;
+}
+.alert__icon--error {
+  color: vars.$errorColor;
+}
+.alert__icon--confirm {
+  color: vars.$warningColor;
+}
 .alert__title {
   margin: 0;
   font-size: 1.125em;
@@ -104,7 +89,6 @@
   color: vars.$fontColorPrimary;
   line-height: 1.4;
 }
-
 .alert__close {
   background: none;
   border: none;
@@ -115,40 +99,36 @@
   border-radius: 4px;
   transition: all vars.$transitionFast;
   flex-shrink: 0;
-  
-  &:hover {
-    background-color: vars.$greyBackground;
-    color: vars.$fontColorPrimary;
-  }
-  
-  &:focus {
-    outline: 2px solid vars.$utilsPrimary;
-    outline-offset: 2px;
-  }
 }
-
+.alert__close:hover {
+  background-color: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+}
+.alert__close:focus {
+  outline: 2px solid vars.$utilsPrimary;
+  outline-offset: 2px;
+}
 .alert__body {
   padding: 1em 1.5em 1.5em;
 }
-
 .alert__message {
   margin: 0;
   color: vars.$fontColorSecondary;
   line-height: 1.5;
   font-size: 0.9375em;
+  white-space: pre-wrap;
 }
-
 .alert__actions {
   display: flex;
   gap: 0.75em;
   padding: 0 1.5em 1.5em;
   justify-content: flex-end;
-  
-  @media (max-width: calc(vars.$mobileWidth - 1px)) {
+}
+@media (max-width: calc(vars.$mobileWidth - 1px)) {
+  .alert__actions {
     flex-direction: column-reverse;
   }
 }
-
 .alert__button {
   padding: 0.75em 1.5em;
   border-radius: 8px;
@@ -158,35 +138,31 @@
   transition: all vars.$transitionFast;
   border: 1px solid transparent;
   min-width: 6em;
-  
-  @media (max-width: calc(vars.$mobileWidth - 1px)) {
+}
+@media (max-width: calc(vars.$mobileWidth - 1px)) {
+  .alert__button {
     width: 100%;
   }
-  
-  &:focus {
-    outline: 2px solid vars.$utilsPrimary;
-    outline-offset: 2px;
-  }
-  
-  &--cancel {
-    background: vars.$greyBackground;
-    color: vars.$fontColorPrimary;
-    border-color: vars.$borderColor;
-    
-    &:hover {
-      background: rgba(vars.$fontColorSecondary, 0.1);
-      border-color: vars.$fontColorSecondary;
-    }
-  }
-  
-  &--confirm {
-    background: vars.$warningColor;
-    color: vars.$whiteBackground;
-    
-    &:hover {
-      background: color.adjust(vars.$warningColor, $lightness: -10%);
-    }
-  }
+}
+.alert__button:focus {
+  outline: 2px solid vars.$utilsPrimary;
+  outline-offset: 2px;
+}
+.alert__button--cancel {
+  background: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+  border-color: vars.$borderColor;
+}
+.alert__button--cancel:hover {
+  background: rgba(vars.$fontColorSecondary, 0.1);
+  border-color: vars.$fontColorSecondary;
+}
+.alert__button--confirm {
+  background: vars.$warningColor;
+  color: vars.$whiteBackground;
+}
+.alert__button--confirm:hover {
+  background: color.adjust(vars.$warningColor, $lightness: -10%);
 }
 
 // Animations

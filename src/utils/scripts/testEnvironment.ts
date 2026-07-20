@@ -1,4 +1,4 @@
-import { getApiBaseUrl, getEnvironment, isOnProduction } from './utils';
+import { getApiBaseUrl, getEnvironment, isOnProduction } from './utils.ts';
 
 /**
  * Script de test pour vérifier la configuration d'environnement

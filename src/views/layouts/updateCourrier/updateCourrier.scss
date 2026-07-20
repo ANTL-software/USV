@@ -3,290 +3,278 @@
 
 #updateCourrier {
   @include mixins.mainView;
-  & { @include mixins.responsivePadding(1em, 1.5em, 2em); }
+  @include mixins.responsivePadding(1em, 1.5em, 2em);
+}
 
-  .updateCourrierContainer {
-    @include mixins.centeredContainer(90em);
-    @include mixins.flexContainer(column, 1em);
-    
-    & {
-      flex: 1;
-      padding: 0 0.5em;
-    }
+#updateCourrier .updateCourrierContainer {
+  @include mixins.centeredContainer(90em);
+  @include mixins.flexContainer(column, 1em);
+  flex: 1;
+  padding: 0 0.5em;
+}
 
-    @media (min-width: vars.$tabletWidth) {
-      padding: 0 1em;
-    }
+#updateCourrier .updateCourrierHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  color: vars.$fontColorPrimary;
+}
+
+#updateCourrier .pageTitle {
+  margin: 0;
+  background: vars.$courrierGradient;
+  background-clip: text;
+  color: transparent;
+  font-size: 2em;
+  font-weight: 700;
+}
+
+#updateCourrier .loadingState,
+#updateCourrier .errorState {
+  display: flex;
+  min-height: 20em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2em;
+  text-align: center;
+}
+
+#updateCourrier .updateCourrierContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  margin-top: 1.5em;
+}
+
+#updateCourrier .previewSection,
+#updateCourrier .updateCourrierFormSection {
+  @include mixins.card(12px, light);
+}
+
+#updateCourrier .previewHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  padding: 1.5em;
+  background: vars.$courrierGradient;
+  color: white;
+}
+
+#updateCourrier .previewHeader h2 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+#updateCourrier .previewHeader svg {
+  font-size: 1.3em;
+}
+
+#updateCourrier .previewContainer {
+  height: 50em;
+  padding: 1em;
+}
+
+#updateCourrier .imagePreview {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 8px;
+  background: vars.$greyBackground;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  object-fit: contain;
+}
+
+#updateCourrier .courrierForm {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+#updateCourrier .formGrid {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.2em;
+  padding: 1.5em;
+}
+
+#updateCourrier .updateCourrierFormGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#updateCourrier .sectionTitle {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  margin: 0;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid vars.$borderColor;
+  color: vars.$courrierPrimary;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+#updateCourrier .sectionTitle svg {
+  font-size: 1.3em;
+}
+
+#updateCourrier .formRow {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#updateCourrier .formGroup {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+#updateCourrier .formGroup label {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+#updateCourrier .formGroup label svg {
+  color: vars.$courrierPrimary;
+  font-size: 1em;
+}
+
+#updateCourrier .formGroup input,
+#updateCourrier .formGroup textarea {
+  @include mixins.formInput("#updateCourrier .formGroup input, #updateCourrier .formGroup textarea");
+}
+
+#updateCourrier .react-select-container {
+  @include mixins.reactSelect("#updateCourrier .react-select-container");
+}
+
+#updateCourrier .formGroup textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+#updateCourrier .formActions {
+  @include mixins.formActions;
+  margin-top: auto;
+}
+
+#updateCourrier .btnCancel,
+#updateCourrier .btnSubmit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.75em 2em;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+#updateCourrier .btnCancel {
+  border: 2px solid vars.$borderColor;
+  background: white;
+  color: vars.$fontColorPrimary;
+}
+
+#updateCourrier .btnSubmit {
+  border: none;
+  background: vars.$courrierGradient;
+  color: white;
+}
+
+#updateCourrier .btnCancel:disabled,
+#updateCourrier .btnSubmit:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+#updateCourrier .btnCancel:hover:not(:disabled) {
+  border-color: vars.$errorColor;
+  color: vars.$errorColor;
+}
+
+#updateCourrier .btnSubmit:hover:not(:disabled) {
+  box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
+  transform: translateY(-1px);
+}
+
+@media (min-width: vars.$tabletWidth) {
+  #updateCourrier .updateCourrierContainer {
+    padding: 0 1em;
   }
 
-  .updateCourrierHeader {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    color: vars.$fontColorPrimary;
-
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      align-items: center;
-      gap: 2em;
-    }
-
-    .pageTitle {
-      font-size: 2em;
-      font-weight: 700;
-      margin: 0;
-      background: vars.$courrierGradient;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-
-      @media (min-width: vars.$tabletWidth) {
-        font-size: 2.3em;
-      }
-
-      @media (min-width: vars.$desktopWidth) {
-        font-size: 2.5em;
-      }
-    }
-  }
-
-  .loadingState,
-  .errorState {
-    display: flex;
-    flex-direction: column;
+  #updateCourrier .updateCourrierHeader {
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
     gap: 2em;
-    min-height: 20em;
-    text-align: center;
   }
 
-  .updateCourrierContent {
-    display: flex;
-    flex-direction: column;
+  #updateCourrier .pageTitle {
+    font-size: 2.3em;
+  }
+
+  #updateCourrier .formGrid {
     gap: 1.5em;
-    margin: 1.5em 0 0;
+    padding: 2em;
+  }
 
-    @media (min-width: vars.$desktopWidth) {
-      flex-direction: row;
-      gap: 2em;
-      margin-top: 2em;
-    }
+  #updateCourrier .sectionTitle {
+    font-size: 1.3em;
+  }
 
-    .previewSection {
-      @include mixins.card(12px, light);
+  #updateCourrier .sectionTitle svg {
+    font-size: 1.4em;
+  }
 
-      @media (min-width: vars.$desktopWidth) {
-        flex: 0 0 40%;
-      }
+  #updateCourrier .formRow {
+    flex-direction: row;
+    gap: 1.5em;
+  }
 
-      .previewHeader {
-        padding: 1.5em;
-        background: vars.$courrierGradient;
-        color: white;
-        display: flex;
-        align-items: center;
-        gap: 0.75em;
+  #updateCourrier .btnCancel,
+  #updateCourrier .btnSubmit {
+    width: auto;
+  }
+}
 
-        h2 {
-          margin: 0;
-          font-size: 1.2em;
-          font-weight: 600;
-        }
+@media (min-width: vars.$desktopWidth) {
+  #updateCourrier .pageTitle {
+    font-size: 2.5em;
+  }
 
-        svg {
-          font-size: 1.3em;
-        }
-      }
+  #updateCourrier .updateCourrierContent {
+    flex-direction: row;
+    gap: 2em;
+    margin-top: 2em;
+  }
 
-      .previewContainer {
-        padding: 1em;
-        height: 50em;
+  #updateCourrier .updateCourrierFormSection {
+    flex: 1;
+  }
 
-        @media (min-width: vars.$desktopWidth) {
-          height: 60em;
-        }
+  #updateCourrier .previewSection {
+    flex: 0 0 40%;
+  }
 
-        .pdfPreview,
-        .imagePreview {
-          width: 100%;
-          height: 100%;
-          border: none;
-          border-radius: 8px;
-          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+  #updateCourrier .previewContainer {
+    height: 60em;
+  }
 
-        .imagePreview {
-          object-fit: contain;
-          background: vars.$greyBackground;
-        }
-      }
-    }
-
-    .formSection {
-      @include mixins.card(12px, light);
-
-      @media (min-width: vars.$desktopWidth) {
-        flex: 1;
-      }
-
-      .courrierForm {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-
-        .formGrid {
-          padding: 1.5em;
-          display: flex;
-          flex-direction: column;
-          gap: 1.2em;
-          flex: 1;
-
-          @media (min-width: vars.$tabletWidth) {
-            padding: 2em;
-            gap: 1.5em;
-          }
-
-          @media (min-width: vars.$desktopWidth) {
-            gap: 1.8em;
-          }
-        }
-
-        .formSection {
-          background: transparent;
-          box-shadow: none;
-          border-radius: 0;
-          display: flex;
-          flex-direction: column;
-          gap: 1em;
-
-          h3.sectionTitle {
-            display: flex;
-            align-items: center;
-            gap: 0.75em;
-            font-size: 1.2em;
-            font-weight: 600;
-            color: vars.$courrierPrimary;
-            padding: 0 0 0.5em;
-            border-bottom: 2px solid vars.$borderColor;
-            margin: 0;
-
-            @media (min-width: vars.$tabletWidth) {
-              font-size: 1.3em;
-            }
-
-            svg {
-              font-size: 1.3em;
-
-              @media (min-width: vars.$tabletWidth) {
-                font-size: 1.4em;
-              }
-            }
-          }
-
-          .formRow:not(:last-child) {
-            margin-bottom: 0.5em;
-          }
-        }
-
-        .formRow {
-          display: flex;
-          flex-direction: column;
-          gap: 1em;
-
-          @media (min-width: vars.$tabletWidth) {
-            flex-direction: row;
-            gap: 1.5em;
-          }
-        }
-
-        .formGroup {
-          display: flex;
-          flex-direction: column;
-          gap: 0.5em;
-          flex: 1;
-
-          label {
-            display: flex;
-            align-items: center;
-            gap: 0.5em;
-            font-weight: 600;
-            color: vars.$fontColorPrimary;
-            font-size: 0.9em;
-
-            svg {
-              font-size: 1em;
-              color: vars.$courrierPrimary;
-            }
-          }
-
-          input,
-          textarea {
-            @include mixins.formInput;
-          }
-
-          .react-select-container {
-            @include mixins.reactSelect;
-          }
-
-          textarea {
-            resize: vertical;
-            min-height: 100px;
-          }
-        }
-
-        .formActions {
-          @include mixins.formActions;
-          
-          & {
-            margin-top: auto;
-          }
-
-          .btnCancel,
-          .btnSubmit {
-            padding: 0.75em 2em;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-
-            @media (min-width: vars.$tabletWidth) {
-              width: auto;
-            }
-
-            &:disabled {
-              opacity: 0.6;
-              cursor: not-allowed;
-            }
-          }
-
-          .btnCancel {
-            background: white;
-            color: vars.$fontColorPrimary;
-            border: 2px solid vars.$borderColor;
-
-            &:hover:not(:disabled) {
-              border-color: vars.$errorColor;
-              color: vars.$errorColor;
-            }
-          }
-
-          .btnSubmit {
-            background: vars.$courrierGradient;
-            color: white;
-            border: none;
-
-            &:hover:not(:disabled) {
-              transform: translateY(-1px);
-              box-shadow: 0 4px 12px rgba(38, 208, 206, 0.4);
-            }
-          }
-        }
-      }
-    }
+  #updateCourrier .formGrid {
+    gap: 1.8em;
   }
 }

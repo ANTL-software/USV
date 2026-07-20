@@ -22,6 +22,20 @@ export interface UpdatePanierData {
   actif?: boolean;
 }
 
+export type PanierOrigin = 'Campagne' | 'ANTL';
+
+export interface PanierOriginOption {
+  value: PanierOrigin;
+  label: string;
+}
+
+export interface PanierFormState {
+  label: string;
+  origine: PanierOrigin;
+  prix_ht: string;
+  actif: boolean;
+}
+
 // Association dans la table de jonction paniers_produits
 export interface PanierProduitAssociation {
   id_panier_produit: number;

@@ -1,117 +1,12 @@
-// styles
-import "./authForm.scss";
+import './authForm.scss';
 
-// assets
-import antlLogo from "../../../assets/antlLogo.png";
+import type { ReactElement } from 'react';
+import antlLogo from '../../../assets/antlLogo.png';
+import type { SignInFormViewModel } from '../../../hooks/index.ts';
+import { Button } from '../button/index.ts';
 
-// hooks | library
-import {
-  ChangeEvent,
-  FormEvent,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
-import { NavigateFunction, useNavigate } from "react-router-dom";
+interface SignInFormProps { viewModel: SignInFormViewModel; }
 
-// custom types
-interface ISignInFormProps {
-  identifiant: string;
-  password: string;
-  setIdentifiant: (value: string) => void;
-  setPassword: (value: string) => void;
-}
-
-// context
-import { useUserContext } from "../../../hooks/useUserContext.ts";
-import type { LoginCredentials } from "../../../utils/types/user.types.ts";
-
-// utils
-import { handleAuthError } from "../../../utils/scripts/authErrorHandling.ts";
-
-// components
-import Button from "../button/Button.tsx";
-
-export default function SignInForm({
-  identifiant,
-  password,
-  setIdentifiant,
-  setPassword,
-}: Readonly<ISignInFormProps>): ReactElement {
-  const navigate: NavigateFunction = useNavigate();
-  const { login, user, isLoading } = useUserContext();
-  const [error, setError] = useState<string>("");
-
-  const handleSubmit = async (): Promise<void> => {
-    setError("");
-    const credentials: LoginCredentials = {
-      identifiant,
-      password,
-    };
-
-    try {
-      await login(credentials);
-    } catch (error: unknown) {
-      const errorMessage = handleAuthError(error);
-      setError(errorMessage);
-    }
-  };
-
-  useEffect((): void => {
-    if (user) {
-      navigate("/home");
-    }
-  }, [user, navigate]);
-
-  return (
-    <form
-      id={"authForm"}
-      onSubmit={(e: FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        handleSubmit().finally();
-      }}
-    >
-      <figure className="authForm__logo">
-        <img src={antlLogo} alt="ANTL" />
-      </figure>
-      <h2>Se connecter</h2>
-      <div className={"inputContainer"}>
-        <label htmlFor={"identifiant"}>Identifiant</label>
-        <input
-          id={"identifiant"}
-          type={"text"}
-          value={identifiant}
-          autoComplete={"username"}
-          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-            setIdentifiant(e.target.value)
-          }
-        />
-      </div>
-      <div className={"inputContainer"}>
-        <label htmlFor={"password"}>Mot de passe</label>
-        <input
-          id={"password"}
-          type={"password"}
-          value={password}
-          autoComplete={"current-password"}
-          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-            setPassword(e.target.value)
-          }
-        />
-      </div>
-      {error && (
-        <div className="errorMessage">
-          {error}
-        </div>
-      )}
-      <div className={"buttonContainer"}>
-        <Button
-          style="seaGreen"
-          children={isLoading ? "Connexion..." : "Connexion"}
-          type="submit"
-          disabled={isLoading}
-        />
-      </div>
-    </form>
-  );
+export default function SignInForm({ viewModel }: SignInFormProps): ReactElement {
+  return <form id="authForm" onSubmit={viewModel.submit}><figure className="authForm__logo"><img src={antlLogo} alt="ANTL" /></figure><h2>Se connecter</h2><div className="inputContainer"><label htmlFor="identifiant">Identifiant</label><input id="identifiant" type="text" value={viewModel.identifiant} autoComplete="username" onChange={(event) => viewModel.setIdentifiant(event.target.value)} /></div><div className="inputContainer"><label htmlFor="password">Mot de passe</label><input id="password" type="password" value={viewModel.password} autoComplete="current-password" onChange={(event) => viewModel.setPassword(event.target.value)} /></div>{viewModel.error && <div className="errorMessage">{viewModel.error}</div>}<div className="buttonContainer"><Button style="seaGreen" type="submit" disabled={viewModel.isLoading}>{viewModel.isLoading ? 'Connexion...' : 'Connexion'}</Button></div></form>;
 }

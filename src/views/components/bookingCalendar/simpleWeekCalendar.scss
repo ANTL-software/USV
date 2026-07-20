@@ -1,246 +1,201 @@
 @use "../../../utils/styles/variables" as vars;
-
 .simpleWeekCalendar {
-  & {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    overflow: hidden;
-    background: white;
-    border-radius: 8px;
-  }
-
-  .swcToolbar {
-    & {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1em;
-      border-bottom: 1px solid #e5e7eb;
-      background: #f9fafb;
-      gap: 1em;
-    }
-
-    .swcTitle {
-      flex: 1;
-      text-align: center;
-      font-size: 1.25em;
-      font-weight: 700;
-      color: #1f2937;
-      text-transform: capitalize;
-    }
-
-    .swcNavButton {
-      & {
-        padding: 0.5em 1em;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        background: white;
-        color: #374151;
-        font-size: 0.875em;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all vars.$transitionFast;
-        white-space: nowrap;
-      }
-
-      &:hover {
-        background: vars.$utilsPrimary;
-        color: white;
-        border-color: vars.$utilsPrimary;
-        transform: scale(1.02);
-      }
-    }
-  }
-
-  .swcHeader {
-    & {
-      display: flex;
-      flex: 0 0 auto;
-      border-bottom: 1px solid #e5e7eb;
-      background: #f9fafb;
-    }
-
-    .swcCorner {
-      flex: 0 0 60px;
-      border-right: 1px solid #e5e7eb;
-    }
-
-    .swcDayHeader {
-      & {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0.75em 0.5em;
-        border-left: 1px solid #e5e7eb;
-        gap: 0.25em;
-
-        &:first-child {
-          border-left: none;
-        }
-      }
-
-      .swcDayName {
-        font-size: 0.75em;
-        font-weight: 600;
-        color: #6b7280;
-        text-transform: uppercase;
-      }
-
-      .swcDayNumber {
-        font-size: 1.25em;
-        font-weight: 700;
-        color: #1f2937;
-      }
-    }
-  }
-
-  .swcGrid {
-    & {
-      display: flex;
-      flex: 1;
-      min-height: 500px;
-      height: 60dvh;
-      overflow: hidden;
-      position: relative;
-      background: white;
-      border: 1px solid #e5e7eb;
-    }
-
-    .swcHours {
-      & {
-        flex: 0 0 60px;
-        border-right: 1px solid #e5e7eb;
-        background: #f9fafb;
-        position: relative;
-        min-width: 60px;
-      }
-
-      .swcHourLabel {
-        position: absolute;
-        width: 100%;
-        text-align: center;
-        font-size: 0.7em;
-        font-weight: 500;
-        color: #6b7280;
-        transform: translateY(-50%);
-        padding: 0 2px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-
-    .swcDays {
-      & {
-        flex: 1;
-        position: relative;
-        display: flex;
-      }
-
-      // Colonnes pour chaque jour
-      .swcDayColumn {
-        & {
-          flex: 1;
-          position: relative;
-          height: 100%;
-          min-height: 500px;
-          border-left: 1px solid #f3f4f6;
-
-          &:first-child {
-            border-left: none;
-          }
-        }
-      }
-
-      // Lignes horaires de fond
-      .swcHourRow {
-        & {
-          position: absolute;
-          left: 0;
-          right: 0;
-          height: calc(100% / 12);
-          border-bottom: 1px dotted #f3f4f6;
-          display: flex;
-        }
-
-        &:last-child {
-          border-bottom: none;
-        }
-
-        .swcHourCell {
-          & {
-            flex: 1;
-            border-left: 1px solid #f3f4f6;
-            height: 100%;
-            min-height: 40px;
-            background: white;
-            cursor: pointer;
-            pointer-events: auto;
-
-            &:hover {
-              background: #f9fafb;
-            }
-          }
-
-          &:first-child {
-            border-left: none;
-          }
-        }
-      }
-
-      // Événements positionnés en absolu
-      .swcEvent {
-        & {
-          position: absolute !important;
-          border-radius: 4px;
-          padding: 0.4em 0.5em;
-          font-size: 0.75em;
-          font-weight: 600;
-          color: white;
-          cursor: pointer;
-          transition: opacity vars.$transitionFast, transform vars.$transitionFast, box-shadow vars.$transitionFast;
-          overflow: hidden;
-          z-index: 10;
-          pointer-events: auto;
-        }
-
-        &:hover {
-          opacity: 0.9;
-          transform: scale(1.01);
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-          z-index: 20;
-        }
-
-        .swcEventContent {
-          & {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 0.2em;
-            pointer-events: none;
-          }
-
-          .swcEventTime {
-            font-size: 0.85em;
-            font-weight: 700;
-            opacity: 0.95;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-
-          .swcEventTitle {
-            font-size: 0.75em;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
-      }
-    }
-  }
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  background: white;
+  border-radius: 8px;
+}
+.simpleWeekCalendar .swcToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+  gap: 1em;
+}
+.simpleWeekCalendar .swcToolbar .swcTitle {
+  flex: 1;
+  text-align: center;
+  font-size: 1.25em;
+  font-weight: 700;
+  color: #1f2937;
+  text-transform: capitalize;
+}
+.simpleWeekCalendar .swcToolbar .swcNavButton {
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 0.875em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+  white-space: nowrap;
+}
+.simpleWeekCalendar .swcToolbar .swcNavButton:hover {
+  background: vars.$utilsPrimary;
+  color: white;
+  border-color: vars.$utilsPrimary;
+  transform: scale(1.02);
+}
+.simpleWeekCalendar .swcHeader {
+  display: flex;
+  flex: 0 0 auto;
+  border-bottom: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+.simpleWeekCalendar .swcHeader .swcCorner {
+  flex: 0 0 60px;
+  border-right: 1px solid #e5e7eb;
+}
+.simpleWeekCalendar .swcHeader .swcDayHeader {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.75em 0.5em;
+  border-left: 1px solid #e5e7eb;
+  gap: 0.25em;
+}
+.simpleWeekCalendar .swcHeader .swcDayHeader:first-child {
+  border-left: none;
+}
+.simpleWeekCalendar .swcHeader .swcDayHeader .swcDayName {
+  font-size: 0.75em;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+.simpleWeekCalendar .swcHeader .swcDayHeader .swcDayNumber {
+  font-size: 1.25em;
+  font-weight: 700;
+  color: #1f2937;
+}
+.simpleWeekCalendar .swcGrid {
+  display: flex;
+  flex: 1;
+  min-height: 500px;
+  height: 60dvh;
+  overflow: hidden;
+  position: relative;
+  background: white;
+  border: 1px solid #e5e7eb;
+}
+.simpleWeekCalendar .swcGrid .swcHours {
+  flex: 0 0 60px;
+  border-right: 1px solid #e5e7eb;
+  background: #f9fafb;
+  position: relative;
+  min-width: 60px;
+}
+.simpleWeekCalendar .swcGrid .swcHours .swcHourLabel {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  font-size: 0.7em;
+  font-weight: 500;
+  color: #6b7280;
+  transform: translateY(-50%);
+  padding: 0 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.simpleWeekCalendar .swcGrid .swcDays {
+  flex: 1;
+  position: relative;
+  display: flex;
+}
+// Colonnes pour chaque jour
+.simpleWeekCalendar .swcGrid .swcDays .swcDayColumn {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  min-height: 500px;
+  border-left: 1px solid #f3f4f6;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcDayColumn:first-child {
+  border-left: none;
+}
+// Lignes horaires de fond
+.simpleWeekCalendar .swcGrid .swcDays .swcHourRow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: calc(100% / 12);
+  border-bottom: 1px dotted #f3f4f6;
+  display: flex;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcHourRow:last-child {
+  border-bottom: none;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcHourRow .swcHourCell {
+  flex: 1;
+  border-left: 1px solid #f3f4f6;
+  height: 100%;
+  min-height: 40px;
+  background: white;
+  cursor: pointer;
+  pointer-events: auto;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcHourRow .swcHourCell:hover {
+  background: #f9fafb;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcHourRow .swcHourCell:first-child {
+  border-left: none;
+}
+// Événements positionnés en absolu
+.simpleWeekCalendar .swcGrid .swcDays .swcEvent {
+  position: absolute !important;
+  border-radius: 4px;
+  padding: 0.4em 0.5em;
+  font-size: 0.75em;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition:
+    opacity vars.$transitionFast,
+    transform vars.$transitionFast,
+    box-shadow vars.$transitionFast;
+  overflow: hidden;
+  z-index: 10;
+  pointer-events: auto;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcEvent:hover {
+  opacity: 0.9;
+  transform: scale(1.01);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 20;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcEvent .swcEventContent {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2em;
+  pointer-events: none;
+}
+.simpleWeekCalendar .swcGrid .swcDays .swcEvent .swcEventContent .swcEventTime {
+  font-size: 0.85em;
+  font-weight: 700;
+  opacity: 0.95;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.simpleWeekCalendar
+  .swcGrid
+  .swcDays
+  .swcEvent
+  .swcEventContent
+  .swcEventTitle {
+  font-size: 0.75em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

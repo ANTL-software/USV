@@ -1,4 +1,36 @@
-import type { Prospect } from '../../utils/types/prospect.types';
+import type { Prospect } from '../../utils/types/index.ts';
+import type { ProspectCampagneRow } from '../../utils/types/index.ts';
+
+export function mapProspectCampagneRowToProspect(row: ProspectCampagneRow): Prospect {
+  return {
+    ...row.prospect,
+    statut: (row.prospect.statut_global ?? row.prospect.statut) as Prospect['statut'],
+    statut_global: (row.prospect.statut_global ?? row.prospect.statut) as Prospect['statut'],
+    doublon_date: null,
+    optout_date: null,
+    doublon_signale_par: null,
+    optout_signale_par: null,
+    id_prospection: row.id_prospection,
+    statut_campagne: row.statut_file ?? row.statut,
+    statut_prospect_campagne: (row.statut_prospect_campagne ?? null) as Prospect['statut_prospect_campagne'],
+    statut_file: row.statut_file ?? row.statut,
+    nb_tentatives: row.nb_tentatives,
+    max_tentatives: row.max_tentatives,
+    derniere_tentative: row.derniere_tentative,
+    id_agent_assigne: row.id_agent_assigne,
+    agent_assigne: row.agentAssignee ? {
+      id_employe: row.agentAssignee.id_employe,
+      nom: row.agentAssignee.nom,
+      prenom: row.agentAssignee.prenom,
+    } : (row.prospect.commercialAffecte ? {
+      id_employe: row.prospect.commercialAffecte.id_employe,
+      nom: row.prospect.commercialAffecte.nom,
+      prenom: row.prospect.commercialAffecte.prenom,
+    } : null),
+    date_injection: row.date_injection,
+    date_traitement: row.date_traitement,
+  };
+}
 
 export class ProspectModel {
   id_prospect: number;

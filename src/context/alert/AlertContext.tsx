@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { AlertType } from '../../components/alert/Alert';
+import type { AlertType } from '../../views/components/index.ts';
 
 export interface ShowAlertOptions {
   type: AlertType;

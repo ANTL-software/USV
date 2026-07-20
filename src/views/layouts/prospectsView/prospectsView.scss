@@ -1,452 +1,399 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #prospectsView {
   @include mixins.mainView;
-
-  main {
-    padding: 1.5em 1em;
-  }
-
-  .prospectsView__container {
-    @include mixins.centeredContainer(100%);
-  }
-
-  .prospectsView__back {
-    margin-bottom: 1em;
-  }
-
-  .prospectsView__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5em;
-    flex-wrap: wrap;
-    gap: 1em;
-  }
-
-  .prospectsView__title-section {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    flex-wrap: wrap;
-
-    h1 {
-      margin: 0;
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
-  }
-
-  .prospectsView__total-pill {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.4em 0.8em;
-    border-radius: 999px;
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    color: #1d4ed8;
-    font-size: 0.9em;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .prospectsView__filters {
-    display: flex;
-    align-items: center;
-    gap: 1em;
-    flex-wrap: wrap;
-
-    & {
-      flex: 1;
-      justify-content: flex-end;
-    }
-  }
-
-  .prospectsView__filter {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-
-    label {
-      font-size: 0.9em;
-      font-weight: 500;
-      color: vars.$fontColorSecondary;
-      white-space: nowrap;
-    }
-
-    .reactSelect__control {
-      border-color: vars.$borderColor;
-      border-radius: 8px;
-      font-size: 0.9em;
-      min-height: unset;
-      box-shadow: none;
-      min-width: 180px;
-      cursor: pointer;
-
-      &:hover { border-color: vars.$borderColor; }
-      &--is-focused {
-        border-color: #818cf8 !important;
-        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
-      }
-    }
-
-    .reactSelect__value-container { padding: 0.35em 0.85em; }
-    .reactSelect__single-value { color: vars.$fontColorPrimary; }
-    .reactSelect__option--is-focused { background: #ede9fe; }
-    .reactSelect__option--is-selected { background: #818cf8; }
-    .reactSelect__menu { border-radius: 8px; font-size: 0.9em; }
-  }
-
-  .prospectsView__search {
-    input {
-      padding: 0.5em 0.85em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      font-size: 0.9em;
-      min-width: 200px;
-      transition: border-color vars.$transitionSmooth;
-
-      &:focus {
-        outline: none;
-        border-color: #818cf8;
-        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
-      }
-
-      &::placeholder {
-        color: vars.$fontColorSecondary;
-      }
-    }
-  }
-
-  .prospectsView__error {
-    padding: 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: #dc2626;
-    margin-bottom: 1em;
-  }
-
-  .prospectsView__loading {
-    text-align: center;
-    padding: 3em;
-    color: vars.$fontColorSecondary;
-  }
-
-  .prospectsView__empty {
-    text-align: center;
-    padding: 3em;
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-  }
-
-  .prospectsView__table-wrapper {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-  }
-
-  .prospectsView__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9em;
-    table-layout: auto;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8em;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.75em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-      display: table-cell;
-    }
-
-    tbody tr {
-      cursor: pointer;
-      transition: background vars.$transitionSmooth;
-
-      &:hover {
-        background: #f8fafc;
-      }
-
-      &--alert {
-        background: #fef3c7;
-
-        &:hover {
-          background: #fde68a;
-        }
-      }
-
-      display: table-row;
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-  }
-
-  .prospectsView__id {
-    white-space: nowrap;
-    text-align: center;
-
-    code {
-      font-family: monospace;
-      font-size: 0.88em;
-      background: #f1f5f9;
-      padding: 0.2em 0.5em;
-      border-radius: 4px;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .prospectsView__name {
-    white-space: nowrap;
-  }
-
-  .prospectsView__phone {
-    white-space: nowrap;
-
-    code {
-      font-family: monospace;
-      font-size: 0.88em;
-      background: #f1f5f9;
-      padding: 0.15em 0.4em;
-      border-radius: 4px;
-    }
-  }
-
-  .prospectsView__email {
-    white-space: nowrap;
-
-    a {
-      color: vars.$utilsPrimary;
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  .prospectsView__location {
-    white-space: nowrap;
-  }
-
-  .prospectsView__date {
-    white-space: nowrap;
-    font-size: 0.85em;
-    color: vars.$fontColorSecondary;
-  }
-
-  .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.25em;
-    padding: 0.2em 0.6em;
-    border-radius: 999px;
-    font-size: 0.75em;
-    font-weight: 600;
-    white-space: nowrap;
-
-    &--nouveau {
-      background: #e0e7ff;
-      color: #4f46e5;
-    }
-
-    &--contacte {
-      background: #e0f2fe;
-      color: #0284c7;
-    }
-
-    &--interesse {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    &--rappel {
-      background: #fef9c3;
-      color: #a16207;
-    }
-
-    &--non_interesse {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-
-    &--vente_conclue {
-      background: #d1fae5;
-      color: #047857;
-    }
-
-    &--particulier {
-      background: #dbeafe;
-      color: #1d4ed8;
-    }
-
-    &--entreprise {
-      background: #fef3c7;
-      color: #b45309;
-    }
-
-    &--client {
-      background: #d1fae5;
-      color: #047857;
-    }
-
-    &--prospect {
-      background: #fef3c7;
-      color: #b45309;
-    }
-
-    &--mobile {
-      background: #f3e8ff;
-      color: #7c3aed;
-    }
-
-    &--fixe {
-      background: #e0f2fe;
-      color: #0284c7;
-    }
-
-    &--voip {
-      background: #fce7f3;
-      color: #be185d;
-    }
-
-    &--inconnu {
-      background: #f1f5f9;
-      color: #64748b;
-    }
-
-    &--en_attente {
-      background: #f1f5f9;
-      color: #475569;
-    }
-
-    &--assigne {
-      background: #f3e8ff;
-      color: #7c3aed;
-    }
-
-    &--en_cours {
-      background: #e0e7ff;
-      color: #4f46e5;
-    }
-
-    &--traite {
-      background: #dcfce7;
-      color: #16a34a;
-    }
-
-    &--rappeler {
-      background: #fef9c3;
-      color: #a16207;
-    }
-
-    &--refuse {
-      background: #fee2e2;
-      color: #dc2626;
-    }
-  }
-
-  .prospectsView__pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border-top: 1px solid vars.$borderColor;
-    flex-wrap: wrap;
-    gap: 1em;
-  }
-
-  .pagination-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25em;
-    flex: 1;
-  }
-
-  .pagination-info {
-    font-size: 0.9em;
-    color: vars.$fontColorSecondary;
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    white-space: nowrap;
-  }
-
-  .pagination-jump-input {
-    width: 3.5em;
-    padding: 0.35em 0.5em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 4px;
-    font-size: 0.9em;
-    text-align: center;
-    font-family: monospace;
-    background: white;
-    transition: border-color vars.$transitionSmooth;
-
-    &:focus {
-      outline: none;
-      border-color: #818cf8;
-      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
-    }
-
-    &::placeholder {
-      color: vars.$fontColorSecondary;
-      opacity: 0.7;
-    }
-
-    /* Masquer les flèches du number input */
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    &[type=number] {
-      -moz-appearance: textfield;
-    }
-  }
-
-  .pagination-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    padding: 0.5em 1em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 6px;
-    background: white;
-    color: vars.$fontColorPrimary;
-    font-size: 0.9em;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all vars.$transitionSmooth;
-
-    &:hover:not(:disabled) {
-      background: vars.$utilsGradient;
-      color: white;
-      border-color: transparent;
-    }
-
-    &:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-  }
-
-  .pagination-total {
-    font-size: 0.85em;
-    opacity: 0.8;
-  }
+}
+#prospectsView main {
+  padding: 1.5em 1em;
+}
+#prospectsView .prospectsView__container {
+  @include mixins.centeredContainer(100%);
+}
+#prospectsView .prospectsView__back {
+  margin-bottom: 1em;
+}
+#prospectsView .prospectsView__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+#prospectsView .prospectsView__title-section {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+#prospectsView .prospectsView__title-section h1 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+#prospectsView .prospectsView__total-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4em 0.8em;
+  border-radius: 999px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #1d4ed8;
+  font-size: 0.9em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__filters {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+#prospectsView .prospectsView__filters {
+  flex: 1;
+  justify-content: flex-end;
+}
+#prospectsView .prospectsView__filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+#prospectsView .prospectsView__filter label {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__filter .reactSelect__control {
+  border-color: vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9em;
+  min-height: unset;
+  box-shadow: none;
+  min-width: 180px;
+  cursor: pointer;
+}
+#prospectsView .prospectsView__filter .reactSelect__control:hover {
+  border-color: vars.$borderColor;
+}
+#prospectsView .prospectsView__filter .reactSelect__control--is-focused {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
+}
+#prospectsView .prospectsView__filter .reactSelect__value-container {
+  padding: 0.35em 0.85em;
+}
+#prospectsView .prospectsView__filter .reactSelect__single-value {
+  color: vars.$fontColorPrimary;
+}
+#prospectsView .prospectsView__filter .reactSelect__option--is-focused {
+  background: #ede9fe;
+}
+#prospectsView .prospectsView__filter .reactSelect__option--is-selected {
+  background: #818cf8;
+}
+#prospectsView .prospectsView__filter .reactSelect__menu {
+  border-radius: 8px;
+  font-size: 0.9em;
+}
+#prospectsView .prospectsView__search input {
+  padding: 0.5em 0.85em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9em;
+  min-width: 200px;
+  transition: border-color vars.$transitionSmooth;
+}
+#prospectsView .prospectsView__search input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+}
+#prospectsView .prospectsView__search input::placeholder {
+  color: vars.$fontColorSecondary;
+}
+#prospectsView .prospectsView__error {
+  padding: 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 1em;
+}
+#prospectsView .prospectsView__loading {
+  text-align: center;
+  padding: 3em;
+  color: vars.$fontColorSecondary;
+}
+#prospectsView .prospectsView__empty {
+  text-align: center;
+  padding: 3em;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+}
+#prospectsView .prospectsView__table-wrapper {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+}
+#prospectsView .prospectsView__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9em;
+  table-layout: auto;
+}
+#prospectsView .prospectsView__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__table td {
+  padding: 0.75em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+  display: table-cell;
+}
+#prospectsView .prospectsView__table tbody tr {
+  cursor: pointer;
+  transition: background vars.$transitionSmooth;
+}
+#prospectsView .prospectsView__table tbody tr:hover {
+  background: #f8fafc;
+}
+#prospectsView .prospectsView__row--alert {
+  background: #fef3c7;
+}
+#prospectsView .prospectsView__row--alert:hover {
+  background: #fde68a;
+}
+#prospectsView .prospectsView__table tbody tr {
+  display: table-row;
+}
+#prospectsView .prospectsView__table tbody tr:last-child td {
+  border-bottom: none;
+}
+#prospectsView .prospectsView__id {
+  white-space: nowrap;
+  text-align: center;
+}
+#prospectsView .prospectsView__center { text-align: center; }
+#prospectsView .prospectsView__purge,
+#prospectsView .prospectsView__purge span,
+#prospectsView .prospectsView__purge svg { color: #fff; }
+#prospectsView .prospectsView__id code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: #f1f5f9;
+  padding: 0.2em 0.5em;
+  border-radius: 4px;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+#prospectsView .prospectsView__name {
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__phone {
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__phone code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+#prospectsView .prospectsView__email {
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__email a {
+  color: vars.$utilsPrimary;
+  text-decoration: none;
+}
+#prospectsView .prospectsView__email a:hover {
+  text-decoration: underline;
+}
+#prospectsView .prospectsView__location {
+  white-space: nowrap;
+}
+#prospectsView .prospectsView__date {
+  white-space: nowrap;
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+}
+#prospectsView .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#prospectsView .badge--nouveau {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+#prospectsView .badge--contacte {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+#prospectsView .badge--interesse {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#prospectsView .badge--rappel {
+  background: #fef9c3;
+  color: #a16207;
+}
+#prospectsView .badge--non_interesse {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#prospectsView .badge--vente_conclue {
+  background: #d1fae5;
+  color: #047857;
+}
+#prospectsView .badge--particulier {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#prospectsView .badge--entreprise {
+  background: #fef3c7;
+  color: #b45309;
+}
+#prospectsView .badge--client {
+  background: #d1fae5;
+  color: #047857;
+}
+#prospectsView .badge--prospect {
+  background: #fef3c7;
+  color: #b45309;
+}
+#prospectsView .badge--mobile {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+#prospectsView .badge--fixe {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+#prospectsView .badge--voip {
+  background: #fce7f3;
+  color: #be185d;
+}
+#prospectsView .badge--inconnu {
+  background: #f1f5f9;
+  color: #64748b;
+}
+#prospectsView .badge--en_attente {
+  background: #f1f5f9;
+  color: #475569;
+}
+#prospectsView .badge--assigne {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+#prospectsView .badge--en_cours {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+#prospectsView .badge--traite {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#prospectsView .badge--rappeler {
+  background: #fef9c3;
+  color: #a16207;
+}
+#prospectsView .badge--refuse {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#prospectsView .prospectsView__pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  border-top: 1px solid vars.$borderColor;
+  flex-wrap: wrap;
+  gap: 1em;
+}
+#prospectsView .pagination-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25em;
+  flex: 1;
+}
+#prospectsView .pagination-info {
+  font-size: 0.9em;
+  color: vars.$fontColorSecondary;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  white-space: nowrap;
+}
+#prospectsView .pagination-jump-input {
+  width: 3.5em;
+  padding: 0.35em 0.5em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 4px;
+  font-size: 0.9em;
+  text-align: center;
+  font-family: monospace;
+  background: white;
+  transition: border-color vars.$transitionSmooth;
+}
+#prospectsView .pagination-jump-input:focus {
+  outline: none;
+  border-color: #818cf8;
+  box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.15);
+}
+#prospectsView .pagination-jump-input::placeholder {
+  color: vars.$fontColorSecondary;
+  opacity: 0.7;
+}
+#prospectsView .pagination-jump-input {
+  /* Masquer les flèches du number input */
+}
+#prospectsView .pagination-jump-input::-webkit-outer-spin-button,
+#prospectsView .pagination-jump-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+#prospectsView .pagination-jump-input[type="number"] {
+  -moz-appearance: textfield;
+}
+#prospectsView .pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.5em 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  background: white;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth;
+}
+#prospectsView .pagination-btn:hover:not(:disabled) {
+  background: vars.$utilsGradient;
+  color: white;
+  border-color: transparent;
+}
+#prospectsView .pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+#prospectsView .pagination-total {
+  font-size: 0.85em;
+  opacity: 0.8;
 }

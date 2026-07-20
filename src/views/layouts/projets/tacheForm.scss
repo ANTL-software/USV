@@ -1,172 +1,155 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #tacheForm {
   @include mixins.mainView;
   @include mixins.responsivePadding(1em, 1.5em, 2em);
-
-  .tacheForm__container {
-    @include mixins.centeredContainer;
-    max-width: 900px;
+}
+#tacheForm .tacheForm__container {
+  @include mixins.centeredContainer;
+  max-width: 900px;
+}
+#tacheForm .tacheForm__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2em;
+  gap: 1em;
+  flex-wrap: wrap;
+}
+#tacheForm .tacheForm__header h1 {
+  margin: 0;
+  font-size: 2rem;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#tacheForm .tacheForm__form {
+  @include mixins.card(16px, light);
+  padding: 2em;
+}
+#tacheForm .tacheForm__section {
+  margin-bottom: 2em;
+}
+#tacheForm .tacheForm__section:last-child {
+  margin-bottom: 0;
+}
+#tacheForm .tacheForm__section h2 {
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin: 0 0 1.5em 0;
+  padding-bottom: 0.5em;
+  border-bottom: 2px solid vars.$utilsPrimary;
+}
+#tacheForm .tacheForm__field {
+  margin-bottom: 1.5em;
+}
+#tacheForm .tacheForm__field label {
+  display: block;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.5em;
+  font-size: 0.95rem;
+}
+#tacheForm .tacheForm__field input[type="text"],
+#tacheForm .tacheForm__field input[type="number"],
+#tacheForm .tacheForm__field input[type="date"],
+#tacheForm .tacheForm__field select,
+#tacheForm .tacheForm__field textarea {
+  width: 100%;
+  padding: 0.75em 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  background: white;
+  transition: all vars.$transitionMedium;
+}
+#tacheForm .tacheForm__field input[type="text"]:focus,
+#tacheForm .tacheForm__field input[type="number"]:focus,
+#tacheForm .tacheForm__field input[type="date"]:focus,
+#tacheForm .tacheForm__field select:focus,
+#tacheForm .tacheForm__field textarea:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+#tacheForm .tacheForm__field input[type="text"]:disabled,
+#tacheForm .tacheForm__field input[type="number"]:disabled,
+#tacheForm .tacheForm__field input[type="date"]:disabled,
+#tacheForm .tacheForm__field select:disabled,
+#tacheForm .tacheForm__field textarea:disabled {
+  background: #f3f4f6;
+  cursor: not-allowed;
+}
+#tacheForm .tacheForm__field textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+#tacheForm .tacheForm__field select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237c3aed' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1em center;
+  padding-right: 2.5em;
+}
+#tacheForm .tacheForm__field .tacheForm__progression-value {
+  display: inline-block;
+  margin-left: 1em;
+  font-weight: 600;
+  color: vars.$utilsPrimary;
+}
+#tacheForm .tacheForm__field input[type="range"] {
+  display: inline-block;
+  width: calc(100% - 80px);
+  vertical-align: middle;
+}
+#tacheForm .tacheForm__row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5em;
+  margin-bottom: 1.5em;
+}
+#tacheForm .tacheForm__error {
+  padding: 1em 1.5em;
+  background: #fee;
+  border: 1px solid #fcc;
+  border-radius: 8px;
+  color: #c33;
+  margin-bottom: 1.5em;
+}
+#tacheForm .tacheForm__error p {
+  margin: 0;
+}
+#tacheForm .tacheForm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+  padding-top: 1.5em;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  margin-top: 2em;
+}
+@media (max-width: 768px) {
+  #tacheForm .tacheForm__actions {
+    flex-direction: column-reverse;
   }
-
-  .tacheForm__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2em;
-    gap: 1em;
-    flex-wrap: wrap;
-
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-      background: vars.$utilsGradient;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
+  #tacheForm .tacheForm__actions button {
+    width: 100%;
   }
-
-  .tacheForm__form {
-    @include mixins.card(16px, light);
-    padding: 2em;
+}
+@media (max-width: 1024px) {
+  #tacheForm .tacheForm__header {
+    flex-direction: column;
+    align-items: flex-start;
   }
-
-  .tacheForm__section {
-    margin-bottom: 2em;
-
-    &:last-child {
-      margin-bottom: 0;
-    }
-
-    h2 {
-      font-size: 1.3rem;
-      color: #2c3e50;
-      margin: 0 0 1.5em 0;
-      padding-bottom: 0.5em;
-      border-bottom: 2px solid vars.$utilsPrimary;
-    }
+  #tacheForm .tacheForm__header h1 {
+    font-size: 1.5rem;
   }
-
-  .tacheForm__field {
-    margin-bottom: 1.5em;
-
-    label {
-      display: block;
-      font-weight: 600;
-      color: #2c3e50;
-      margin-bottom: 0.5em;
-      font-size: 0.95rem;
-    }
-
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
-      width: 100%;
-      padding: 0.75em 1em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-family: inherit;
-      background: white;
-      transition: all vars.$transitionMedium;
-
-      &:focus {
-        outline: none;
-        border-color: vars.$utilsPrimary;
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-      }
-
-      &:disabled {
-        background: #f3f4f6;
-        cursor: not-allowed;
-      }
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-
-    select {
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237c3aed' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 1em center;
-      padding-right: 2.5em;
-    }
-
-    .tacheForm__progression-value {
-      display: inline-block;
-      margin-left: 1em;
-      font-weight: 600;
-      color: vars.$utilsPrimary;
-    }
-
-    input[type="range"] {
-      display: inline-block;
-      width: calc(100% - 80px);
-      vertical-align: middle;
-    }
+  #tacheForm .tacheForm__form {
+    padding: 1.5em;
   }
-
-  .tacheForm__row {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5em;
-    margin-bottom: 1.5em;
-  }
-
-  .tacheForm__error {
-    padding: 1em 1.5em;
-    background: #fee;
-    border: 1px solid #fcc;
-    border-radius: 8px;
-    color: #c33;
-    margin-bottom: 1.5em;
-
-    p {
-      margin: 0;
-    }
-  }
-
-  .tacheForm__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1em;
-    padding-top: 1.5em;
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
-    margin-top: 2em;
-
-    @media (max-width: 768px) {
-      flex-direction: column-reverse;
-
-      button {
-        width: 100%;
-      }
-    }
-  }
-
-  @media (max-width: 1024px) {
-    .tacheForm__header {
-      flex-direction: column;
-      align-items: flex-start;
-
-      h1 {
-        font-size: 1.5rem;
-      }
-    }
-
-    .tacheForm__form {
-      padding: 1.5em;
-    }
-
-    .tacheForm__row {
-      grid-template-columns: 1fr;
-    }
+  #tacheForm .tacheForm__row {
+    grid-template-columns: 1fr;
   }
 }

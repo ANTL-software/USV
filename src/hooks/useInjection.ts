@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
-import { getInjectionCountService, injectProspectsService } from '../API/services/queue.service';
-import { useAlert } from '../context/alert/AlertContext';
-import type { InjectionFilters, InjectionResult } from '../utils/types/queue.types';
+import { getInjectionCountService, injectProspectsService } from '../API/services/index.ts';
+import { useAlert } from '../context/alert/index.ts';
+import type { InjectionFilters, InjectionResult } from '../utils/types/index.ts';
 
 const STORAGE_KEY = 'antl_injection_filters';
 

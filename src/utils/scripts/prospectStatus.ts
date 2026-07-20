@@ -1,4 +1,4 @@
-import type { Prospect } from '../types/prospect.types';
+import type { Prospect } from '../types/index.ts';
 
 export function isProspectGloballyFlagged(prospect: Pick<Prospect, 'est_doublon' | 'blacklist'>): boolean {
   return prospect.est_doublon || prospect.blacklist === true;

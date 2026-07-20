@@ -1,16 +1,5 @@
-import type { Booking, EmployeBasic } from '../../utils/types/booking.types.ts';
-import { getRoleColor } from '../../utils/scripts/bookingUtils.ts';
-
-export interface CalendarEvent {
-  id: number;
-  title: string;
-  start: Date;
-  end: Date;
-  allDay: false;
-  id_beneficiaire: number;
-  role: 'confirme' | 'debutant' | null;
-  couleur?: string;
-}
+import type { Booking, CalendarEvent, EmployeBasic } from '../../utils/types/index.ts';
+import { getRoleColor } from '../../utils/scripts/index.ts';
 
 export class BookingModel implements Booking {
   id_booking: number;

@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getPostesService, deletePosteService } from '../API/services/user.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { Poste } from '../utils/types/user.types';
+import { getPostesService, deletePosteService } from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { Poste } from '../utils/types/index.ts';
 
 export function usePostes() {
   const [postes, setPostes] = useState<Poste[]>([]);

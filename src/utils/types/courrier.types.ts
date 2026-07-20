@@ -21,6 +21,23 @@ export interface ICourrier {
   modificateurUser?: IUserBasic;
 }
 
+export interface EmailData {
+  message: string;
+  subject: string;
+  to: string;
+}
+
+export interface EmailComposerForm extends EmailData {
+  error: string;
+}
+
+export interface EmailComposerCopy {
+  information: string;
+  sendLabel: string;
+  sendingLabel: string;
+  title: string;
+}
+
 export interface IUserBasic {
   id_employe: number;
   email?: string;
@@ -152,4 +169,11 @@ export interface ICourrierSelectSuggestion {
   reason: string | null;
   shouldAutofill: boolean;
   shouldSuggest: boolean;
+}
+
+export interface IConvertCropData {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }

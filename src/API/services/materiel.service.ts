@@ -1,6 +1,6 @@
 import { getRequest, postRequest, patchRequest } from '../APICalls.ts';
-import { AxiosResponse } from 'axios';
-import { MaterielModel } from '../models/materiel.model.ts';
+import type { AxiosResponse } from 'axios';
+import { MaterielModel } from '../models/index.ts';
 import type {
   Materiel,
   MaterielAffectation,
@@ -10,7 +10,7 @@ import type {
   RestituerMaterielPayload,
   ApiMaterielResponse,
   ApiAffectationResponse,
-} from '../../utils/types/materiel.types.ts';
+} from '../../utils/types/index.ts';
 
 export const getMaterielService = async (): Promise<MaterielModel[]> => {
   const response: AxiosResponse<ApiMaterielResponse> = await getRequest('/materiel');

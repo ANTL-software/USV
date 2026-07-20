@@ -1,27 +1,26 @@
 import { useState, useCallback, useEffect, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { BookingContext } from './BookingContext.tsx';
-import type { EmployeOption } from './BookingContext.tsx';
-import type { BookingModel } from '../../API/models/booking.model.ts';
-import type { CreateBookingPayload, BookingFilters, BookingConfig, UpdateBookingPayload } from '../../utils/types/booking.types.ts';
+import type { BookingModel } from '../../API/models/index.ts';
+import type { BookingConfig, BookingFilters, CreateBookingPayload, EmployeOption, UpdateBookingPayload } from '../../utils/types/index.ts';
 import {
   getBookingsService,
   createBookingService,
   updateBookingService,
   cancelBookingService,
   getBookingConfigService,
-} from '../../API/services/booking.service.ts';
-import { getAllEmployesService } from '../../API/services/user.service.ts';
-import { showError, showSuccess } from '../../utils/services/alertService.ts';
-import { logError } from '../../utils/scripts/errorHandling.ts';
+  getAllEmployesService,
+} from '../../API/services/index.ts';
+import { showError, showSuccess } from '../../utils/services/index.ts';
+import { logError } from '../../utils/scripts/index.ts';
 import {
   handleBookingLoadError,
   handleBookingCreateError,
   handleBookingUpdateError,
   handleBookingCancelError,
   handleEmployeLoadError,
-} from '../../utils/scripts/bookingErrorHandling.ts';
-import { UserContext } from '../user/UserContext.tsx';
+} from '../../utils/scripts/index.ts';
+import { UserContext } from '../user/index.ts';
 
 interface BookingProviderProps {
   children: ReactNode;

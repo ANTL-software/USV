@@ -1,0 +1,272 @@
+@use "../../../utils/styles/variables" as vars;
+#prospectDetailOverlay {
+  position: fixed !important;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+  padding: 1em;
+}
+#prospectDetailModal {
+  background: white;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 55em;
+  box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  max-height: 90dvh;
+  overflow: hidden;
+}
+#prospectDetailModal .modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25em 1.5em;
+  border-bottom: 1px solid #e5e7eb;
+}
+#prospectDetailModal .modalHeader h2 {
+  margin: 0;
+  font-size: 1.1em;
+  font-weight: 700;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#prospectDetailModal .modalHeader .closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.1em;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0.25em;
+  line-height: 1;
+  border-radius: 4px;
+  transition: color vars.$transitionFast;
+}
+#prospectDetailModal .modalHeader .closeBtn:hover {
+  color: #374151;
+}
+#prospectDetailModal .modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  padding: 1.5em;
+  overflow-y: auto;
+}
+#prospectDetailModal .prospectDetail__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+#prospectDetailModal .prospectDetail__section h3 {
+  margin: 0;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+#prospectDetailModal .prospectDetail__section--alert {
+  padding: 1em;
+  background: #fef3c7;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b;
+}
+#prospectDetailModal .detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1em;
+  padding: 0.5em 0;
+}
+#prospectDetailModal .detailRow:not(:last-child) {
+  border-bottom: 1px solid #f3f4f6;
+}
+#prospectDetailModal .detailLabel {
+  font-size: 0.9em;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+  flex-shrink: 0;
+  min-width: 10em;
+}
+#prospectDetailModal .detailLabel .required {
+  color: #ef4444;
+  margin-left: 0.15em;
+}
+#prospectDetailModal .detailValue {
+  font-size: 0.9em;
+  color: vars.$fontColorPrimary;
+  text-align: right;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  flex: 1;
+}
+#prospectDetailModal .detailValue a {
+  color: vars.$utilsPrimary;
+  text-decoration: none;
+}
+#prospectDetailModal .detailValue a:hover {
+  text-decoration: underline;
+}
+#prospectDetailModal .detailValue code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+#prospectDetailModal .detailValue .detailInput,
+#prospectDetailModal .detailValue .detailSelect {
+  padding: 0.4em 0.6em;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-family: inherit;
+  color: vars.$fontColorPrimary;
+  background: white;
+  transition: border-color vars.$transitionFast;
+  width: 48%;
+}
+#prospectDetailModal .detailValue .detailInput:focus,
+#prospectDetailModal .detailValue .detailSelect:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15);
+}
+#prospectDetailModal .detailValue .detailInput:disabled,
+#prospectDetailModal .detailValue .detailSelect:disabled {
+  background: #f9fafb;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+#prospectDetailModal .detailValue .detailSelect {
+  cursor: pointer;
+}
+#prospectDetailModal .badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25em;
+  padding: 0.2em 0.6em;
+  border-radius: 999px;
+  font-size: 0.75em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#prospectDetailModal .badge--particulier {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#prospectDetailModal .badge--entreprise {
+  background: #fef3c7;
+  color: #b45309;
+}
+#prospectDetailModal .badge--client {
+  background: #d1fae5;
+  color: #047857;
+}
+#prospectDetailModal .badge--prospect {
+  background: #fef3c7;
+  color: #b45309;
+}
+#prospectDetailModal .badge--statut--nouveau {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+#prospectDetailModal .badge--statut--contacte {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+#prospectDetailModal .badge--statut--interesse {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#prospectDetailModal .badge--statut--rappel {
+  background: #fef9c3;
+  color: #a16207;
+}
+#prospectDetailModal .badge--statut--non_interesse {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#prospectDetailModal .badge--statut--vente_conclue {
+  background: #d1fae5;
+  color: #047857;
+}
+#prospectDetailModal .badge--mobile {
+  background: #f3e8ff;
+  color: #7c3aed;
+}
+#prospectDetailModal .badge--fixe {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+#prospectDetailModal .badge--voip {
+  background: #fce7f3;
+  color: #be185d;
+}
+#prospectDetailModal .badge--inconnu {
+  background: #f1f5f9;
+  color: #64748b;
+}
+#prospectDetailModal .badge--warning {
+  background: #fef3c7;
+  color: #b45309;
+}
+#prospectDetailModal .badge--danger {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#prospectDetailModal .alertDate {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+}
+#prospectDetailModal .modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75em;
+  padding: 1em 1.5em;
+  border-top: 1px solid #e5e7eb;
+}
+#prospectDetailModal .modalFooter button {
+  padding: 0.6em 1.25em;
+  border-radius: 6px;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+  border: none;
+}
+#prospectDetailModal .modalFooter button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+#prospectDetailModal .modalFooter .btnSecondary {
+  background: #f3f4f6;
+  color: #374151;
+}
+#prospectDetailModal .modalFooter .btnSecondary:hover:not(:disabled) {
+  background: #e5e7eb;
+}
+#prospectDetailModal .modalFooter .btnPrimary {
+  background: vars.$utilsGradient;
+  color: white;
+}
+#prospectDetailModal .modalFooter .btnPrimary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+#prospectDetailModal .modalFooter .btnDanger {
+  background: #ef4444;
+  color: white;
+}
+#prospectDetailModal .modalFooter .btnDanger:hover:not(:disabled) {
+  background: #dc2626;
+}

@@ -1,6 +1,5 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #vigieView {
   @include mixins.mainView;
 
@@ -10,1237 +9,1049 @@
   --vigie-green: #168552;
   --vigie-orange: #b36a00;
   --vigie-red: #b73131;
-
-  button,
-  [role="button"],
-  [role="tab"] {
-    cursor: pointer !important;
+}
+#vigieView button,
+#vigieView [role="button"],
+#vigieView [role="tab"] {
+  cursor: pointer !important;
+}
+#vigieView button:disabled {
+  cursor: pointer !important;
+  opacity: 0.52;
+}
+#vigieView .vigieView__container {
+  @include mixins.centeredContainer;
+  padding: 2em 1em 4em;
+}
+#vigieView .vigieView__header {
+  display: grid;
+  gap: 1.3em;
+  margin-bottom: 1.4em;
+}
+#vigieView .vigieView__header h1 {
+  margin: 0.18em 0;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.08;
+}
+#vigieView .vigieView__header p {
+  max-width: 780px;
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.55;
+}
+#vigieView .vigieView__eyebrow,
+#vigieView .vigieView__intro,
+#vigieView .vigieView__panel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.65em;
+}
+#vigieView .vigieView__eyebrow {
+  color: vars.$utilsPrimary;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#vigieView .vigieView__intro {
+  @include mixins.card(16px, light);
+  margin-bottom: 1.4em;
+  padding: 1.1em 1.3em;
+  border-left: 5px solid vars.$utilsPrimary;
+}
+#vigieView .vigieView__intro > svg {
+  flex: 0 0 auto;
+  color: vars.$utilsPrimary;
+  font-size: 1.9rem;
+}
+#vigieView .vigieView__intro div {
+  display: grid;
+  gap: 0.2em;
+}
+#vigieView .vigieView__intro span {
+  color: vars.$fontColorSecondary;
+  line-height: 1.45;
+}
+#vigieView .vigieView__filters {
+  display: grid;
+  gap: 1em;
+  margin-bottom: 1.8em;
+}
+#vigieView .vigieView__filters > div {
+  min-width: 0;
+}
+#vigieView .vigieView__filters label {
+  display: block;
+  margin-bottom: 0.45em;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+#vigieView .vigieView__filters [class*="-control"],
+#vigieView .vigieView__filters [class*="-option"],
+#vigieView .vigieView__filters [class*="-indicatorContainer"] {
+  cursor: pointer !important;
+}
+#vigieView .vigieView__empty {
+  @include mixins.card(16px, light);
+  min-height: 260px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.6em;
+  padding: 2em;
+  color: vars.$fontColorSecondary;
+  text-align: center;
+}
+#vigieView .vigieView__empty svg {
+  color: vars.$utilsPrimary;
+  font-size: 3rem;
+}
+#vigieView .vigieView__empty h2 {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+}
+#vigieView .vigieView__empty p {
+  max-width: 560px;
+  margin: 0;
+  line-height: 1.55;
+}
+#vigieView .vigieView__error,
+#vigieView .vigieView__inline-error {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  color: vars.$errorColor;
+  font-weight: 700;
+}
+#vigieView .vigieView__content {
+  display: grid;
+  gap: 1.35em;
+}
+#vigieView .vigieView__period {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8em;
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__period > div {
+  display: grid;
+  gap: 0.2em;
+}
+#vigieView .vigieView__period strong {
+  color: vars.$fontColorPrimary;
+}
+#vigieView .vigieView__period span {
+  font-size: 0.86rem;
+}
+#vigieView .vigieView__button {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.5em 0.85em;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 750;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    transform 0.15s ease,
+    filter 0.15s ease,
+    background-color 0.15s ease;
+}
+#vigieView .vigieView__button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(0.97);
+}
+#vigieView .vigieView__button--primary {
+  background: vars.$utilsGradient;
+  color: white;
+}
+#vigieView .vigieView__button--secondary {
+  border-color: rgba(124, 58, 237, 0.24);
+  background: white;
+  color: vars.$utilsPrimary;
+}
+#vigieView .vigieView__button--ghost {
+  background: var(--vigie-purple-soft);
+  color: var(--vigie-purple-dark);
+}
+#vigieView .vigieView__button--danger-link {
+  min-height: 30px;
+  padding: 0.35em 0.5em;
+  background: transparent;
+  color: var(--vigie-red);
+}
+#vigieView .vigieView__objective {
+  @include mixins.card(16px, light);
+  display: grid;
+  grid-template-columns: minmax(230px, auto) minmax(180px, 1fr) auto;
+  align-items: center;
+  gap: 1.2em;
+  padding: 1.15em 1.3em;
+  border: 1px solid rgba(124, 58, 237, 0.16);
+}
+#vigieView .vigieView__objective > b {
+  color: vars.$utilsPrimary;
+  font-size: 1.25rem;
+}
+#vigieView .vigieView__objective-copy {
+  display: grid;
+  gap: 0.2em;
+}
+#vigieView .vigieView__objective-copy > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: vars.$utilsPrimary;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+#vigieView .vigieView__objective-copy strong {
+  font-size: 1.18rem;
+}
+#vigieView .vigieView__objective-copy small {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__progress {
+  height: 10px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #e9e7f0;
+}
+#vigieView .vigieView__progress span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: vars.$utilsGradient;
+  transition: width 0.3s ease;
+}
+#vigieView .vigieView__kpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
+  gap: 0.8em;
+}
+#vigieView .vigieView__kpis article {
+  @include mixins.card(14px, light);
+  display: grid;
+  gap: 0.22em;
+  padding: 1em;
+  border-top: 3px solid transparent;
+}
+#vigieView .vigieView__kpis span,
+#vigieView .vigieView__kpis small {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__kpis span {
+  font-size: 0.83rem;
+}
+#vigieView .vigieView__kpis strong {
+  color: vars.$utilsPrimary;
+  font-size: 1.75rem;
+  line-height: 1.15;
+}
+#vigieView .vigieView__kpis small {
+  font-size: 0.77rem;
+}
+#vigieView .vigieView__kpis .vigieView__kpi--result {
+  border-top-color: var(--vigie-green);
+}
+#vigieView .vigieView__kpis .vigieView__kpi--result strong {
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__grid {
+  display: grid;
+  gap: 1.35em;
+}
+#vigieView .vigieView__panel {
+  @include mixins.card(16px, light);
+  min-width: 0;
+  padding: 1.35em;
+}
+#vigieView .vigieView__panel-title {
+  align-items: flex-start;
+  margin-bottom: 1.1em;
+}
+#vigieView .vigieView__panel-title > svg {
+  flex: 0 0 auto;
+  margin-top: 0.08em;
+  color: vars.$utilsPrimary;
+  font-size: 1.7rem;
+}
+#vigieView .vigieView__panel-title h2 {
+  margin: 0 0 0.18em;
+  font-size: 1.2rem;
+}
+#vigieView .vigieView__panel-title p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+#vigieView .vigieView__panel-title--split {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+}
+#vigieView .vigieView__version {
+  border-radius: 999px;
+  padding: 0.35em 0.6em;
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+#vigieView .vigieView__scoring-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.55em;
+}
+#vigieView .vigieView__disclosure {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 999px;
+  padding: 0.36em 0.62em;
+  background: transparent;
+  color: vars.$utilsPrimary;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+#vigieView .vigieView__disclosure:hover {
+  border-color: rgba(124, 58, 237, 0.35);
+  background: var(--vigie-purple-soft);
+}
+#vigieView .vigieView__disclosure:focus-visible {
+  outline: 2px solid vars.$utilsPrimary;
+  outline-offset: 2px;
+}
+#vigieView .vigieView__disclosure svg {
+  font-size: 1rem;
+}
+#vigieView .vigieView__scoring-detail {
+  padding-top: 0.15em;
+}
+#vigieView .vigieView__recommendations {
+  display: grid;
+  gap: 0.75em;
+}
+#vigieView .vigieView__recommendation {
+  padding: 0.95em;
+  border-left: 4px solid vars.$utilsPrimary;
+  border-radius: 10px;
+  background: var(--vigie-purple-soft);
+}
+#vigieView .vigieView__recommendation p {
+  margin: 0.45em 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+#vigieView .vigieView__recommendation > small {
+  display: block;
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+#vigieView .vigieView__recommendation--alerte {
+  border-left-color: var(--vigie-red);
+  background: rgba(183, 49, 49, 0.07);
+}
+#vigieView .vigieView__recommendation--attention {
+  border-left-color: #e49316;
+  background: rgba(228, 147, 22, 0.09);
+}
+#vigieView .vigieView__recommendation--opportunite {
+  border-left-color: var(--vigie-green);
+  background: rgba(22, 133, 82, 0.07);
+}
+#vigieView .vigieView__recommendation-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1em;
+}
+#vigieView .vigieView__recommendation-heading > span {
+  flex: 0 0 auto;
+  border-radius: 999px;
+  padding: 0.3em 0.55em;
+  background: rgba(255, 255, 255, 0.7);
+  color: vars.$fontColorSecondary;
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+#vigieView .vigieView__recommendation-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65em;
+  margin-top: 0.8em;
+}
+#vigieView .vigieView__recommendation-footer > span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.74rem;
+  font-weight: 700;
+}
+#vigieView .vigieView__recommendation-footer > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+#vigieView .vigieView__business-main {
+  display: grid;
+  gap: 0.18em;
+  padding: 1em;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    rgba(124, 58, 237, 0.1),
+    rgba(22, 133, 82, 0.08)
+  );
+}
+#vigieView .vigieView__business-main span,
+#vigieView .vigieView__business-main small {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__business-main strong {
+  color: vars.$utilsPrimary;
+  font-size: 2.4rem;
+}
+#vigieView .vigieView__business-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.9em 0;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__business-value span {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__business-value strong {
+  color: var(--vigie-green);
+  font-size: 1.15rem;
+}
+#vigieView .vigieView__business-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 0.65em;
+  margin: 0.9em 0;
+}
+#vigieView .vigieView__business-stats div {
+  display: grid;
+  gap: 0.15em;
+}
+#vigieView .vigieView__business-stats dt {
+  color: vars.$fontColorSecondary;
+  font-size: 0.76rem;
+}
+#vigieView .vigieView__business-stats dd {
+  margin: 0;
+  font-size: 1.08rem;
+  font-weight: 800;
+}
+#vigieView .vigieView__status-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em;
+}
+#vigieView .vigieView__status-cloud span {
+  border-radius: 999px;
+  padding: 0.38em 0.6em;
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+#vigieView .vigieView__status-cloud b {
+  margin-left: 0.25em;
+  color: vars.$fontColorPrimary;
+}
+#vigieView .vigieView__business-rule,
+#vigieView .vigieView__quality-note {
+  margin: 1em 0 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+#vigieView .vigieView__score-distribution {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(105px, 1fr));
+  gap: 0.6em;
+  margin-bottom: 1em;
+}
+#vigieView .vigieView__score-card {
+  display: grid;
+  gap: 0.12em;
+  padding: 0.8em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 10px;
+  background: vars.$greyBackground;
+}
+#vigieView .vigieView__score-card strong {
+  color: vars.$utilsPrimary;
+  font-size: 1.15rem;
+}
+#vigieView .vigieView__score-card span {
+  font-weight: 700;
+}
+#vigieView .vigieView__score-card small {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__score-card--p1 {
+  border-color: rgba(22, 133, 82, 0.3);
+  background: rgba(22, 133, 82, 0.07);
+}
+#vigieView .vigieView__score-card--p1 strong {
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__score-card--p5 {
+  background: rgba(90, 108, 125, 0.08);
+}
+#vigieView .vigieView__score-card--p5 strong {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__table-wrap {
+  overflow-x: auto;
+}
+#vigieView .vigieView__selection-bar {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.8em;
+  margin-bottom: 0.7em;
+  padding: 0.7em 0.8em;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 10px;
+  background: var(--vigie-purple-soft);
+}
+#vigieView .vigieView__selection-bar strong {
+  color: var(--vigie-purple-dark);
+  font-size: 0.88rem;
+}
+#vigieView .vigieView__selection-bar span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+}
+#vigieView table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+}
+#vigieView table th,
+#vigieView table td {
+  padding: 0.78em 0.6em;
+  border-bottom: 1px solid vars.$borderColor;
+  text-align: left;
+  vertical-align: middle;
+}
+#vigieView table th {
+  color: vars.$fontColorSecondary;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+#vigieView table td {
+  font-size: 0.86rem;
+}
+#vigieView table td > strong,
+#vigieView table td > small {
+  display: block;
+}
+#vigieView table td > small {
+  margin-top: 0.2em;
+  color: vars.$fontColorSecondary;
+}
+#vigieView table input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: vars.$utilsPrimary;
+  cursor: pointer;
+}
+#vigieView table .vigieView__check-cell {
+  width: 28px;
+  padding-right: 0.2em;
+  text-align: center;
+}
+#vigieView table .vigieView__candidate--selected td {
+  background: rgba(124, 58, 237, 0.055);
+}
+#vigieView .vigieView__score-badge,
+#vigieView .vigieView__sample,
+#vigieView .vigieView__action-status {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.35em 0.6em;
+  font-size: 0.72rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+#vigieView .vigieView__score-badge {
+  background: var(--vigie-purple-soft);
+  color: var(--vigie-purple-dark);
+}
+#vigieView .vigieView__score-badge--p1 {
+  background: rgba(22, 133, 82, 0.12);
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__score-badge--p5 {
+  background: rgba(90, 108, 125, 0.12);
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__action-grid {
+  display: grid;
+  gap: 0.9em;
+}
+#vigieView .vigieView__prepare-action {
+  display: grid;
+  align-content: start;
+  gap: 0.55em;
+  padding: 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  background: vars.$greyBackground;
+}
+#vigieView .vigieView__prepare-action > div:first-child {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+#vigieView .vigieView__prepare-action h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+#vigieView .vigieView__prepare-action p {
+  min-height: 2.6em;
+  margin: 0 0 0.15em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.83rem;
+  line-height: 1.4;
+}
+#vigieView .vigieView__prepare-action label {
+  margin-top: 0.15em;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+#vigieView .vigieView__prepare-action input {
+  width: 100%;
+  height: 38px;
+  box-sizing: border-box;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  padding: 0 0.75em;
+  background: white;
+  color: vars.$fontColorPrimary;
+  font: inherit;
+}
+#vigieView .vigieView__prepare-action input:focus {
+  border-color: vars.$utilsPrimary;
+  outline: 2px solid rgba(124, 58, 237, 0.12);
+}
+#vigieView .vigieView__prepare-action [class*="-control"],
+#vigieView .vigieView__prepare-action [class*="-option"],
+#vigieView .vigieView__prepare-action [class*="-indicatorContainer"] {
+  cursor: pointer !important;
+}
+#vigieView .vigieView__prepare-action > .vigieView__button {
+  justify-self: start;
+  margin-top: 0.25em;
+}
+#vigieView .vigieView__selected-list {
+  display: flex;
+  min-height: 42px;
+  max-height: 152px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 0.4em;
+  overflow-y: auto;
+  padding: 0.5em;
+  border: 1px dashed rgba(124, 58, 237, 0.28);
+  border-radius: 8px;
+  background: white;
+}
+#vigieView .vigieView__selected-list > span {
+  align-self: center;
+  padding: 0.25em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+}
+#vigieView .vigieView__selected-list button {
+  display: grid;
+  grid-template-columns: auto auto;
+  gap: 0.05em 0.4em;
+  max-width: 230px;
+  border: 1px solid rgba(124, 58, 237, 0.18);
+  border-radius: 8px;
+  padding: 0.38em 0.55em;
+  background: var(--vigie-purple-soft);
+  color: vars.$fontColorPrimary;
+  text-align: left;
+}
+#vigieView .vigieView__selected-list button b {
+  grid-row: 1 / span 2;
+  align-self: center;
+  color: vars.$utilsPrimary;
+  font-size: 0.72rem;
+}
+#vigieView .vigieView__selected-list button span,
+#vigieView .vigieView__selected-list button small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vigieView .vigieView__selected-list button span {
+  font-size: 0.76rem;
+  font-weight: 750;
+}
+#vigieView .vigieView__selected-list button small {
+  color: vars.$fontColorSecondary;
+  font-size: 0.68rem;
+}
+#vigieView .vigieView__manual-priority {
+  display: grid;
+  gap: 0.5em;
+  margin-top: 0.35em;
+  padding-top: 0.9em;
+  border-top: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__manual-priority > div {
+  display: flex;
+  align-items: center;
+  gap: 0.55em;
+}
+#vigieView .vigieView__manual-priority > div span {
+  border-radius: 999px;
+  padding: 0.22em 0.5em;
+  background: white;
+  color: vars.$fontColorSecondary;
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+#vigieView .vigieView__manual-priority p {
+  min-height: 0;
+  margin: 0;
+}
+#vigieView .vigieView__manual-priority em {
+  color: vars.$fontColorSecondary;
+  font-style: normal;
+  font-weight: 500;
+}
+#vigieView .vigieView__manual-priority > .vigieView__button {
+  margin-top: 0.1em;
+}
+#vigieView .vigieView__step {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 8px;
+  background: var(--vigie-purple-soft);
+  color: vars.$utilsPrimary;
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+#vigieView .vigieView__action-message {
+  margin: 0.9em 0 0;
+  padding: 0.7em 0.85em;
+  border-radius: 8px;
+  background: var(--vigie-purple-soft);
+  color: var(--vigie-purple-dark);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+#vigieView .vigieView__action-message--success {
+  background: rgba(22, 133, 82, 0.09);
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__action-message--error {
+  background: rgba(183, 49, 49, 0.08);
+  color: var(--vigie-red);
+}
+#vigieView .vigieView__journal {
+  margin-top: 1.15em;
+  padding-top: 1.1em;
+  border-top: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__journal-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  margin-bottom: 0.65em;
+}
+#vigieView .vigieView__journal-title h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+#vigieView .vigieView__journal-title span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+}
+#vigieView .vigieView__journal-list {
+  display: grid;
+}
+#vigieView .vigieView__journal-list article {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.75em;
+  padding: 0.7em 0;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__journal-list article > div:nth-child(2) {
+  display: grid;
+  gap: 0.1em;
+  min-width: 0;
+}
+#vigieView .vigieView__journal-list article span,
+#vigieView .vigieView__journal-list article small {
+  overflow: hidden;
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#vigieView .vigieView__journal-icon {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--vigie-purple-soft);
+  color: vars.$utilsPrimary;
+}
+#vigieView .vigieView__action-status--validee {
+  background: rgba(22, 133, 82, 0.11);
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__action-status--consommee {
+  background: var(--vigie-purple-soft);
+  color: var(--vigie-purple-dark);
+}
+#vigieView .vigieView__action-status--annulee {
+  background: rgba(90, 108, 125, 0.1);
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45em;
+  margin-bottom: 0.85em;
+}
+#vigieView .vigieView__tabs button {
+  min-height: 36px;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  padding: 0.45em 0.75em;
+  background: white;
+  color: vars.$fontColorSecondary;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+#vigieView .vigieView__tabs .vigieView__tab--active {
+  border-color: rgba(124, 58, 237, 0.25);
+  background: var(--vigie-purple-soft);
+  color: var(--vigie-purple-dark);
+}
+#vigieView .vigieView__sample--ok {
+  background: rgba(22, 133, 82, 0.11);
+  color: var(--vigie-green);
+}
+#vigieView .vigieView__sample--limited {
+  background: rgba(228, 147, 22, 0.12);
+  color: var(--vigie-orange);
+}
+#vigieView .vigieView__quality-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65em;
+  margin: 0;
+}
+#vigieView .vigieView__quality-list div {
+  padding: 0.72em;
+  border-radius: 9px;
+  background: vars.$greyBackground;
+}
+#vigieView .vigieView__quality-list dt {
+  color: vars.$fontColorSecondary;
+  font-size: 0.76rem;
+}
+#vigieView .vigieView__quality-list dd {
+  margin: 0.18em 0 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+#vigieView .vigieView__compact-list,
+#vigieView .vigieView__status-list {
+  display: grid;
+}
+#vigieView .vigieView__compact-list article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.7em 0;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__compact-list article > div {
+  display: grid;
+  gap: 0.1em;
+}
+#vigieView .vigieView__compact-list article > div:last-child {
+  text-align: right;
+}
+#vigieView .vigieView__compact-list article span,
+#vigieView .vigieView__compact-list article small {
+  color: vars.$fontColorSecondary;
+  font-size: 0.76rem;
+}
+#vigieView .vigieView__compact-list article b {
+  color: vars.$utilsPrimary;
+  font-size: 1.1rem;
+}
+#vigieView .vigieView__hour-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55em;
+}
+#vigieView .vigieView__hour-grid article {
+  display: grid;
+  gap: 0.12em;
+  padding: 0.72em;
+  border-radius: 9px;
+  background: vars.$greyBackground;
+}
+#vigieView .vigieView__hour-grid span {
+  color: vars.$utilsPrimary;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+#vigieView .vigieView__hour-grid small {
+  color: vars.$fontColorSecondary;
+}
+#vigieView .vigieView__status-list {
+  max-height: 260px;
+  overflow-y: auto;
+}
+#vigieView .vigieView__status-list div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 55px;
+  align-items: center;
+  gap: 0.6em;
+  padding: 0.55em 0;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#vigieView .vigieView__status-list span {
+  overflow: hidden;
+  font-size: 0.82rem;
+  text-overflow: ellipsis;
+  text-transform: capitalize;
+  white-space: nowrap;
+}
+#vigieView .vigieView__status-list small {
+  color: vars.$fontColorSecondary;
+  text-align: right;
+}
+#vigieView .vigieView__empty-copy {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+}
+@media (min-width: vars.$tabletWidth) {
+  #vigieView .vigieView__header {
+    grid-template-columns: auto 1fr;
+    align-items: start;
   }
-
-  button:disabled {
-    cursor: pointer !important;
-    opacity: .52;
+  #vigieView .vigieView__filters {
+    grid-template-columns: minmax(280px, 1fr) minmax(220px, 320px);
+    max-width: 900px;
   }
-
-  .vigieView__container {
-    @include mixins.centeredContainer;
-    padding: 2em 1em 4em;
+  #vigieView .vigieView__grid--decision {
+    grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
   }
-
-  .vigieView__header {
-    display: grid;
-    gap: 1.3em;
-    margin-bottom: 1.4em;
-
-    h1 {
-      margin: .18em 0;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.08;
-    }
-
-    p {
-      max-width: 780px;
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.55;
-    }
-  }
-
-  .vigieView__eyebrow,
-  .vigieView__intro,
-  .vigieView__panel-title {
-    display: flex;
-    align-items: center;
-    gap: .65em;
-  }
-
-  .vigieView__eyebrow {
-    color: vars.$utilsPrimary;
-    font-size: .8rem;
-    font-weight: 800;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-  }
-
-  .vigieView__intro {
-    @include mixins.card(16px, light);
-    margin-bottom: 1.4em;
-    padding: 1.1em 1.3em;
-    border-left: 5px solid vars.$utilsPrimary;
-
-    > svg {
-      flex: 0 0 auto;
-      color: vars.$utilsPrimary;
-      font-size: 1.9rem;
-    }
-
-    div {
-      display: grid;
-      gap: .2em;
-    }
-
-    span {
-      color: vars.$fontColorSecondary;
-      line-height: 1.45;
-    }
-  }
-
-  .vigieView__filters {
-    display: grid;
-    gap: 1em;
-    margin-bottom: 1.8em;
-
-    > div {
-      min-width: 0;
-    }
-
-    label {
-      display: block;
-      margin-bottom: .45em;
-      font-size: .9rem;
-      font-weight: 700;
-    }
-
-    [class*="-control"],
-    [class*="-option"],
-    [class*="-indicatorContainer"] {
-      cursor: pointer !important;
-    }
-  }
-
-  .vigieView__empty {
-    @include mixins.card(16px, light);
-    min-height: 260px;
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: .6em;
-    padding: 2em;
-    color: vars.$fontColorSecondary;
-    text-align: center;
-
-    svg {
-      color: vars.$utilsPrimary;
-      font-size: 3rem;
-    }
-
-    h2 {
-      margin: 0;
-      color: vars.$fontColorPrimary;
-    }
-
-    p {
-      max-width: 560px;
-      margin: 0;
-      line-height: 1.55;
-    }
-  }
-
-  .vigieView__error,
-  .vigieView__inline-error {
-    display: flex;
-    align-items: center;
-    gap: .45em;
-    color: vars.$errorColor;
-    font-weight: 700;
-  }
-
-  .vigieView__content {
-    display: grid;
-    gap: 1.35em;
-  }
-
-  .vigieView__period {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: .8em;
-    color: vars.$fontColorSecondary;
-
-    > div {
-      display: grid;
-      gap: .2em;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
-    }
-
-    span {
-      font-size: .86rem;
-    }
-  }
-
-  .vigieView__button {
-    min-height: 38px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: .4em;
-    box-sizing: border-box;
-    border: 1px solid transparent;
-    border-radius: 8px;
-    padding: .5em .85em;
-    font: inherit;
-    font-size: .88rem;
-    font-weight: 750;
-    line-height: 1;
-    white-space: nowrap;
-    transition: transform .15s ease, filter .15s ease, background-color .15s ease;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      filter: brightness(.97);
-    }
-
-    &--primary {
-      background: vars.$utilsGradient;
-      color: white;
-    }
-
-    &--secondary {
-      border-color: rgba(124, 58, 237, .24);
-      background: white;
-      color: vars.$utilsPrimary;
-    }
-
-    &--ghost {
-      background: var(--vigie-purple-soft);
-      color: var(--vigie-purple-dark);
-    }
-
-    &--danger-link {
-      min-height: 30px;
-      padding: .35em .5em;
-      background: transparent;
-      color: var(--vigie-red);
-    }
-  }
-
-  .vigieView__objective {
-    @include mixins.card(16px, light);
-    display: grid;
-    grid-template-columns: minmax(230px, auto) minmax(180px, 1fr) auto;
-    align-items: center;
-    gap: 1.2em;
-    padding: 1.15em 1.3em;
-    border: 1px solid rgba(124, 58, 237, .16);
-
-    > b {
-      color: vars.$utilsPrimary;
-      font-size: 1.25rem;
-    }
-  }
-
-  .vigieView__objective-copy {
-    display: grid;
-    gap: .2em;
-
-    > span {
-      display: inline-flex;
-      align-items: center;
-      gap: .35em;
-      color: vars.$utilsPrimary;
-      font-size: .78rem;
-      font-weight: 800;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    strong {
-      font-size: 1.18rem;
-    }
-
-    small {
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .vigieView__progress {
-    height: 10px;
-    overflow: hidden;
-    border-radius: 999px;
-    background: #e9e7f0;
-
-    span {
-      display: block;
-      height: 100%;
-      border-radius: inherit;
-      background: vars.$utilsGradient;
-      transition: width .3s ease;
-    }
-  }
-
-  .vigieView__kpis {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(165px, 1fr));
-    gap: .8em;
-
-    article {
-      @include mixins.card(14px, light);
-      display: grid;
-      gap: .22em;
-      padding: 1em;
-      border-top: 3px solid transparent;
-    }
-
-    span,
-    small {
-      color: vars.$fontColorSecondary;
-    }
-
-    span {
-      font-size: .83rem;
-    }
-
-    strong {
-      color: vars.$utilsPrimary;
-      font-size: 1.75rem;
-      line-height: 1.15;
-    }
-
-    small {
-      font-size: .77rem;
-    }
-
-    .vigieView__kpi--result {
-      border-top-color: var(--vigie-green);
-
-      strong {
-        color: var(--vigie-green);
-      }
-    }
-  }
-
-  .vigieView__grid {
-    display: grid;
-    gap: 1.35em;
-  }
-
-  .vigieView__panel {
-    @include mixins.card(16px, light);
-    min-width: 0;
-    padding: 1.35em;
-  }
-
-  .vigieView__panel-title {
-    align-items: flex-start;
-    margin-bottom: 1.1em;
-
-    > svg {
-      flex: 0 0 auto;
-      margin-top: .08em;
-      color: vars.$utilsPrimary;
-      font-size: 1.7rem;
-    }
-
-    h2 {
-      margin: 0 0 .18em;
-      font-size: 1.2rem;
-    }
-
-    p {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      font-size: .9rem;
-      line-height: 1.45;
-    }
-
-    &--split {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto;
-    }
-  }
-
-  .vigieView__version {
-    border-radius: 999px;
-    padding: .35em .6em;
-    background: vars.$greyBackground;
-    color: vars.$fontColorSecondary;
-    font-size: .72rem;
-    font-weight: 700;
-  }
-
-  .vigieView__scoring-controls {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    gap: .55em;
-  }
-
-  .vigieView__disclosure {
-    display: inline-flex;
-    align-items: center;
-    gap: .35em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 999px;
-    padding: .36em .62em;
-    background: transparent;
-    color: vars.$utilsPrimary;
-    font: inherit;
-    font-size: .78rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .15s ease, border-color .15s ease;
-
-    &:hover {
-      border-color: rgba(124, 58, 237, .35);
-      background: var(--vigie-purple-soft);
-    }
-
-    &:focus-visible {
-      outline: 2px solid vars.$utilsPrimary;
-      outline-offset: 2px;
-    }
-
-    svg {
-      font-size: 1rem;
-    }
-  }
-
-  .vigieView__scoring-detail {
-    padding-top: .15em;
-  }
-
-  .vigieView__recommendations {
-    display: grid;
-    gap: .75em;
-  }
-
-  .vigieView__recommendation {
-    padding: .95em;
-    border-left: 4px solid vars.$utilsPrimary;
-    border-radius: 10px;
-    background: var(--vigie-purple-soft);
-
-    p {
-      margin: .45em 0;
-      color: vars.$fontColorSecondary;
-      font-size: .9rem;
-      line-height: 1.5;
-    }
-
-    > small {
-      display: block;
-      color: vars.$fontColorPrimary;
-      font-weight: 700;
-    }
-
-    &--alerte {
-      border-left-color: var(--vigie-red);
-      background: rgba(183, 49, 49, .07);
-    }
-
-    &--attention {
-      border-left-color: #e49316;
-      background: rgba(228, 147, 22, .09);
-    }
-
-    &--opportunite {
-      border-left-color: var(--vigie-green);
-      background: rgba(22, 133, 82, .07);
-    }
-  }
-
-  .vigieView__recommendation-heading {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1em;
-
-    > span {
-      flex: 0 0 auto;
-      border-radius: 999px;
-      padding: .3em .55em;
-      background: rgba(255, 255, 255, .7);
-      color: vars.$fontColorSecondary;
-      font-size: .68rem;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-  }
-
-  .vigieView__recommendation-footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: .65em;
-    margin-top: .8em;
-
-    > span {
-      color: vars.$fontColorSecondary;
-      font-size: .74rem;
-      font-weight: 700;
-    }
-
-    > div {
-      display: flex;
-      flex-wrap: wrap;
-      gap: .5em;
-    }
-  }
-
-  .vigieView__business-main {
-    display: grid;
-    gap: .18em;
-    padding: 1em;
-    border-radius: 12px;
-    background: linear-gradient(135deg, rgba(124, 58, 237, .1), rgba(22, 133, 82, .08));
-
-    span,
-    small {
-      color: vars.$fontColorSecondary;
-    }
-
-    strong {
-      color: vars.$utilsPrimary;
-      font-size: 2.4rem;
-    }
-  }
-
-  .vigieView__business-value {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1em;
-    padding: .9em 0;
-    border-bottom: 1px solid vars.$borderColor;
-
-    span {
-      color: vars.$fontColorSecondary;
-    }
-
-    strong {
-      color: var(--vigie-green);
-      font-size: 1.15rem;
-    }
-  }
-
-  .vigieView__business-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
-    gap: .65em;
-    margin: .9em 0;
-
-    div {
-      display: grid;
-      gap: .15em;
-    }
-
-    dt {
-      color: vars.$fontColorSecondary;
-      font-size: .76rem;
-    }
-
-    dd {
-      margin: 0;
-      font-size: 1.08rem;
-      font-weight: 800;
-    }
-  }
-
-  .vigieView__status-cloud {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .45em;
-
-    span {
-      border-radius: 999px;
-      padding: .38em .6em;
-      background: vars.$greyBackground;
-      color: vars.$fontColorSecondary;
-      font-size: .75rem;
-      text-transform: capitalize;
-    }
-
-    b {
-      margin-left: .25em;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .vigieView__business-rule,
-  .vigieView__quality-note {
-    margin: 1em 0 0;
-    color: vars.$fontColorSecondary;
-    font-size: .8rem;
-    line-height: 1.45;
-  }
-
-  .vigieView__score-distribution {
-    display: grid;
-    grid-template-columns: repeat(5, minmax(105px, 1fr));
-    gap: .6em;
-    margin-bottom: 1em;
-  }
-
-  .vigieView__score-card {
-    display: grid;
-    gap: .12em;
-    padding: .8em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 10px;
-    background: vars.$greyBackground;
-
-    strong {
-      color: vars.$utilsPrimary;
-      font-size: 1.15rem;
-    }
-
-    span {
-      font-weight: 700;
-    }
-
-    small {
-      color: vars.$fontColorSecondary;
-    }
-
-    &--p1 {
-      border-color: rgba(22, 133, 82, .3);
-      background: rgba(22, 133, 82, .07);
-
-      strong { color: var(--vigie-green); }
-    }
-
-    &--p5 {
-      background: rgba(90, 108, 125, .08);
-
-      strong { color: vars.$fontColorSecondary; }
-    }
-  }
-
-  .vigieView__table-wrap {
-    overflow-x: auto;
-  }
-
-  .vigieView__selection-bar {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    align-items: center;
-    gap: .8em;
-    margin-bottom: .7em;
-    padding: .7em .8em;
-    border: 1px solid rgba(124, 58, 237, .18);
-    border-radius: 10px;
-    background: var(--vigie-purple-soft);
-
-    strong {
-      color: var(--vigie-purple-dark);
-      font-size: .88rem;
-    }
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: .78rem;
-    }
-  }
-
-  table {
-    width: 100%;
-    min-width: 900px;
-    border-collapse: collapse;
-
-    th,
-    td {
-      padding: .78em .6em;
-      border-bottom: 1px solid vars.$borderColor;
-      text-align: left;
-      vertical-align: middle;
-    }
-
-    th {
-      color: vars.$fontColorSecondary;
-      font-size: .7rem;
-      font-weight: 800;
-      letter-spacing: .04em;
-      text-transform: uppercase;
-    }
-
-    td {
-      font-size: .86rem;
-    }
-
-    td > strong,
-    td > small {
-      display: block;
-    }
-
-    td > small {
-      margin-top: .2em;
-      color: vars.$fontColorSecondary;
-    }
-
-    input[type="checkbox"] {
-      width: 17px;
-      height: 17px;
-      margin: 0;
-      accent-color: vars.$utilsPrimary;
-      cursor: pointer;
-    }
-
-    .vigieView__check-cell {
-      width: 28px;
-      padding-right: .2em;
-      text-align: center;
-    }
-
-    .vigieView__candidate--selected td {
-      background: rgba(124, 58, 237, .055);
-    }
-  }
-
-  .vigieView__score-badge,
-  .vigieView__sample,
-  .vigieView__action-status {
-    display: inline-block;
-    border-radius: 999px;
-    padding: .35em .6em;
-    font-size: .72rem;
-    font-weight: 800;
-    white-space: nowrap;
-  }
-
-  .vigieView__score-badge {
-    background: var(--vigie-purple-soft);
-    color: var(--vigie-purple-dark);
-
-    &--p1 {
-      background: rgba(22, 133, 82, .12);
-      color: var(--vigie-green);
-    }
-
-    &--p5 {
-      background: rgba(90, 108, 125, .12);
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .vigieView__action-grid {
-    display: grid;
-    gap: .9em;
-  }
-
-  .vigieView__prepare-action {
-    display: grid;
-    align-content: start;
-    gap: .55em;
-    padding: 1em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 12px;
-    background: vars.$greyBackground;
-
-    > div:first-child {
-      display: flex;
-      align-items: center;
-      gap: .55em;
-    }
-
-    h3 {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    p {
-      min-height: 2.6em;
-      margin: 0 0 .15em;
-      color: vars.$fontColorSecondary;
-      font-size: .83rem;
-      line-height: 1.4;
-    }
-
-    label {
-      margin-top: .15em;
-      font-size: .78rem;
-      font-weight: 750;
-    }
-
-    input {
-      width: 100%;
-      height: 38px;
-      box-sizing: border-box;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      padding: 0 .75em;
-      background: white;
-      color: vars.$fontColorPrimary;
-      font: inherit;
-
-      &:focus {
-        border-color: vars.$utilsPrimary;
-        outline: 2px solid rgba(124, 58, 237, .12);
-      }
-    }
-
-    [class*="-control"],
-    [class*="-option"],
-    [class*="-indicatorContainer"] {
-      cursor: pointer !important;
-    }
-
-    > .vigieView__button {
-      justify-self: start;
-      margin-top: .25em;
-    }
-  }
-
-  .vigieView__selected-list {
-    display: flex;
-    min-height: 42px;
-    max-height: 152px;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    gap: .4em;
-    overflow-y: auto;
-    padding: .5em;
-    border: 1px dashed rgba(124, 58, 237, .28);
-    border-radius: 8px;
-    background: white;
-
-    > span {
-      align-self: center;
-      padding: .25em;
-      color: vars.$fontColorSecondary;
-      font-size: .8rem;
-    }
-
-    button {
-      display: grid;
-      grid-template-columns: auto auto;
-      gap: .05em .4em;
-      max-width: 230px;
-      border: 1px solid rgba(124, 58, 237, .18);
-      border-radius: 8px;
-      padding: .38em .55em;
-      background: var(--vigie-purple-soft);
-      color: vars.$fontColorPrimary;
-      text-align: left;
-
-      b {
-        grid-row: 1 / span 2;
-        align-self: center;
-        color: vars.$utilsPrimary;
-        font-size: .72rem;
-      }
-
-      span,
-      small {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      span {
-        font-size: .76rem;
-        font-weight: 750;
-      }
-
-      small {
-        color: vars.$fontColorSecondary;
-        font-size: .68rem;
-      }
-    }
-  }
-
-  .vigieView__manual-priority {
-    display: grid;
-    gap: .5em;
-    margin-top: .35em;
-    padding-top: .9em;
-    border-top: 1px solid vars.$borderColor;
-
-    > div {
-      display: flex;
-      align-items: center;
-      gap: .55em;
-    }
-
-    > div span {
-      border-radius: 999px;
-      padding: .22em .5em;
-      background: white;
-      color: vars.$fontColorSecondary;
-      font-size: .7rem;
-      font-weight: 800;
-      text-transform: uppercase;
-    }
-
-    p {
-      min-height: 0;
-      margin: 0;
-    }
-
-    em {
-      color: vars.$fontColorSecondary;
-      font-style: normal;
-      font-weight: 500;
-    }
-
-    > .vigieView__button {
-      margin-top: .1em;
-    }
-  }
-
-  .vigieView__step {
-    display: grid;
-    width: 30px;
-    height: 30px;
-    place-items: center;
-    border-radius: 8px;
-    background: var(--vigie-purple-soft);
-    color: vars.$utilsPrimary;
-    font-size: .72rem;
-    font-weight: 800;
-  }
-
-  .vigieView__action-message {
-    margin: .9em 0 0;
-    padding: .7em .85em;
-    border-radius: 8px;
-    background: var(--vigie-purple-soft);
-    color: var(--vigie-purple-dark);
-    font-size: .86rem;
-    font-weight: 700;
-
-    &--success {
-      background: rgba(22, 133, 82, .09);
-      color: var(--vigie-green);
-    }
-
-    &--error {
-      background: rgba(183, 49, 49, .08);
-      color: var(--vigie-red);
-    }
-  }
-
-  .vigieView__journal {
-    margin-top: 1.15em;
-    padding-top: 1.1em;
-    border-top: 1px solid vars.$borderColor;
-  }
-
-  .vigieView__journal-title {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1em;
-    margin-bottom: .65em;
-
-    h3 {
-      margin: 0;
-      font-size: 1rem;
-    }
-
-    span {
-      color: vars.$fontColorSecondary;
-      font-size: .78rem;
-    }
-  }
-
-  .vigieView__journal-list {
-    display: grid;
-
-    article {
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr) auto auto;
-      align-items: center;
-      gap: .75em;
-      padding: .7em 0;
-      border-bottom: 1px solid vars.$borderColor;
-
-      > div:nth-child(2) {
-        display: grid;
-        gap: .1em;
-        min-width: 0;
-      }
-
-      span,
-      small {
-        overflow: hidden;
-        color: vars.$fontColorSecondary;
-        font-size: .78rem;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-    }
-  }
-
-  .vigieView__journal-icon {
-    display: grid;
-    width: 32px;
-    height: 32px;
-    place-items: center;
-    border-radius: 9px;
-    background: var(--vigie-purple-soft);
-    color: vars.$utilsPrimary;
-  }
-
-  .vigieView__action-status {
-    &--validee {
-      background: rgba(22, 133, 82, .11);
-      color: var(--vigie-green);
-    }
-
-    &--consommee {
-      background: var(--vigie-purple-soft);
-      color: var(--vigie-purple-dark);
-    }
-
-    &--annulee {
-      background: rgba(90, 108, 125, .1);
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .vigieView__tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .45em;
-    margin-bottom: .85em;
-
-    button {
-      min-height: 36px;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      padding: .45em .75em;
-      background: white;
-      color: vars.$fontColorSecondary;
-      font: inherit;
-      font-size: .8rem;
-      font-weight: 700;
-    }
-
-    .vigieView__tab--active {
-      border-color: rgba(124, 58, 237, .25);
-      background: var(--vigie-purple-soft);
-      color: var(--vigie-purple-dark);
-    }
-  }
-
-  .vigieView__sample {
-    &--ok {
-      background: rgba(22, 133, 82, .11);
-      color: var(--vigie-green);
-    }
-
-    &--limited {
-      background: rgba(228, 147, 22, .12);
-      color: var(--vigie-orange);
-    }
-  }
-
-  .vigieView__quality-list {
-    display: grid;
+  #vigieView .vigieView__grid--quality,
+  #vigieView .vigieView__grid--signals,
+  #vigieView .vigieView__action-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .65em;
-    margin: 0;
-
-    div {
-      padding: .72em;
-      border-radius: 9px;
-      background: vars.$greyBackground;
-    }
-
-    dt {
-      color: vars.$fontColorSecondary;
-      font-size: .76rem;
-    }
-
-    dd {
-      margin: .18em 0 0;
-      font-size: 1.15rem;
-      font-weight: 800;
-    }
   }
-
-  .vigieView__compact-list,
-  .vigieView__status-list {
-    display: grid;
+}
+@media (max-width: vars.$tabletWidth) {
+  #vigieView .vigieView__selection-bar {
+    grid-template-columns: 1fr auto;
   }
-
-  .vigieView__compact-list article {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1em;
-    padding: .7em 0;
-    border-bottom: 1px solid vars.$borderColor;
-
-    > div {
-      display: grid;
-      gap: .1em;
-    }
-
-    > div:last-child {
-      text-align: right;
-    }
-
-    span,
-    small {
-      color: vars.$fontColorSecondary;
-      font-size: .76rem;
-    }
-
-    b {
-      color: vars.$utilsPrimary;
-      font-size: 1.1rem;
-    }
+  #vigieView .vigieView__selection-bar span {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
-
-  .vigieView__hour-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: .55em;
-
-    article {
-      display: grid;
-      gap: .12em;
-      padding: .72em;
-      border-radius: 9px;
-      background: vars.$greyBackground;
-    }
-
-    span {
-      color: vars.$utilsPrimary;
-      font-size: 1.05rem;
-      font-weight: 800;
-    }
-
-    small {
-      color: vars.$fontColorSecondary;
-    }
+  #vigieView .vigieView__objective {
+    grid-template-columns: 1fr auto;
   }
-
-  .vigieView__status-list {
-    max-height: 260px;
-    overflow-y: auto;
-
-    div {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto 55px;
-      align-items: center;
-      gap: .6em;
-      padding: .55em 0;
-      border-bottom: 1px solid vars.$borderColor;
-    }
-
-    span {
-      overflow: hidden;
-      font-size: .82rem;
-      text-overflow: ellipsis;
-      text-transform: capitalize;
-      white-space: nowrap;
-    }
-
-    small {
-      color: vars.$fontColorSecondary;
-      text-align: right;
-    }
+  #vigieView .vigieView__objective .vigieView__progress {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
-
-  .vigieView__empty-copy {
-    margin: 0;
-    color: vars.$fontColorSecondary;
+  #vigieView .vigieView__score-distribution {
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
-
-  @media (min-width: vars.$tabletWidth) {
-    .vigieView__header {
-      grid-template-columns: auto 1fr;
-      align-items: start;
-    }
-
-    .vigieView__filters {
-      grid-template-columns: minmax(280px, 1fr) minmax(220px, 320px);
-      max-width: 900px;
-    }
-
-    .vigieView__grid--decision {
-      grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
-    }
-
-    .vigieView__grid--quality,
-    .vigieView__grid--signals,
-    .vigieView__action-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+  #vigieView .vigieView__journal-list article {
+    grid-template-columns: auto minmax(0, 1fr) auto;
   }
-
-  @media (max-width: vars.$tabletWidth) {
-    .vigieView__selection-bar {
-      grid-template-columns: 1fr auto;
-
-      span {
-        grid-column: 1 / -1;
-        grid-row: 2;
-      }
-    }
-
-    .vigieView__objective {
-      grid-template-columns: 1fr auto;
-
-      .vigieView__progress {
-        grid-column: 1 / -1;
-        grid-row: 2;
-      }
-    }
-
-    .vigieView__score-distribution {
-      grid-template-columns: repeat(2, minmax(120px, 1fr));
-    }
-
-    .vigieView__journal-list article {
-      grid-template-columns: auto minmax(0, 1fr) auto;
-
-      .vigieView__button {
-        grid-column: 2 / -1;
-        justify-self: start;
-      }
-    }
+  #vigieView .vigieView__journal-list article .vigieView__button {
+    grid-column: 2 / -1;
+    justify-self: start;
   }
-
-  @media (max-width: 560px) {
-    .vigieView__container {
-      padding-inline: .7em;
-    }
-
-    .vigieView__panel,
-    .vigieView__objective {
-      padding: 1em;
-    }
-
-    .vigieView__objective {
-      grid-template-columns: 1fr;
-
-      .vigieView__progress {
-        grid-column: 1;
-        grid-row: auto;
-      }
-    }
-
-    .vigieView__score-distribution,
-    .vigieView__quality-list,
-    .vigieView__hour-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .vigieView__panel-title--split {
-      grid-template-columns: auto 1fr;
-
-      .vigieView__version {
-        grid-column: 2;
-        justify-self: start;
-      }
-    }
-
-    .vigieView__journal-list article {
-      grid-template-columns: auto minmax(0, 1fr);
-
-      .vigieView__action-status,
-      .vigieView__button {
-        grid-column: 2;
-        justify-self: start;
-      }
-    }
+}
+@media (max-width: 560px) {
+  #vigieView .vigieView__container {
+    padding-inline: 0.7em;
+  }
+  #vigieView .vigieView__panel,
+  #vigieView .vigieView__objective {
+    padding: 1em;
+  }
+  #vigieView .vigieView__objective {
+    grid-template-columns: 1fr;
+  }
+  #vigieView .vigieView__objective .vigieView__progress {
+    grid-column: 1;
+    grid-row: auto;
+  }
+  #vigieView .vigieView__score-distribution,
+  #vigieView .vigieView__quality-list,
+  #vigieView .vigieView__hour-grid {
+    grid-template-columns: 1fr;
+  }
+  #vigieView .vigieView__panel-title--split {
+    grid-template-columns: auto 1fr;
+  }
+  #vigieView .vigieView__panel-title--split .vigieView__version {
+    grid-column: 2;
+    justify-self: start;
+  }
+  #vigieView .vigieView__journal-list article {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  #vigieView .vigieView__journal-list article .vigieView__action-status,
+  #vigieView .vigieView__journal-list article .vigieView__button {
+    grid-column: 2;
+    justify-self: start;
   }
 }

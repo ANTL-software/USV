@@ -1,284 +1,341 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #agentsList {
   @include mixins.mainView;
+}
+#agentsList main {
+  padding: 1.5em 1em;
+}
+#agentsList .agentsList__container {
+  @include mixins.centeredContainer(1200px);
+}
+#agentsList .agentsList__back {
+  margin-bottom: 1em;
+}
+#agentsList .agentsList__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+}
+#agentsList .agentsList__header h1 {
+  margin: 0 0 0.25em;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+#agentsList .agentsList__subtitle {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#agentsList .agentsList__controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+}
+#agentsList .agentsList__controls .reactSelect__control {
+  border-color: vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  min-height: unset;
+  box-shadow: none;
+  min-width: 210px;
+  cursor: pointer;
+}
+#agentsList .agentsList__controls .reactSelect__control:hover {
+  border-color: vars.$borderColor;
+}
+#agentsList .agentsList__controls .reactSelect__control--is-focused {
+  border-color: #818cf8 !important;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
+}
+#agentsList .agentsList__controls .reactSelect__value-container {
+  padding: 0.35em 0.85em;
+}
+#agentsList .agentsList__controls .reactSelect__single-value {
+  color: vars.$fontColorPrimary;
+}
+#agentsList .agentsList__controls .reactSelect__option--is-focused {
+  background: #ede9fe;
+}
+#agentsList .agentsList__controls .reactSelect__option--is-selected {
+  background: #818cf8;
+}
+#agentsList .agentsList__controls .reactSelect__menu {
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+#agentsList .agentsList__error {
+  padding: 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: #dc2626;
+  margin-bottom: 1em;
+}
+#agentsList .agentsList__loading {
+  text-align: center;
+  padding: 3em;
+  color: vars.$fontColorSecondary;
+}
+#agentsList .agentsList__table-wrapper {
+  overflow-x: auto;
+  @include mixins.card(12px, light);
+}
+#agentsList .agentsList__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+#agentsList .agentsList__table tbody tr {
+  cursor: pointer;
+}
+#agentsList .agentsList__cell--center {
+  text-align: center;
+}
+#agentsList .agentsList__name {
+  text-transform: uppercase;
+}
+#agentsList .agentsList__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#agentsList .agentsList__table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+}
+#agentsList .agentsList__table td code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: #f1f5f9;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+#agentsList .agentsList__table tbody tr:last-child td {
+  border-bottom: none;
+}
+#agentsList .agentsList__table tbody tr:hover {
+  background: #f8fafc;
+}
+#agentsList .agentsList__row--inactive td {
+  opacity: 0.5;
+}
+#agentsList .agentsList__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+#agentsList .agentsList__badge--ok {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#agentsList .agentsList__badge--missing {
+  background: #fef9c3;
+  color: #a16207;
+}
+#agentsList .agentsList__badge--inactive {
+  background: #f1f5f9;
+  color: vars.$fontColorSecondary;
+}
+#agentsList .agentsList__badge--poste {
+  font-size: 0.78rem;
+}
+#agentsList .agentsList__badge--direction {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+#agentsList .agentsList__badge--commercial {
+  background: #dcfce7;
+  color: #15803d;
+}
+#agentsList .agentsList__badge--support {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#agentsList .agentsList__badge--rh {
+  background: #fce7f3;
+  color: #be185d;
+}
+#agentsList .agentsList__badge--technique {
+  background: #ffedd5;
+  color: #c2410c;
+}
+#agentsList .agentsList__badge--adv {
+  background: #fef9c3;
+  color: #a16207;
+}
+#agentsList .agentsList__badge--autre {
+  background: #f1f5f9;
+  color: vars.$fontColorSecondary;
+}
+#agentsList .agentsList__actions {
+  position: relative;
+  overflow: visible;
+  text-align: center;
+}
+#agentsList .agentsList__actions .actionMenuWrapper {
+  position: relative;
+  display: inline-block;
+  overflow: visible;
+}
+#agentsList .agentsList__actions .actionMenuWrapper .actionMenuTrigger {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(0, 0, 0, 0.05);
+  color: vars.$fontColorSecondary;
+  font-size: 1.2em;
+  transition: vars.$transitionMedium;
+}
+#agentsList .agentsList__actions .actionMenuWrapper .actionMenuTrigger:hover {
+  background: rgba(0, 0, 0, 0.1);
+  color: vars.$fontColorPrimary;
+}
+#agentsList .agentsList__actions .actionMenuWrapper .actionMenu {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 0.5em);
+  transform: translateY(-50%);
+  display: flex;
+  gap: 0.375em;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.15);
+  padding: 0.5em;
+  z-index: 10001;
+  white-space: nowrap;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  pointer-events: auto;
+}
+#agentsList .agentsList__actions .actionMenuWrapper .actionMenu .actionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1em;
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.view {
+  background: rgba(79, 70, 229, 0.1);
+  color: #4f46e5;
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.view:hover {
+  background: #4f46e5;
+  color: white;
+  transform: translateY(-1px);
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.edit {
+  background: rgba(2, 132, 199, 0.1);
+  color: #0284c7;
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.edit:hover {
+  background: #0284c7;
+  color: white;
+  transform: translateY(-1px);
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.delete {
+  background: rgba(220, 38, 38, 0.1);
+  color: #dc2626;
+}
+#agentsList
+  .agentsList__actions
+  .actionMenuWrapper
+  .actionMenu
+  .actionBtn.delete:hover {
+  background: #dc2626;
+  color: white;
+  transform: translateY(-1px);
+}
+#agentsList .agentsList__photo-tooltip {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  background: white;
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  padding: 6px;
+  box-shadow:
+    0 10px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 140px;
+  overflow: hidden;
+  animation: tooltipFadeIn 0.15s ease-out;
+}
 
-  main {
-    padding: 1.5em 1em;
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
   }
-
-  .agentsList__container {
-    @include mixins.centeredContainer(1200px);
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
+}
 
-  .agentsList__back {
-    margin-bottom: 1em;
-  }
+#agentsList .agentsList__tooltip-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
 
-  .agentsList__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5em;
-
-    h1 {
-      margin: 0 0 0.25em;
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
-  }
-
-  .agentsList__subtitle {
-    margin: 0;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-  }
-
-  .agentsList__controls {
-    display: flex;
-    align-items: center;
-    gap: 0.75em;
-
-    .reactSelect__control {
-      border-color: vars.$borderColor;
-      border-radius: 8px;
-      font-size: 0.9rem;
-      min-height: unset;
-      box-shadow: none;
-      min-width: 210px;
-      cursor: pointer;
-
-      &:hover { border-color: vars.$borderColor; }
-      &--is-focused {
-        border-color: #818cf8 !important;
-        box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.15) !important;
-      }
-    }
-
-    .reactSelect__value-container { padding: 0.35em 0.85em; }
-    .reactSelect__single-value { color: vars.$fontColorPrimary; }
-    .reactSelect__option--is-focused { background: #ede9fe; }
-    .reactSelect__option--is-selected { background: #818cf8; }
-    .reactSelect__menu { border-radius: 8px; font-size: 0.9rem; }
-  }
-
-
-  .agentsList__error {
-    padding: 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: #dc2626;
-    margin-bottom: 1em;
-  }
-
-  .agentsList__loading {
-    text-align: center;
-    padding: 3em;
-    color: vars.$fontColorSecondary;
-  }
-
-  .agentsList__table-wrapper {
-    overflow-x: auto;
-    @include mixins.card(12px, light);
-  }
-
-  .agentsList__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-
-      code {
-        font-family: monospace;
-        font-size: 0.88em;
-        background: #f1f5f9;
-        padding: 0.15em 0.4em;
-        border-radius: 4px;
-      }
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-
-    tbody tr:hover { background: #f8fafc; }
-  }
-
-  .agentsList__row--inactive td { opacity: 0.5; }
-
-  .agentsList__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    white-space: nowrap;
-
-    &--ok { background: #dcfce7; color: #16a34a; }
-    &--missing { background: #fef9c3; color: #a16207; }
-    &--inactive { background: #f1f5f9; color: vars.$fontColorSecondary; }
-
-    &--poste { font-size: 0.78rem; }
-    &--direction  { background: #ede9fe; color: #6d28d9; }
-    &--commercial { background: #dcfce7; color: #15803d; }
-    &--support    { background: #dbeafe; color: #1d4ed8; }
-    &--rh         { background: #fce7f3; color: #be185d; }
-    &--technique  { background: #ffedd5; color: #c2410c; }
-    &--adv        { background: #fef9c3; color: #a16207; }
-    &--autre      { background: #f1f5f9; color: vars.$fontColorSecondary; }
-  }
-
-  .agentsList__actions {
-    position: relative;
-    overflow: visible;
-    text-align: center;
-
-    .actionMenuWrapper {
-      position: relative;
-      display: inline-block;
-      overflow: visible;
-
-      .actionMenuTrigger {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 2em;
-        height: 2em;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-        background: rgba(0, 0, 0, 0.05);
-        color: vars.$fontColorSecondary;
-        font-size: 1.2em;
-        transition: vars.$transitionMedium;
-
-        &:hover {
-          background: rgba(0, 0, 0, 0.1);
-          color: vars.$fontColorPrimary;
-        }
-      }
-
-      .actionMenu {
-        position: absolute;
-        top: 50%;
-        right: calc(100% + 0.5em);
-        transform: translateY(-50%);
-        display: flex;
-        gap: 0.375em;
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 0.25em 1em rgba(0, 0, 0, 0.15);
-        padding: 0.5em;
-        z-index: 10001;
-        white-space: nowrap;
-        border: 1px solid rgba(0, 0, 0, 0.06);
-        pointer-events: auto;
-
-        .actionBtn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 2em;
-          height: 2em;
-          border: none;
-          border-radius: 6px;
-          cursor: pointer;
-          transition: vars.$transitionMedium;
-          font-size: 1em;
-
-          &.view {
-            background: rgba(79, 70, 229, 0.1);
-            color: #4f46e5;
-
-            &:hover {
-              background: #4f46e5;
-              color: white;
-              transform: translateY(-1px);
-            }
-          }
-
-          &.edit {
-            background: rgba(2, 132, 199, 0.1);
-            color: #0284c7;
-
-            &:hover {
-              background: #0284c7;
-              color: white;
-              transform: translateY(-1px);
-            }
-          }
-
-          &.delete {
-            background: rgba(220, 38, 38, 0.1);
-            color: #dc2626;
-
-            &:hover {
-              background: #dc2626;
-              color: white;
-              transform: translateY(-1px);
-            }
-          }
-        }
-      }
-    }
-  }
-
-  .agentsList__photo-tooltip {
-    background: white;
-    border: 1px solid vars.$borderColor;
-    border-radius: 12px;
-    padding: 6px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 140px;
-    height: 140px;
-    overflow: hidden;
-    animation: tooltipFadeIn 0.15s ease-out;
-
-    @keyframes tooltipFadeIn {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-  }
-
-  .agentsList__tooltip-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 8px;
-  }
-
-  .agentsList__tooltip-placeholder {
-    color: vars.$fontColorSecondary;
-    font-size: 0.8rem;
-    font-style: italic;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background: #f8fafc;
-    border-radius: 8px;
-    border: 1px dashed vars.$borderColor;
-  }
+#agentsList .agentsList__tooltip-placeholder {
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px dashed vars.$borderColor;
 }

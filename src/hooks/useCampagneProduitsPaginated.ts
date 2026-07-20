@@ -1,17 +1,18 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
-import { getCampagneProduitsPaginatedService } from '../API/services/produit.service';
-import { confirm, showError } from '../utils/services/alertService';
-import type { CampagneProduit, UpdateProduitCampagneData } from '../utils/types/produit.types';
+import {
+  addProduitCampagneService,
+  getCampagneProduitsPaginatedService,
+  removeProduitCampagneService,
+  updateProduitCampagneService,
+} from '../API/services/index.ts';
+import { confirm, showError } from '../utils/services/index.ts';
+import type { CampagneProduit, UpdateProduitCampagneData } from '../utils/types/index.ts';
 
 interface Pagination {
   page: number;
   limit: number;
   total: number;
   totalPages: number;
-}
-
-interface UseCampagneProduitsPaginatedOptions {
-  tableScrollableRef?: React.RefObject<HTMLDivElement | null>;
 }
 
 interface FilterOption {
@@ -32,7 +33,7 @@ interface UseCampagneProduitsPaginatedReturn {
   setTypeFilter: (f: FilterOption | null) => void;
   load: (page: number) => Promise<void>;
   setPage: (page: number) => void;
-  loadForScroll: (productId: number) => Promise<void>;
+  loadForScroll: (productId: number) => Promise<boolean>;
   addProduit: (data: { id_produit: number; argumentaire?: string; disponible?: boolean; stock_alloue?: number | null }) => Promise<void>;
   updateArgumentaire: (idProduit: number, data: UpdateProduitCampagneData) => Promise<void>;
   removeProduit: (idProduit: number, nom: string) => Promise<void>;
@@ -40,9 +41,7 @@ interface UseCampagneProduitsPaginatedReturn {
 
 export const useCampagneProduitsPaginated = (
   idCampagne: number | null,
-  options: UseCampagneProduitsPaginatedOptions
 ): UseCampagneProduitsPaginatedReturn => {
-  const { tableScrollableRef } = options;
   const [allProduits, setAllProduits] = useState<CampagneProduit[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -214,7 +213,7 @@ export const useCampagneProduitsPaginated = (
 
   // Charger les produits pour scroll vers un produit spécifique
   const loadForScroll = useCallback(async (productId: number) => {
-    if (!idCampagne) return;
+    if (!idCampagne) return false;
 
     try {
       // Réinitialiser la recherche si nécessaire
@@ -227,7 +226,7 @@ export const useCampagneProduitsPaginated = (
 
       // Charger plus de produits si nécessaire pour trouver celui qu'on cherche
       let productFound = false;
-      let maxPages = 10;
+      const maxPages = 10;
 
       for (let page = 1; page <= maxPages; page++) {
         const result = await getCampagneProduitsPaginatedService(idCampagne, {
@@ -257,39 +256,19 @@ export const useCampagneProduitsPaginated = (
 
       if (!productFound) {
         console.warn(`Produit ${productId} non trouvé`);
-        return;
+        return false;
       }
-
-      // Scroller vers le produit après le chargement
-      setTimeout(() => {
-        const container = tableScrollableRef?.current;
-        if (!container) return;
-
-        const rows = container.querySelectorAll('tbody tr');
-        for (const row of rows) {
-          const idCell = row.querySelector('.produitsList__id');
-          if (idCell && idCell.textContent === `#${productId}`) {
-            row.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            row.classList.add('produitsList__row-highlight');
-            setTimeout(() => row.classList.remove('produitsList__row-highlight'), 2000);
-            break;
-          }
-        }
-      }, 300);
+      return true;
     } catch (err) {
       console.error('Erreur lors du chargement pour scroll:', err);
+      return false;
     }
-  }, [idCampagne, pageSize, setSearch, tableScrollableRef]);
+  }, [idCampagne, pageSize, setSearch]);
 
   const addProduit = useCallback(async (data: { id_produit: number; argumentaire?: string; disponible?: boolean; stock_alloue?: number | null }) => {
     if (!idCampagne) return;
     try {
-      await fetch(`/api/campagnes/${idCampagne}/produits`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include'
-      });
+      await addProduitCampagneService(idCampagne, data);
       await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
@@ -299,12 +278,7 @@ export const useCampagneProduitsPaginated = (
   const updateArgumentaire = useCallback(async (idProduit: number, data: UpdateProduitCampagneData) => {
     if (!idCampagne) return;
     try {
-      await fetch(`/api/campagnes/${idCampagne}/produits/${idProduit}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-        credentials: 'include'
-      });
+      await updateProduitCampagneService(idCampagne, idProduit, data);
       await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
@@ -315,10 +289,7 @@ export const useCampagneProduitsPaginated = (
     if (!idCampagne) return;
     if (!await confirm(`Retirer "${nom}" de cette campagne ?`, 'Confirmation')) return;
     try {
-      await fetch(`/api/campagnes/${idCampagne}/produits/${idProduit}`, {
-        method: 'DELETE',
-        credentials: 'include'
-      });
+      await removeProduitCampagneService(idCampagne, idProduit);
       await load(currentPage);
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');

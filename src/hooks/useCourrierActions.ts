@@ -3,9 +3,9 @@ import {
   sendCourrierEmailService,
   downloadBulkCourriersService,
   sendBulkCourrierEmailService,
-} from '../API/services/courrier.service';
-import { generateViewUrlService } from '../API/services/viewUrl.service';
-import { confirm, showSuccess, showError } from '../utils/services/alertService';
+} from '../API/services/index.ts';
+import { generateViewUrlService } from '../API/services/index.ts';
+import { confirm, showSuccess, showError } from '../utils/services/index.ts';
 import {
   handleCourrierDownloadError,
   handleCourrierDeleteError,
@@ -13,8 +13,9 @@ import {
   handleCourrierEmailError,
   logError,
   showErrorNotification,
-} from '../utils/scripts/errorHandling';
-import type { ICourrier } from '../utils/types/courrier.types';
+} from '../utils/scripts/index.ts';
+import type { EmailData, ICourrier } from '../utils/types/index.ts';
+import { useEmailComposer } from './useEmailComposer.ts';
 
 interface PdfModalState {
   visible: boolean;
@@ -53,6 +54,8 @@ export function useCourrierActions(
   const [bulkEmailModal, setBulkEmailModal] = useState<BulkEmailModalState>({
     visible: false, courriers: [], isLoading: false,
   });
+  const closeEmailModal = useCallback((): void => setEmailModal({ visible: false, courrier: null, isLoading: false }), []);
+  const closeBulkEmailModal = useCallback((): void => setBulkEmailModal({ visible: false, courriers: [], isLoading: false }), []);
 
   const triggerDownload = useCallback((blob: Blob, fileName: string) => {
     const url = window.URL.createObjectURL(blob);
@@ -110,7 +113,7 @@ export function useCourrierActions(
     else handleBulkEmail();
   }, [selected, handleEmail, handleBulkEmail]);
 
-  const handleSendEmail = useCallback(async (emailData: { to: string; subject: string; message: string }) => {
+  const handleSendEmail = useCallback(async (emailData: EmailData) => {
     if (!emailModal.courrier) return;
     setEmailModal(prev => ({ ...prev, isLoading: true }));
     try {
@@ -120,12 +123,13 @@ export function useCourrierActions(
     } catch (error) {
       logError('handleSendEmail', error);
       showErrorNotification(handleCourrierEmailError(error));
+      throw error;
     } finally {
       setEmailModal(prev => ({ ...prev, isLoading: false }));
     }
   }, [emailModal.courrier]);
 
-  const handleSendBulkEmail = useCallback(async (emailData: { to: string; subject: string; message: string }) => {
+  const handleSendBulkEmail = useCallback(async (emailData: EmailData) => {
     setBulkEmailModal(prev => ({ ...prev, isLoading: true }));
     try {
       const ids = bulkEmailModal.courriers.map(c => c.id);
@@ -136,6 +140,7 @@ export function useCourrierActions(
     } catch (error) {
       logError('handleSendBulkEmail', error);
       showErrorNotification(error instanceof Error ? error.message : 'Erreur lors de l\'envoi groupé');
+      throw error;
     } finally {
       setBulkEmailModal(prev => ({ ...prev, isLoading: false }));
     }
@@ -187,15 +192,34 @@ export function useCourrierActions(
     return `Envoyer les ${selected.size} courriers par email`;
   }, [selected]);
 
+  const emailComposer = useEmailComposer({
+    bulkMode: false,
+    courrier: emailModal.courrier,
+    isLoading: emailModal.isLoading,
+    isVisible: emailModal.visible,
+    onClose: closeEmailModal,
+    onSend: handleSendEmail,
+    selectedCount: 1,
+  });
+  const bulkEmailComposer = useEmailComposer({
+    bulkMode: true,
+    courrier: bulkEmailModal.courriers[0] ?? null,
+    isLoading: bulkEmailModal.isLoading,
+    isVisible: bulkEmailModal.visible,
+    onClose: closeBulkEmailModal,
+    onSend: handleSendBulkEmail,
+    selectedCount: bulkEmailModal.courriers.length,
+  });
+
   return {
-    pdfModal, emailModal, bulkEmailModal,
+    pdfModal, emailModal, bulkEmailModal, emailComposer, bulkEmailComposer,
     handleDownload, handleBulkDownload, handleAdaptiveDownload,
     handleEmail, handleBulkEmail, handleAdaptiveEmail,
     handleSendEmail, handleSendBulkEmail,
     handleDelete, handleViewPdf,
     closePdfModal,
-    closeEmailModal: () => setEmailModal({ visible: false, courrier: null, isLoading: false }),
-    closeBulkEmailModal: () => setBulkEmailModal({ visible: false, courriers: [], isLoading: false }),
+    closeEmailModal,
+    closeBulkEmailModal,
     getDownloadTooltip, getEmailTooltip,
   };
 }

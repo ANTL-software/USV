@@ -1,312 +1,292 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #paniersList {
   @include mixins.mainView;
-
-  main {
-    padding: 1.5em 1em;
-  }
-
-  .paniersList__container {
-    @include mixins.centeredContainer(1200px);
-  }
-
-  .paniersList__back {
-    margin-bottom: 1em;
-  }
-
-  .paniersList__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.5em;
-
-    h1 {
-      margin: 0 0 0.25em;
-      font-size: 1.6rem;
-      font-weight: 700;
-    }
-  }
-
-  .paniersList__subtitle {
-    margin: 0;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-  }
-
-  .paniersList__actions {
-    display: flex;
-    gap: 0.5em;
-  }
-
-  // --- Formulaire inline ---
-  .paniersList__form-wrapper {
-    margin-bottom: 1.5em;
-  }
-
-  .paniersList__form-card {
-    @include mixins.card(12px, light);
-    padding: 1.5em;
-
-    h2 {
-      margin: 0 0 1em;
-      font-size: 1.1rem;
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .paniersList__form {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-
-    label {
-      display: flex;
-      flex-direction: column;
-      gap: 0.35em;
-      font-size: 0.88rem;
-      font-weight: 500;
-      color: vars.$fontColorSecondary;
-
-      input {
-        @include mixins.formInput;
-      }
-
-      .reactSelect__container {
-        font-size: 0.9rem;
-      }
-    }
-  }
-
-  .paniersList__form-actions {
-    display: flex;
-    gap: 0.5em;
-    margin-top: 0.5em;
-
-    button {
-      flex: 1;
-      padding: 0.75em;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 0.95rem;
-
-      &:first-child {
-        background: vars.$greyBackground;
-        color: vars.$fontColorPrimary;
-      }
-
-      &.paniersList__btn-submit {
-        background: vars.$webdevPrimary;
-        color: white;
-
-        &:hover {
-          background: vars.$webdevSecondary;
-        }
-      }
-    }
-  }
-
-  // --- États ---
-  .paniersList__error {
-    padding: 1em;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    border-radius: 8px;
-    color: vars.$errorColor;
-    margin-bottom: 1em;
-  }
-
-  .paniersList__loading,
-  .paniersList__empty {
-    text-align: center;
-    padding: 3em;
-    color: vars.$fontColorSecondary;
-  }
-
-  // --- Dropdowns / Accordéons ---
-  .paniersList__dropdowns {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-  }
-
-  .paniersList__dropdown {
-    @include mixins.card(8px, light);
-    overflow: hidden;
-  }
-
-  .paniersList__dropdown-header {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    transition: background vars.$transitionSmooth;
-
-    &:hover {
-      background: vars.$greyBackground;
-    }
-  }
-
-  .paniersList__dropdown-info {
-    display: flex;
-    align-items: center;
-    gap: 0.75em;
-    flex: 1;
-  }
-
-  .paniersList__dropdown-label {
-    font-weight: 600;
-    color: vars.$fontColorPrimary;
-    font-size: 1rem;
-  }
-
-  .paniersList__dropdown-origine {
-    color: vars.$fontColorSecondary;
-    font-size: 0.85rem;
-  }
-
-  .paniersList__dropdown-actions {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-  }
-
-  .paniersList__chevron {
-    color: vars.$fontColorSecondary;
-    transition: transform vars.$transitionSmooth;
-
-    &--open {
-      transform: rotate(180deg);
-    }
-  }
-
-  .paniersList__dropdown-content {
-    border-top: 1px solid vars.$borderColor;
-    background: vars.$greyBackground;
-  }
-
-  .paniersList__produits-loading,
-  .paniersList__produits-empty {
-    padding: 2em;
-    text-align: center;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-    font-style: italic;
-  }
-
-  .paniersList__produits-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .paniersList__produit-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.85em 1em;
-    border-bottom: 1px solid vars.$borderColor;
-
-    &:last-child {
-      border-bottom: none;
-    }
-  }
-
-  .paniersList__produit-info {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-  }
-
-  .paniersList__produit-nom {
-    font-weight: 500;
-    color: vars.$fontColorPrimary;
-  }
-
-  .paniersList__produit-code {
-    font-size: 0.8rem;
-    color: vars.$fontColorSecondary;
-  }
-
-  .paniersList__produit-details {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .paniersList__produit-type,
-  .paniersList__produit-conditionnement {
-    font-size: 0.8rem;
-    color: vars.$fontColorSecondary;
-    padding: 0.15em 0.5em;
-    background: #e5e7eb;
-    border-radius: 4px;
-  }
-
-  .paniersList__produit-prix {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: #16a34a;
-  }
-
-  .paniersList__badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.25em 0.65em;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-
-    &--actif   { background: #dcfce7; color: #16a34a; }
-    &--inactif { background: #f1f5f9; color: vars.$fontColorSecondary; }
-  }
-
-  .paniersList__actions {
-    display: flex;
-    align-items: center;
-    gap: 0.4em;
-  }
-
-  .paniersList__btn-products,
-  .paniersList__btn-edit,
-  .paniersList__btn-delete {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background vars.$transitionSmooth;
-  }
-
-  .paniersList__btn-edit {
-    background: #e0f2fe;
-    color: #0284c7;
-    &:hover { background: #bae6fd; }
-  }
-
-  .paniersList__btn-products {
-    background: #ede9fe;
-    color: #6d28d9;
-    &:hover { background: #ddd6fe; }
-  }
-
-  .paniersList__btn-delete {
-    background: #fee2e2;
-    color: #dc2626;
-    &:hover { background: #fecaca; }
-  }
+}
+#paniersList main {
+  padding: 1.5em 1em;
+}
+#paniersList .paniersList__container {
+  @include mixins.centeredContainer(1200px);
+}
+#paniersList .paniersList__back {
+  margin-bottom: 1em;
+}
+#paniersList .paniersList__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5em;
+}
+#paniersList .paniersList__header h1 {
+  margin: 0 0 0.25em;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+#paniersList .paniersList__subtitle {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#paniersList .paniersList__actions {
+  display: flex;
+  gap: 0.5em;
+}
+// --- Formulaire inline ---
+#paniersList .paniersList__form-wrapper {
+  margin-bottom: 1.5em;
+}
+#paniersList .paniersList__form-card {
+  @include mixins.card(12px, light);
+  padding: 1.5em;
+}
+#paniersList .paniersList__form-card h2 {
+  margin: 0 0 1em;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#paniersList .paniersList__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#paniersList .paniersList__form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: vars.$fontColorSecondary;
+}
+#paniersList .paniersList__form label input:not([type="checkbox"]) {
+  @include mixins.formInput("#paniersList .paniersList__form label input:not([type='checkbox'])");
+}
+#paniersList .paniersList__form label.paniersList__checkbox {
+  flex-direction: row;
+  align-items: center;
+}
+#paniersList .paniersList__form label.paniersList__checkbox input {
+  width: auto;
+  min-height: auto;
+}
+#paniersList .paniersList__form label .reactSelect__container {
+  font-size: 0.9rem;
+}
+#paniersList .paniersList__form-actions {
+  display: flex;
+  gap: 0.5em;
+  margin-top: 0.5em;
+}
+#paniersList .paniersList__form-actions button {
+  flex: 1;
+  padding: 0.75em;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+#paniersList .paniersList__form-actions button:first-child {
+  background: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+}
+#paniersList .paniersList__form-actions button.paniersList__btn-submit {
+  background: vars.$webdevPrimary;
+  color: white;
+}
+#paniersList .paniersList__form-actions button.paniersList__btn-submit:hover {
+  background: vars.$webdevSecondary;
+}
+// --- États ---
+#paniersList .paniersList__error {
+  padding: 1em;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  border-radius: 8px;
+  color: vars.$errorColor;
+  margin-bottom: 1em;
+}
+#paniersList .paniersList__loading,
+#paniersList .paniersList__empty {
+  text-align: center;
+  padding: 3em;
+  color: vars.$fontColorSecondary;
+}
+// --- Dropdowns / Accordéons ---
+#paniersList .paniersList__dropdowns {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+#paniersList .paniersList__dropdown {
+  @include mixins.card(8px, light);
+  overflow: hidden;
+}
+#paniersList .paniersList__dropdown-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  background: transparent;
+  border: none;
+  transition: background vars.$transitionSmooth;
+}
+#paniersList .paniersList__dropdown-header:hover {
+  background: vars.$greyBackground;
+}
+#paniersList .paniersList__dropdown-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  flex: 1;
+}
+#paniersList .paniersList__dropdown-toggle {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  gap: 0.75em;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+}
+#paniersList .paniersList__dropdown-label {
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+}
+#paniersList .paniersList__dropdown-origine {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85rem;
+}
+#paniersList .paniersList__dropdown-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+#paniersList .paniersList__chevron {
+  color: vars.$fontColorSecondary;
+  transition: transform vars.$transitionSmooth;
+}
+#paniersList .paniersList__chevron--open {
+  transform: rotate(180deg);
+}
+#paniersList .paniersList__dropdown-content {
+  border-top: 1px solid vars.$borderColor;
+  background: vars.$greyBackground;
+}
+#paniersList .paniersList__produits-loading,
+#paniersList .paniersList__produits-empty {
+  padding: 2em;
+  text-align: center;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+  font-style: italic;
+}
+#paniersList .paniersList__produits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+#paniersList .paniersList__produit-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#paniersList .paniersList__produit-item:last-child {
+  border-bottom: none;
+}
+#paniersList .paniersList__produit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+#paniersList .paniersList__produit-nom {
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+#paniersList .paniersList__produit-code {
+  font-size: 0.8rem;
+  color: vars.$fontColorSecondary;
+}
+#paniersList .paniersList__produit-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+#paniersList .paniersList__produit-type,
+#paniersList .paniersList__produit-conditionnement {
+  font-size: 0.8rem;
+  color: vars.$fontColorSecondary;
+  padding: 0.15em 0.5em;
+  background: #e5e7eb;
+  border-radius: 4px;
+}
+#paniersList .paniersList__produit-prix {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #16a34a;
+}
+#paniersList .paniersList__badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25em 0.65em;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#paniersList .paniersList__badge--actif {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#paniersList .paniersList__badge--inactif {
+  background: #f1f5f9;
+  color: vars.$fontColorSecondary;
+}
+#paniersList .paniersList__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+}
+#paniersList .paniersList__btn-products,
+#paniersList .paniersList__btn-edit,
+#paniersList .paniersList__btn-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background vars.$transitionSmooth;
+}
+#paniersList .paniersList__btn-edit {
+  background: #e0f2fe;
+  color: #0284c7;
+}
+#paniersList .paniersList__btn-edit:hover {
+  background: #bae6fd;
+}
+#paniersList .paniersList__btn-products {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+#paniersList .paniersList__btn-products:hover {
+  background: #ddd6fe;
+}
+#paniersList .paniersList__btn-delete {
+  background: #fee2e2;
+  color: #dc2626;
+}
+#paniersList .paniersList__btn-delete:hover {
+  background: #fecaca;
 }

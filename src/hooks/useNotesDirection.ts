@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useUserContext } from './useUserContext';
-import { useAlert } from '../context/alert/AlertContext';
+import { useAlert } from '../context/alert/index.ts';
 import {
   getNotesDirectionService,
   uploadNoteDirectionService,
   deleteNoteDirectionService,
   generateNoteDirectionViewUrlService,
-} from '../API/services/noteDirection.service';
-import { NoteDirectionModel } from '../API/models/noteDirection.model';
-import { hasAccessToSubsection } from '../utils/scripts/permissions';
-import { PdfModalState } from '../utils/types/document.types';
+} from '../API/services/index.ts';
+import { NoteDirectionModel } from '../API/models/index.ts';
+import { hasAccessToSubsection } from '../utils/scripts/index.ts';
+import { PdfModalState } from '../utils/types/index.ts';
 
 export const useNotesDirection = () => {
   const { user } = useUserContext();

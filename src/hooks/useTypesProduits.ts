@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getTypesByCategorieService, getOrCreateTypeService } from '../API/services/typeProduit.service';
-import type { TypeProduit } from '../utils/types/produit.types';
+import { getTypesByCategorieService, getOrCreateTypeService } from '../API/services/index.ts';
+import type { TypeProduit } from '../utils/types/index.ts';
 
 interface UseTypesProduitsOptions {
   categorieId: number | null;

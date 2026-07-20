@@ -53,6 +53,13 @@ export interface QueueState {
   callsInProgress: CallInProgress[];
 }
 
+export interface SupervisionAgentOption {
+  id_employe: number;
+  nom: string;
+  prenom: string;
+  identifiant: string;
+}
+
 export interface InjectionResult {
   injected: number;
   skipped: number;

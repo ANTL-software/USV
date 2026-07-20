@@ -1,5 +1,5 @@
 import { postRequest, getRequest, putRequest } from '../APICalls.ts';
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import type {
   ImportProspectRow,
   ImportResult,
@@ -12,7 +12,7 @@ import type {
   ProspectUpdateData,
   ProspectEnrichmentSnapshot,
   ProspectEnrichmentPreview,
-} from '../../utils/types/prospect.types.ts';
+} from '../../utils/types/index.ts';
 import type { Appel, VenteComplete, RendezVousItem } from '../../utils/types/index.ts';
 
 

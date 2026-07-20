@@ -1,4 +1,4 @@
-import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls';
+import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import type {
   Projet,
@@ -12,7 +12,7 @@ import type {
   ListProjetsResponse,
   StatutProjet,
   EmployeMini,
-} from '../../utils/types/projet.types';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

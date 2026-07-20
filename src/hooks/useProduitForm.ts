@@ -7,10 +7,10 @@ import {
   getCampagneProduitsService,
   addProduitCampagneService,
   updateProduitCampagneService,
-} from '../API/services/produit.service';
-import { getAllPaniersService } from '../API/services/panier.service';
-import type { CampagneProduit } from '../utils/types/produit.types';
-import type { Panier } from '../utils/types/panier.types';
+} from '../API/services/index.ts';
+import { getAllPaniersService } from '../API/services/index.ts';
+import type { CampagneProduit } from '../utils/types/index.ts';
+import type { Panier } from '../utils/types/index.ts';
 
 interface LocationState {
   campagneId?: number;

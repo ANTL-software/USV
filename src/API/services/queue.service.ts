@@ -1,6 +1,6 @@
 import { getRequest, postRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
-import type { QueueState, InjectionResult, InjectionFilters, ProspectCampagneRow, GlobalStats } from '../../utils/types/queue.types.ts';
+import type { QueueState, InjectionResult, InjectionFilters, ProspectCampagneRow, GlobalStats } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

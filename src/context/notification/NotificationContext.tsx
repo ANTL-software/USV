@@ -1,32 +1,10 @@
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import { useUserContext } from '../../hooks/useUserContext';
-import { hasAccessToSection, hasAccessToSubsection } from '../../utils/scripts/permissions';
-import { getPendingAbsenceRequestsService } from '../../API/services/absence.service';
-import { getIncidentsService } from '../../API/services/incident.service';
-
-export type NotificationType = 'info' | 'task';
-
-export interface NotificationItem {
-  id: string;
-  sectionId: string;       // ex: 'operations'
-  subsectionId?: string;   // ex: 'demandes-absence'
-  type: NotificationType;  // 'info' (individuelle) ou 'task' (collective)
-  message?: string;
-  readByUsers: number[];   // IDs des employés ayant lu (pour type 'info')
-  resolved: boolean;       // Indique si la tâche est résolue (pour type 'task')
-  createdAt: string;
-}
-
-export interface NotificationContextType {
-  notifications: NotificationItem[];
-  hasNotificationForSection: (sectionId: string) => boolean;
-  hasNotificationForSubsection: (sectionId: string, subsectionId: string) => boolean;
-  markInfoAsRead: (id: string) => void;
-  resolveTask: (id: string) => void;
-  refreshNotifications: () => Promise<void>;
-}
-
-export const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+import React, { useCallback, useEffect, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useUserContext } from '../../hooks/index.ts';
+import { hasAccessToSection, hasAccessToSubsection } from '../../utils/scripts/index.ts';
+import { getIncidentsService, getPendingAbsenceRequestsService } from '../../API/services/index.ts';
+import type { NotificationItem } from '../../utils/types/index.ts';
+import { NotificationContext } from './NotificationContext.ts';
 
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useUserContext();
@@ -44,7 +22,7 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
   };
 
   // Charge et rafraîchit les notifications en interrogeant les APIs appropriées
-  const refreshNotifications = async () => {
+  const refreshNotifications = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -125,22 +103,36 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
     } catch (error) {
       console.warn('[Notifications] Failed to refresh pending absence requests:', error);
     }
-  };
+  }, [user]);
 
   // Rafraîchir les notifications à la connexion et à intervalles réguliers (toutes les 60 secondes)
   useEffect(() => {
-    if (user) {
-      void refreshNotifications();
+    let isActive = true;
 
-      const interval = setInterval(() => {
-        void refreshNotifications();
+    if (user) {
+      const initialRefresh = window.setTimeout(() => {
+        if (isActive) void refreshNotifications();
+      }, 0);
+
+      const interval = window.setInterval(() => {
+        if (isActive) void refreshNotifications();
       }, 60000);
 
-      return () => clearInterval(interval);
-    } else {
-      setNotifications([]);
+      return () => {
+        isActive = false;
+        window.clearTimeout(initialRefresh);
+        window.clearInterval(interval);
+      };
     }
-  }, [user]);
+
+    queueMicrotask(() => {
+      if (isActive) setNotifications([]);
+    });
+
+    return () => {
+      isActive = false;
+    };
+  }, [refreshNotifications, user]);
 
   // Vérifie si une section a au moins une notification active (en prenant en compte les permissions)
   const hasNotificationForSection = (sectionId: string): boolean => {

@@ -1,6 +1,10 @@
 import { useState, useCallback, useEffect } from 'react';
-import { getProduitPaniersService } from '../API/services/panierProduit.service';
-import type { Panier } from '../utils/types/panier.types';
+import {
+  addProduitToPanierService,
+  getProduitPaniersService,
+  removeProduitFromPanierService,
+} from '../API/services/index.ts';
+import type { Panier } from '../utils/types/index.ts';
 
 interface UseProduitPaniersOptions {
   produitId: number | null;
@@ -11,6 +15,7 @@ interface UseProduitPaniersReturn {
   isLoading: boolean;
   error: string | null;
   refresh: () => Promise<void>;
+  updatePaniers: (paniers: readonly Panier[]) => Promise<void>;
 }
 
 export const useProduitPaniers = ({ produitId }: UseProduitPaniersOptions): UseProduitPaniersReturn => {
@@ -42,13 +47,53 @@ export const useProduitPaniers = ({ produitId }: UseProduitPaniersOptions): UseP
   }, [produitId]);
 
   useEffect(() => {
-    load();
+    void load();
   }, [load]);
+
+  const updatePaniers = useCallback(async (selectedPaniers: readonly Panier[]): Promise<void> => {
+    if (!produitId) {
+      return;
+    }
+
+    const selectedIds = new Set(selectedPaniers.map((panier) => panier.id_panier));
+    const currentIds = new Set(paniersDuProduit.map((panier) => panier.id_panier));
+    const paniersToAdd = selectedPaniers.filter((panier) => !currentIds.has(panier.id_panier));
+    const paniersToRemove = paniersDuProduit.filter((panier) => !selectedIds.has(panier.id_panier));
+
+    try {
+      await Promise.all([
+        ...paniersToAdd.map((panier) => addProduitToPanierService(
+          panier.id_panier,
+          produitId,
+          { ordre_affichage: 0 },
+        )),
+        ...paniersToRemove.map((panier) => removeProduitFromPanierService(panier.id_panier, produitId)),
+      ]);
+      await load();
+    } catch (updateError) {
+      console.error('Erreur lors de la mise à jour des paniers:', updateError);
+    }
+  }, [load, paniersDuProduit, produitId]);
+
+  useEffect(() => {
+    const handleRemoveEvent = (event: Event): void => {
+      if (!(event instanceof CustomEvent) || typeof event.detail !== 'number' || !produitId) {
+        return;
+      }
+
+      const nextPaniers = paniersDuProduit.filter((panier) => panier.id_panier !== event.detail);
+      void updatePaniers(nextPaniers);
+    };
+
+    window.addEventListener('remove-panier', handleRemoveEvent);
+    return () => window.removeEventListener('remove-panier', handleRemoveEvent);
+  }, [paniersDuProduit, produitId, updatePaniers]);
 
   return {
     paniersDuProduit,
     isLoading,
     error,
     refresh: load,
+    updatePaniers,
   };
 };

@@ -1,6 +1,6 @@
 // Adapté depuis script/src/API/models/User.model.ts
 // Différence : pas de localStorage (USV utilise les cookies httpOnly)
-import type { Employe, Poste, Departement } from '../../utils/types/user.types';
+import type { Departement, Employe, Poste } from '../../utils/types/index.ts';
 
 export class UserModel implements Employe {
   id_employe: number;

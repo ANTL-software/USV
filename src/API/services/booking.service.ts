@@ -1,7 +1,7 @@
 import { getRequest, postRequest, putRequest, deleteRequest } from '../APICalls.ts';
-import { AxiosResponse } from 'axios';
-import { BookingModel } from '../models/booking.model.ts';
-import type { Booking, CreateBookingPayload, BookingFilters, ApiBookingResponse, BookingConfig, ApiBookingConfigResponse, UpdateBookingPayload } from '../../utils/types/booking.types.ts';
+import type { AxiosResponse } from 'axios';
+import { BookingModel } from '../models/index.ts';
+import type { Booking, CreateBookingPayload, BookingFilters, ApiBookingResponse, BookingConfig, ApiBookingConfigResponse, UpdateBookingPayload } from '../../utils/types/index.ts';
 
 export const getBookingsService = async (filters?: BookingFilters): Promise<BookingModel[]> => {
   const params = new URLSearchParams();

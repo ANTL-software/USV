@@ -1,6 +1,6 @@
-import { getRequest, postRequest } from '../APICalls';
+import { getRequest, postRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
-import type { TypeProduit } from '../../utils/types/produit.types';
+import type { TypeProduit } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

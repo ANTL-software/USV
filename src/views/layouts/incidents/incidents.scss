@@ -1,678 +1,1193 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #incidentsHub,
 #incidentDeclaration,
 #incidentQualification,
 #incidentTraitement,
 #incidentList {
   @include mixins.mainView;
-
-  main {
-    padding: 1em;
-  }
-
-  .incidents__back,
-  .incidents__container,
-  .incidents__hero,
-  .incidents__cards {
-    @include mixins.centeredContainer(1280px);
-  }
-
-  .incidents__container--wide {
-    max-width: 1480px;
-  }
-
-  .incidents__back {
-    margin-bottom: 1em;
-  }
-
-  .incidents__hero,
-  .incidents__header {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    margin-bottom: 1.5em;
-
-    h1 {
-      display: flex;
-      align-items: center;
-      gap: 0.45em;
-      margin: 0;
-      color: vars.$fontColorPrimary;
-      font-size: 1.8rem;
-    }
-
-    p {
-      margin: 0.35em 0 0;
-      color: vars.$fontColorSecondary;
-    }
-
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-    }
-  }
-
-  .incidents__cards {
-    display: grid;
-    gap: 1.25em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (min-width: vars.$desktopWidth) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-
-  .incidents__card {
-    @include mixins.card(16px, light);
-    display: flex;
-    min-height: 15em;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0.8em;
-    padding: 2em 1.4em;
-    text-align: center;
-    cursor: pointer;
-    transition: all vars.$transitionMedium;
-
-    &:hover {
-      transform: translateY(-0.35em);
-      box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.13);
-    }
-
-    h2 {
-      margin: 0;
-      font-size: 1.25rem;
-      font-weight: 700;
-      background: vars.$utilsGradient;
-      -webkit-background-clip: text;
-      background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    p {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.45;
-    }
-  }
-
-  .incidents__card-icon {
-    font-size: 3rem;
-    background: vars.$utilsGradient;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .incidents__form,
-  .incidents__filters,
-  .incidents__panel,
-  .incidents__sidebar,
-  .incidents__table-wrapper {
-    @include mixins.card(12px, light);
-  }
-
-  .incidents__form {
-    padding: 1.25em;
-  }
-
-  .incidents__grid,
-  .incidents__filters {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (min-width: vars.$desktopWidth) {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
-  }
-
-  .incidents__filters {
-    padding: 1.25em;
-    margin-bottom: 1.25em;
-  }
-
-  .incidents__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45em;
-
-    label {
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-      font-size: 0.9rem;
-    }
-
-    input,
-    select {
-      @include mixins.formInput;
-      height: 38px;
-      min-height: 38px;
-    }
-
-    textarea {
-      @include mixins.formInput;
-      min-height: 6rem;
-      resize: vertical;
-    }
-
-    .react-select-container {
-      @include mixins.reactSelect;
-    }
-  }
-
-  .incidents__field--wide,
-  .incidents__field--search {
-    grid-column: 1 / -1;
-  }
-
-  .incidents__search {
-    position: relative;
-
-    svg {
-      position: absolute;
-      left: 0.8em;
-      top: 50%;
-      transform: translateY(-50%);
-      color: vars.$fontColorSecondary;
-    }
-
-    input {
-      padding-left: 2.5em;
-    }
-  }
-
-  .incidents__actions,
-  .incidents__filter-actions,
-  .incidents__pagination {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em;
-    align-items: center;
-    justify-content: flex-end;
-    margin-top: 1.25em;
-  }
-
-  .incidents__btn-primary,
-  .incidents__btn-secondary,
-  .incidents__btn-icon {
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: all vars.$transitionSmooth;
-
-    &:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-    }
-  }
-
-  .incidents__btn-primary,
-  .incidents__btn-secondary {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5em;
-    padding: 0.8em 1.15em;
-  }
-
-  .incidents__btn-primary {
-    background: vars.$utilsGradient;
-    color: white;
-
-    &:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 0.45em 1.2em rgba(124, 58, 237, 0.22);
-    }
-  }
-
-  .incidents__btn-secondary {
-    background: vars.$greyBackground;
-    color: vars.$fontColorPrimary;
-    border: 1px solid vars.$borderColor;
-
-    &:hover:not(:disabled) {
-      background: #eef2ff;
-    }
-  }
-
-  .incidents__btn-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    background: #e0e7ff;
-    color: #4f46e5;
-    font-size: 1rem;
-
-    &:hover {
-      background: #c7d2fe;
-    }
-  }
-
-  .incidents__error,
-  .incidents__success,
-  .incidents__empty {
-    border-radius: 10px;
-    padding: 0.95em 1.1em;
-    margin-bottom: 1em;
-  }
-
-  .incidents__error {
-    color: #991b1b;
-    background: #fee2e2;
-  }
-
-  .incidents__success {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
+}
+#incidentsHub main,
+#incidentDeclaration main,
+#incidentQualification main,
+#incidentTraitement main,
+#incidentList main {
+  padding: 1em;
+}
+#incidentsHub .incidents__back,
+#incidentsHub .incidents__container,
+#incidentsHub .incidents__hero,
+#incidentsHub .incidents__cards,
+#incidentDeclaration .incidents__back,
+#incidentDeclaration .incidents__container,
+#incidentDeclaration .incidents__hero,
+#incidentDeclaration .incidents__cards,
+#incidentQualification .incidents__back,
+#incidentQualification .incidents__container,
+#incidentQualification .incidents__hero,
+#incidentQualification .incidents__cards,
+#incidentTraitement .incidents__back,
+#incidentTraitement .incidents__container,
+#incidentTraitement .incidents__hero,
+#incidentTraitement .incidents__cards,
+#incidentList .incidents__back,
+#incidentList .incidents__container,
+#incidentList .incidents__hero,
+#incidentList .incidents__cards {
+  @include mixins.centeredContainer(1280px);
+}
+#incidentsHub .incidents__container--wide,
+#incidentDeclaration .incidents__container--wide,
+#incidentQualification .incidents__container--wide,
+#incidentTraitement .incidents__container--wide,
+#incidentList .incidents__container--wide {
+  max-width: 1480px;
+}
+#incidentsHub .incidents__back,
+#incidentDeclaration .incidents__back,
+#incidentQualification .incidents__back,
+#incidentTraitement .incidents__back,
+#incidentList .incidents__back {
+  margin-bottom: 1em;
+}
+#incidentsHub .incidents__hero,
+#incidentsHub .incidents__header,
+#incidentDeclaration .incidents__hero,
+#incidentDeclaration .incidents__header,
+#incidentQualification .incidents__hero,
+#incidentQualification .incidents__header,
+#incidentTraitement .incidents__hero,
+#incidentTraitement .incidents__header,
+#incidentList .incidents__hero,
+#incidentList .incidents__header {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 1.5em;
+}
+#incidentsHub .incidents__hero h1,
+#incidentsHub .incidents__header h1,
+#incidentDeclaration .incidents__hero h1,
+#incidentDeclaration .incidents__header h1,
+#incidentQualification .incidents__hero h1,
+#incidentQualification .incidents__header h1,
+#incidentTraitement .incidents__hero h1,
+#incidentTraitement .incidents__header h1,
+#incidentList .incidents__hero h1,
+#incidentList .incidents__header h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  font-size: 1.8rem;
+}
+#incidentsHub .incidents__hero p,
+#incidentsHub .incidents__header p,
+#incidentDeclaration .incidents__hero p,
+#incidentDeclaration .incidents__header p,
+#incidentQualification .incidents__hero p,
+#incidentQualification .incidents__header p,
+#incidentTraitement .incidents__hero p,
+#incidentTraitement .incidents__header p,
+#incidentList .incidents__hero p,
+#incidentList .incidents__header p {
+  margin: 0.35em 0 0;
+  color: vars.$fontColorSecondary;
+}
+@media (min-width: vars.$tabletWidth) {
+  #incidentsHub .incidents__hero,
+  #incidentsHub .incidents__header,
+  #incidentDeclaration .incidents__hero,
+  #incidentDeclaration .incidents__header,
+  #incidentQualification .incidents__hero,
+  #incidentQualification .incidents__header,
+  #incidentTraitement .incidents__hero,
+  #incidentTraitement .incidents__header,
+  #incidentList .incidents__hero,
+  #incidentList .incidents__header {
+    flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    color: #166534;
-    background: #dcfce7;
-
-    button {
-      border: none;
-      border-radius: 6px;
-      padding: 0.45em 0.8em;
-      background: #16a34a;
-      color: white;
-      cursor: pointer;
-    }
   }
-
-  .incidents__empty {
-    background: vars.$greyBackground;
-    color: vars.$fontColorSecondary;
-    text-align: center;
+}
+#incidentsHub .incidents__cards,
+#incidentDeclaration .incidents__cards,
+#incidentQualification .incidents__cards,
+#incidentTraitement .incidents__cards,
+#incidentList .incidents__cards {
+  display: grid;
+  gap: 1.25em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #incidentsHub .incidents__cards,
+  #incidentDeclaration .incidents__cards,
+  #incidentQualification .incidents__cards,
+  #incidentTraitement .incidents__cards,
+  #incidentList .incidents__cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .incidents__layout {
-    display: grid;
-    gap: 1.25em;
-
-    @media (min-width: vars.$desktopWidth) {
-      grid-template-columns: 340px minmax(0, 1fr);
-      align-items: start;
-    }
+}
+@media (min-width: vars.$desktopWidth) {
+  #incidentsHub .incidents__cards,
+  #incidentDeclaration .incidents__cards,
+  #incidentQualification .incidents__cards,
+  #incidentTraitement .incidents__cards,
+  #incidentList .incidents__cards {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-
-  .incidents__layout--detail {
-    @media (min-width: vars.$desktopWidth) {
-      grid-template-columns: 300px minmax(0, 1fr);
-    }
+}
+#incidentsHub .incidents__card,
+#incidentDeclaration .incidents__card,
+#incidentQualification .incidents__card,
+#incidentTraitement .incidents__card,
+#incidentList .incidents__card {
+  @include mixins.card(16px, light);
+  display: flex;
+  min-height: 15em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8em;
+  padding: 2em 1.4em;
+  text-align: center;
+  cursor: pointer;
+  transition: all vars.$transitionMedium;
+}
+#incidentsHub .incidents__card:hover,
+#incidentDeclaration .incidents__card:hover,
+#incidentQualification .incidents__card:hover,
+#incidentTraitement .incidents__card:hover,
+#incidentList .incidents__card:hover {
+  transform: translateY(-0.35em);
+  box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.13);
+}
+#incidentsHub .incidents__card h2,
+#incidentDeclaration .incidents__card h2,
+#incidentQualification .incidents__card h2,
+#incidentTraitement .incidents__card h2,
+#incidentList .incidents__card h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#incidentsHub .incidents__card p,
+#incidentDeclaration .incidents__card p,
+#incidentQualification .incidents__card p,
+#incidentTraitement .incidents__card p,
+#incidentList .incidents__card p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.45;
+}
+#incidentsHub .incidents__card-icon,
+#incidentDeclaration .incidents__card-icon,
+#incidentQualification .incidents__card-icon,
+#incidentTraitement .incidents__card-icon,
+#incidentList .incidents__card-icon {
+  font-size: 3rem;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#incidentsHub .incidents__form,
+#incidentsHub .incidents__filters,
+#incidentsHub .incidents__panel,
+#incidentsHub .incidents__sidebar,
+#incidentsHub .incidents__table-wrapper,
+#incidentDeclaration .incidents__form,
+#incidentDeclaration .incidents__filters,
+#incidentDeclaration .incidents__panel,
+#incidentDeclaration .incidents__sidebar,
+#incidentDeclaration .incidents__table-wrapper,
+#incidentQualification .incidents__form,
+#incidentQualification .incidents__filters,
+#incidentQualification .incidents__panel,
+#incidentQualification .incidents__sidebar,
+#incidentQualification .incidents__table-wrapper,
+#incidentTraitement .incidents__form,
+#incidentTraitement .incidents__filters,
+#incidentTraitement .incidents__panel,
+#incidentTraitement .incidents__sidebar,
+#incidentTraitement .incidents__table-wrapper,
+#incidentList .incidents__form,
+#incidentList .incidents__filters,
+#incidentList .incidents__panel,
+#incidentList .incidents__sidebar,
+#incidentList .incidents__table-wrapper {
+  @include mixins.card(12px, light);
+}
+#incidentsHub .incidents__form,
+#incidentDeclaration .incidents__form,
+#incidentQualification .incidents__form,
+#incidentTraitement .incidents__form,
+#incidentList .incidents__form {
+  padding: 1.25em;
+}
+#incidentsHub .incidents__grid,
+#incidentsHub .incidents__filters,
+#incidentDeclaration .incidents__grid,
+#incidentDeclaration .incidents__filters,
+#incidentQualification .incidents__grid,
+#incidentQualification .incidents__filters,
+#incidentTraitement .incidents__grid,
+#incidentTraitement .incidents__filters,
+#incidentList .incidents__grid,
+#incidentList .incidents__filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #incidentsHub .incidents__grid,
+  #incidentsHub .incidents__filters,
+  #incidentDeclaration .incidents__grid,
+  #incidentDeclaration .incidents__filters,
+  #incidentQualification .incidents__grid,
+  #incidentQualification .incidents__filters,
+  #incidentTraitement .incidents__grid,
+  #incidentTraitement .incidents__filters,
+  #incidentList .incidents__grid,
+  #incidentList .incidents__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .incidents__sidebar,
-  .incidents__panel {
-    padding: 1.25em;
+}
+@media (min-width: vars.$desktopWidth) {
+  #incidentsHub .incidents__grid,
+  #incidentsHub .incidents__filters,
+  #incidentDeclaration .incidents__grid,
+  #incidentDeclaration .incidents__filters,
+  #incidentQualification .incidents__grid,
+  #incidentQualification .incidents__filters,
+  #incidentTraitement .incidents__grid,
+  #incidentTraitement .incidents__filters,
+  #incidentList .incidents__grid,
+  #incidentList .incidents__filters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-
-  .incidents__sidebar {
-    h2 {
-      margin: 0 0 1em;
-      color: vars.$fontColorPrimary;
-      font-size: 1.1rem;
-    }
-
-    select {
-      @include mixins.formInput;
-      width: 100%;
-      height: 38px;
-      min-height: 38px;
-      margin-bottom: 1em;
-    }
+}
+#incidentsHub .incidents__filters,
+#incidentDeclaration .incidents__filters,
+#incidentQualification .incidents__filters,
+#incidentTraitement .incidents__filters,
+#incidentList .incidents__filters {
+  padding: 1.25em;
+  margin-bottom: 1.25em;
+}
+#incidentsHub .incidents__field,
+#incidentDeclaration .incidents__field,
+#incidentQualification .incidents__field,
+#incidentTraitement .incidents__field,
+#incidentList .incidents__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+}
+#incidentsHub .incidents__field label,
+#incidentDeclaration .incidents__field label,
+#incidentQualification .incidents__field label,
+#incidentTraitement .incidents__field label,
+#incidentList .incidents__field label {
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9rem;
+}
+#incidentsHub .incidents__field input,
+#incidentsHub .incidents__field select,
+#incidentDeclaration .incidents__field input,
+#incidentDeclaration .incidents__field select,
+#incidentQualification .incidents__field input,
+#incidentQualification .incidents__field select,
+#incidentTraitement .incidents__field input,
+#incidentTraitement .incidents__field select,
+#incidentList .incidents__field input,
+#incidentList .incidents__field select {
+  @include mixins.formInput(
+    "#incidentsHub .incidents__field input, #incidentsHub .incidents__field select, #incidentDeclaration .incidents__field input, #incidentDeclaration .incidents__field select, #incidentQualification .incidents__field input, #incidentQualification .incidents__field select, #incidentTraitement .incidents__field input, #incidentTraitement .incidents__field select, #incidentList .incidents__field input, #incidentList .incidents__field select"
+  );
+  height: 38px;
+  min-height: 38px;
+}
+#incidentsHub .incidents__field textarea,
+#incidentDeclaration .incidents__field textarea,
+#incidentQualification .incidents__field textarea,
+#incidentTraitement .incidents__field textarea,
+#incidentList .incidents__field textarea {
+  @include mixins.formInput(
+    "#incidentsHub .incidents__field textarea, #incidentDeclaration .incidents__field textarea, #incidentQualification .incidents__field textarea, #incidentTraitement .incidents__field textarea, #incidentList .incidents__field textarea"
+  );
+  min-height: 6rem;
+  resize: vertical;
+}
+#incidentsHub .incidents__field .react-select-container,
+#incidentDeclaration .incidents__field .react-select-container,
+#incidentQualification .incidents__field .react-select-container,
+#incidentTraitement .incidents__field .react-select-container,
+#incidentList .incidents__field .react-select-container {
+  @include mixins.reactSelect(
+    "#incidentsHub .incidents__field .react-select-container, #incidentDeclaration .incidents__field .react-select-container, #incidentQualification .incidents__field .react-select-container, #incidentTraitement .incidents__field .react-select-container, #incidentList .incidents__field .react-select-container"
+  );
+}
+#incidentsHub .incidents__field--wide,
+#incidentsHub .incidents__field--search,
+#incidentDeclaration .incidents__field--wide,
+#incidentDeclaration .incidents__field--search,
+#incidentQualification .incidents__field--wide,
+#incidentQualification .incidents__field--search,
+#incidentTraitement .incidents__field--wide,
+#incidentTraitement .incidents__field--search,
+#incidentList .incidents__field--wide,
+#incidentList .incidents__field--search {
+  grid-column: 1 / -1;
+}
+#incidentsHub .incidents__search,
+#incidentDeclaration .incidents__search,
+#incidentQualification .incidents__search,
+#incidentTraitement .incidents__search,
+#incidentList .incidents__search {
+  position: relative;
+}
+#incidentsHub .incidents__search svg,
+#incidentDeclaration .incidents__search svg,
+#incidentQualification .incidents__search svg,
+#incidentTraitement .incidents__search svg,
+#incidentList .incidents__search svg {
+  position: absolute;
+  left: 0.8em;
+  top: 50%;
+  transform: translateY(-50%);
+  color: vars.$fontColorSecondary;
+}
+#incidentsHub .incidents__search input,
+#incidentDeclaration .incidents__search input,
+#incidentQualification .incidents__search input,
+#incidentTraitement .incidents__search input,
+#incidentList .incidents__search input {
+  padding-left: 2.5em;
+}
+#incidentsHub .incidents__actions,
+#incidentsHub .incidents__filter-actions,
+#incidentsHub .incidents__pagination,
+#incidentDeclaration .incidents__actions,
+#incidentDeclaration .incidents__filter-actions,
+#incidentDeclaration .incidents__pagination,
+#incidentQualification .incidents__actions,
+#incidentQualification .incidents__filter-actions,
+#incidentQualification .incidents__pagination,
+#incidentTraitement .incidents__actions,
+#incidentTraitement .incidents__filter-actions,
+#incidentTraitement .incidents__pagination,
+#incidentList .incidents__actions,
+#incidentList .incidents__filter-actions,
+#incidentList .incidents__pagination {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1.25em;
+}
+#incidentsHub .incidents__btn-primary,
+#incidentsHub .incidents__btn-secondary,
+#incidentsHub .incidents__btn-icon,
+#incidentDeclaration .incidents__btn-primary,
+#incidentDeclaration .incidents__btn-secondary,
+#incidentDeclaration .incidents__btn-icon,
+#incidentQualification .incidents__btn-primary,
+#incidentQualification .incidents__btn-secondary,
+#incidentQualification .incidents__btn-icon,
+#incidentTraitement .incidents__btn-primary,
+#incidentTraitement .incidents__btn-secondary,
+#incidentTraitement .incidents__btn-icon,
+#incidentList .incidents__btn-primary,
+#incidentList .incidents__btn-secondary,
+#incidentList .incidents__btn-icon {
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: all vars.$transitionSmooth;
+}
+#incidentsHub .incidents__btn-primary:disabled,
+#incidentsHub .incidents__btn-secondary:disabled,
+#incidentsHub .incidents__btn-icon:disabled,
+#incidentDeclaration .incidents__btn-primary:disabled,
+#incidentDeclaration .incidents__btn-secondary:disabled,
+#incidentDeclaration .incidents__btn-icon:disabled,
+#incidentQualification .incidents__btn-primary:disabled,
+#incidentQualification .incidents__btn-secondary:disabled,
+#incidentQualification .incidents__btn-icon:disabled,
+#incidentTraitement .incidents__btn-primary:disabled,
+#incidentTraitement .incidents__btn-secondary:disabled,
+#incidentTraitement .incidents__btn-icon:disabled,
+#incidentList .incidents__btn-primary:disabled,
+#incidentList .incidents__btn-secondary:disabled,
+#incidentList .incidents__btn-icon:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+#incidentsHub .incidents__btn-primary,
+#incidentsHub .incidents__btn-secondary,
+#incidentDeclaration .incidents__btn-primary,
+#incidentDeclaration .incidents__btn-secondary,
+#incidentQualification .incidents__btn-primary,
+#incidentQualification .incidents__btn-secondary,
+#incidentTraitement .incidents__btn-primary,
+#incidentTraitement .incidents__btn-secondary,
+#incidentList .incidents__btn-primary,
+#incidentList .incidents__btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  padding: 0.8em 1.15em;
+}
+#incidentsHub .incidents__btn-primary,
+#incidentDeclaration .incidents__btn-primary,
+#incidentQualification .incidents__btn-primary,
+#incidentTraitement .incidents__btn-primary,
+#incidentList .incidents__btn-primary {
+  background: vars.$utilsGradient;
+  color: white;
+}
+#incidentsHub .incidents__btn-primary:hover:not(:disabled),
+#incidentDeclaration .incidents__btn-primary:hover:not(:disabled),
+#incidentQualification .incidents__btn-primary:hover:not(:disabled),
+#incidentTraitement .incidents__btn-primary:hover:not(:disabled),
+#incidentList .incidents__btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 0.45em 1.2em rgba(124, 58, 237, 0.22);
+}
+#incidentsHub .incidents__btn-secondary,
+#incidentDeclaration .incidents__btn-secondary,
+#incidentQualification .incidents__btn-secondary,
+#incidentTraitement .incidents__btn-secondary,
+#incidentList .incidents__btn-secondary {
+  background: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+  border: 1px solid vars.$borderColor;
+}
+#incidentsHub .incidents__btn-secondary:hover:not(:disabled),
+#incidentDeclaration .incidents__btn-secondary:hover:not(:disabled),
+#incidentQualification .incidents__btn-secondary:hover:not(:disabled),
+#incidentTraitement .incidents__btn-secondary:hover:not(:disabled),
+#incidentList .incidents__btn-secondary:hover:not(:disabled) {
+  background: #eef2ff;
+}
+#incidentsHub .incidents__btn-icon,
+#incidentDeclaration .incidents__btn-icon,
+#incidentQualification .incidents__btn-icon,
+#incidentTraitement .incidents__btn-icon,
+#incidentList .incidents__btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: #e0e7ff;
+  color: #4f46e5;
+  font-size: 1rem;
+}
+#incidentsHub .incidents__btn-icon:hover,
+#incidentDeclaration .incidents__btn-icon:hover,
+#incidentQualification .incidents__btn-icon:hover,
+#incidentTraitement .incidents__btn-icon:hover,
+#incidentList .incidents__btn-icon:hover {
+  background: #c7d2fe;
+}
+#incidentsHub .incidents__error,
+#incidentsHub .incidents__success,
+#incidentsHub .incidents__empty,
+#incidentDeclaration .incidents__error,
+#incidentDeclaration .incidents__success,
+#incidentDeclaration .incidents__empty,
+#incidentQualification .incidents__error,
+#incidentQualification .incidents__success,
+#incidentQualification .incidents__empty,
+#incidentTraitement .incidents__error,
+#incidentTraitement .incidents__success,
+#incidentTraitement .incidents__empty,
+#incidentList .incidents__error,
+#incidentList .incidents__success,
+#incidentList .incidents__empty {
+  border-radius: 10px;
+  padding: 0.95em 1.1em;
+  margin-bottom: 1em;
+}
+#incidentsHub .incidents__error,
+#incidentDeclaration .incidents__error,
+#incidentQualification .incidents__error,
+#incidentTraitement .incidents__error,
+#incidentList .incidents__error {
+  color: #991b1b;
+  background: #fee2e2;
+}
+#incidentsHub .incidents__success,
+#incidentDeclaration .incidents__success,
+#incidentQualification .incidents__success,
+#incidentTraitement .incidents__success,
+#incidentList .incidents__success {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  justify-content: space-between;
+  color: #166534;
+  background: #dcfce7;
+}
+#incidentsHub .incidents__success button,
+#incidentDeclaration .incidents__success button,
+#incidentQualification .incidents__success button,
+#incidentTraitement .incidents__success button,
+#incidentList .incidents__success button {
+  border: none;
+  border-radius: 6px;
+  padding: 0.45em 0.8em;
+  background: #16a34a;
+  color: white;
+  cursor: pointer;
+}
+#incidentsHub .incidents__empty,
+#incidentDeclaration .incidents__empty,
+#incidentQualification .incidents__empty,
+#incidentTraitement .incidents__empty,
+#incidentList .incidents__empty {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+  text-align: center;
+}
+#incidentsHub .incidents__layout,
+#incidentDeclaration .incidents__layout,
+#incidentQualification .incidents__layout,
+#incidentTraitement .incidents__layout,
+#incidentList .incidents__layout {
+  display: grid;
+  gap: 1.25em;
+}
+@media (min-width: vars.$desktopWidth) {
+  #incidentsHub .incidents__layout,
+  #incidentDeclaration .incidents__layout,
+  #incidentQualification .incidents__layout,
+  #incidentTraitement .incidents__layout,
+  #incidentList .incidents__layout {
+    grid-template-columns: 340px minmax(0, 1fr);
+    align-items: start;
   }
-
-  .incidents__selection-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6em;
-
-    button {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25em;
-      padding: 0.85em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      background: white;
-      text-align: left;
-      cursor: pointer;
-
-      &.active {
-        border-color: #7c3aed;
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
-      }
-
-      span {
-        color: vars.$fontColorPrimary;
-      }
-
-      small {
-        color: vars.$fontColorSecondary;
-      }
-    }
+}
+@media (min-width: vars.$desktopWidth) {
+  #incidentsHub .incidents__layout--detail,
+  #incidentDeclaration .incidents__layout--detail,
+  #incidentQualification .incidents__layout--detail,
+  #incidentTraitement .incidents__layout--detail,
+  #incidentList .incidents__layout--detail {
+    grid-template-columns: 300px minmax(0, 1fr);
   }
-
-  .incidents__summary {
-    margin-bottom: 1.25em;
-    padding-bottom: 1.25em;
-    border-bottom: 1px solid vars.$borderColor;
-
-    h2 {
-      margin: 0.45em 0;
-      color: vars.$fontColorPrimary;
-    }
-
-    p {
-      color: vars.$fontColorSecondary;
-      line-height: 1.55;
-    }
-
-    dl {
-      display: grid;
-      gap: 0.85em;
-      margin: 1em 0 0;
-
-      @media (min-width: vars.$tabletWidth) {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-
-      div {
-        padding: 0.8em;
-        border-radius: 8px;
-        background: vars.$greyBackground;
-      }
-
-      dt {
-        color: vars.$fontColorSecondary;
-        font-size: 0.78rem;
-        text-transform: uppercase;
-        font-weight: 700;
-      }
-
-      dd {
-        margin: 0.25em 0 0;
-        color: vars.$fontColorPrimary;
-        font-weight: 700;
-      }
-    }
+}
+#incidentsHub .incidents__sidebar,
+#incidentsHub .incidents__panel,
+#incidentDeclaration .incidents__sidebar,
+#incidentDeclaration .incidents__panel,
+#incidentQualification .incidents__sidebar,
+#incidentQualification .incidents__panel,
+#incidentTraitement .incidents__sidebar,
+#incidentTraitement .incidents__panel,
+#incidentList .incidents__sidebar,
+#incidentList .incidents__panel {
+  padding: 1.25em;
+}
+#incidentsHub .incidents__sidebar h2,
+#incidentDeclaration .incidents__sidebar h2,
+#incidentQualification .incidents__sidebar h2,
+#incidentTraitement .incidents__sidebar h2,
+#incidentList .incidents__sidebar h2 {
+  margin: 0 0 1em;
+  color: vars.$fontColorPrimary;
+  font-size: 1.1rem;
+}
+#incidentsHub .incidents__sidebar select,
+#incidentDeclaration .incidents__sidebar select,
+#incidentQualification .incidents__sidebar select,
+#incidentTraitement .incidents__sidebar select,
+#incidentList .incidents__sidebar select {
+  @include mixins.formInput(
+    "#incidentsHub .incidents__sidebar select, #incidentDeclaration .incidents__sidebar select, #incidentQualification .incidents__sidebar select, #incidentTraitement .incidents__sidebar select, #incidentList .incidents__sidebar select"
+  );
+  width: 100%;
+  height: 38px;
+  min-height: 38px;
+  margin-bottom: 1em;
+}
+#incidentsHub .incidents__selection-list,
+#incidentDeclaration .incidents__selection-list,
+#incidentQualification .incidents__selection-list,
+#incidentTraitement .incidents__selection-list,
+#incidentList .incidents__selection-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6em;
+}
+#incidentsHub .incidents__selection-list button,
+#incidentDeclaration .incidents__selection-list button,
+#incidentQualification .incidents__selection-list button,
+#incidentTraitement .incidents__selection-list button,
+#incidentList .incidents__selection-list button {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding: 0.85em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  background: white;
+  text-align: left;
+  cursor: pointer;
+}
+#incidentsHub .incidents__selection-list button.active,
+#incidentDeclaration .incidents__selection-list button.active,
+#incidentQualification .incidents__selection-list button.active,
+#incidentTraitement .incidents__selection-list button.active,
+#incidentList .incidents__selection-list button.active {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.12);
+}
+#incidentsHub .incidents__selection-list button span,
+#incidentDeclaration .incidents__selection-list button span,
+#incidentQualification .incidents__selection-list button span,
+#incidentTraitement .incidents__selection-list button span,
+#incidentList .incidents__selection-list button span {
+  color: vars.$fontColorPrimary;
+}
+#incidentsHub .incidents__selection-list button small,
+#incidentDeclaration .incidents__selection-list button small,
+#incidentQualification .incidents__selection-list button small,
+#incidentTraitement .incidents__selection-list button small,
+#incidentList .incidents__selection-list button small {
+  color: vars.$fontColorSecondary;
+}
+#incidentsHub .incidents__summary,
+#incidentDeclaration .incidents__summary,
+#incidentQualification .incidents__summary,
+#incidentTraitement .incidents__summary,
+#incidentList .incidents__summary {
+  margin-bottom: 1.25em;
+  padding-bottom: 1.25em;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#incidentsHub .incidents__summary h2,
+#incidentDeclaration .incidents__summary h2,
+#incidentQualification .incidents__summary h2,
+#incidentTraitement .incidents__summary h2,
+#incidentList .incidents__summary h2 {
+  margin: 0.45em 0;
+  color: vars.$fontColorPrimary;
+}
+#incidentsHub .incidents__summary p,
+#incidentDeclaration .incidents__summary p,
+#incidentQualification .incidents__summary p,
+#incidentTraitement .incidents__summary p,
+#incidentList .incidents__summary p {
+  color: vars.$fontColorSecondary;
+  line-height: 1.55;
+}
+#incidentsHub .incidents__summary dl,
+#incidentDeclaration .incidents__summary dl,
+#incidentQualification .incidents__summary dl,
+#incidentTraitement .incidents__summary dl,
+#incidentList .incidents__summary dl {
+  display: grid;
+  gap: 0.85em;
+  margin: 1em 0 0;
+}
+@media (min-width: vars.$tabletWidth) {
+  #incidentsHub .incidents__summary dl,
+  #incidentDeclaration .incidents__summary dl,
+  #incidentQualification .incidents__summary dl,
+  #incidentTraitement .incidents__summary dl,
+  #incidentList .incidents__summary dl {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-
-  .incidents__meta-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.65em;
-
-    div {
-      display: flex;
-      justify-content: space-between;
-      gap: 1em;
-      padding-bottom: 0.65em;
-      border-bottom: 1px solid vars.$borderColor;
-    }
-
-    span {
-      color: vars.$fontColorSecondary;
-    }
-
-    strong {
-      color: vars.$fontColorPrimary;
-      text-align: right;
-    }
+}
+#incidentsHub .incidents__summary dl div,
+#incidentDeclaration .incidents__summary dl div,
+#incidentQualification .incidents__summary dl div,
+#incidentTraitement .incidents__summary dl div,
+#incidentList .incidents__summary dl div {
+  padding: 0.8em;
+  border-radius: 8px;
+  background: vars.$greyBackground;
+}
+#incidentsHub .incidents__summary dl dt,
+#incidentDeclaration .incidents__summary dl dt,
+#incidentQualification .incidents__summary dl dt,
+#incidentTraitement .incidents__summary dl dt,
+#incidentList .incidents__summary dl dt {
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+#incidentsHub .incidents__summary dl dd,
+#incidentDeclaration .incidents__summary dl dd,
+#incidentQualification .incidents__summary dl dd,
+#incidentTraitement .incidents__summary dl dd,
+#incidentList .incidents__summary dl dd {
+  margin: 0.25em 0 0;
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+#incidentsHub .incidents__meta-list,
+#incidentDeclaration .incidents__meta-list,
+#incidentQualification .incidents__meta-list,
+#incidentTraitement .incidents__meta-list,
+#incidentList .incidents__meta-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65em;
+}
+#incidentsHub .incidents__meta-list div,
+#incidentDeclaration .incidents__meta-list div,
+#incidentQualification .incidents__meta-list div,
+#incidentTraitement .incidents__meta-list div,
+#incidentList .incidents__meta-list div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1em;
+  padding-bottom: 0.65em;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#incidentsHub .incidents__meta-list span,
+#incidentDeclaration .incidents__meta-list span,
+#incidentQualification .incidents__meta-list span,
+#incidentTraitement .incidents__meta-list span,
+#incidentList .incidents__meta-list span {
+  color: vars.$fontColorSecondary;
+}
+#incidentsHub .incidents__meta-list strong,
+#incidentDeclaration .incidents__meta-list strong,
+#incidentQualification .incidents__meta-list strong,
+#incidentTraitement .incidents__meta-list strong,
+#incidentList .incidents__meta-list strong {
+  color: vars.$fontColorPrimary;
+  text-align: right;
+}
+#incidentsHub .incidents__badge,
+#incidentDeclaration .incidents__badge,
+#incidentQualification .incidents__badge,
+#incidentTraitement .incidents__badge,
+#incidentList .incidents__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.3em 0.65em;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#incidentsHub .incidents__badge--declare,
+#incidentDeclaration .incidents__badge--declare,
+#incidentQualification .incidents__badge--declare,
+#incidentTraitement .incidents__badge--declare,
+#incidentList .incidents__badge--declare {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#incidentsHub .incidents__badge--qualifie,
+#incidentDeclaration .incidents__badge--qualifie,
+#incidentQualification .incidents__badge--qualifie,
+#incidentTraitement .incidents__badge--qualifie,
+#incidentList .incidents__badge--qualifie {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+#incidentsHub .incidents__badge--en_traitement,
+#incidentDeclaration .incidents__badge--en_traitement,
+#incidentQualification .incidents__badge--en_traitement,
+#incidentTraitement .incidents__badge--en_traitement,
+#incidentList .incidents__badge--en_traitement {
+  background: #ffedd5;
+  color: #c2410c;
+}
+#incidentsHub .incidents__badge--en_attente,
+#incidentDeclaration .incidents__badge--en_attente,
+#incidentQualification .incidents__badge--en_attente,
+#incidentTraitement .incidents__badge--en_attente,
+#incidentList .incidents__badge--en_attente {
+  background: #fef9c3;
+  color: #a16207;
+}
+#incidentsHub .incidents__badge--resolu,
+#incidentDeclaration .incidents__badge--resolu,
+#incidentQualification .incidents__badge--resolu,
+#incidentTraitement .incidents__badge--resolu,
+#incidentList .incidents__badge--resolu {
+  background: #dcfce7;
+  color: #15803d;
+}
+#incidentsHub .incidents__badge--annule,
+#incidentDeclaration .incidents__badge--annule,
+#incidentQualification .incidents__badge--annule,
+#incidentTraitement .incidents__badge--annule,
+#incidentList .incidents__badge--annule {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+}
+#incidentsHub .incidents__badge--priority-basse,
+#incidentDeclaration .incidents__badge--priority-basse,
+#incidentQualification .incidents__badge--priority-basse,
+#incidentTraitement .incidents__badge--priority-basse,
+#incidentList .incidents__badge--priority-basse {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+#incidentsHub .incidents__badge--priority-normale,
+#incidentDeclaration .incidents__badge--priority-normale,
+#incidentQualification .incidents__badge--priority-normale,
+#incidentTraitement .incidents__badge--priority-normale,
+#incidentList .incidents__badge--priority-normale {
+  background: #dcfce7;
+  color: #15803d;
+}
+#incidentsHub .incidents__badge--priority-haute,
+#incidentDeclaration .incidents__badge--priority-haute,
+#incidentQualification .incidents__badge--priority-haute,
+#incidentTraitement .incidents__badge--priority-haute,
+#incidentList .incidents__badge--priority-haute {
+  background: #ffedd5;
+  color: #c2410c;
+}
+#incidentsHub .incidents__badge--priority-critique,
+#incidentDeclaration .incidents__badge--priority-critique,
+#incidentQualification .incidents__badge--priority-critique,
+#incidentTraitement .incidents__badge--priority-critique,
+#incidentList .incidents__badge--priority-critique {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+#incidentsHub .incidents__table-header,
+#incidentDeclaration .incidents__table-header,
+#incidentQualification .incidents__table-header,
+#incidentTraitement .incidents__table-header,
+#incidentList .incidents__table-header {
+  display: flex;
+  justify-content: space-between;
+  color: vars.$fontColorSecondary;
+  margin: 0 0 0.75em;
+}
+#incidentsHub .incidents__table-wrapper,
+#incidentDeclaration .incidents__table-wrapper,
+#incidentQualification .incidents__table-wrapper,
+#incidentTraitement .incidents__table-wrapper,
+#incidentList .incidents__table-wrapper {
+  overflow-x: auto;
+}
+#incidentsHub .incidents__table,
+#incidentDeclaration .incidents__table,
+#incidentQualification .incidents__table,
+#incidentTraitement .incidents__table,
+#incidentList .incidents__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+#incidentsHub .incidents__table th,
+#incidentDeclaration .incidents__table th,
+#incidentQualification .incidents__table th,
+#incidentTraitement .incidents__table th,
+#incidentList .incidents__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 700;
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#incidentsHub .incidents__table td,
+#incidentDeclaration .incidents__table td,
+#incidentQualification .incidents__table td,
+#incidentTraitement .incidents__table td,
+#incidentList .incidents__table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+#incidentsHub .incidents__table td code,
+#incidentDeclaration .incidents__table td code,
+#incidentQualification .incidents__table td code,
+#incidentTraitement .incidents__table td code,
+#incidentList .incidents__table td code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: vars.$greyBackground;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+#incidentsHub .incidents__table tbody tr:last-child td,
+#incidentDeclaration .incidents__table tbody tr:last-child td,
+#incidentQualification .incidents__table tbody tr:last-child td,
+#incidentTraitement .incidents__table tbody tr:last-child td,
+#incidentList .incidents__table tbody tr:last-child td {
+  border-bottom: none;
+}
+#incidentsHub .incidents__table tbody tr:hover,
+#incidentDeclaration .incidents__table tbody tr:hover,
+#incidentQualification .incidents__table tbody tr:hover,
+#incidentTraitement .incidents__table tbody tr:hover,
+#incidentList .incidents__table tbody tr:hover {
+  background: vars.$greyBackground;
+}
+#incidentsHub .incidents__table-title,
+#incidentDeclaration .incidents__table-title,
+#incidentQualification .incidents__table-title,
+#incidentTraitement .incidents__table-title,
+#incidentList .incidents__table-title {
+  max-width: 24em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#incidentsHub .incidents__empty-cell,
+#incidentDeclaration .incidents__empty-cell,
+#incidentQualification .incidents__empty-cell,
+#incidentTraitement .incidents__empty-cell,
+#incidentList .incidents__empty-cell {
+  text-align: center;
+  color: vars.$fontColorSecondary;
+}
+#incidentsHub .incidents__pagination,
+#incidentDeclaration .incidents__pagination,
+#incidentQualification .incidents__pagination,
+#incidentTraitement .incidents__pagination,
+#incidentList .incidents__pagination {
+  justify-content: center;
+}
+#incidentsHub .incidents__pagination button,
+#incidentDeclaration .incidents__pagination button,
+#incidentQualification .incidents__pagination button,
+#incidentTraitement .incidents__pagination button,
+#incidentList .incidents__pagination button {
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  padding: 0.65em 0.9em;
+  background: white;
+  cursor: pointer;
+}
+#incidentsHub .incidents__pagination button:disabled,
+#incidentDeclaration .incidents__pagination button:disabled,
+#incidentQualification .incidents__pagination button:disabled,
+#incidentTraitement .incidents__pagination button:disabled,
+#incidentList .incidents__pagination button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+#incidentsHub .incidents__comments,
+#incidentDeclaration .incidents__comments,
+#incidentQualification .incidents__comments,
+#incidentTraitement .incidents__comments,
+#incidentList .incidents__comments {
+  margin-top: 1.5em;
+}
+#incidentsHub .incidents__comments h2,
+#incidentDeclaration .incidents__comments h2,
+#incidentQualification .incidents__comments h2,
+#incidentTraitement .incidents__comments h2,
+#incidentList .incidents__comments h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  color: vars.$fontColorPrimary;
+  font-size: 1.2rem;
+}
+#incidentsHub .incidents__comment-form,
+#incidentDeclaration .incidents__comment-form,
+#incidentQualification .incidents__comment-form,
+#incidentTraitement .incidents__comment-form,
+#incidentList .incidents__comment-form {
+  display: grid;
+  gap: 0.75em;
+  margin-bottom: 1em;
+}
+#incidentsHub .incidents__comment-form textarea,
+#incidentDeclaration .incidents__comment-form textarea,
+#incidentQualification .incidents__comment-form textarea,
+#incidentTraitement .incidents__comment-form textarea,
+#incidentList .incidents__comment-form textarea {
+  @include mixins.formInput(
+    "#incidentsHub .incidents__comment-form textarea, #incidentDeclaration .incidents__comment-form textarea, #incidentQualification .incidents__comment-form textarea, #incidentTraitement .incidents__comment-form textarea, #incidentList .incidents__comment-form textarea"
+  );
+  resize: vertical;
+}
+#incidentsHub .incidents__comment-list,
+#incidentDeclaration .incidents__comment-list,
+#incidentQualification .incidents__comment-list,
+#incidentTraitement .incidents__comment-list,
+#incidentList .incidents__comment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75em;
+}
+#incidentsHub .incidents__comment-list article,
+#incidentDeclaration .incidents__comment-list article,
+#incidentQualification .incidents__comment-list article,
+#incidentTraitement .incidents__comment-list article,
+#incidentList .incidents__comment-list article {
+  padding: 0.9em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 10px;
+  background: white;
+}
+#incidentsHub .incidents__comment-list header,
+#incidentDeclaration .incidents__comment-list header,
+#incidentQualification .incidents__comment-list header,
+#incidentTraitement .incidents__comment-list header,
+#incidentList .incidents__comment-list header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6em;
+  align-items: center;
+  margin-bottom: 0.55em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.86rem;
+}
+#incidentsHub .incidents__comment-list header strong,
+#incidentDeclaration .incidents__comment-list header strong,
+#incidentQualification .incidents__comment-list header strong,
+#incidentTraitement .incidents__comment-list header strong,
+#incidentList .incidents__comment-list header strong {
+  color: vars.$fontColorPrimary;
+}
+#incidentsHub .incidents__comment-list header em,
+#incidentDeclaration .incidents__comment-list header em,
+#incidentQualification .incidents__comment-list header em,
+#incidentTraitement .incidents__comment-list header em,
+#incidentList .incidents__comment-list header em {
+  font-style: normal;
+  padding: 0.15em 0.5em;
+  border-radius: 999px;
+  background: vars.$greyBackground;
+}
+#incidentsHub .incidents__comment-list p,
+#incidentDeclaration .incidents__comment-list p,
+#incidentQualification .incidents__comment-list p,
+#incidentTraitement .incidents__comment-list p,
+#incidentList .incidents__comment-list p {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  line-height: 1.5;
+}
+#incidentsHub .incidents__timeline,
+#incidentDeclaration .incidents__timeline,
+#incidentQualification .incidents__timeline,
+#incidentTraitement .incidents__timeline,
+#incidentList .incidents__timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 1.25em;
+}
+#incidentsHub .incidents__timeline-step,
+#incidentDeclaration .incidents__timeline-step,
+#incidentQualification .incidents__timeline-step,
+#incidentTraitement .incidents__timeline-step,
+#incidentList .incidents__timeline-step {
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  background: white;
+  overflow: hidden;
+}
+#incidentsHub .incidents__timeline-header,
+#incidentDeclaration .incidents__timeline-header,
+#incidentQualification .incidents__timeline-header,
+#incidentTraitement .incidents__timeline-header,
+#incidentList .incidents__timeline-header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1em 1em 0.85em;
+  border-bottom: 1px solid vars.$borderColor;
+  background: #fafafa;
+}
+#incidentsHub .incidents__timeline-header h3,
+#incidentDeclaration .incidents__timeline-header h3,
+#incidentQualification .incidents__timeline-header h3,
+#incidentTraitement .incidents__timeline-header h3,
+#incidentList .incidents__timeline-header h3 {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+}
+#incidentsHub .incidents__timeline-header p,
+#incidentDeclaration .incidents__timeline-header p,
+#incidentQualification .incidents__timeline-header p,
+#incidentTraitement .incidents__timeline-header p,
+#incidentList .incidents__timeline-header p {
+  margin: 0.2em 0 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#incidentsHub .incidents__timeline-body,
+#incidentDeclaration .incidents__timeline-body,
+#incidentQualification .incidents__timeline-body,
+#incidentTraitement .incidents__timeline-body,
+#incidentList .incidents__timeline-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+  padding: 1em;
+}
+#incidentsHub .incidents__timeline-grid,
+#incidentDeclaration .incidents__timeline-grid,
+#incidentQualification .incidents__timeline-grid,
+#incidentTraitement .incidents__timeline-grid,
+#incidentList .incidents__timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85em;
+}
+@media (min-width: vars.$tabletWidth) {
+  #incidentsHub .incidents__timeline-grid,
+  #incidentDeclaration .incidents__timeline-grid,
+  #incidentQualification .incidents__timeline-grid,
+  #incidentTraitement .incidents__timeline-grid,
+  #incidentList .incidents__timeline-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-
-  .incidents__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.3em 0.65em;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .incidents__badge--declare { background: #dbeafe; color: #1d4ed8; }
-  .incidents__badge--qualifie { background: #ede9fe; color: #6d28d9; }
-  .incidents__badge--en_traitement { background: #ffedd5; color: #c2410c; }
-  .incidents__badge--en_attente { background: #fef9c3; color: #a16207; }
-  .incidents__badge--resolu { background: #dcfce7; color: #15803d; }
-  .incidents__badge--annule { background: vars.$greyBackground; color: vars.$fontColorSecondary; }
-  .incidents__badge--priority-basse { background: #e0f2fe; color: #0369a1; }
-  .incidents__badge--priority-normale { background: #dcfce7; color: #15803d; }
-  .incidents__badge--priority-haute { background: #ffedd5; color: #c2410c; }
-  .incidents__badge--priority-critique { background: #fee2e2; color: #b91c1c; }
-
-  .incidents__table-header {
-    display: flex;
-    justify-content: space-between;
-    color: vars.$fontColorSecondary;
-    margin: 0 0 0.75em;
-  }
-
-  .incidents__table-wrapper {
-    overflow-x: auto;
-  }
-
-  .incidents__table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 700;
-      color: vars.$fontColorSecondary;
-      font-size: 0.78rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-      white-space: nowrap;
-
-      code {
-        font-family: monospace;
-        font-size: 0.88em;
-        background: vars.$greyBackground;
-        padding: 0.15em 0.4em;
-        border-radius: 4px;
-      }
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr:hover {
-      background: vars.$greyBackground;
-    }
-  }
-
-  .incidents__table-title {
-    max-width: 24em;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .incidents__empty-cell {
-    text-align: center;
-    color: vars.$fontColorSecondary;
-  }
-
-  .incidents__pagination {
-    justify-content: center;
-
-    button {
-      border: 1px solid vars.$borderColor;
-      border-radius: 8px;
-      padding: 0.65em 0.9em;
-      background: white;
-      cursor: pointer;
-
-      &:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-      }
-    }
-  }
-
-  .incidents__comments {
-    margin-top: 1.5em;
-
-    h2 {
-      display: flex;
-      align-items: center;
-      gap: 0.5em;
-      color: vars.$fontColorPrimary;
-      font-size: 1.2rem;
-    }
-  }
-
-  .incidents__comment-form {
-    display: grid;
-    gap: 0.75em;
-    margin-bottom: 1em;
-
-    textarea {
-      @include mixins.formInput;
-      resize: vertical;
-    }
-  }
-
-  .incidents__comment-list {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75em;
-
-    article {
-      padding: 0.9em;
-      border: 1px solid vars.$borderColor;
-      border-radius: 10px;
-      background: white;
-    }
-
-    header {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6em;
-      align-items: center;
-      margin-bottom: 0.55em;
-      color: vars.$fontColorSecondary;
-      font-size: 0.86rem;
-
-      strong {
-        color: vars.$fontColorPrimary;
-      }
-
-      em {
-        font-style: normal;
-        padding: 0.15em 0.5em;
-        border-radius: 999px;
-        background: vars.$greyBackground;
-      }
-    }
-
-    p {
-      margin: 0;
-      color: vars.$fontColorPrimary;
-      line-height: 1.5;
-    }
-  }
-
-  .incidents__timeline {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    margin-bottom: 1.25em;
-  }
-
-  .incidents__timeline-step {
-    border: 1px solid vars.$borderColor;
-    border-radius: 12px;
-    background: white;
-    overflow: hidden;
-  }
-
-  .incidents__timeline-header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75em;
-    align-items: flex-start;
-    justify-content: space-between;
-    padding: 1em 1em 0.85em;
-    border-bottom: 1px solid vars.$borderColor;
-    background: #fafafa;
-
-    h3 {
-      margin: 0;
-      color: vars.$fontColorPrimary;
-      font-size: 1rem;
-    }
-
-    p {
-      margin: 0.2em 0 0;
-      color: vars.$fontColorSecondary;
-      font-size: 0.9rem;
-    }
-  }
-
-  .incidents__timeline-body {
-    display: flex;
-    flex-direction: column;
-    gap: 0.85em;
-    padding: 1em;
-  }
-
-  .incidents__timeline-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.85em;
-
-    @media (min-width: vars.$tabletWidth) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .incidents__timeline-card {
-    padding: 0.9em 1em;
-    border-radius: 10px;
-    background: vars.$greyBackground;
-
-    strong {
-      display: block;
-      margin-bottom: 0.35em;
-      color: vars.$fontColorPrimary;
-      font-size: 0.9rem;
-    }
-
-    p {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      line-height: 1.55;
-      white-space: pre-line;
-    }
-  }
+}
+#incidentsHub .incidents__timeline-card,
+#incidentDeclaration .incidents__timeline-card,
+#incidentQualification .incidents__timeline-card,
+#incidentTraitement .incidents__timeline-card,
+#incidentList .incidents__timeline-card {
+  padding: 0.9em 1em;
+  border-radius: 10px;
+  background: vars.$greyBackground;
+}
+#incidentsHub .incidents__timeline-card strong,
+#incidentDeclaration .incidents__timeline-card strong,
+#incidentQualification .incidents__timeline-card strong,
+#incidentTraitement .incidents__timeline-card strong,
+#incidentList .incidents__timeline-card strong {
+  display: block;
+  margin-bottom: 0.35em;
+  color: vars.$fontColorPrimary;
+  font-size: 0.9rem;
+}
+#incidentsHub .incidents__timeline-card p,
+#incidentDeclaration .incidents__timeline-card p,
+#incidentQualification .incidents__timeline-card p,
+#incidentTraitement .incidents__timeline-card p,
+#incidentList .incidents__timeline-card p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.55;
+  white-space: pre-line;
 }

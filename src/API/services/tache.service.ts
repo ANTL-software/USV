@@ -1,4 +1,4 @@
-import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls';
+import { getRequest, postRequest, patchRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import type {
   Tache,
@@ -15,7 +15,7 @@ import type {
   ListTachesFilters,
   ListTachesResponse,
   StatutTache,
-} from '../../utils/types/projet.types';
+} from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;

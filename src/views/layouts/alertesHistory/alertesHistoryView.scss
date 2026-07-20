@@ -1,261 +1,215 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #alertesHistoryView {
-  @include mixins.fullViewport;
-
-  main {
-    padding: 1.5em 1em;
-  }
-
-  .alertesHistoryView__container {
-    @include mixins.centeredContainer;
-  }
-
-  .alertesHistoryView__header {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    margin-bottom: 2em;
-
-    h2 {
-      margin: 0;
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .alertesHistoryView__filters {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    margin-bottom: 2em;
-    padding: 1em;
-    background-color: vars.$greyBackground;
-    border-radius: 8px;
-  }
-
-  .alertesHistoryView__filter {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-
-    label {
-      font-size: 0.9em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-    }
-
-    select {
-      padding: 0.5em;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 1em;
-    }
-  }
-
-  .alertesHistoryView__error {
-    padding: 1em;
-    background-color: #fee;
-    color: #c33;
-    border-radius: 8px;
-    margin-bottom: 1.5em;
-  }
-
-  .alertesHistoryView__empty {
-    text-align: center;
-    padding: 3em 1em;
-    background-color: vars.$greyBackground;
-    border-radius: 8px;
-
-    p {
-      margin: 0;
-      font-size: 1.1em;
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .alertesHistoryView__list {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-  }
+  @include mixins.fullViewport("#alertesHistoryView");
 }
-
+#alertesHistoryView main {
+  padding: 1.5em 1em;
+}
+#alertesHistoryView .alertesHistoryView__container {
+  @include mixins.centeredContainer;
+}
+#alertesHistoryView .alertesHistoryView__header {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 2em;
+}
+#alertesHistoryView .alertesHistoryView__header h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#alertesHistoryView .alertesHistoryView__filters {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  margin-bottom: 2em;
+  padding: 1em;
+  background-color: vars.$greyBackground;
+  border-radius: 8px;
+}
+#alertesHistoryView .alertesHistoryView__filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+#alertesHistoryView .alertesHistoryView__filter label {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+#alertesHistoryView .alertesHistoryView__filter select {
+  padding: 0.5em;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1em;
+}
+#alertesHistoryView .alertesHistoryView__error {
+  padding: 1em;
+  background-color: #fee;
+  color: #c33;
+  border-radius: 8px;
+  margin-bottom: 1.5em;
+}
+#alertesHistoryView .alertesHistoryView__empty {
+  text-align: center;
+  padding: 3em 1em;
+  background-color: vars.$greyBackground;
+  border-radius: 8px;
+}
+#alertesHistoryView .alertesHistoryView__empty p {
+  margin: 0;
+  font-size: 1.1em;
+  color: vars.$fontColorSecondary;
+}
+#alertesHistoryView .alertesHistoryView__list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
 .alertesHistoryRow {
-  & {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-    background-color: #fff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 1.5em;
-    border-left: 4px solid #95a5a6;
-  }
-
-  &--active {
-    border-left-color: #e74c3c;
-    background-color: #fff5f5;
-  }
-
-  &--resolue {
-    border-left-color: #27ae60;
-  }
-
-  &--inactive {
-    opacity: 0.6;
-  }
-
-  &__status {
-    display: flex;
-    align-items: center;
-  }
-
-  &__status-icon {
-    font-size: 1.5em;
-
-    &--error {
-      color: #e74c3c;
-    }
-
-    &--success {
-      color: #27ae60;
-    }
-
-    &--warning {
-      color: #95a5a6;
-    }
-  }
-
-  &__type,
-  &__statut {
-    display: flex;
-    align-items: center;
-  }
-
-  &__type-badge,
-  &__statut-badge {
-    display: inline-block;
-    padding: 0.25em 0.75em;
-    border-radius: 16px;
-    font-size: 0.85em;
-    font-weight: 600;
-    color: #fff;
-  }
-
-  &__valeur {
-    display: flex;
-    align-items: center;
-  }
-
-  &__valeur-value {
-    font-size: 1.2em;
-    font-weight: 700;
-    color: vars.$fontColorPrimary;
-  }
-
-  &__valeur-na {
-    font-style: italic;
-    color: vars.$fontColorSecondary;
-  }
-
-  &__dates {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-  }
-
-  &__date {
-    display: flex;
-    flex-direction: column;
-    gap: 0.25em;
-  }
-
-  &__date-label {
-    font-size: 0.85em;
-    font-weight: 600;
-    color: vars.$fontColorSecondary;
-  }
-
-  &__date-value {
-    font-family: 'Courier New', monospace;
-    font-size: 0.9em;
-  }
-
-  &__commentaire {
-    padding: 1em;
-    background-color: vars.$greyBackground;
-    border-radius: 6px;
-  }
-
-  &__commentaire-display {
-    p {
-      margin: 0;
-      font-size: 0.95em;
-    }
-  }
-
-  &__no-commentaire {
-    font-style: italic;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9em;
-  }
-
-  &__commentaire-edit {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5em;
-  }
-
-  &__commentaire-actions {
-    display: flex;
-    gap: 0.5em;
-  }
-
-  &__actions {
-    display: flex;
-    gap: 0.5em;
-  }
-
-  @media (min-width: vars.$tabletWidth) {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  background-color: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5em;
+  border-left: 4px solid #95a5a6;
+}
+.alertesHistoryRow--active {
+  border-left-color: #e74c3c;
+  background-color: #fff5f5;
+}
+.alertesHistoryRow--resolue {
+  border-left-color: #27ae60;
+}
+.alertesHistoryRow--inactive {
+  opacity: 0.6;
+}
+.alertesHistoryRow__status {
+  display: flex;
+  align-items: center;
+}
+.alertesHistoryRow__status-icon {
+  font-size: 1.5em;
+}
+.alertesHistoryRow__status-icon--error {
+  color: #e74c3c;
+}
+.alertesHistoryRow__status-icon--success {
+  color: #27ae60;
+}
+.alertesHistoryRow__status-icon--warning {
+  color: #95a5a6;
+}
+.alertesHistoryRow__type,
+.alertesHistoryRow__statut {
+  display: flex;
+  align-items: center;
+}
+.alertesHistoryRow__type-badge,
+.alertesHistoryRow__statut-badge {
+  display: inline-block;
+  padding: 0.25em 0.75em;
+  border-radius: 16px;
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #fff;
+}
+.alertesHistoryRow__valeur {
+  display: flex;
+  align-items: center;
+}
+.alertesHistoryRow__valeur-value {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+.alertesHistoryRow__valeur-na {
+  font-style: italic;
+  color: vars.$fontColorSecondary;
+}
+.alertesHistoryRow__dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.alertesHistoryRow__date {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+}
+.alertesHistoryRow__date-label {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+.alertesHistoryRow__date-value {
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+}
+.alertesHistoryRow__commentaire {
+  padding: 1em;
+  background-color: vars.$greyBackground;
+  border-radius: 6px;
+}
+.alertesHistoryRow__commentaire-display p {
+  margin: 0;
+  font-size: 0.95em;
+}
+.alertesHistoryRow__no-commentaire {
+  font-style: italic;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9em;
+}
+.alertesHistoryRow__commentaire-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+.alertesHistoryRow__commentaire-actions {
+  display: flex;
+  gap: 0.5em;
+}
+.alertesHistoryRow__actions {
+  display: flex;
+  gap: 0.5em;
+}
+@media (min-width: vars.$tabletWidth) {
+  .alertesHistoryRow {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: center;
     padding: 1.5em 2em;
-
-    &__status,
-    &__type,
-    &__statut,
-    &__valeur {
-      flex: 0 0 auto;
-    }
-
-    &__dates {
-      flex: 1;
-      min-width: 200px;
-    }
-
-    &__commentaire {
-      flex: 1;
-      min-width: 250px;
-    }
-
-    &__actions {
-      flex: 0 0 auto;
-    }
   }
-
-  @media (min-width: vars.$tabletWidth) {
-    .alertesHistoryView__filters {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-
-    .alertesHistoryView__filter {
-      flex: 1;
-      min-width: 150px;
-    }
+  .alertesHistoryRow__status,
+  .alertesHistoryRow__type,
+  .alertesHistoryRow__statut,
+  .alertesHistoryRow__valeur {
+    flex: 0 0 auto;
+  }
+  .alertesHistoryRow__dates {
+    flex: 1;
+    min-width: 200px;
+  }
+  .alertesHistoryRow__commentaire {
+    flex: 1;
+    min-width: 250px;
+  }
+  .alertesHistoryRow__actions {
+    flex: 0 0 auto;
+  }
+}
+@media (min-width: vars.$tabletWidth) {
+  .alertesHistoryRow .alertesHistoryView__filters {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .alertesHistoryRow .alertesHistoryView__filter {
+    flex: 1;
+    min-width: 150px;
   }
 }

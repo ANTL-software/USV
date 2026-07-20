@@ -1,0 +1,81 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+#tauxAboutiChart {
+  @include mixins.card(12px, light);
+}
+#tauxAboutiChart {
+  margin-bottom: 2em;
+}
+#tauxAboutiChart .tauxAboutiChart__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  padding: 1.5em;
+}
+#tauxAboutiChart .tauxAboutiChart__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+#tauxAboutiChart .tauxAboutiChart__header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#tauxAboutiChart .tauxAboutiChart__header .tauxAboutiChart__taux {
+  padding: 0.4em 0.8em;
+  border-radius: 999px;
+  background: vars.$utilsGradient;
+  color: #fff;
+  font-weight: 600;
+  font-size: 1rem;
+}
+#tauxAboutiChart .tauxAboutiChart__chart {
+  position: relative;
+  min-height: 20em;
+}
+#tauxAboutiChart .tauxAboutiChart__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20em;
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.95rem;
+}
+#tauxAboutiChart .tauxAboutiChart__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+  padding-top: 1em;
+  border-top: 1px solid vars.$borderColor;
+}
+#tauxAboutiChart .tauxAboutiChart__detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+}
+#tauxAboutiChart .tauxAboutiChart__dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+#tauxAboutiChart .tauxAboutiChart__dot--aboutis {
+  background: #a78bfa;
+}
+#tauxAboutiChart .tauxAboutiChart__dot--nonAboutis {
+  background: #e74c3c;
+}
+@media (min-width: vars.$tabletWidth) {
+  #tauxAboutiChart .tauxAboutiChart__container {
+    padding: 2em;
+  }
+  #tauxAboutiChart .tauxAboutiChart__details {
+    flex-direction: row;
+    justify-content: center;
+    gap: 2em;
+  }
+}

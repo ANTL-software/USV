@@ -1,49 +1,29 @@
 // hooks | libraries
-import { ReactElement, useState } from "react";
+import { useState } from "react";
+import type { ReactElement } from "react";
 import { MdWifi, MdWifiOff, MdUpdate, MdClear } from "react-icons/md";
 
 // hooks
-import { usePWA, useOnlineStatus } from "../../../hooks/usePWA";
-
-// Alert service
-import { confirm } from "../../../utils/services/alertService";
+import { usePWAStatus } from "../../../hooks/index.ts";
 
 // components
-import Button from "../button/Button";
+import { Button } from "../button/index.ts";
 
 interface PWAStatusProps {
   className?: string;
 }
 
 function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
-  const { 
-    isSupported, 
-    isRegistered, 
+  const {
+    applyUpdate,
+    clearCache,
+    isOnline,
+    isRegistered,
+    isSupported,
     updateAvailable,
-    checkForUpdates,
-    clearAppCache
-  } = usePWA();
-  
-  const isOnline = useOnlineStatus();
+  } = usePWAStatus();
   
   const [showFullStatus, setShowFullStatus] = useState<boolean>(false);
-
-  const handleUpdateClick = async () => {
-    await checkForUpdates();
-    // Recharger la page après la mise à jour
-    window.location.reload();
-  };
-
-  const handleClearCache = async () => {
-    const confirmed = await confirm(
-      'Êtes-vous sûr de vouloir vider le cache ? Cela rechargera l\'application.',
-      'Vider le cache'
-    );
-    
-    if (confirmed) {
-      await clearAppCache();
-    }
-  };
 
   // Si PWA n'est pas supportée, ne rien afficher
   if (!isSupported) {
@@ -71,7 +51,7 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
         <div className="update-prompt">
           <Button
             style="orange"
-            onClick={handleUpdateClick}
+            onClick={() => void applyUpdate()}
             type="button"
           >
             <MdUpdate />
@@ -94,7 +74,7 @@ function PWAStatus({ className = "" }: PWAStatusProps): ReactElement {
           <div className="pwa-actions">
             <Button
               style="grey"
-              onClick={handleClearCache}
+              onClick={() => void clearCache()}
               type="button"
             >
               <MdClear />

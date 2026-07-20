@@ -13,7 +13,7 @@ import {
   getMembresService,
   addMembreService,
   removeMembreService,
-} from '../../API/services/projet.service';
+} from '../../API/services/index.ts';
 import type {
   Projet,
   CreateProjetData,
@@ -24,7 +24,7 @@ import type {
   ProjetDashboard,
   ProjetStats,
   StatutProjet,
-} from '../../utils/types/projet.types';
+} from '../../utils/types/index.ts';
 
 interface ProjetProviderProps {
   children: ReactNode;

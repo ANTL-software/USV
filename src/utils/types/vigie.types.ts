@@ -216,3 +216,22 @@ export interface VigieDateRange {
   dateDebut: string;
   dateFin: string;
 }
+
+export interface CreateVigieActionData {
+  type_action: VigieActionType;
+  recommendation_key?: string;
+  payload?: Record<string, unknown>;
+  telephone_prospect?: string;
+  id_agent_cible?: number;
+}
+
+export interface CreateVigiePriorityBatchData {
+  id_agent_cible: number;
+  id_prospects: number[];
+}
+
+export interface CreateVigieManualPriorityData {
+  id_agent_cible: number;
+  telephone_prospect: string;
+  libelle_prospect?: string;
+}

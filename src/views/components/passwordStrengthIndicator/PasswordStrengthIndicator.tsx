@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useState } from 'react';
-import { validatePasswordStrength, PasswordStrength } from '../../../utils/scripts/passwordValidation';
+import { validatePasswordStrength } from '../../../utils/scripts/index.ts';
+import type { PasswordStrength } from '../../../utils/scripts/index.ts';
 import './passwordStrengthIndicator.scss';
 
 interface PasswordStrengthIndicatorProps {

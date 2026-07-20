@@ -1,711 +1,677 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #agentDetails {
   @include mixins.pageContainer;
   @include mixins.mainView;
-
-  main {
-    flex: 1;
-  }
-
-  .agentDetails__container {
-    @include mixins.centeredContainer(1400px);
-    padding: 1.5em 1em;
-    max-width: 1400px;
-    margin: 0 auto;
-    width: 100%;
-  }
-
-  .agentDetails__header {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1em;
-    align-items: center;
-    margin-bottom: 2em;
-
-    h1 {
-      flex: 1;
-      min-width: 200px;
-      margin: 0;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .agentDetails__identifiant {
-    padding: 0.5em 1em;
-    background-color: vars.$greyBackground;
-    border: 1px solid vars.$borderColor;
-    border-radius: 8px;
-    font-size: 0.9em;
-    font-family: monospace;
-    color: vars.$fontColorPrimary;
-  }
-
-  .agentDetails__content {
-    display: flex;
-    gap: 2em;
-    flex-wrap: wrap;
-  }
-
-  // TABLEAU DES DOCUMENTS
-  .agentDetails__documents {
-    flex: 1;
-    min-width: 500px;
-
-    h2 {
-      margin: 0 0 1em;
-      color: vars.$fontColorPrimary;
-      font-size: 1.2rem;
-    }
-
-    .agentDetails__no-documents {
-      color: vars.$fontColorSecondary;
-      font-style: italic;
-      margin: 1em 0;
-    }
-  }
-
-  .agentDetails__documents-table-wrapper {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-  }
-
-  .agentDetails__documents-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-      white-space: nowrap;
-
-      code {
-        font-family: monospace;
-        font-size: 0.88em;
-        background: vars.$greyBackground;
-        padding: 0.15em 0.4em;
-        border-radius: 4px;
-      }
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: vars.$greyBackground; }
-  }
-
-  .agentDetails__documents-name {
-    max-width: 300px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  // BADGES
-  .agentDetails__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3em;
-    padding: 0.25em 0.6em;
-    border-radius: 999px;
-    font-size: 0.78rem;
-    font-weight: 500;
-    white-space: nowrap;
-
-    &--ok { background: #dcfce7; color: #16a34a; }
-    &--missing { background: #fef9c3; color: #a16207; }
-    &--inactive { background: vars.$greyBackground; color: vars.$fontColorSecondary; }
-    &--direction  { background: #ede9fe; color: #6d28d9; }
-    &--commercial { background: #dcfce7; color: #15803d; }
-    &--support    { background: #dbeafe; color: #1d4ed8; }
-    &--rh         { background: #fce7f3; color: #be185d; }
-    &--technique  { background: #ffedd5; color: #c2410c; }
-    &--adv        { background: #fef9c3; color: #a16207; }
-    &--autre      { background: vars.$greyBackground; color: vars.$fontColorSecondary; }
-    &--document   { background: #dbeafe; color: #1d4ed8; }
-  }
-
-  .agentDetails__documents-actions {
-    display: flex;
-    gap: 0.4em;
-
-    .actionBtn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5em;
-      height: 2.5em;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: vars.$transitionMedium;
-      font-size: 1.1em;
-      line-height: 1;
-      padding: 0;
-
-      &.view {
-        background: rgba(#9b59b6, 0.1);
-        color: #9b59b6;
-        &:hover { background: #9b59b6; color: white; transform: translateY(-2px); }
-      }
-
-      &.download {
-        background: rgba(vars.$utilsPrimary, 0.1);
-        color: vars.$utilsPrimary;
-        &:hover { background: vars.$utilsPrimary; color: white; transform: translateY(-2px); }
-      }
-
-      &.delete {
-        background: rgba(vars.$errorColor, 0.1);
-        color: vars.$errorColor;
-        &:hover { background: vars.$errorColor; color: white; transform: translateY(-2px); }
-      }
-    }
-  }
-
-  // ASIDE
-  .agentDetails__aside {
-    flex: 0 0 350px;
-    min-width: 300px;
-
-    h2 {
-      margin: 0 0 1.5em;
-      color: vars.$fontColorPrimary;
-      font-size: 1.2rem;
-    }
-  }
-
-  .agentDetails__actions-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-  }
-
-  .agentDetails__action-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4em;
-  }
-
-  .agentDetails__action-btn {
-    display: flex !important;
-    align-items: center;
-    gap: 0.5em;
-    width: 100%;
-    justify-content: flex-start;
-    padding: 0.75em 1em;
-    border-radius: 8px;
-    background: vars.$greyBackground;
-    border: 1px solid vars.$borderColor;
-    color: vars.$fontColorPrimary;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all vars.$transitionSmooth;
-
-    &:hover {
-      background: #e8ecf0;
-      border-color: rgba(0, 0, 0, 0.15);
-    }
-  }
-
-  .agentDetails__action-icon {
-    font-size: 1.1em;
-    color: vars.$utilsPrimary;
-  }
-
-  .agentDetails__action-label {
-    font-weight: 500;
-  }
-
-  .agentDetails__action-description {
-    margin: 0;
-    font-size: 0.8rem;
-    color: vars.$fontColorSecondary;
-    padding-left: 0.25em;
-  }
-
-  .agentDetails__planning-modal {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    height: 100%;
-    overflow-y: auto;
-  }
-
-  .agentDetails__planning-current {
-    padding: 0.9rem 1rem;
-    border-radius: 12px;
-    background: rgba(vars.$utilsPrimary, 0.08);
-    border: 1px solid rgba(vars.$utilsPrimary, 0.18);
-
-    p,
-    strong {
-      margin: 0;
-    }
-
-    p {
-      color: vars.$fontColorSecondary;
-      font-size: 0.85rem;
-      margin-bottom: 0.2rem;
-    }
-  }
-
-  .agentDetails__planning-list {
-    display: grid;
-    gap: 1rem;
-    padding-bottom: 0.25rem;
-  }
-
-  .agentDetails__planning-card {
-    border: 1px solid vars.$borderColor;
-    border-radius: 14px;
-    padding: 1rem;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    gap: 0.9rem;
-
-    &--current {
-      border-color: rgba(vars.$utilsPrimary, 0.28);
-      box-shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
-    }
-
-    h4,
-    p {
-      margin: 0;
-    }
-  }
-
-  .agentDetails__planning-cardHeader {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: flex-start;
-
-    p {
-      margin-top: 0.2rem;
-      color: vars.$fontColorSecondary;
-      font-size: 0.9rem;
-    }
-  }
-
-  .agentDetails__planning-badge {
-    padding: 0.3rem 0.65rem;
-    border-radius: 999px;
-    background: rgba(vars.$utilsPrimary, 0.12);
-    color: vars.$utilsPrimary;
-    font-size: 0.78rem;
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .agentDetails__planning-slots {
-    display: grid;
-    gap: 0.45rem;
-
-    p {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      font-size: 0.9rem;
-    }
-
-    span {
-      color: vars.$fontColorSecondary;
-      min-width: 6rem;
-    }
-
-    strong {
-      text-align: right;
-      white-space: pre-wrap;
-    }
-  }
-
-  .agentDetails__planning-empty {
-    margin: 0;
-    color: vars.$fontColorSecondary;
-
-    &--error {
-      color: vars.$errorColor;
-    }
-  }
-
-  // Modale upload
-  .agentDetails__modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(8px);
-    z-index: 99999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2em;
-  }
-
-  .agentDetails__modal-container {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-    width: 90dvw;
-    max-width: 50em;
-    min-height: 300px;
-    max-height: 70dvh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .agentDetails__modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 1em 1.5em;
-    background: vars.$greyBackground;
-    border-bottom: 1px solid vars.$borderColor;
-    flex-shrink: 0;
-
-    h3 {
-      margin: 0;
-      font-size: 1.2em;
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-    }
-
-    .agentDetails__modal-close {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5em;
-      height: 2.5em;
-      border: none;
-      border-radius: 50%;
-      background: rgba(231, 76, 60, 0.1);
-      color: vars.$errorColor;
-      cursor: pointer;
-      transition: vars.$transitionMedium;
-      font-size: 1.2em;
-
-      &:hover {
-        background: vars.$errorColor;
-        color: white;
-        transform: scale(1.1);
-      }
-    }
-  }
-
-  .agentDetails__modal-content {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1.5em;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    min-height: 0; // Important pour flex child avec overflow
-  }
-
-  // Formulaire dans la modale
-  .agentDetails__form-group {
-    margin-bottom: 1em;
-  }
-
-  .agentDetails__form-label {
-    display: block;
-    margin-bottom: 0.5em;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: vars.$fontColorPrimary;
-  }
-
-  .agentDetails__form-input {
-    width: 100%;
-    padding: 0.65em 1em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    color: vars.$fontColorPrimary;
-    background: white;
-    transition: border-color 0.2s, box-shadow 0.2s;
-
-    &:focus {
-      outline: none;
-      border-color: vars.$utilsPrimary;
-      box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
-    }
-
-    &::placeholder {
-      color: vars.$fontColorSecondary;
-    }
-  }
-
-  .agentDetails__dropzone {
-    border: 2px dashed vars.$borderColor;
-    border-radius: 8px;
-    padding: 3rem 2rem;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
-    margin-bottom: 1.5rem;
-    display: block;
-    width: 100%;
-    min-height: 180px;
-    -webkit-user-select: none;
-    user-select: none;
-
-    &:hover, &--active {
-      border-color: vars.$utilsPrimary;
-      background: #f0f2ff;
-    }
-  }
-
-  .agentDetails__dropzone-icon {
-    font-size: 3.5rem;
-    color: vars.$utilsPrimary;
-    margin-bottom: 1rem;
-  }
-
-  .agentDetails__dropzone-filename {
-    font-weight: 600;
-    color: vars.$fontColorPrimary;
-    margin: 0 0 0.25em;
-  }
-
-  .agentDetails__dropzone-size {
-    font-size: 0.85em;
-    color: vars.$fontColorSecondary;
-    margin: 0 0 0.5em;
-  }
-
-  .agentDetails__dropzone-change-hint,
-  .agentDetails__dropzone-hint {
-    font-size: 0.8em;
-    color: vars.$fontColorSecondary;
-    font-style: italic;
-    margin: 0;
-  }
-
-  .agentDetails__dropzone p {
-    margin: 0 0 0.5em;
-    color: vars.$fontColorPrimary;
-    font-size: 1rem;
-  }
-
-  .agentDetails__upload-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1em;
-    margin-top: 0.5em;
-    padding-top: 1em;
-    border-top: 1px solid vars.$borderColor;
-  }
-
-  // Messages dans la modale
-  .agentDetails__upload-success {
-    padding: 0.75em 1em;
-    margin-bottom: 1em;
-    background: #dcfce7;
-    color: #16a34a;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-
-  .agentDetails__upload-error {
-    padding: 0.75em 1em;
-    margin-bottom: 1em;
-    background: #fef2f2;
-    color: #dc2626;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    text-align: center;
-  }
-
-  // Message "Aucun document"
-  .agentDetails__no-documents {
-    color: vars.$fontColorSecondary;
-    text-align: center;
-    padding: 2em;
-    font-size: 1rem;
-  }
-
-  .agentDetails__no-documents--error {
-    color: vars.$errorColor;
-  }
-
-  // PHOTO SECTION
-  .agentDetails__photo-section {
-    margin-bottom: 2em;
-    @include mixins.card(16px, light);
-    border: 1px solid vars.$borderColor;
-    padding: 1.5em;
-
-    h2 {
-      margin: 0 0 1em !important;
-      color: vars.$fontColorPrimary;
-      font-size: 1.1rem !important;
-      font-weight: 600;
-    }
-  }
-
-  .agentDetails__photo-container {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-  }
-
-  .agentDetails__photo-wrapper {
-    position: relative;
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    overflow: hidden;
-    border: 3px solid white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.04);
-    background: #f8fafc;
-    transition: all vars.$transitionSmooth;
-
-    &:hover {
-      .agentDetails__photo-overlay {
-        opacity: 1;
-      }
-    }
-  }
-
-  .agentDetails__photo-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .agentDetails__photo-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75em;
-    opacity: 0;
-    transition: opacity vars.$transitionSmooth;
-    border-radius: 50%;
-
-    .photoBtn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.2em;
-      height: 2.2em;
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-      color: white;
-      font-size: 1.1em;
-      transition: all vars.$transitionSmooth;
-
-      &.edit {
-        background: rgba(255, 255, 255, 0.25);
-        &:hover {
-          background: vars.$utilsPrimary;
-          transform: scale(1.1);
-        }
-      }
-
-      &.delete {
-        background: rgba(255, 255, 255, 0.25);
-        &:hover {
-          background: vars.$errorColor;
-          transform: scale(1.1);
-        }
-      }
-    }
-  }
-
-  .agentDetails__photo-placeholder {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    border: 2px dashed vars.$borderColor;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    background: #f8fafc;
-    transition: all vars.$transitionSmooth;
-    color: vars.$fontColorSecondary;
-    gap: 0.5em;
-
-    &:hover {
-      border-color: vars.$utilsPrimary;
-      background: #f0f7ff;
-      color: vars.$utilsPrimary;
-    }
-
-    .placeholder-icon {
-      font-size: 2rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    span {
-      font-size: 0.8rem;
-      font-weight: 500;
-    }
-  }
-
-  .agentDetails__photo-status {
-    margin-top: 1em;
-    font-size: 0.85rem;
-    color: vars.$utilsPrimary;
-    font-weight: 500;
-  }
-
-  .agentDetails__photo-error {
-    margin-top: 1em;
-    font-size: 0.8rem;
-    color: vars.$errorColor;
-    background: #fee2e2;
-    border: 1px solid #fca5a5;
-    padding: 0.5em 0.8em;
-    border-radius: 6px;
-    text-align: center;
-    width: 100%;
-  }
-
-  .agentDetails__actions-section {
-    @include mixins.card(16px, light);
-    border: 1px solid vars.$borderColor;
-    padding: 1.5em;
-
-    h2 {
-      margin: 0 0 1.5em !important;
-      color: vars.$fontColorPrimary;
-      font-size: 1.1rem !important;
-      font-weight: 600;
-    }
-  }
+}
+#agentDetails main {
+  flex: 1;
+}
+#agentDetails .agentDetails__container {
+  @include mixins.centeredContainer(1400px);
+  padding: 1.5em 1em;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+#agentDetails .agentDetails__header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  margin-bottom: 2em;
+}
+#agentDetails .agentDetails__header h1 {
+  flex: 1;
+  min-width: 200px;
+  margin: 0;
+  color: vars.$fontColorPrimary;
+}
+#agentDetails .agentDetails__identifiant {
+  padding: 0.5em 1em;
+  background-color: vars.$greyBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-family: monospace;
+  color: vars.$fontColorPrimary;
+}
+#agentDetails .agentDetails__content {
+  display: flex;
+  gap: 2em;
+  flex-wrap: wrap;
+}
+// TABLEAU DES DOCUMENTS
+#agentDetails .agentDetails__documents {
+  flex: 1;
+  min-width: 500px;
+}
+#agentDetails .agentDetails__documents h2 {
+  margin: 0 0 1em;
+  color: vars.$fontColorPrimary;
+  font-size: 1.2rem;
+}
+#agentDetails .agentDetails__documents .agentDetails__no-documents {
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  margin: 1em 0;
+}
+#agentDetails .agentDetails__documents-table-wrapper {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+}
+#agentDetails .agentDetails__documents-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+#agentDetails .agentDetails__documents-table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#agentDetails .agentDetails__documents-table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+#agentDetails .agentDetails__documents-table td code {
+  font-family: monospace;
+  font-size: 0.88em;
+  background: vars.$greyBackground;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+#agentDetails .agentDetails__documents-table tbody tr:last-child td {
+  border-bottom: none;
+}
+#agentDetails .agentDetails__documents-table tbody tr:hover {
+  background: vars.$greyBackground;
+}
+#agentDetails .agentDetails__documents-name {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+// BADGES
+#agentDetails .agentDetails__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+  padding: 0.25em 0.6em;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+#agentDetails .agentDetails__badge--ok {
+  background: #dcfce7;
+  color: #16a34a;
+}
+#agentDetails .agentDetails__badge--missing {
+  background: #fef9c3;
+  color: #a16207;
+}
+#agentDetails .agentDetails__badge--inactive {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+}
+#agentDetails .agentDetails__badge--direction {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+#agentDetails .agentDetails__badge--commercial {
+  background: #dcfce7;
+  color: #15803d;
+}
+#agentDetails .agentDetails__badge--support {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#agentDetails .agentDetails__badge--rh {
+  background: #fce7f3;
+  color: #be185d;
+}
+#agentDetails .agentDetails__badge--technique {
+  background: #ffedd5;
+  color: #c2410c;
+}
+#agentDetails .agentDetails__badge--adv {
+  background: #fef9c3;
+  color: #a16207;
+}
+#agentDetails .agentDetails__badge--autre {
+  background: vars.$greyBackground;
+  color: vars.$fontColorSecondary;
+}
+#agentDetails .agentDetails__badge--document {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+#agentDetails .agentDetails__documents-actions {
+  display: flex;
+  gap: 0.4em;
+}
+#agentDetails .agentDetails__documents-actions .actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1.1em;
+  line-height: 1;
+  padding: 0;
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.view {
+  background: rgba(#9b59b6, 0.1);
+  color: #9b59b6;
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.view:hover {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-2px);
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.download {
+  background: rgba(vars.$utilsPrimary, 0.1);
+  color: vars.$utilsPrimary;
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.download:hover {
+  background: vars.$utilsPrimary;
+  color: white;
+  transform: translateY(-2px);
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.delete {
+  background: rgba(vars.$errorColor, 0.1);
+  color: vars.$errorColor;
+}
+#agentDetails .agentDetails__documents-actions .actionBtn.delete:hover {
+  background: vars.$errorColor;
+  color: white;
+  transform: translateY(-2px);
+}
+// ASIDE
+#agentDetails .agentDetails__aside {
+  flex: 0 0 350px;
+  min-width: 300px;
+}
+#agentDetails .agentDetails__aside h2 {
+  margin: 0 0 1.5em;
+  color: vars.$fontColorPrimary;
+  font-size: 1.2rem;
+}
+#agentDetails .agentDetails__actions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+#agentDetails .agentDetails__action-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4em;
+}
+#agentDetails .agentDetails__action-btn {
+  display: flex !important;
+  align-items: center;
+  gap: 0.5em;
+  width: 100%;
+  justify-content: flex-start;
+  padding: 0.75em 1em;
+  border-radius: 8px;
+  background: vars.$greyBackground;
+  border: 1px solid vars.$borderColor;
+  color: vars.$fontColorPrimary;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionSmooth;
+}
+#agentDetails .agentDetails__action-btn:hover {
+  background: #e8ecf0;
+  border-color: rgba(0, 0, 0, 0.15);
+}
+#agentDetails .agentDetails__action-icon {
+  font-size: 1.1em;
+  color: vars.$utilsPrimary;
+}
+#agentDetails .agentDetails__action-label {
+  font-weight: 500;
+}
+#agentDetails .agentDetails__action-description {
+  margin: 0;
+  font-size: 0.8rem;
+  color: vars.$fontColorSecondary;
+  padding-left: 0.25em;
+}
+#agentDetails .agentDetails__planning-modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  height: 100%;
+  overflow-y: auto;
+}
+#agentDetails .agentDetails__planning-current {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgba(vars.$utilsPrimary, 0.08);
+  border: 1px solid rgba(vars.$utilsPrimary, 0.18);
+}
+#agentDetails .agentDetails__planning-current p,
+#agentDetails .agentDetails__planning-current strong {
+  margin: 0;
+}
+#agentDetails .agentDetails__planning-current p {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85rem;
+  margin-bottom: 0.2rem;
+}
+#agentDetails .agentDetails__planning-list {
+  display: grid;
+  gap: 1rem;
+  padding-bottom: 0.25rem;
+}
+#agentDetails .agentDetails__planning-card {
+  border: 1px solid vars.$borderColor;
+  border-radius: 14px;
+  padding: 1rem;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+#agentDetails .agentDetails__planning-card--current {
+  border-color: rgba(vars.$utilsPrimary, 0.28);
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+}
+#agentDetails .agentDetails__planning-card h4,
+#agentDetails .agentDetails__planning-card p {
+  margin: 0;
+}
+#agentDetails .agentDetails__planning-cardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+#agentDetails .agentDetails__planning-cardHeader p {
+  margin-top: 0.2rem;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#agentDetails .agentDetails__planning-badge {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(vars.$utilsPrimary, 0.12);
+  color: vars.$utilsPrimary;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+#agentDetails .agentDetails__planning-slots {
+  display: grid;
+  gap: 0.45rem;
+}
+#agentDetails .agentDetails__planning-slots p {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+#agentDetails .agentDetails__planning-slots span {
+  color: vars.$fontColorSecondary;
+  min-width: 6rem;
+}
+#agentDetails .agentDetails__planning-slots strong {
+  text-align: right;
+  white-space: pre-wrap;
+}
+#agentDetails .agentDetails__planning-empty {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+}
+#agentDetails .agentDetails__planning-empty--error {
+  color: vars.$errorColor;
+}
+// Modale upload
+#agentDetails .agentDetails__modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2em;
+}
+#agentDetails .agentDetails__modal-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  width: 90dvw;
+  max-width: 50em;
+  min-height: 300px;
+  max-height: 70dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+#agentDetails .agentDetails__modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1em 1.5em;
+  background: vars.$greyBackground;
+  border-bottom: 1px solid vars.$borderColor;
+  flex-shrink: 0;
+}
+#agentDetails .agentDetails__modal-header h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#agentDetails .agentDetails__modal-header .agentDetails__modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 50%;
+  background: rgba(231, 76, 60, 0.1);
+  color: vars.$errorColor;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1.2em;
+}
+#agentDetails .agentDetails__modal-header .agentDetails__modal-close:hover {
+  background: vars.$errorColor;
+  color: white;
+  transform: scale(1.1);
+}
+#agentDetails .agentDetails__modal-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5em;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0; // Important pour flex child avec overflow
+}
+// Formulaire dans la modale
+#agentDetails .agentDetails__form-group {
+  margin-bottom: 1em;
+}
+#agentDetails .agentDetails__form-label {
+  display: block;
+  margin-bottom: 0.5em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#agentDetails .agentDetails__form-input {
+  width: 100%;
+  padding: 0.65em 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  color: vars.$fontColorPrimary;
+  background: white;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+#agentDetails .agentDetails__form-input:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+#agentDetails .agentDetails__form-input::placeholder {
+  color: vars.$fontColorSecondary;
+}
+#agentDetails .agentDetails__dropzone {
+  border: 2px dashed vars.$borderColor;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 180px;
+  -webkit-user-select: none;
+  user-select: none;
+  background: transparent;
+  color: vars.$fontColorPrimary;
+  font: inherit;
+}
+#agentDetails .agentDetails__dropzone:hover,
+#agentDetails .agentDetails__dropzone--active {
+  border-color: vars.$utilsPrimary;
+  background: #f0f2ff;
+}
+#agentDetails .agentDetails__dropzone-icon {
+  font-size: 3.5rem;
+  color: vars.$utilsPrimary;
+  margin-bottom: 1rem;
+}
+#agentDetails .agentDetails__dropzone-filename {
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  margin: 0 0 0.25em;
+}
+#agentDetails .agentDetails__dropzone-size {
+  font-size: 0.85em;
+  color: vars.$fontColorSecondary;
+  margin: 0 0 0.5em;
+}
+#agentDetails .agentDetails__dropzone-change-hint,
+#agentDetails .agentDetails__dropzone-hint {
+  font-size: 0.8em;
+  color: vars.$fontColorSecondary;
+  font-style: italic;
+  margin: 0;
+}
+#agentDetails .agentDetails__hiddenInput {
+  display: none;
+}
+#agentDetails .agentDetails__upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1em;
+  margin-top: 0.5em;
+  padding-top: 1em;
+  border-top: 1px solid vars.$borderColor;
+}
+// Messages dans la modale
+#agentDetails .agentDetails__upload-success {
+  padding: 0.75em 1em;
+  margin-bottom: 1em;
+  background: #dcfce7;
+  color: #16a34a;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+#agentDetails .agentDetails__upload-error {
+  padding: 0.75em 1em;
+  margin-bottom: 1em;
+  background: #fef2f2;
+  color: #dc2626;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  text-align: center;
+}
+// Message "Aucun document"
+#agentDetails .agentDetails__no-documents {
+  color: vars.$fontColorSecondary;
+  text-align: center;
+  padding: 2em;
+  font-size: 1rem;
+}
+#agentDetails .agentDetails__no-documents--error {
+  color: vars.$errorColor;
+}
+// PHOTO SECTION
+#agentDetails .agentDetails__photo-section {
+  margin-bottom: 2em;
+  @include mixins.card(16px, light);
+  border: 1px solid vars.$borderColor;
+  padding: 1.5em;
+}
+#agentDetails .agentDetails__photo-section h2 {
+  margin: 0 0 1em !important;
+  color: vars.$fontColorPrimary;
+  font-size: 1.1rem !important;
+  font-weight: 600;
+}
+#agentDetails .agentDetails__photo-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+#agentDetails .agentDetails__photo-wrapper {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid white;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    0 2px 4px rgba(0, 0, 0, 0.04);
+  background: #f8fafc;
+  transition: all vars.$transitionSmooth;
+}
+#agentDetails .agentDetails__photo-wrapper:hover .agentDetails__photo-overlay {
+  opacity: 1;
+}
+#agentDetails .agentDetails__photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+#agentDetails .agentDetails__photo-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75em;
+  opacity: 0;
+  transition: opacity vars.$transitionSmooth;
+  border-radius: 50%;
+}
+#agentDetails .agentDetails__photo-overlay .photoBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.2em;
+  height: 2.2em;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  color: white;
+  font-size: 1.1em;
+  transition: all vars.$transitionSmooth;
+}
+#agentDetails .agentDetails__photo-overlay .photoBtn.edit {
+  background: rgba(255, 255, 255, 0.25);
+}
+#agentDetails .agentDetails__photo-overlay .photoBtn.edit:hover {
+  background: vars.$utilsPrimary;
+  transform: scale(1.1);
+}
+#agentDetails .agentDetails__photo-overlay .photoBtn.delete {
+  background: rgba(255, 255, 255, 0.25);
+}
+#agentDetails .agentDetails__photo-overlay .photoBtn.delete:hover {
+  background: vars.$errorColor;
+  transform: scale(1.1);
+}
+#agentDetails .agentDetails__photo-placeholder {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  border: 2px dashed vars.$borderColor;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: #f8fafc;
+  transition: all vars.$transitionSmooth;
+  color: vars.$fontColorSecondary;
+  gap: 0.5em;
+}
+#agentDetails .agentDetails__photo-placeholder:hover {
+  border-color: vars.$utilsPrimary;
+  background: #f0f7ff;
+  color: vars.$utilsPrimary;
+}
+#agentDetails .agentDetails__photo-placeholder .placeholder-icon {
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#agentDetails .agentDetails__photo-placeholder span {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+#agentDetails .agentDetails__photo-status {
+  margin-top: 1em;
+  font-size: 0.85rem;
+  color: vars.$utilsPrimary;
+  font-weight: 500;
+}
+#agentDetails .agentDetails__photo-error {
+  margin-top: 1em;
+  font-size: 0.8rem;
+  color: vars.$errorColor;
+  background: #fee2e2;
+  border: 1px solid #fca5a5;
+  padding: 0.5em 0.8em;
+  border-radius: 6px;
+  text-align: center;
+  width: 100%;
+}
+#agentDetails .agentDetails__actions-section {
+  @include mixins.card(16px, light);
+  border: 1px solid vars.$borderColor;
+  padding: 1.5em;
+}
+#agentDetails .agentDetails__actions-section h2 {
+  margin: 0 0 1.5em !important;
+  color: vars.$fontColorPrimary;
+  font-size: 1.1rem !important;
+  font-weight: 600;
 }

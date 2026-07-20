@@ -1,4 +1,4 @@
-import { ICourrier } from "../../utils/types/courrier.types";
+import type { ICourrier } from "../../utils/types/index.ts";
 
 export const courrierModel = (fetchedCourrier: ICourrier): ICourrier => {
   return {

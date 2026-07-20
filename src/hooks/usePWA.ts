@@ -8,7 +8,7 @@ import {
   checkOnlineStatus,
   addConnectionListeners,
   clearCache
-} from '../utils/scripts/serviceWorker';
+} from '../utils/scripts/index.ts';
 
 interface PWAState {
   isSupported: boolean;

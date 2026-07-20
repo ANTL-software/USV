@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getPosteByIdService, createPosteService, updatePosteService } from '../API/services/user.service';
-import type { PermissionRecord, Poste, TypePoste } from '../utils/types/user.types';
+import { getPosteByIdService, createPosteService, updatePosteService } from '../API/services/index.ts';
+import type { PermissionRecord, Poste, TypePoste } from '../utils/types/index.ts';
 
 interface PosteFormState {
   libelle_poste: string;
@@ -145,5 +145,7 @@ export function usePosteForm() {
     }
   };
 
-  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, togglePermissionSection, togglePermissionSubsection, handleSubmit };
+  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, togglePermissionSection, togglePermissionSubsection, handleSubmit, navigateBack: () => void navigate('/operations/postes') };
 }
+
+export type PosteFormViewModel = ReturnType<typeof usePosteForm>;

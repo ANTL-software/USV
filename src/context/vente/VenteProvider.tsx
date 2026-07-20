@@ -1,11 +1,10 @@
 import { useState, useCallback, useContext } from 'react';
 import type { ReactNode } from 'react';
 import { VenteContext } from './VenteContext.tsx';
-import type { VenteListParams } from '../../utils/types/vente.types.ts';
-import type { Vente } from '../../utils/types/vente.types.ts';
+import type { Vente, VenteListParams } from '../../utils/types/index.ts';
 import type { VenteContextType } from './VenteContext.tsx';
-import { getVentesService } from '../../API/services/vente.service.ts';
-import { UserContext } from '../user/UserContext.tsx';
+import { getVentesService } from '../../API/services/index.ts';
+import { UserContext } from '../user/index.ts';
 
 interface VenteProviderProps {
   children: ReactNode;

@@ -7,9 +7,11 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test": "npm run test:unit && npm run test:e2e && npm run test:browser",
     "test:unit": "node --test --experimental-strip-types --experimental-test-module-mocks tests/unit/*.test.ts",
     "test:e2e": "node --test --experimental-strip-types --experimental-test-module-mocks tests/e2e/*.test.ts",
+    "test:browser": "playwright test",
+    "test:browser:headed": "playwright test --headed",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -18,7 +20,7 @@
     "@twilio/voice-sdk": "^2.18.3",
     "@types/react-color": "^3.0.13",
     "aos": "^2.3.4",
-    "axios": "^1.7.9",
+    "axios": "^1.18.1",
     "date-fns": "^4.1.0",
     "react": "^19.2.4",
     "react-big-calendar": "^1.19.4",
@@ -27,13 +29,14 @@
     "react-icons": "^5.4.0",
     "react-image-crop": "^11.0.10",
     "react-pdf": "^10.1.0",
-    "react-router-dom": "^7.0.2",
+    "react-router-dom": "^7.18.1",
     "react-select": "^5.10.2",
     "recharts": "^3.8.1",
     "sass": "^1.82.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
+    "@playwright/test": "1.58.2",
     "@types/aos": "^3.0.7",
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
@@ -46,6 +49,6 @@
     "globals": "^17.4.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^7.3.1"
+    "vite": "^7.3.6"
   }
 }

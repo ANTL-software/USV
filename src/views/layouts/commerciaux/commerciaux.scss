@@ -1,677 +1,750 @@
 @use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
-
 #commerciaux,
 #commerciauxPlaceholder {
   @include mixins.mainView;
-
-  .commerciaux__back,
-  .commerciauxPlaceholder__back {
-    padding: 1em 1em 0;
-    @include mixins.centeredContainer;
-  }
-
-  .commerciaux__wrapper,
-  .commerciauxPlaceholder__wrapper {
-    @include mixins.centeredContainer;
-
-    & {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5em;
-      flex: 1;
-      padding: 2em 1em;
-    }
-  }
-
-  .commerciauxPlaceholder__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
+}
+#commerciaux .commerciaux__back,
+#commerciaux .commerciauxPlaceholder__back,
+#commerciauxPlaceholder .commerciaux__back,
+#commerciauxPlaceholder .commerciauxPlaceholder__back {
+  padding: 1em 1em 0;
+  @include mixins.centeredContainer;
+}
+#commerciaux .commerciaux__wrapper,
+#commerciaux .commerciauxPlaceholder__wrapper,
+#commerciauxPlaceholder .commerciaux__wrapper,
+#commerciauxPlaceholder .commerciauxPlaceholder__wrapper {
+  @include mixins.centeredContainer;
+}
+#commerciaux .commerciaux__wrapper,
+#commerciaux .commerciauxPlaceholder__wrapper,
+#commerciauxPlaceholder .commerciaux__wrapper,
+#commerciauxPlaceholder .commerciauxPlaceholder__wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  flex: 1;
+  padding: 2em 1em;
+}
+#commerciaux .commerciauxPlaceholder__header,
+#commerciauxPlaceholder .commerciauxPlaceholder__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+#commerciaux .commerciauxPlaceholder__actions,
+#commerciauxPlaceholder .commerciauxPlaceholder__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+#commerciaux .commerciaux__title,
+#commerciaux .commerciauxPlaceholder__title,
+#commerciauxPlaceholder .commerciaux__title,
+#commerciauxPlaceholder .commerciauxPlaceholder__title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#commerciaux .commerciaux__row,
+#commerciauxPlaceholder .commerciaux__row {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5em;
+  justify-content: center;
+}
+@media (min-width: vars.$tabletWidth) {
+  #commerciaux .commerciaux__row,
+  #commerciauxPlaceholder .commerciaux__row {
+    flex-direction: row;
     flex-wrap: wrap;
   }
-
-  .commerciauxPlaceholder__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.75rem;
+}
+#commerciaux .commerciaux__card,
+#commerciaux .commerciauxPlaceholder__card,
+#commerciauxPlaceholder .commerciaux__card,
+#commerciauxPlaceholder .commerciauxPlaceholder__card {
+  flex: 1;
+  min-width: 200px;
+  @include mixins.card(16px, light);
+}
+#commerciaux .commerciaux__card,
+#commerciaux .commerciauxPlaceholder__card,
+#commerciauxPlaceholder .commerciaux__card,
+#commerciauxPlaceholder .commerciauxPlaceholder__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 2.5em 2em;
+  cursor: pointer;
+  transition: all vars.$transitionMedium;
+  border: none;
+  text-decoration: none;
+}
+#commerciaux .commerciaux__card:hover,
+#commerciaux .commerciauxPlaceholder__card:hover,
+#commerciauxPlaceholder .commerciaux__card:hover,
+#commerciauxPlaceholder .commerciauxPlaceholder__card:hover {
+  transform: translateY(-0.35em);
+  box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.13);
+}
+#commerciaux .commerciaux__card-icon,
+#commerciaux .commerciauxPlaceholder__card-icon,
+#commerciauxPlaceholder .commerciaux__card-icon,
+#commerciauxPlaceholder .commerciauxPlaceholder__card-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#commerciaux .commerciaux__card h2,
+#commerciaux .commerciauxPlaceholder__card h2,
+#commerciauxPlaceholder .commerciaux__card h2,
+#commerciauxPlaceholder .commerciauxPlaceholder__card h2 {
+  margin: 0 0 0.75em;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: vars.$utilsGradient;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+#commerciaux .commerciaux__card p,
+#commerciaux .commerciauxPlaceholder__card p,
+#commerciauxPlaceholder .commerciaux__card p,
+#commerciauxPlaceholder .commerciauxPlaceholder__card p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper {
+  @include mixins.card(16px, light);
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper {
+  padding: 1em;
+  min-height: 70vh;
+  overflow: hidden;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-calendar,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper .rbc-calendar {
+  min-height: calc(70vh - 2em);
+  font-family: inherit;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-toolbar,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper .rbc-toolbar {
+  gap: 0.75em;
+  margin-bottom: 1em;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-toolbar button,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__calendarWrapper
+  .rbc-toolbar
+  button {
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  color: vars.$fontColorPrimary;
+  transition: all vars.$transitionFast;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-toolbar button:hover,
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-toolbar button:focus,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__calendarWrapper
+  .rbc-toolbar
+  button:hover,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__calendarWrapper
+  .rbc-toolbar
+  button:focus {
+  background: #f8fafc;
+  border-color: #d1d5db;
+}
+#commerciaux
+  .commerciauxPlaceholder__calendarWrapper
+  .rbc-toolbar
+  button.rbc-active,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__calendarWrapper
+  .rbc-toolbar
+  button.rbc-active {
+  background: vars.$utilsGradient;
+  border-color: transparent;
+  color: white;
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-today,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper .rbc-today {
+  background: rgba(139, 92, 246, 0.08);
+}
+#commerciaux .commerciauxPlaceholder__calendarWrapper .rbc-event,
+#commerciauxPlaceholder .commerciauxPlaceholder__calendarWrapper .rbc-event {
+  background: vars.$utilsGradient;
+  border: none;
+  border-radius: 8px;
+  padding: 0.15em 0.4em;
+}
+#commerciaux .commerciauxPlaceholder__loading,
+#commerciauxPlaceholder .commerciauxPlaceholder__loading {
+  margin: 0 0 0.75rem;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#commerciaux .commerciauxPlaceholder__absenceModal,
+#commerciaux .commerciauxPlaceholder__absenceList,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceModal,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-height: 0;
+  min-width: 0;
+}
+#commerciaux .commerciauxPlaceholder__absenceGrid,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  min-width: 0;
+}
+@media (max-width: vars.$tabletWidth) {
+  #commerciaux .commerciauxPlaceholder__absenceGrid,
+  #commerciauxPlaceholder .commerciauxPlaceholder__absenceGrid {
+    grid-template-columns: 1fr;
   }
-
-  .commerciaux__title,
-  .commerciauxPlaceholder__title {
-    margin: 0;
-    font-size: 2rem;
-    font-weight: 800;
-    background: vars.$utilsGradient;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
+}
+#commerciaux .commerciauxPlaceholder__field,
+#commerciauxPlaceholder .commerciauxPlaceholder__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  min-width: 0;
+}
+#commerciaux .commerciauxPlaceholder__field span,
+#commerciauxPlaceholder .commerciauxPlaceholder__field span {
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+}
+#commerciaux .commerciauxPlaceholder__field textarea,
+#commerciaux .commerciauxPlaceholder__field input,
+#commerciauxPlaceholder .commerciauxPlaceholder__field textarea,
+#commerciauxPlaceholder .commerciauxPlaceholder__field input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  display: block;
+  box-sizing: border-box;
+  appearance: none;
+  -webkit-appearance: none;
+  background-clip: padding-box;
+  border: 1px solid vars.$borderColor;
+  border-radius: 10px;
+  padding: 0.8rem 0.9rem;
+  font: inherit;
+}
+#commerciaux .commerciauxPlaceholder__field textarea,
+#commerciauxPlaceholder .commerciauxPlaceholder__field textarea {
+  resize: vertical;
+  min-height: 7rem;
+}
+#commerciaux .commerciauxPlaceholder__field .reactSelect__control,
+#commerciauxPlaceholder .commerciauxPlaceholder__field .reactSelect__control {
+  min-height: 48px;
+  border-radius: 10px;
+  border-color: vars.$borderColor;
+  box-shadow: none;
+}
+#commerciaux .commerciauxPlaceholder__field .reactSelect__control--is-focused,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__field
+  .reactSelect__control--is-focused {
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 1px vars.$utilsPrimary;
+}
+#commerciaux .commerciauxPlaceholder__field input[type="date"],
+#commerciaux .commerciauxPlaceholder__field input[type="time"],
+#commerciauxPlaceholder .commerciauxPlaceholder__field input[type="date"],
+#commerciauxPlaceholder .commerciauxPlaceholder__field input[type="time"] {
+  inline-size: 100%;
+  block-size: 48px;
+  line-height: 1.2;
+}
+#commerciaux .commerciauxPlaceholder__typeToggle,
+#commerciauxPlaceholder .commerciauxPlaceholder__typeToggle {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+#commerciaux .commerciauxPlaceholder__typeToggle button,
+#commerciauxPlaceholder .commerciauxPlaceholder__typeToggle button {
+  border: 1px solid vars.$borderColor;
+  background: #fff;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  cursor: pointer;
+  transition: vars.$transitionFast;
+}
+#commerciaux .commerciauxPlaceholder__typeToggle .is-active,
+#commerciauxPlaceholder .commerciauxPlaceholder__typeToggle .is-active {
+  background: vars.$utilsGradient;
+  border-color: transparent;
+  color: #fff;
+}
+#commerciaux .commerciauxPlaceholder__absenceHint,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceHint {
+  margin: 0;
+  color: #a16207;
+  background: #fef3c7;
+  border: 1px solid #fcd34d;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+#commerciaux .commerciauxPlaceholder__absenceError,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceError {
+  margin: 0;
+  color: #b91c1c;
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+}
+#commerciaux .commerciauxPlaceholder__absenceFooter,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+#commerciaux .commerciauxPlaceholder__absenceState,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceState {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+}
+#commerciaux .commerciauxPlaceholder__absenceCard,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCard {
+  border: 1px solid vars.$borderColor;
+  border-radius: 14px;
+  background: #fff;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  min-width: 0;
+}
+#commerciaux .commerciauxPlaceholder__absenceCardHeader,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCardHeader {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: flex-start;
+}
+#commerciaux .commerciauxPlaceholder__absenceCardHeader h3,
+#commerciaux .commerciauxPlaceholder__absenceCardHeader p,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCardHeader h3,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCardHeader p {
+  margin: 0;
+}
+#commerciaux .commerciauxPlaceholder__absenceCardHeader p,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCardHeader p {
+  color: vars.$fontColorSecondary;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+}
+#commerciaux .commerciauxPlaceholder__absenceCardText,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceCardText {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  line-height: 1.5;
+}
+#commerciaux .commerciauxPlaceholder__absenceMeta,
+#commerciauxPlaceholder .commerciauxPlaceholder__absenceMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#commerciaux .commerciauxPlaceholder__status,
+#commerciauxPlaceholder .commerciauxPlaceholder__status {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#commerciaux .commerciauxPlaceholder__status--demandee,
+#commerciauxPlaceholder .commerciauxPlaceholder__status--demandee {
+  background: #fef3c7;
+  color: #b45309;
+}
+#commerciaux .commerciauxPlaceholder__status--validee,
+#commerciauxPlaceholder .commerciauxPlaceholder__status--validee {
+  background: #dcfce7;
+  color: #15803d;
+}
+#commerciaux .commerciauxPlaceholder__status--refusee,
+#commerciauxPlaceholder .commerciauxPlaceholder__status--refusee {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+// NOTES DIRECTION
+#commerciaux .commerciauxPlaceholder__notes-table-wrapper,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-table-wrapper {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+  margin-top: 1rem;
+  width: 100%;
+}
+#commerciaux .commerciauxPlaceholder__notes-table,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+#commerciaux .commerciauxPlaceholder__notes-table th,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#commerciaux .commerciauxPlaceholder__notes-table td,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+#commerciaux .commerciauxPlaceholder__notes-table tbody tr:last-child td,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__notes-table
+  tbody
+  tr:last-child
+  td {
+  border-bottom: none;
+}
+#commerciaux .commerciauxPlaceholder__notes-table tbody tr:hover,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-table tbody tr:hover {
+  background: vars.$greyBackground;
+}
+#commerciaux .commerciauxPlaceholder__notes-name,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-name {
+  max-width: 300px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+#commerciaux .commerciauxPlaceholder__notes-actions,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-actions {
+  display: flex;
+  gap: 0.4em;
+}
+#commerciaux .commerciauxPlaceholder__notes-actions .actionBtn,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-actions .actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: vars.$transitionMedium;
+  font-size: 1.1em;
+  line-height: 1;
+  padding: 0;
+}
+#commerciaux .commerciauxPlaceholder__notes-actions .actionBtn.view,
+#commerciauxPlaceholder .commerciauxPlaceholder__notes-actions .actionBtn.view {
+  background: rgba(#9b59b6, 0.1);
+  color: #9b59b6;
+}
+#commerciaux .commerciauxPlaceholder__notes-actions .actionBtn.view:hover,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__notes-actions
+  .actionBtn.view:hover {
+  background: #9b59b6;
+  color: white;
+  transform: translateY(-2px);
+}
+#commerciaux .commerciauxPlaceholder__notes-actions .actionBtn.delete,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__notes-actions
+  .actionBtn.delete {
+  background: rgba(vars.$errorColor, 0.1);
+  color: vars.$errorColor;
+}
+#commerciaux .commerciauxPlaceholder__notes-actions .actionBtn.delete:hover,
+#commerciauxPlaceholder
+  .commerciauxPlaceholder__notes-actions
+  .actionBtn.delete:hover {
+  background: vars.$errorColor;
+  color: white;
+  transform: translateY(-2px);
+}
+#commerciaux .commerciauxPlaceholder__no-notes,
+#commerciauxPlaceholder .commerciauxPlaceholder__no-notes {
+  text-align: center;
+  padding: 3em 1em;
+  color: vars.$fontColorSecondary;
+  font-size: 1.1rem;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+#commerciaux .commerciauxPlaceholder__no-notes--error,
+#commerciauxPlaceholder .commerciauxPlaceholder__no-notes--error {
+  color: vars.$errorColor;
+}
+// MODALS
+#commerciaux .commerciauxPlaceholder__modal-backdrop,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.25s ease-out;
+}
+#commerciaux .commerciauxPlaceholder__modal-container,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-container {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+#commerciaux .commerciauxPlaceholder__modal-header,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid vars.$borderColor;
+}
+#commerciaux .commerciauxPlaceholder__modal-header h3,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#commerciaux .commerciauxPlaceholder__modal-close,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-close {
+  background: none;
+  border: none;
+  font-size: 1.35rem;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all vars.$transitionMedium;
+}
+#commerciaux .commerciauxPlaceholder__modal-close:hover,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-close:hover {
+  background: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+}
+#commerciaux .commerciauxPlaceholder__modal-content,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+#commerciaux .commerciauxPlaceholder__form-group,
+#commerciauxPlaceholder .commerciauxPlaceholder__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+#commerciaux .commerciauxPlaceholder__form-label,
+#commerciauxPlaceholder .commerciauxPlaceholder__form-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+#commerciaux .commerciauxPlaceholder__form-input,
+#commerciauxPlaceholder .commerciauxPlaceholder__form-input {
+  padding: 0.75rem 1rem;
+  border: 1.5px solid vars.$borderColor;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: border-color vars.$transitionMedium;
+}
+#commerciaux .commerciauxPlaceholder__form-input:focus,
+#commerciauxPlaceholder .commerciauxPlaceholder__form-input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+}
+#commerciaux .commerciauxPlaceholder__form-input:disabled,
+#commerciauxPlaceholder .commerciauxPlaceholder__form-input:disabled {
+  background: vars.$greyBackground;
+  cursor: not-allowed;
+}
+#commerciaux .commerciauxPlaceholder__dropzone,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone {
+  border: 2px dashed vars.$borderColor;
+  border-radius: 12px;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all vars.$transitionMedium;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #fafafa;
+}
+#commerciaux .commerciauxPlaceholder__dropzone:hover,
+#commerciaux .commerciauxPlaceholder__dropzone--active,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone:hover,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone--active {
+  border-color: #8b5cf6;
+  background: rgba(#8b5cf6, 0.03);
+}
+#commerciaux .commerciauxPlaceholder__dropzone--has-file,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone--has-file {
+  border-style: solid;
+  border-color: rgba(#8b5cf6, 0.4);
+  background: rgba(#8b5cf6, 0.02);
+}
+#commerciaux .commerciauxPlaceholder__dropzone-icon,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-icon {
+  font-size: 2.5rem;
+  color: vars.$fontColorSecondary;
+  margin-bottom: 0.75rem;
+}
+#commerciaux .commerciauxPlaceholder__dropzone-text,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+  font-weight: 500;
+}
+#commerciaux .commerciauxPlaceholder__dropzone-text span,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-text span {
+  color: #8b5cf6;
+  text-decoration: underline;
+}
+#commerciaux .commerciauxPlaceholder__dropzone-sub,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-sub {
+  margin: 0.35rem 0 0;
+  font-size: 0.78rem;
+  color: vars.$fontColorSecondary;
+}
+#commerciaux .commerciauxPlaceholder__dropzone-filename,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-filename {
+  margin: 0;
+  font-weight: 600;
+  color: #8b5cf6;
+  font-size: 0.95rem;
+}
+#commerciaux .commerciauxPlaceholder__dropzone-size,
+#commerciauxPlaceholder .commerciauxPlaceholder__dropzone-size {
+  margin: 0.2rem 0 0;
+  font-size: 0.8rem;
+  color: vars.$fontColorSecondary;
+}
+#commerciaux .commerciauxPlaceholder__modal-footer,
+#commerciauxPlaceholder .commerciauxPlaceholder__modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  border-top: 1px solid vars.$borderColor;
+  background: #fbfbfb;
+}
+#commerciaux .commerciauxPlaceholder__upload-error,
+#commerciauxPlaceholder .commerciauxPlaceholder__upload-error {
+  background: rgba(vars.$errorColor, 0.07);
+  color: vars.$errorColor;
+  border: 1px solid rgba(vars.$errorColor, 0.15);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+#commerciaux .commerciauxPlaceholder__upload-success,
+#commerciauxPlaceholder .commerciauxPlaceholder__upload-success {
+  background: #ecfdf5;
+  color: #065f46;
+  border: 1px solid #a7f3d0;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+@media (max-width: vars.$tabletWidth) {
+  #commerciaux .commerciauxPlaceholder__absenceModal,
+  #commerciaux .commerciauxPlaceholder__absenceList,
+  #commerciauxPlaceholder .commerciauxPlaceholder__absenceModal,
+  #commerciauxPlaceholder .commerciauxPlaceholder__absenceList {
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 0.1rem;
   }
-
-  .commerciaux__row {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5em;
-    justify-content: center;
-
-    @media (min-width: vars.$tabletWidth) {
-      flex-direction: row;
-      flex-wrap: wrap;
-    }
-  }
-
-  .commerciaux__card,
-  .commerciauxPlaceholder__card {
-    flex: 1;
-    min-width: 200px;
-    @include mixins.card(16px, light);
-
-    & {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 2.5em 2em;
-      cursor: pointer;
-      transition: all vars.$transitionMedium;
-      border: none;
-      text-decoration: none;
-    }
-
-    &:hover {
-      transform: translateY(-0.35em);
-      box-shadow: 0 1em 2.5em rgba(0, 0, 0, 0.13);
-    }
-  }
-
-  .commerciaux__card-icon,
-  .commerciauxPlaceholder__card-icon {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    background: vars.$utilsGradient;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .commerciaux__card h2,
-  .commerciauxPlaceholder__card h2 {
-    margin: 0 0 0.75em;
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: vars.$utilsGradient;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-
-  .commerciaux__card p,
-  .commerciauxPlaceholder__card p {
-    margin: 0;
-    color: vars.$fontColorSecondary;
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-
-  .commerciauxPlaceholder__calendarWrapper {
-    @include mixins.card(16px, light);
-
-    & {
-      padding: 1em;
-      min-height: 70vh;
-      overflow: hidden;
-    }
-
-    .rbc-calendar {
-      min-height: calc(70vh - 2em);
-      font-family: inherit;
-    }
-
-    .rbc-toolbar {
-      gap: 0.75em;
-      margin-bottom: 1em;
-
-      button {
-        border-radius: 8px;
-        border: 1px solid #e5e7eb;
-        color: vars.$fontColorPrimary;
-        transition: all vars.$transitionFast;
-
-        &:hover,
-        &:focus {
-          background: #f8fafc;
-          border-color: #d1d5db;
-        }
-      }
-
-      button.rbc-active {
-        background: vars.$utilsGradient;
-        border-color: transparent;
-        color: white;
-      }
-    }
-
-    .rbc-today {
-      background: rgba(139, 92, 246, 0.08);
-    }
-
-    .rbc-event {
-      background: vars.$utilsGradient;
-      border: none;
-      border-radius: 8px;
-      padding: 0.15em 0.4em;
-    }
-  }
-
-  .commerciauxPlaceholder__loading {
-    margin: 0 0 0.75rem;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-  }
-
-  .commerciauxPlaceholder__absenceModal,
-  .commerciauxPlaceholder__absenceList {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    min-height: 0;
-    min-width: 0;
-  }
-
-  .commerciauxPlaceholder__absenceGrid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 1rem;
-    min-width: 0;
-
-    @media (max-width: vars.$tabletWidth) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .commerciauxPlaceholder__field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.45rem;
-    min-width: 0;
-
-    span {
-      font-weight: 600;
-      color: vars.$fontColorPrimary;
-    }
-
-    textarea,
-    input {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      display: block;
-      box-sizing: border-box;
-      appearance: none;
-      -webkit-appearance: none;
-      background-clip: padding-box;
-      border: 1px solid vars.$borderColor;
-      border-radius: 10px;
-      padding: 0.8rem 0.9rem;
-      font: inherit;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 7rem;
-    }
-
-    .reactSelect__control {
-      min-height: 48px;
-      border-radius: 10px;
-      border-color: vars.$borderColor;
-      box-shadow: none;
-    }
-
-    .reactSelect__control--is-focused {
-      border-color: vars.$utilsPrimary;
-      box-shadow: 0 0 0 1px vars.$utilsPrimary;
-    }
-
-    input[type="date"],
-    input[type="time"] {
-      inline-size: 100%;
-      block-size: 48px;
-      line-height: 1.2;
-    }
-  }
-
-  .commerciauxPlaceholder__typeToggle {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
-
-    button {
-      border: 1px solid vars.$borderColor;
-      background: #fff;
-      border-radius: 999px;
-      padding: 0.65rem 1rem;
-      cursor: pointer;
-      transition: vars.$transitionFast;
-    }
-
-    .is-active {
-      background: vars.$utilsGradient;
-      border-color: transparent;
-      color: #fff;
-    }
-  }
-
-  .commerciauxPlaceholder__absenceHint {
-    margin: 0;
-    color: #a16207;
-    background: #fef3c7;
-    border: 1px solid #fcd34d;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
-  }
-
-  .commerciauxPlaceholder__absenceError {
-    margin: 0;
-    color: #b91c1c;
-    background: #fee2e2;
-    border: 1px solid #fecaca;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
-  }
-
-  .commerciauxPlaceholder__absenceFooter {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-top: auto;
-  }
-
-  .commerciauxPlaceholder__absenceState {
-    margin: 0;
-    color: vars.$fontColorSecondary;
-  }
-
-  .commerciauxPlaceholder__absenceCard {
-    border: 1px solid vars.$borderColor;
-    border-radius: 14px;
-    background: #fff;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    min-width: 0;
-  }
-
-  .commerciauxPlaceholder__absenceCardHeader {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: flex-start;
-
-    h3,
-    p {
-      margin: 0;
-    }
-
-    p {
-      color: vars.$fontColorSecondary;
-      margin-top: 0.2rem;
-      font-size: 0.9rem;
-    }
-  }
-
-  .commerciauxPlaceholder__absenceCardText {
-    margin: 0;
-    color: vars.$fontColorPrimary;
-    line-height: 1.5;
-  }
-
-  .commerciauxPlaceholder__absenceMeta {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    flex-wrap: wrap;
-    color: vars.$fontColorSecondary;
-    font-size: 0.9rem;
-  }
-
-  .commerciauxPlaceholder__status {
-    padding: 0.35rem 0.75rem;
-    border-radius: 999px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    white-space: nowrap;
-
-    &--demandee {
-      background: #fef3c7;
-      color: #b45309;
-    }
-
-    &--validee {
-      background: #dcfce7;
-      color: #15803d;
-    }
-
-    &--refusee {
-      background: #fee2e2;
-      color: #b91c1c;
-    }
-  }
-
-  // NOTES DIRECTION
-  .commerciauxPlaceholder__notes-table-wrapper {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-    margin-top: 1rem;
+  #commerciaux .commerciauxPlaceholder__field input[type="date"],
+  #commerciaux .commerciauxPlaceholder__field input[type="time"],
+  #commerciauxPlaceholder .commerciauxPlaceholder__field input[type="date"],
+  #commerciauxPlaceholder .commerciauxPlaceholder__field input[type="time"] {
     width: 100%;
+    min-width: 0;
   }
-
-  .commerciauxPlaceholder__notes-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.9rem;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-      white-space: nowrap;
-    }
-
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: vars.$greyBackground; }
+  #commerciaux .commerciauxPlaceholder__absenceFooter,
+  #commerciauxPlaceholder .commerciauxPlaceholder__absenceFooter {
+    margin-top: 0;
   }
-
-  .commerciauxPlaceholder__notes-name {
-    max-width: 300px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-weight: 500;
+}
+// Animation definitions
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-
-  .commerciauxPlaceholder__notes-actions {
-    display: flex;
-    gap: 0.4em;
-
-    .actionBtn {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 2.5em;
-      height: 2.5em;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: vars.$transitionMedium;
-      font-size: 1.1em;
-      line-height: 1;
-      padding: 0;
-
-      &.view {
-        background: rgba(#9b59b6, 0.1);
-        color: #9b59b6;
-        &:hover { background: #9b59b6; color: white; transform: translateY(-2px); }
-      }
-
-      &.delete {
-        background: rgba(vars.$errorColor, 0.1);
-        color: vars.$errorColor;
-        &:hover { background: vars.$errorColor; color: white; transform: translateY(-2px); }
-      }
-    }
+  to {
+    opacity: 1;
   }
+}
 
-  .commerciauxPlaceholder__no-notes {
-    text-align: center;
-    padding: 3em 1em;
-    color: vars.$fontColorSecondary;
-    font-size: 1.1rem;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-
-    &--error {
-      color: vars.$errorColor;
-    }
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
   }
-
-  // MODALS
-  .commerciauxPlaceholder__modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    animation: fadeIn 0.25s ease-out;
-  }
-
-  .commerciauxPlaceholder__modal-container {
-    background: #ffffff;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 500px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-
-  .commerciauxPlaceholder__modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid vars.$borderColor;
-
-    h3 {
-      margin: 0;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .commerciauxPlaceholder__modal-close {
-    background: none;
-    border: none;
-    font-size: 1.35rem;
-    color: vars.$fontColorSecondary;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px;
-    border-radius: 50%;
-    transition: all vars.$transitionMedium;
-
-    &:hover {
-      background: vars.$greyBackground;
-      color: vars.$fontColorPrimary;
-    }
-  }
-
-  .commerciauxPlaceholder__modal-content {
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .commerciauxPlaceholder__form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  .commerciauxPlaceholder__form-label {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: vars.$fontColorSecondary;
-  }
-
-  .commerciauxPlaceholder__form-input {
-    padding: 0.75rem 1rem;
-    border: 1.5px solid vars.$borderColor;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: border-color vars.$transitionMedium;
-
-    &:focus {
-      outline: none;
-      border-color: #8b5cf6;
-    }
-
-    &:disabled {
-      background: vars.$greyBackground;
-      cursor: not-allowed;
-    }
-  }
-
-  .commerciauxPlaceholder__dropzone {
-    border: 2px dashed vars.$borderColor;
-    border-radius: 12px;
-    padding: 2.5rem 1.5rem;
-    text-align: center;
-    cursor: pointer;
-    transition: all vars.$transitionMedium;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: #fafafa;
-
-    &:hover,
-    &--active {
-      border-color: #8b5cf6;
-      background: rgba(#8b5cf6, 0.03);
-    }
-
-    &--has-file {
-      border-style: solid;
-      border-color: rgba(#8b5cf6, 0.4);
-      background: rgba(#8b5cf6, 0.02);
-    }
-  }
-
-  .commerciauxPlaceholder__dropzone-icon {
-    font-size: 2.5rem;
-    color: vars.$fontColorSecondary;
-    margin-bottom: 0.75rem;
-  }
-
-  .commerciauxPlaceholder__dropzone-text {
-    margin: 0;
-    font-size: 0.9rem;
-    color: vars.$fontColorPrimary;
-    font-weight: 500;
-
-    span {
-      color: #8b5cf6;
-      text-decoration: underline;
-    }
-  }
-
-  .commerciauxPlaceholder__dropzone-sub {
-    margin: 0.35rem 0 0;
-    font-size: 0.78rem;
-    color: vars.$fontColorSecondary;
-  }
-
-  .commerciauxPlaceholder__dropzone-filename {
-    margin: 0;
-    font-weight: 600;
-    color: #8b5cf6;
-    font-size: 0.95rem;
-  }
-
-  .commerciauxPlaceholder__dropzone-size {
-    margin: 0.2rem 0 0;
-    font-size: 0.8rem;
-    color: vars.$fontColorSecondary;
-  }
-
-  .commerciauxPlaceholder__modal-footer {
-    display: flex;
-    justify-content: flex-end;
-    gap: 0.75rem;
-    padding: 1.25rem 1.5rem;
-    border-top: 1px solid vars.$borderColor;
-    background: #fbfbfb;
-  }
-
-  .commerciauxPlaceholder__upload-error {
-    background: rgba(vars.$errorColor, 0.07);
-    color: vars.$errorColor;
-    border: 1px solid rgba(vars.$errorColor, 0.15);
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 500;
-  }
-
-  .commerciauxPlaceholder__upload-success {
-    background: #ecfdf5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 0.88rem;
-    font-weight: 500;
-  }
-
-  @media (max-width: vars.$tabletWidth) {
-    .commerciauxPlaceholder__absenceModal,
-    .commerciauxPlaceholder__absenceList {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-      padding-right: 0.1rem;
-    }
-
-    .commerciauxPlaceholder__field {
-      input[type="date"],
-      input[type="time"] {
-        width: 100%;
-        min-width: 0;
-      }
-    }
-
-    .commerciauxPlaceholder__absenceFooter {
-      margin-top: 0;
-    }
-  }
-
-  // Animation definitions
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-
-  @keyframes slideUp {
-    from { transform: translateY(20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
+  to {
+    transform: translateY(0);
+    opacity: 1;
   }
 }

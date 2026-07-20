@@ -19,19 +19,25 @@
   box-shadow: 0 3px 10px rgba(124, 58, 237, 0.3);
   z-index: 1001;
   animation: fadeInUp 0.3s ease-out;
+}
 
-  &:hover {
-    background: vars.$utilsDark;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+.backToTopBtn:hover {
+  background: vars.$utilsDark;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(124, 58, 237, 0.4);
+}
+
+.backToTopBtn:active {
+  transform: translateY(0);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(1em);
   }
-
-  &:active {
+  to {
+    opacity: 1;
     transform: translateY(0);
-  }
-
-  @keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(1em); }
-    to   { opacity: 1; transform: translateY(0); }
   }
 }

@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getQueueStateService } from '../API/services/queue.service';
-import type { QueueState } from '../utils/types/queue.types';
+import { getQueueStateService } from '../API/services/index.ts';
+import type { QueueState } from '../utils/types/index.ts';
 
 const POLLING_INTERVAL = 7000;
 const MAX_CONSECUTIVE_ERRORS = 3;

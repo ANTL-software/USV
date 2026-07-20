@@ -1,7 +1,7 @@
 import { getRequest, deleteRequest, postRequest, putRequest } from '../APICalls.ts';
-import { getApiBaseUrl } from '../../utils/scripts/utils.ts';
+import { getApiBaseUrl } from '../../utils/scripts/index.ts';
 import type { AxiosResponse } from 'axios';
-import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/vente.types.ts';
+import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/index.ts';
 
 type RawVenteStat = {
   statut_vente: StatutVente;

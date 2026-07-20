@@ -1,259 +1,233 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
-
 #panierProduitsList {
   @include mixins.mainView;
-
-  main {
-    padding: 1.5em 1em;
-  }
-
-  .panierProduitsList__container {
-    @include mixins.centeredContainer(1200px);
-    width: 100%;
-  }
-
-  .panierProduitsList__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1em;
-    margin-bottom: 1.5em;
-    flex-wrap: wrap;
-
-    & > div:first-child {
-      display: flex;
-      gap: 0.5em;
-      align-items: center;
-
-      h1 {
-        margin: 0;
-        font-size: 1.5em;
-        color: vars.$utilsPrimary;
-      }
-    }
-
-    .panierProduitsList__subtitle {
-      margin: 0;
-      color: vars.$fontColorSecondary;
-      font-size: 0.9em;
-    }
-
-    .panierProduitsList__actions {
-      display: flex;
-      gap: 0.5em;
-    }
-  }
-
-  .panierProduitsList__error {
-    @include mixins.card(12px);
-    background: vars.$errorColor;
-    color: white;
-    padding: 1em;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1em;
-
-    button {
-      background: transparent;
-      border: none;
-      color: white;
-      cursor: pointer;
-      font-size: 1.2em;
-    }
-  }
-
-  .panierProduitsList__loading,
-  .panierProduitsList__empty {
-    text-align: center;
-    padding: 3em 1em;
-    color: vars.$fontColorSecondary;
-
-    p {
-      margin-bottom: 1.5em;
-    }
-  }
-
-  .panierProduitsList__table-wrapper {
-    @include mixins.card(12px, light);
-    overflow-x: auto;
-  }
-
-  .panierProduitsList__table {
-    width: 100%;
-    border-collapse: collapse;
-
-    th {
-      text-align: left;
-      padding: 0.85em 1em;
-      font-weight: 600;
-      color: vars.$fontColorSecondary;
-      font-size: 0.8em;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid vars.$borderColor;
-      white-space: nowrap;
-    }
-
-    td {
-      padding: 0.85em 1em;
-      border-bottom: 1px solid vars.$borderColor;
-      vertical-align: middle;
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none;
-    }
-
-    tbody tr:hover {
-      background: vars.$greyBackground;
-    }
-  }
-
-  .panierProduitsList__order {
-    display: flex;
-    align-items: center;
-    gap: 0.5em;
-    font-weight: 600;
-  }
-
-  .panierProduitsList__order-btn {
-    @include mixins.resetButton;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5em;
-    height: 1.5em;
-    border: 1px solid vars.$borderColor;
-    border-radius: 4px;
-    background: vars.$greyBackground;
-    cursor: pointer;
-    transition: all vars.$transitionFast;
-
-    &:hover:not(:disabled) {
-      background: vars.$utilsSecondary;
-      color: white;
-    }
-
-    &:disabled {
-      opacity: 0.3;
-      cursor: not-allowed;
-    }
-  }
-
-  .panierProduitsList__nom {
-    font-weight: 500;
-    color: vars.$fontColorPrimary;
-  }
-
-  .panierProduitsList__actions {
-    display: flex;
-    gap: 0.5em;
-  }
-
-  .panierProduitsList__btn-remove {
-    @include mixins.resetButton;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 2em;
-    height: 2em;
-    border: 1px solid #fee2e2;
-    border-radius: 6px;
-    background: #fee2e2;
-    color: #dc2626;
-    cursor: pointer;
-    transition: background vars.$transitionFast;
-
-    &:hover {
-      background: #fecaca;
-    }
-  }
-
-  // Modal
-  .panierProduitsList__modal-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-  }
-
-  .panierProduitsList__modal-container {
-    @include mixins.card(16px);
-    max-width: 760px;
-    width: min(92vw, 760px);
-    max-height: min(82vh, 760px);
-    display: flex;
-    flex-direction: column;
-    overflow: visible;
-  }
-
-  .panierProduitsList__modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1em;
-    border-bottom: 1px solid vars.$borderColor;
-    margin-bottom: 1em;
-
-    h3 {
-      margin: 0;
-      color: vars.$utilsPrimary;
-    }
-
-    button {
-      @include mixins.resetButton;
-      font-size: 1.2em;
-      color: vars.$fontColorSecondary;
-      cursor: pointer;
-    }
-  }
-
-  .panierProduitsList__modal-content {
-    padding: 1em;
-    overflow: visible;
-
-    .panierProduitsList__modal-help {
-      margin-bottom: 1em;
-      color: vars.$fontColorSecondary;
-      font-size: 0.9em;
-    }
-  }
-
-  .panierProduitsList__modal-count {
-    margin-top: 1em;
-    padding: 0.5em 1em;
-    background: vars.$greyBackground;
-    border-radius: 4px;
-    text-align: center;
-    font-weight: 500;
-    color: vars.$utilsPrimary;
-  }
-
-  .panierProduitsList__modal-actions {
-    display: flex;
-    gap: 1em;
-    justify-content: flex-end;
-    margin-top: auto;
-    padding: 1em;
-    border-top: 1px solid vars.$borderColor;
-    background: white;
-    border-bottom-left-radius: 16px;
-    border-bottom-right-radius: 16px;
-
-    button {
-      @include mixins.actionButton(inherit, inherit);
-
-      &.primary {
-        @include mixins.actionButton(vars.$utilsPrimary, vars.$utilsSecondary);
-      }
-    }
-  }
+}
+#panierProduitsList main {
+  padding: 1.5em 1em;
+}
+#panierProduitsList .panierProduitsList__container {
+  @include mixins.centeredContainer(1200px);
+  width: 100%;
+}
+#panierProduitsList .panierProduitsList__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1em;
+  margin-bottom: 1.5em;
+  flex-wrap: wrap;
+}
+#panierProduitsList .panierProduitsList__header > div:first-child {
+  display: flex;
+  gap: 0.5em;
+  align-items: center;
+}
+#panierProduitsList .panierProduitsList__header > div:first-child h1 {
+  margin: 0;
+  font-size: 1.5em;
+  color: vars.$utilsPrimary;
+}
+#panierProduitsList .panierProduitsList__header .panierProduitsList__subtitle {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9em;
+}
+#panierProduitsList .panierProduitsList__header .panierProduitsList__actions {
+  display: flex;
+  gap: 0.5em;
+}
+#panierProduitsList .panierProduitsList__error {
+  @include mixins.card(12px);
+  background: vars.$errorColor;
+  color: white;
+  padding: 1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+#panierProduitsList .panierProduitsList__error button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+#panierProduitsList .panierProduitsList__loading,
+#panierProduitsList .panierProduitsList__empty {
+  text-align: center;
+  padding: 3em 1em;
+  color: vars.$fontColorSecondary;
+}
+#panierProduitsList .panierProduitsList__loading p,
+#panierProduitsList .panierProduitsList__empty p {
+  margin-bottom: 1.5em;
+}
+#panierProduitsList .panierProduitsList__table-wrapper {
+  @include mixins.card(12px, light);
+  overflow-x: auto;
+}
+#panierProduitsList .panierProduitsList__table {
+  width: 100%;
+  border-collapse: collapse;
+}
+#panierProduitsList .panierProduitsList__table th {
+  text-align: left;
+  padding: 0.85em 1em;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+  font-size: 0.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: 1px solid vars.$borderColor;
+  white-space: nowrap;
+}
+#panierProduitsList .panierProduitsList__table td {
+  padding: 0.85em 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  vertical-align: middle;
+}
+#panierProduitsList .panierProduitsList__table tbody tr:last-child td {
+  border-bottom: none;
+}
+#panierProduitsList .panierProduitsList__table tbody tr:hover {
+  background: vars.$greyBackground;
+}
+#panierProduitsList .panierProduitsList__order {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-weight: 600;
+}
+#panierProduitsList .panierProduitsList__order-btn {
+  @include mixins.resetButton;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5em;
+  height: 1.5em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 4px;
+  background: vars.$greyBackground;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+}
+#panierProduitsList .panierProduitsList__order-btn:hover:not(:disabled) {
+  background: vars.$utilsSecondary;
+  color: white;
+}
+#panierProduitsList .panierProduitsList__order-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+#panierProduitsList .panierProduitsList__nom {
+  font-weight: 500;
+  color: vars.$fontColorPrimary;
+}
+#panierProduitsList .panierProduitsList__actions {
+  display: flex;
+  gap: 0.5em;
+}
+#panierProduitsList .panierProduitsList__btn-remove {
+  @include mixins.resetButton;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2em;
+  height: 2em;
+  border: 1px solid #fee2e2;
+  border-radius: 6px;
+  background: #fee2e2;
+  color: #dc2626;
+  cursor: pointer;
+  transition: background vars.$transitionFast;
+}
+#panierProduitsList .panierProduitsList__btn-remove:hover {
+  background: #fecaca;
+}
+// Modal
+#panierProduitsList .panierProduitsList__modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+#panierProduitsList .panierProduitsList__modal-container {
+  @include mixins.card(16px);
+  max-width: 760px;
+  width: min(92vw, 760px);
+  max-height: min(82vh, 760px);
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+}
+#panierProduitsList .panierProduitsList__modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1em;
+  border-bottom: 1px solid vars.$borderColor;
+  margin-bottom: 1em;
+}
+#panierProduitsList .panierProduitsList__modal-header h3 {
+  margin: 0;
+  color: vars.$utilsPrimary;
+}
+#panierProduitsList .panierProduitsList__modal-header button {
+  @include mixins.resetButton;
+  font-size: 1.2em;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+}
+#panierProduitsList .panierProduitsList__modal-content {
+  padding: 1em;
+  overflow: visible;
+}
+#panierProduitsList
+  .panierProduitsList__modal-content
+  .panierProduitsList__modal-help {
+  margin-bottom: 1em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9em;
+}
+#panierProduitsList .panierProduitsList__modal-count {
+  margin-top: 1em;
+  padding: 0.5em 1em;
+  background: vars.$greyBackground;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 500;
+  color: vars.$utilsPrimary;
+}
+#panierProduitsList .panierProduitsList__modal-actions {
+  display: flex;
+  gap: 1em;
+  justify-content: flex-end;
+  margin-top: auto;
+  padding: 1em;
+  border-top: 1px solid vars.$borderColor;
+  background: white;
+  border-bottom-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+}
+#panierProduitsList .panierProduitsList__modal-actions button {
+  @include mixins.actionButton(
+    "#panierProduitsList .panierProduitsList__modal-actions button",
+    inherit,
+    inherit
+  );
+}
+#panierProduitsList .panierProduitsList__modal-actions button.primary {
+  @include mixins.actionButton(
+    "#panierProduitsList .panierProduitsList__modal-actions button.primary",
+    vars.$utilsPrimary,
+    vars.$utilsSecondary
+  );
 }

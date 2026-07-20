@@ -1,5 +1,5 @@
-import { getRequest } from "../APICalls";
-import { AxiosResponse } from "axios";
+import { getRequest } from "../APICalls.ts";
+import type { AxiosResponse } from "axios";
 
 /**
  * Interface pour la réponse de génération d'URL signée

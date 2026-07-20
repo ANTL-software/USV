@@ -3,14 +3,14 @@ import {
   postFormDataRequest,
   deleteRequest,
 } from "../APICalls.ts";
-import { AxiosResponse } from "axios";
-import {
+import type { AxiosResponse } from "axios";
+import type {
   DocumentsListResult,
   DocumentUploadResult,
   DocumentDeleteResult,
-} from "../../utils/types/document.types";
-import { DocumentModel } from "../models/document.model";
-import { IViewUrlResponse } from "./viewUrl.service";
+} from "../../utils/types/index.ts";
+import { DocumentModel } from "../models/index.ts";
+import type { IViewUrlResponse } from "./viewUrl.service.ts";
 
 /**
  * Récupère la liste des documents d'un employé

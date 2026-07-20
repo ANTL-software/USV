@@ -2,7 +2,7 @@
 import { ReactElement } from "react";
 import CreatableSelect from 'react-select/creatable';
 import { StylesConfig } from 'react-select';
-import reactSelectStyles from '../../../utils/styles/reactSelectStyles';
+import { reactSelectStyles } from '../../../utils/styles/index.ts';
 
 interface SelectOption {
   value: string;

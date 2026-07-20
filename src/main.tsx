@@ -2,18 +2,22 @@ import { createRoot } from "react-dom/client";
 import App from "./App.tsx";
 
 // context
-import { UserProvider } from "./context/user/UserProvider.tsx";
-import { NotificationProvider } from "./context/notification/NotificationContext.tsx";
-import { CourrierProvider } from "./context/courrier/CourrierProvider.tsx";
-import { BookingProvider } from "./context/booking/BookingProvider.tsx";
-import LoaderProvider from "./context/loader/LoaderProvider.tsx";
-import { AlertProvider } from "./context/alert/AlertProvider.tsx";
-import { VenteProvider } from "./context/vente/VenteProvider.tsx";
-import { ProjetProvider } from "./context/projet/ProjetProvider.tsx";
+import { UserProvider } from "./context/user/index.ts";
+import { NotificationProvider } from "./context/notification/index.ts";
+import { CourrierProvider } from "./context/courrier/index.ts";
+import { BookingProvider } from "./context/booking/index.ts";
+import { LoaderProvider } from "./context/loader/index.ts";
+import { AlertProvider } from "./context/alert/index.ts";
+import { VenteProvider } from "./context/vente/index.ts";
+import { ProjetProvider } from "./context/projet/index.ts";
 
 // PWA initialization
-import { cleanupDevelopmentPWA, initializePWA } from "./utils/scripts/serviceWorker.ts";
-import { getEnvironment, shouldEnablePWA } from "./utils/scripts/browserDetection.ts";
+import {
+  cleanupDevelopmentPWA,
+  getEnvironment,
+  initializePWA,
+  shouldEnablePWA,
+} from './utils/scripts/index.ts';
 
 // Initialize PWA features only in production and compatible browsers
 // En développement, l'app fonctionne normalement sans PWA

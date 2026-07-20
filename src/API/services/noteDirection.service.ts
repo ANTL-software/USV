@@ -3,14 +3,15 @@ import {
   postFormDataRequest,
   deleteRequest,
 } from "../APICalls.ts";
-import { AxiosResponse } from "axios";
-import { NoteDirectionModel } from "../models/noteDirection.model";
-import { IViewUrlResponse } from "./viewUrl.service";
+import type { AxiosResponse } from "axios";
+import { NoteDirectionModel } from '../models/index.ts';
+import type { NoteDirectionData } from '../models/index.ts';
+import type { IViewUrlResponse } from './viewUrl.service.ts';
 
 export interface NoteDirectionUploadResult {
   success: boolean;
   message: string;
-  data: any;
+  data: NoteDirectionData;
 }
 
 export interface NoteDirectionDeleteResult {
@@ -23,7 +24,7 @@ export interface NoteDirectionDeleteResult {
  */
 export const getNotesDirectionService = async (): Promise<NoteDirectionModel[]> => {
   try {
-    const response: AxiosResponse<{ success: boolean; data: any[] }> = await getRequest(
+    const response: AxiosResponse<{ success: boolean; data: NoteDirectionData[] }> = await getRequest(
       `/notes-direction`
     );
 

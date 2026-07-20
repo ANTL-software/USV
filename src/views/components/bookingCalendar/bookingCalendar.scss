@@ -1,139 +1,126 @@
 @use "../../../utils/styles/variables" as vars;
 
 #bookingCalendar {
-  & {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-height: 0;
-    padding: 0.75em;
-    gap: 0.75em;
-  }
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0.75em;
+  gap: 0.75em;
+}
 
-  .calendarToolbar {
-    & {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 1em;
-    }
+#bookingCalendar .calendarToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1em;
+}
 
-    .viewSwitcher {
-      & {
-        display: flex;
-        gap: 0.5em;
-        background: #f3f4f6;
-        padding: 0.25em;
-        border-radius: 8px;
-      }
+#bookingCalendar .calendarToolbar .viewSwitcher {
+  display: flex;
+  gap: 0.5em;
+  background: #f3f4f6;
+  padding: 0.25em;
+  border-radius: 8px;
+}
 
-      .viewButton {
-        & {
-          padding: 0.5em 1em;
-          border-radius: 6px;
-          border: none;
-          background: transparent;
-          color: #6b7280;
-          font-size: 0.875em;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all vars.$transitionFast;
-        }
+#bookingCalendar .calendarToolbar .viewSwitcher .viewButton {
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: #6b7280;
+  font-size: 0.875em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+}
 
-        &:hover {
-          color: #374151;
-        }
+#bookingCalendar .calendarToolbar .viewSwitcher .viewButton:hover {
+  color: #374151;
+}
 
-        &.isActive {
-          background: white;
-          color: vars.$utilsPrimary;
-          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-      }
-    }
+#bookingCalendar .calendarToolbar .viewSwitcher .viewButton.isActive {
+  background: white;
+  color: vars.$utilsPrimary;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 
-    .dateJumpInput {
-      & {
-        padding: 0.5em 1em;
-        border-radius: 6px;
-        border: 1px solid #d1d5db;
-        background: white;
-        color: #374151;
-        font-size: 0.875em;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all vars.$transitionFast;
-        font-family: inherit;
-      }
+#bookingCalendar .calendarToolbar .dateJumpInput {
+  padding: 0.5em 1em;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: white;
+  color: #374151;
+  font-size: 0.875em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all vars.$transitionFast;
+  font-family: inherit;
+}
 
-      &:hover {
-        border-color: vars.$utilsPrimary;
-      }
+#bookingCalendar .calendarToolbar .dateJumpInput:hover {
+  border-color: vars.$utilsPrimary;
+}
 
-      &:focus {
-        outline: none;
-        border-color: vars.$utilsPrimary;
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
-      }
-    }
+#bookingCalendar .calendarToolbar .dateJumpInput:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
 
-    .btnNewBooking {
-      & {
-        display: flex;
-        align-items: center;
-        gap: 0.4em;
-        background: vars.$utilsGradient;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        padding: 0.55em 1em;
-        font-size: 0.9em;
-        font-weight: 600;
-        cursor: pointer;
-        transition: opacity vars.$transitionFast, transform vars.$transitionFast;
-      }
+#bookingCalendar .calendarToolbar .btnNewBooking {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  background: vars.$utilsGradient;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55em 1em;
+  font-size: 0.9em;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    opacity vars.$transitionFast,
+    transform vars.$transitionFast;
+}
 
-      &:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-      }
+#bookingCalendar .calendarToolbar .btnNewBooking:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
 
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-      }
-    }
-  }
+#bookingCalendar .calendarToolbar .btnNewBooking:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
 
-  .calendarBody {
-    & {
-      flex: 1;
-      min-height: 0;
-      overflow: hidden;
-    }
-  }
+#bookingCalendar .calendarBody {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 // Responsive
+
 @media (max-width: vars.$mobileWidth) {
-  #bookingCalendar {
-    .calendarToolbar {
-      flex-direction: column;
-      align-items: stretch;
+  #bookingCalendar .calendarToolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-      .viewSwitcher {
-        justify-content: center;
-      }
+  #bookingCalendar .calendarToolbar .viewSwitcher {
+    justify-content: center;
+  }
 
-      .dateJumpInput {
-        width: 100%;
-        text-align: center;
-      }
+  #bookingCalendar .calendarToolbar .dateJumpInput {
+    width: 100%;
+    text-align: center;
+  }
 
-      .btnNewBooking {
-        justify-content: center;
-      }
-    }
+  #bookingCalendar .calendarToolbar .btnNewBooking {
+    justify-content: center;
   }
 }
