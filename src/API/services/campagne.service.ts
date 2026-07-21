@@ -10,6 +10,7 @@ import type {
   AddAgentCampagneData,
   TransfertAgentData,
   StatutCampagne,
+  CampaignInvoicePaStatus,
 } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
@@ -120,4 +121,54 @@ export const sendCampagneFacturationEmailService = async (
   );
 
   return response.data;
+};
+
+export const getCampagneFacturationPaStatusService = async (
+  idCampagne: number,
+  params: { date_debut: string; date_fin: string; refresh?: boolean },
+): Promise<CampaignInvoicePaStatus | null> => {
+  const searchParams = new URLSearchParams({
+    date_debut: params.date_debut,
+    date_fin: params.date_fin,
+  });
+  if (params.refresh) searchParams.set('refresh', 'true');
+
+  const response: AxiosResponse<ApiResponse<CampaignInvoicePaStatus | null>> = await getRequest(
+    `/campagnes/${idCampagne}/facturation/pa?${searchParams.toString()}`,
+  );
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Impossible de récupérer le statut PA de la facture');
+  }
+
+  return response.data.data ?? null;
+};
+
+export const issueCampagneFacturationThroughPaService = async (
+  idCampagne: number,
+  payload: { date_debut: string; date_fin: string },
+): Promise<CampaignInvoicePaStatus> => {
+  const response: AxiosResponse<ApiResponse<CampaignInvoicePaStatus>> = await postRequest(
+    `/campagnes/${idCampagne}/facturation/pa`,
+    payload,
+  );
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.message || 'Impossible de créer la facture sur VosFactures');
+  }
+
+  return response.data.data;
+};
+
+export const testCampagneFacturationThroughPaService = async (
+  idCampagne: number,
+  payload: { date_debut: string; date_fin: string },
+): Promise<CampaignInvoicePaStatus> => {
+  const response: AxiosResponse<ApiResponse<CampaignInvoicePaStatus>> = await postRequest(
+    `/campagnes/${idCampagne}/facturation/pa/test`,
+    payload,
+  );
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.message || 'Impossible de créer la facture de test sur VosFactures');
+  }
+
+  return response.data.data;
 };

@@ -34,6 +34,9 @@ export {
   transfererAgentService,
   downloadCampagneFacturationDocumentService,
   sendCampagneFacturationEmailService,
+  getCampagneFacturationPaStatusService,
+  issueCampagneFacturationThroughPaService,
+  testCampagneFacturationThroughPaService,
 } from './campagne.service.ts';
 
 export {
