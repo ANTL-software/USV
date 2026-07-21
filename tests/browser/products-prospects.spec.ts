@@ -42,7 +42,6 @@ const prospect = {
   activite: 'Conseil',
   secteur: 'Services',
   statut: 'nouveau',
-  maturite_commerciale: 'tiede',
   blacklist: false,
   optout: false,
   refus_definitif: false,

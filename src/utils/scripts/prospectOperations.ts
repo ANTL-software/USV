@@ -17,10 +17,11 @@ export const PROSPECT_TYPE_OPTIONS: ProspectSelectOption[] = [
   { value: 'Entreprise', label: 'Entreprise' },
 ];
 
-export const PROSPECT_MATURITY_OPTIONS: ProspectSelectOption[] = [
+export const PROSPECT_RELATION_OPTIONS: ProspectSelectOption[] = [
   { value: '', label: 'Tous' },
   { value: 'prospect', label: 'Prospect' },
   { value: 'client', label: 'Client' },
+  { value: 'lead_genere', label: 'Lead généré' },
 ];
 
 export const PROSPECT_SOURCE_OPTIONS: ProspectSelectOption[] = [

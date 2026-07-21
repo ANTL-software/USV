@@ -84,9 +84,21 @@ export const getProspectAttemptsBadgeClass = (attempts: number): string => {
   return 'badge--non_interesse';
 };
 
-export const getProspectMaturityBadgeClass = (maturite: string): string => (
-  maturite === 'client' ? 'badge--client' : 'badge--prospect'
-);
+export const getProspectRelationBadgeClass = (relation: Prospect['relation_commerciale_campagne']): string => {
+  switch (relation?.statut_relation) {
+    case 'client': return 'badge--client';
+    case 'lead_genere': return 'badge--lead';
+    default: return 'badge--prospect';
+  }
+};
+
+export const getProspectRelationLabel = (relation: Prospect['relation_commerciale_campagne']): string => {
+  switch (relation?.statut_relation) {
+    case 'client': return 'Client';
+    case 'lead_genere': return 'Lead généré';
+    default: return 'Prospect';
+  }
+};
 
 export const getProspectDisplayName = (prospect: Prospect): string => {
   if (prospect.type_prospect === 'Entreprise' && prospect.raison_sociale) return prospect.raison_sociale;

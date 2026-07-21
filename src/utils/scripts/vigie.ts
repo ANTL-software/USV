@@ -21,7 +21,7 @@ export const VIGIE_SEGMENT_LABELS: Record<VigieSegmentDimension, string> = {
   departement: 'Départements',
   distance: 'Distance au client campagne',
   telephone: 'Types de téléphone',
-  maturite: 'Maturité',
+  relation: 'Relation campagne',
 };
 
 export const VIGIE_ACTION_LABELS: Record<VigieAction['type_action'], string> = {

@@ -1,6 +1,18 @@
 export type TypeProspect = 'Particulier' | 'Entreprise';
 export type StatutProspect = 'nouveau' | 'contacte' | 'interesse' | 'rappel' | 'non_interesse' | 'vente_conclue';
 export type EnrichissementStatut = 'a_faire' | 'en_cours' | 'enrichi' | 'a_verifier' | 'ignore';
+export type StatutRelationCommercialeCampagne = 'prospect' | 'client' | 'lead_genere';
+
+export interface RelationCommercialeCampagne {
+  id_relation?: number;
+  id_prospect?: number;
+  id_campagne?: number;
+  statut_relation: StatutRelationCommercialeCampagne;
+  origine: 'vente_validee' | 'lead_cree' | null;
+  id_source: number | null;
+  date_relation: string | null;
+  campagne?: { id_campagne: number; nom_campagne: string; type_campagne?: string | null };
+}
 
 export type SignalementType = 'doublon' | 'optout';
 
@@ -105,7 +117,8 @@ export interface Prospect {
     nom: string;
     prenom: string | null;
   } | null;
-  maturite_commerciale?: string | null;
+  relation_commerciale_campagne?: RelationCommercialeCampagne | null;
+  relations_commerciales?: RelationCommercialeCampagne[];
   max_progpa?: number | null;
   grille_tarifaire_envoyee_at?: string | null;
   ca_12_mois?: string | number | null;
@@ -227,7 +240,6 @@ export interface ProspectEnrichmentSnapshot {
   };
   donnees_commerciales: {
     statut: StatutProspect;
-    maturite_commerciale: string | null;
     commercial_affecte: Prospect['commercialAffecte'];
     blacklist?: boolean;
     blacklist_motif?: string | null;

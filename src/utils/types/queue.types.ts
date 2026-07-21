@@ -71,7 +71,7 @@ export interface InjectionFilters {
   type_prospect?: 'Particulier' | 'Entreprise';
   limit?: number;
   source?: string;
-  maturite_commerciale?: 'prospect' | 'client';
+  relation_commerciale?: 'prospect' | 'client' | 'lead_genere';
   code_naf?: string;
   code_postal_repli?: string;
 }
@@ -124,7 +124,7 @@ export interface ProspectCampagneRow {
       nom: string;
       prenom: string | null;
     } | null;
-    maturite_commerciale?: string | null;
+    relation_commerciale_campagne?: import('./prospect.types.ts').RelationCommercialeCampagne;
     created_at: string;
     updated_at: string;
   };

@@ -20,7 +20,8 @@ import {
   getProspectAttemptsBadgeClass,
   getProspectDisplayName,
   getProspectLocation,
-  getProspectMaturityBadgeClass,
+  getProspectRelationBadgeClass,
+  getProspectRelationLabel,
   getProspectPhoneTypeBadgeClass,
   getProspectQueueStatusBadgeClass,
   getProspectStatusBadgeClass,
@@ -123,7 +124,12 @@ test('les présentations de prospect sont centralisées et campagne compatibles'
   const prospect = createProspect({
     statut_file: 'en_cours',
     nb_tentatives: 3,
-    maturite_commerciale: 'client',
+    relation_commerciale_campagne: {
+      statut_relation: 'client',
+      origine: 'vente_validee',
+      id_source: 14,
+      date_relation: '2026-07-15T10:00:00.000Z',
+    },
     agent_assigne: { id_employe: 2, nom: 'Martin', prenom: 'Léa' },
   });
 
@@ -137,7 +143,8 @@ test('les présentations de prospect sont centralisées et campagne compatibles'
   assert.equal(getProspectAttemptsBadgeClass(3), 'badge--non_interesse');
   assert.equal(getProspectPhoneTypeBadgeClass('mobile'), 'badge--mobile');
   assert.equal(getProspectTypeBadgeClass('Entreprise'), 'badge--entreprise');
-  assert.equal(getProspectMaturityBadgeClass('client'), 'badge--client');
+  assert.equal(getProspectRelationBadgeClass(prospect.relation_commerciale_campagne), 'badge--client');
+  assert.equal(getProspectRelationLabel(prospect.relation_commerciale_campagne), 'Client');
 });
 
 test('les options campagne conservent la sélection globale en première position', () => {

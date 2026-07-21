@@ -24,7 +24,7 @@ export function ProspectInjectionContent({ viewModel }: ProspectInjectionContent
     resultModalOpen,
     updateFilter,
     fallbackAreaOptions,
-    maturityOptions,
+    relationOptions,
     navigateBack,
     sourceOptions,
     typeOptions,
@@ -85,11 +85,11 @@ export function ProspectInjectionContent({ viewModel }: ProspectInjectionContent
                     />
                   </div>
                   <div className="formGroup">
-                    <label>Maturité commerciale</label>
+                    <label>Relation campagne</label>
                     <Select
-                      options={maturityOptions}
-                      value={maturityOptions.find(o => o.value === (filters.maturite_commerciale || '')) || maturityOptions[0]}
-                      onChange={(option) => updateFilter('maturite_commerciale', (option as typeof maturityOptions[number] | null)?.value || '')}
+                      options={relationOptions}
+                      value={relationOptions.find(o => o.value === (filters.relation_commerciale || '')) || relationOptions[0]}
+                      onChange={(option) => updateFilter('relation_commerciale', (option as typeof relationOptions[number] | null)?.value || '')}
                       styles={reactSelectStyles}
                       placeholder="Tous"
                       isSearchable={false}

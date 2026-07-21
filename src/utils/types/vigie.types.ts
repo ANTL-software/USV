@@ -4,7 +4,7 @@ export type VigieRecommendationLevel = 'alerte' | 'attention' | 'opportunite' | 
 export type VigieActionType = 'validation_recommandation' | 'preparation_injection' | 'priorite_fiche';
 export type VigieActionStatus = 'validee' | 'annulee' | 'consommee';
 export type VigieScoreClass = 'P1' | 'P2' | 'P3' | 'P4' | 'P5';
-export type VigieSegmentDimension = 'secteur' | 'source' | 'departement' | 'distance' | 'telephone' | 'maturite';
+export type VigieSegmentDimension = 'secteur' | 'source' | 'departement' | 'distance' | 'telephone' | 'relation';
 
 export interface VigieCampaign {
   id_campagne: number;
@@ -114,7 +114,6 @@ export interface VigieQualiteFichier {
   sans_segment_exploitable: number;
   sans_code_postal: number;
   sans_code_naf: number;
-  sans_maturite: number;
   sans_contact_nomme: number;
   mobiles: number;
   doublons: number;

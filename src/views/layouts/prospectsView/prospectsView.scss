@@ -275,6 +275,15 @@
   background: #fef3c7;
   color: #b45309;
 }
+#prospectsView .badge--lead {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+#prospectsView .prospectsView__relations {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
 #prospectsView .badge--mobile {
   background: #f3e8ff;
   color: #7c3aed;

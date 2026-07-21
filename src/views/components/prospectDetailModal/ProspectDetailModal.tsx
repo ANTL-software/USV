@@ -4,7 +4,7 @@ import type { ReactElement } from 'react';
 import { IoCallOutline, IoMailOutline, IoBusiness, IoPersonOutline, IoCalendarOutline } from 'react-icons/io5';
 import type { ProspectDetailViewModel } from '../../../hooks/index.ts';
 import type { ProspectUpdateData } from '../../../utils/types/index.ts';
-import { formatProspectStatusText } from '../../../utils/scripts/index.ts';
+import { formatProspectStatusText, getProspectRelationBadgeClass, getProspectRelationLabel } from '../../../utils/scripts/index.ts';
 
 interface ProspectDetailModalProps {
   viewModel: ProspectDetailViewModel;
@@ -83,13 +83,13 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
               </span>
             </div>
             <div className="detailRow">
-              <span className="detailLabel">Maturité commerciale</span>
+              <span className="detailLabel">Relation commerciale</span>
               <span className="detailValue">
-                {prospect.maturite_commerciale ? (
-                  <span className={`badge badge--${prospect.maturite_commerciale.toLowerCase()}`}>
-                    {prospect.maturite_commerciale}
-                  </span>
-                ) : '—'}
+                {prospect.relation_commerciale_campagne ? (
+                  <span className={`badge ${getProspectRelationBadgeClass(prospect.relation_commerciale_campagne)}`}>{getProspectRelationLabel(prospect.relation_commerciale_campagne)}</span>
+                ) : prospect.relations_commerciales?.length ? (
+                  <span>{prospect.relations_commerciales.map((relation) => `${getProspectRelationLabel(relation)}${relation.campagne ? ` · ${relation.campagne.nom_campagne}` : ''}`).join(', ')}</span>
+                ) : <span className="badge badge--prospect">Prospect</span>}
               </span>
             </div>
             {(isEditing || prospect.type_prospect === 'Entreprise') && (
