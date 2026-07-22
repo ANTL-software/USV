@@ -18,6 +18,8 @@ export {
   getLeadInterlocuteur,
   getLeadProspectName,
   getMonthBounds,
+  isDateAfterPeriod,
+  isDateBeforePeriod,
   getVenteAgentName,
   getVenteProspectName,
 } from './commandesList.ts';

@@ -44,6 +44,21 @@ export function formatDate(dateValue: string): string {
   });
 }
 
+const toDateKey = (value: string): string | null => {
+  const match = value.match(/^\d{4}-\d{2}-\d{2}/);
+  return match?.[0] ?? null;
+};
+
+export function isDateBeforePeriod(dateValue: string | null | undefined, periodStart: string): boolean {
+  const dateKey = dateValue ? toDateKey(dateValue) : null;
+  return dateKey !== null && dateKey < periodStart;
+}
+
+export function isDateAfterPeriod(dateValue: string | null | undefined, periodEnd: string): boolean {
+  const dateKey = dateValue ? toDateKey(dateValue) : null;
+  return dateKey !== null && dateKey > periodEnd;
+}
+
 export function formatLeadSlot(dateValue: string, timeValue: string): string {
   const date = new Date(`${dateValue}T${timeValue}`);
 

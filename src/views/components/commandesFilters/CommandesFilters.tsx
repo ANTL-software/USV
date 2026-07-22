@@ -45,7 +45,7 @@ export function CommandesFilters({ state }: CommandesFiltersProps): ReactElement
       /></div>
       <div className="commandesList__filter-group"><label>Du</label><input type="date" value={state.localDateDebut} onChange={(event) => { state.setPeriodPreset('custom'); state.setLocalDateDebut(event.target.value); }} /></div>
       <div className="commandesList__filter-group"><label>Au</label><input type="date" value={state.localDateFin} onChange={(event) => { state.setPeriodPreset('custom'); state.setLocalDateFin(event.target.value); }} /></div>
-      <div className="commandesList__filter-group"><label>Campagne</label><Select<CommandesSelectOption, false>
+      <div className="commandesList__filter-group commandesList__filter-group--campaign"><label>Campagne</label><Select<CommandesSelectOption, false>
         options={state.campagneOptions} value={state.campagneOptions.find(({ value }) => value === String(state.filters.campagne)) ?? null}
         onChange={(option) => state.handleCampagneChange(option ? Number(option.value) : null)} styles={commandesSelectStyles} placeholder="Campagne..." isClearable
       /></div>
