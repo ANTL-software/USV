@@ -35,6 +35,7 @@ export interface Vente {
   id_campagne: number;
   date_vente: string;
   date_acceptation?: string | null;
+  frigo_rappel_at?: string | null;
   montant_total: string;
   statut_vente: StatutVente;
   mode_paiement?: ModePaiement;
@@ -131,4 +132,9 @@ export interface VenteStats {
   frigo: VenteStatusStats;
   total: VenteStatusStats;
   validations?: VenteStatusStats;
+}
+
+export interface FrigoAlertCampaign {
+  id_campagne: number;
+  count: number | string;
 }

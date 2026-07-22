@@ -125,6 +125,8 @@ export {
   getVentesService,
   getVenteByIdService,
   updateVenteStatutService,
+  snoozeFrigoReminderService,
+  getActiveFrigoAlertsService,
   getVenteDocumentUrl,
   deleteVenteService,
   restoreVenteService,

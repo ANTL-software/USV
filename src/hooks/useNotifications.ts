@@ -9,3 +9,5 @@ export const useNotifications = (): NotificationContextType => {
   }
   return context;
 };
+
+export const useOptionalNotifications = (): NotificationContextType | undefined => useContext(NotificationContext);

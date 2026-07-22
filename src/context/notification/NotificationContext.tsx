@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import type { ReactNode } from 'react';
 import { useUserContext } from '../../hooks/index.ts';
 import { hasAccessToSection, hasAccessToSubsection } from '../../utils/scripts/index.ts';
-import { getIncidentsService, getPendingAbsenceRequestsService } from '../../API/services/index.ts';
+import { getActiveFrigoAlertsService, getIncidentsService, getPendingAbsenceRequestsService } from '../../API/services/index.ts';
 import type { NotificationItem } from '../../utils/types/index.ts';
 import { NotificationContext } from './NotificationContext.ts';
 
@@ -27,18 +27,37 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
 
     try {
       // 1. Traitement des demandes d'absence en attente
-      // On appelle l'API uniquement si l'utilisateur a le droit d'accès
+      // On appelle l'API uniquement si l'utilisateur a le droit d'accès.
+      // Chaque source est isolée : une indisponibilité ne doit pas masquer les autres alertes.
       let pendingAbsences = [];
       if (hasAccessToSubsection(user, 'operations', 'demandes-absence')) {
-        pendingAbsences = await getPendingAbsenceRequestsService();
+        try {
+          pendingAbsences = await getPendingAbsenceRequestsService();
+        } catch (requestError) {
+          console.warn('[Notifications] Impossible de charger les demandes d’absence :', requestError);
+        }
       }
 
       const hasPendingAbsences = pendingAbsences.length > 0;
 
       let hasDeclaredIncidents = false;
       if (hasAccessToSection(user, 'incidents')) {
-        const declaredResult = await getIncidentsService({ statut: 'declare', page: 1, limit: 1 });
-        hasDeclaredIncidents = declaredResult.pagination.total > 0;
+        try {
+          const declaredResult = await getIncidentsService({ statut: 'declare', page: 1, limit: 1 });
+          hasDeclaredIncidents = declaredResult.pagination.total > 0;
+        } catch (requestError) {
+          console.warn('[Notifications] Impossible de charger les incidents :', requestError);
+        }
+      }
+
+      let hasActiveFrigoAlerts = false;
+      if (hasAccessToSubsection(user, 'operations', 'commandes')) {
+        try {
+          const frigoAlerts = await getActiveFrigoAlertsService();
+          hasActiveFrigoAlerts = frigoAlerts.some((alert) => Number(alert.count) > 0);
+        } catch (requestError) {
+          console.warn('[Notifications] Impossible de charger les relances frigo :', requestError);
+        }
       }
 
       setNotifications(prev => {
@@ -47,6 +66,9 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
         );
         const incidentIndex = prev.findIndex(
           n => n.sectionId === 'incidents' && n.subsectionId === 'qualifier' && n.type === 'task'
+        );
+        const frigoIndex = prev.findIndex(
+          n => n.sectionId === 'operations' && n.subsectionId === 'commandes' && n.type === 'task'
         );
         let next = prev;
 
@@ -95,6 +117,25 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
           }
         } else if (incidentIndex !== -1 && !prev[incidentIndex].resolved) {
           next = next.map(n => n.id === 'notif-incidents-declared' ? { ...n, resolved: true } : n);
+        }
+
+        if (hasActiveFrigoAlerts) {
+          if (frigoIndex === -1) {
+            next = [...next, {
+              id: 'notif-commandes-frigo',
+              sectionId: 'operations',
+              subsectionId: 'commandes',
+              type: 'task',
+              message: 'Commande frigo à relancer',
+              readByUsers: [],
+              resolved: false,
+              createdAt: new Date().toISOString(),
+            }];
+          } else if (prev[frigoIndex].resolved) {
+            next = next.map(n => n.id === 'notif-commandes-frigo' ? { ...n, resolved: false } : n);
+          }
+        } else if (frigoIndex !== -1 && !prev[frigoIndex].resolved) {
+          next = next.map(n => n.id === 'notif-commandes-frigo' ? { ...n, resolved: true } : n);
         }
 
         return next;

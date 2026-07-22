@@ -5,9 +5,11 @@ import {
   getProspectVentesService,
   getVenteByIdService,
   getVenteDocumentUrl,
+  snoozeFrigoReminderService,
   updateVenteStatutService,
 } from '../API/services/index.ts';
 import { confirm, showError, showSuccess } from '../utils/services/index.ts';
+import { useNotifications } from './useNotifications.ts';
 import { STATUT_VENTE_LABELS } from '../utils/types/index.ts';
 import type { Appel, StatutVente, VenteComplete } from '../utils/types/index.ts';
 import {
@@ -31,6 +33,7 @@ interface MockSignedDoc {
 }
 
 export function useCommandeDetails(idVente: number) {
+  const { refreshNotifications } = useNotifications();
   const [commande, setCommande] = useState<VenteComplete | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -136,13 +139,29 @@ export function useCommandeDetails(idVente: number) {
       await updateVenteStatutService(commande.id_vente, targetStatus, commande.mode_paiement);
       await showSuccess(`Statut mis à jour : ${label}`, 'Succès');
       await loadCommande();
+      void refreshNotifications();
     } catch (requestError) {
       console.error(requestError);
       await showError(requestError instanceof Error ? requestError.message : 'Erreur lors du changement de statut');
     } finally {
       setIsUpdating(false);
     }
-  }, [commande, loadCommande]);
+  }, [commande, loadCommande, refreshNotifications]);
+
+  const snoozeFrigoReminder = useCallback(async (weeks: 1 | 2 | 3 | 4): Promise<void> => {
+    if (!commande || commande.statut_vente !== 'frigo' || isUpdating) return;
+    setIsUpdating(true);
+    try {
+      await snoozeFrigoReminderService(commande.id_vente, weeks);
+      await showSuccess(`Relance reportée de ${weeks} semaine${weeks > 1 ? 's' : ''}.`, 'Relance frigo');
+      await loadCommande();
+      void refreshNotifications();
+    } catch (requestError) {
+      await showError(requestError instanceof Error ? requestError.message : 'Impossible de replanifier la relance');
+    } finally {
+      setIsUpdating(false);
+    }
+  }, [commande, isUpdating, loadCommande, refreshNotifications]);
 
   const printDocument = useCallback((): void => {
     if (commande) window.open(getVenteDocumentUrl(commande.id_vente), '_blank');
@@ -239,6 +258,7 @@ export function useCommandeDetails(idVente: number) {
     fileInputVersion,
     loadAppels,
     changeStatus,
+    snoozeFrigoReminder,
     printDocument,
     handleDragOver,
     handleDragLeave,

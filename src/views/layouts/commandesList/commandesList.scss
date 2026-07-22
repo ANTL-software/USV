@@ -21,6 +21,13 @@
   font-weight: 700;
   color: vars.$fontColorPrimary;
 }
+#commandesList .commandesList__title {
+  position: relative;
+}
+#commandesList .commandesList__notificationBadge {
+  top: -0.15em;
+  right: -1.15em;
+}
 // Filtres
 #commandesList .commandesList__filters {
   display: flex;
@@ -278,6 +285,35 @@
 #commandesList .commandesList__date--validation-later {
   background: #fdf0f1;
   color: #ad5b62;
+}
+#commandesList .commandesList__campaign-option,
+#commandesList .commandesList__reference {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+}
+#commandesList .commandesList__frigo-alert-dot {
+  width: 0.55em;
+  height: 0.55em;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+  box-shadow: 0 0 0 2px #fff, 0 0 6px rgba(255, 75, 43, 0.7);
+  animation: commandes-frigo-pulse 2s infinite ease-in-out;
+}
+@keyframes commandes-frigo-pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 75, 43, 0.7);
+  }
+  70% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 6px rgba(255, 75, 43, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(255, 75, 43, 0);
+  }
 }
 #commandesList .commandesList__delete-btn {
   background: none;

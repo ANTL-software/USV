@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   deleteVenteService,
+  getActiveFrigoAlertsService,
   getAgentsCampagneService,
   getLeadClientsService,
   restoreVenteService,
@@ -86,6 +87,7 @@ export function useCommandesList() {
   const [leadLoading, setLeadLoading] = useState(false);
   const [leadError, setLeadError] = useState<string | null>(null);
   const [leadFilters, setLeadFilters] = useState<LeadClientListParams>({ page: 1, limit: PAGE_LIMIT });
+  const [frigoAlertCampaignIds, setFrigoAlertCampaignIds] = useState<Set<number>>(new Set());
 
   const selectedCampagne = campagnes.find((campagne) => campagne.id_campagne === filters.campagne);
   const selectedVariant = selectedCampagne
@@ -321,6 +323,27 @@ export function useCommandesList() {
   }, [filters.campagne, hasResolvedSelectedCampaign]);
 
   useEffect(() => {
+    let isCancelled = false;
+    const loadFrigoAlerts = async (): Promise<void> => {
+      try {
+        const alerts = await getActiveFrigoAlertsService();
+        if (!isCancelled) setFrigoAlertCampaignIds(new Set(alerts.map((alert) => alert.id_campagne)));
+      } catch {
+        if (!isCancelled) setFrigoAlertCampaignIds(new Set());
+      }
+    };
+    void loadFrigoAlerts();
+    const refreshInterval = window.setInterval(() => {
+      void loadFrigoAlerts();
+    }, 60000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(refreshInterval);
+    };
+  }, []);
+
+  useEffect(() => {
     return () => {
       resetFilters();
       setLeadClients([]);
@@ -492,6 +515,7 @@ export function useCommandesList() {
     handlePageChange,
     handlePeriodPresetChange,
     handleVueModeChange,
+    hasActiveFrigoAlertForCampagne: (campagneId: number): boolean => frigoAlertCampaignIds.has(campagneId),
     hasCampaignSelection,
     isCorbeille,
     isLeadCampaign,

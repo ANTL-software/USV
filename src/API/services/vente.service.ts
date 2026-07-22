@@ -1,7 +1,7 @@
 import { getRequest, deleteRequest, postRequest, putRequest } from '../APICalls.ts';
 import { getApiBaseUrl } from '../../utils/scripts/index.ts';
 import type { AxiosResponse } from 'axios';
-import type { Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/index.ts';
+import type { FrigoAlertCampaign, Vente, VenteListParams, VenteComplete, StatutVente, ModePaiement, VenteStats } from '../../utils/types/index.ts';
 
 type RawVenteStat = {
   statut_vente: StatutVente;
@@ -165,6 +165,18 @@ export const updateVenteStatutService = async (
   }
 
   throw new Error(response.data.message || 'Impossible de mettre à jour le statut de la commande');
+};
+
+export const snoozeFrigoReminderService = async (idVente: number, weeks: 1 | 2 | 3 | 4): Promise<Vente> => {
+  const response: AxiosResponse<ApiResponse<Vente>> = await postRequest(`/ventes/${idVente}/frigo-rappel`, { weeks });
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de replanifier la relance frigo');
+};
+
+export const getActiveFrigoAlertsService = async (): Promise<FrigoAlertCampaign[]> => {
+  const response: AxiosResponse<ApiResponse<FrigoAlertCampaign[]>> = await getRequest('/ventes/frigo-alertes');
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de récupérer les relances frigo');
 };
 
 export const getVenteDocumentUrl = (idVente: number): string => {

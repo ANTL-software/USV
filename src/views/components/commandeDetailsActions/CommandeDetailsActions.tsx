@@ -58,6 +58,14 @@ export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProp
         </div>
       </div>
 
+      {commande.statut_vente === 'frigo' && <div className="aside-card card-style">
+        <h3>Relance frigo</h3>
+        <p className="aside-hint">Reporter la prochaine alerte de :</p>
+        <div className="qualification-buttons">
+          {([1, 2, 3, 4] as const).map((weeks) => <button key={weeks} type="button" className="qualif-btn qualif-btn--attente" onClick={() => { void viewModel.snoozeFrigoReminder(weeks); }} disabled={viewModel.isUpdating}>Rappel dans {weeks} semaine{weeks > 1 ? 's' : ''}</button>)}
+        </div>
+      </div>}
+
       <div className="aside-card card-style">
         <h3>Actions de commande</h3>
         <div className="aside-actions-list">

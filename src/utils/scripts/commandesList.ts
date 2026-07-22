@@ -59,6 +59,14 @@ export function isDateAfterPeriod(dateValue: string | null | undefined, periodEn
   return dateKey !== null && dateKey > periodEnd;
 }
 
+export function isFrigoReminderDue(vente: Vente, now: Date = new Date()): boolean {
+  const reminderAt = vente.frigo_rappel_at;
+
+  return vente.statut_vente === 'frigo'
+    && typeof reminderAt === 'string'
+    && new Date(reminderAt).getTime() <= now.getTime();
+}
+
 export function formatLeadSlot(dateValue: string, timeValue: string): string {
   const date = new Date(`${dateValue}T${timeValue}`);
 
