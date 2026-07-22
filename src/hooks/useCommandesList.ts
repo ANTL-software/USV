@@ -337,6 +337,7 @@ export function useCommandesList() {
       agent: undefined,
       date_debut: currentMonthBounds.start,
       date_fin: currentMonthBounds.end,
+      date_field: 'emission_or_acceptation',
       page: 1,
     });
     setLeadFilters({

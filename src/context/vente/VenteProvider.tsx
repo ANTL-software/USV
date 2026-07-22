@@ -1,4 +1,4 @@
-import { useState, useCallback, useContext } from 'react';
+import { useState, useCallback, useContext, useRef } from 'react';
 import type { ReactNode } from 'react';
 import { VenteContext } from './VenteContext.tsx';
 import type { Vente, VenteListParams } from '../../utils/types/index.ts';
@@ -39,14 +39,19 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFiltersState] = useState<VenteListParams>(getDefaultFilters);
+  const latestRequestId = useRef(0);
 
   const load = useCallback(async () => {
     if (!isAuthenticated) return;
+
+    const requestId = latestRequestId.current + 1;
+    latestRequestId.current = requestId;
 
     setIsLoading(true);
     setError(null);
     try {
       const result = await getVentesService(filters);
+      if (requestId !== latestRequestId.current) return;
       setVentes(result.ventes);
       setPagination(result.pagination);
       setStats(result.stats ?? {
@@ -57,18 +62,21 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
         total: { count: 0, total_montant: 0 }
       });
     } catch (err) {
+      if (requestId !== latestRequestId.current) return;
       const msg = err instanceof Error ? err.message : 'Erreur lors du chargement des ventes';
       setError(msg);
     } finally {
-      setIsLoading(false);
+      if (requestId === latestRequestId.current) setIsLoading(false);
     }
   }, [isAuthenticated, filters]);
 
   const setFilters = useCallback((partial: Partial<VenteListParams>) => {
+    latestRequestId.current += 1;
     setFiltersState(prev => ({ ...prev, ...partial }));
   }, []);
 
   const resetFilters = useCallback(() => {
+    latestRequestId.current += 1;
     setFiltersState(getDefaultFilters());
     setVentes([]);
     setPagination(null);
