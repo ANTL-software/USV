@@ -1,6 +1,9 @@
 import type { ReactElement } from 'react';
 import { MdCheckCircle, MdHandshake } from 'react-icons/md';
+import Select from 'react-select';
+import type { StylesConfig } from 'react-select';
 import { BILLING_LABELS, ENGAGEMENT_LABELS, TIMELINE_LABELS } from '../../../utils/scripts/index.ts';
+import { devisSelectStyles } from '../../../utils/styles/index.ts';
 import type {
   BillingRhythm,
   Engagement,
@@ -16,11 +19,39 @@ interface DevisCommercialTermsProps {
   onFormChange: QuoteFormChangeHandler;
 }
 
+type TimelineOption = {
+  label: string;
+  value: Timeline;
+};
+
+type EngagementOption = {
+  label: string;
+  value: Engagement;
+};
+
+type BillingOption = {
+  label: string;
+  value: BillingRhythm;
+};
+
 export function DevisCommercialTerms({
   assumptions,
   form,
   onFormChange,
 }: DevisCommercialTermsProps): ReactElement {
+  const timelineOptions: TimelineOption[] = Object.entries(TIMELINE_LABELS).map(([value, label]) => ({
+    value: value as Timeline,
+    label,
+  }));
+  const engagementOptions: EngagementOption[] = Object.entries(ENGAGEMENT_LABELS).map(([value, label]) => ({
+    value: value as Engagement,
+    label,
+  }));
+  const billingOptions: BillingOption[] = Object.entries(BILLING_LABELS).map(([value, label]) => ({
+    value: value as BillingRhythm,
+    label,
+  }));
+
   return (
     <article className="devisView__panel">
       <div className="devisView__panel-header">
@@ -34,27 +65,48 @@ export function DevisCommercialTerms({
       <div className="devisView__form-grid">
         <label className="devisView__field">
           <span>Délai de démarrage</span>
-          <select value={form.timeline} onChange={(event) => onFormChange('timeline', event.target.value as Timeline)}>
-            {Object.entries(TIMELINE_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          <Select
+            className="react-select-container"
+            classNamePrefix="react-select"
+            isSearchable={false}
+            menuPlacement="top"
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            options={timelineOptions}
+            styles={devisSelectStyles as StylesConfig<TimelineOption, false>}
+            value={timelineOptions.find((option) => option.value === form.timeline) ?? null}
+            onChange={(option) => option && onFormChange('timeline', option.value)}
+          />
         </label>
         <label className="devisView__field">
           <span>Engagement</span>
-          <select value={form.engagement} onChange={(event) => onFormChange('engagement', event.target.value as Engagement)}>
-            {Object.entries(ENGAGEMENT_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          <Select
+            className="react-select-container"
+            classNamePrefix="react-select"
+            isSearchable={false}
+            menuPlacement="top"
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            options={engagementOptions}
+            styles={devisSelectStyles as StylesConfig<EngagementOption, false>}
+            value={engagementOptions.find((option) => option.value === form.engagement) ?? null}
+            onChange={(option) => option && onFormChange('engagement', option.value)}
+          />
         </label>
         <label className="devisView__field">
           <span>Rythme de facturation</span>
-          <select value={form.billingRhythm} onChange={(event) => onFormChange('billingRhythm', event.target.value as BillingRhythm)}>
-            {Object.entries(BILLING_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          <Select
+            className="react-select-container"
+            classNamePrefix="react-select"
+            isSearchable={false}
+            menuPlacement="top"
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            options={billingOptions}
+            styles={devisSelectStyles as StylesConfig<BillingOption, false>}
+            value={billingOptions.find((option) => option.value === form.billingRhythm) ?? null}
+            onChange={(option) => option && onFormChange('billingRhythm', option.value)}
+          />
         </label>
       </div>
 

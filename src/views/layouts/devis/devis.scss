@@ -211,6 +211,13 @@
 #devisView .devisView__field textarea {
   min-height: 7rem;
 }
+#devisView .devisView__field .react-select-container {
+  @include mixins.reactSelect("#devisView .devisView__field .react-select-container");
+}
+#devisView .devisView__campaign-type {
+  max-width: 24rem;
+  margin-bottom: 1.2em;
+}
 @media (min-width: vars.$tabletWidth) {
   #devisView .devisView__field--full {
     grid-column: 1 / -1;
@@ -331,19 +338,17 @@
   padding: 0.9em;
   background: vars.$whiteBackground;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.8em;
-  align-items: start;
-  cursor: pointer;
+  align-items: center;
   transition:
     border-color vars.$transitionMedium,
     box-shadow vars.$transitionMedium;
 }
-#devisView .devisView__line-card input {
-  margin-top: 0.25em;
+#devisView .devisView__line-card input[type='checkbox'] {
   accent-color: vars.$utilsPrimary;
 }
-#devisView .devisView__line-card div {
+#devisView .devisView__line-card > div {
   display: flex;
   flex-direction: column;
   gap: 0.25em;
@@ -357,17 +362,138 @@
   color: vars.$fontColorSecondary;
   line-height: 1.5;
 }
-#devisView .devisView__line-card > span {
-  grid-column: 2;
-  color: vars.$utilsDark;
-  font-size: 0.86rem;
+#devisView .devisView__line-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.7em;
+}
+#devisView .devisView__line-controls label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
   font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+#devisView .devisView__line-controls input[type='number'] {
+  @include mixins.formInput("#devisView .devisView__line-controls input[type='number']");
+  width: 6.5rem;
+  min-height: 2.5rem;
+  padding: 0.45em 0.6em;
+  text-align: right;
+  font-weight: 700;
+}
+#devisView .devisView__line-controls input[type='number']:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
 }
 #devisView .devisView__line-card.is-active {
   border-color: rgba(124, 58, 237, 0.25);
   box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
   background: rgba(248, 245, 255, 0.78);
 }
+
+#devisView .devisView__pricing-model {
+  display: grid;
+  gap: 0.9em;
+}
+#devisView .devisView__pricing-line,
+#devisView .devisView__custom-clause {
+  border: 1px solid vars.$borderColor;
+  border-radius: 0.95em;
+  background: vars.$whiteBackground;
+}
+#devisView .devisView__pricing-line {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1em;
+  padding: 0.9em 1em;
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+#devisView .devisView__pricing-line > div {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+#devisView .devisView__pricing-line input,
+#devisView .devisView__custom-clause > input {
+  @include mixins.formInput("#devisView .devisView__pricing-line input, #devisView .devisView__custom-clause > input");
+  min-height: 2.7rem;
+}
+#devisView .devisView__pricing-line input {
+  width: 7rem;
+  text-align: right;
+  font-weight: 700;
+}
+#devisView .devisView__pricing-line small {
+  min-width: 2.5rem;
+  color: vars.$fontColorSecondary;
+  font-weight: 700;
+}
+#devisView .devisView__custom-clauses {
+  display: grid;
+  gap: 0.7em;
+}
+#devisView .devisView__custom-clause {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 7rem auto auto;
+  gap: 0.65em;
+  align-items: center;
+  padding: 0.65em;
+}
+#devisView .devisView__custom-clause > input[type='number'] {
+  text-align: right;
+  font-weight: 700;
+}
+#devisView .devisView__custom-clause > label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+#devisView .devisView__custom-clause input[type='checkbox'] {
+  accent-color: vars.$utilsPrimary;
+}
+#devisView .devisView__custom-clause > button {
+  @include mixins.resetButton;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7em;
+  color: vars.$fontColorSecondary;
+}
+#devisView .devisView__custom-clause > button:hover {
+  background: rgba(124, 58, 237, 0.08);
+  color: vars.$utilsDark;
+}
+#devisView .devisView__custom-clause.is-active {
+  border-color: rgba(124, 58, 237, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+  background: rgba(248, 245, 255, 0.78);
+}
+#devisView .devisView__add-clause {
+  justify-self: start;
+}
+@media (max-width: vars.$mobileWidth) {
+  #devisView .devisView__custom-clause {
+    grid-template-columns: minmax(0, 1fr) 6rem auto;
+  }
+
+  #devisView .devisView__custom-clause > input:first-child {
+    grid-column: 1 / -1;
+  }
+}
+
 #devisView .devisView__assumptions {
   display: grid;
   gap: 0.75em;

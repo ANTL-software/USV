@@ -3,6 +3,7 @@ import type {
   BudgetBand,
   Engagement,
   QuoteFormState,
+  QuoteCampaignType,
   QuoteTemplate,
   TemplateFamily,
   TemplateStatus,
@@ -40,7 +41,13 @@ export const BILLING_LABELS: Record<BillingRhythm, string> = {
   acompte: 'Acompte puis échéancier',
 };
 
+export const QUOTE_CAMPAIGN_TYPE_LABELS: Record<QuoteCampaignType, string> = {
+  commercial: 'Commercial',
+  qualified_appointment: 'Rendez-vous qualifié',
+};
+
 export const ENGAGEMENT_LABELS: Record<Engagement, string> = {
+  '1_mois_reconduction': '1 mois, reconduction tacite',
   '3_mois': '3 mois',
   '6_mois': '6 mois',
   mission_unique: 'Mission ponctuelle',
@@ -102,8 +109,7 @@ export const QUOTE_TEMPLATES: QuoteTemplate[] = [
     ],
     assumptions: [
       { id: 'conquete-ass-1', label: 'Base prospects ou ciblage fournis ou validés avant lancement.' },
-      { id: 'conquete-ass-2', label: 'Validation du discours et des objections par le client en amont.' },
-      { id: 'conquete-ass-3', label: 'Accès à un interlocuteur décisionnaire pour les arbitrages rapides.' },
+      { id: 'conquete-ass-2', label: 'Facturation au rendez-vous réalisé.' },
     ],
   },
   {
@@ -399,17 +405,17 @@ export const QUOTE_TEMPLATES: QuoteTemplate[] = [
 ];
 
 export const DEFAULT_FORM: QuoteFormState = {
-  companyName: 'Maison Lelièvre',
-  contactName: 'Claire Moreau',
-  contactRole: 'Directrice commerciale',
-  email: 'claire.moreau@maisonlelievre.fr',
-  phone: '06 80 42 17 12',
-  needSummary: 'L’équipe veut relancer l’acquisition B2B sans réinternaliser toute la prospection.',
-  objective: 'Obtenir un flux régulier de rendez-vous qualifiés avec des décideurs PME.',
+  companyName: '',
+  contactName: '',
+  contactRole: '',
+  email: '',
+  phone: '',
+  needSummary: '',
+  objective: '',
   budgetBand: '3k_8k',
   timeline: '30j',
   billingRhythm: 'mensuel',
-  engagement: '3_mois',
+  engagement: '1_mois_reconduction',
 };
 
 export function formatCurrency(value: number): string {
@@ -430,9 +436,13 @@ export function getStatusTone(status: TemplateStatus): 'primary' | 'warning' {
 
 export function buildInitialLineSelection(template: QuoteTemplate): Record<string, boolean> {
   return [...template.includedLines, ...template.optionLines].reduce<Record<string, boolean>>((accumulator, line) => {
-    accumulator[line.id] = line.selectedByDefault ?? false;
+    accumulator[line.id] = false;
     return accumulator;
   }, {});
+}
+
+export function buildInitialLineAmounts(): Record<string, number | undefined> {
+  return {};
 }
 
 export const filterQuoteTemplates = (
@@ -452,24 +462,25 @@ export const getSelectedQuoteLines = (
 ) => templates.flatMap((template) => template[source].filter((line) => selection[line.id]));
 
 export const getQuoteEngagementMonths = (engagement: QuoteFormState['engagement']): number => {
+  if (engagement === '1_mois_reconduction') return 1;
   if (engagement === '6_mois') return 6;
   if (engagement === 'mission_unique') return 1;
   return 3;
 };
 
 export function calculateQuoteTotals(
-  templates: QuoteTemplate[],
-  selectedIncludedLines: QuoteTemplate['includedLines'],
-  selectedOptionLines: QuoteTemplate['optionLines'],
+  lines: QuoteTemplate['includedLines'],
+  includedSelection: Record<string, boolean>,
+  lineAmounts: Record<string, number | undefined>,
   engagement: QuoteFormState['engagement'],
 ): { monthlySubtotal: number; oneShotSubtotal: number; projectedTotal: number } {
-  const selectedLines = [...selectedIncludedLines, ...selectedOptionLines];
-  const monthlySubtotal = selectedLines
+  const billedLines = lines.filter((line) => !includedSelection[line.id]);
+  const monthlySubtotal = billedLines
     .filter((line) => line.mode === 'mensuel')
-    .reduce((sum, line) => sum + line.amount, 0);
-  const oneShotSubtotal = selectedLines
+    .reduce((sum, line) => sum + (lineAmounts[line.id] ?? 0), 0);
+  const oneShotSubtotal = billedLines
     .filter((line) => line.mode === 'ponctuel')
-    .reduce((sum, line) => sum + line.amount, templates.reduce((total, template) => total + template.setupFee, 0));
+    .reduce((sum, line) => sum + (lineAmounts[line.id] ?? 0), 0);
 
   return {
     monthlySubtotal,
