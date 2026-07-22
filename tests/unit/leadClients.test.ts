@@ -126,6 +126,7 @@ test('getLeadClientsService sérialise les filtres MMA et retourne les stats du 
     statut: 'planifie',
     date_debut: '2026-07-01',
     date_fin: '2026-07-31',
+    date_field: 'emission_or_qualification',
     page: 2,
     limit: 25,
   });
@@ -133,7 +134,7 @@ test('getLeadClientsService sérialise les filtres MMA et retourne les stats du 
   assert.equal(result.leads[0]?.id_lead, 42);
   assert.equal(result.pagination.totalPages, 3);
   assert.equal(result.stats.planifies, 30);
-  assert.equal(globalThis.capturedLeadUrl, '/leads/operations?campagne=9&statut=planifie&date_debut=2026-07-01&date_fin=2026-07-31&page=2&limit=25');
+  assert.equal(globalThis.capturedLeadUrl, '/leads/operations?campagne=9&statut=planifie&date_debut=2026-07-01&date_fin=2026-07-31&date_field=emission_or_qualification&page=2&limit=25');
 });
 
 test('updateLeadClientStatusService cible le endpoint de qualification MMA', async () => {

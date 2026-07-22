@@ -85,7 +85,7 @@ export interface VenteListParams {
   agent?: number;
   date_debut?: string;
   date_fin?: string;
-  date_field?: 'vente' | 'acceptation';
+  date_field?: 'vente' | 'acceptation' | 'emission_or_acceptation';
   soft_deleted?: boolean;
   page?: number;
   limit?: number;
@@ -130,4 +130,5 @@ export interface VenteStats {
   annulees: VenteStatusStats;
   frigo: VenteStatusStats;
   total: VenteStatusStats;
+  validations?: VenteStatusStats;
 }
