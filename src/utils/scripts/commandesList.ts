@@ -156,9 +156,9 @@ export function buildSaleCommandesSummary(values: {
   suspendedCount: number;
 }): CommandesSummaryCard[] {
   return [
-    { label: 'Nbre de CDE', value: String(values.totalCount), tone: 'total' },
+    { label: 'Commandes émises', value: String(values.totalCount), tone: 'total' },
     { label: 'Moyenne', value: formatMontant(String(values.averageValidatedAmount)), tone: 'amount' },
-    { label: 'Validées', value: formatMontant(String(values.validatedAmount)), meta: `(${values.validatedCount})`, tone: 'validee' },
+    { label: 'CA validé', value: formatMontant(String(values.validatedAmount)), meta: `(${values.validatedCount})`, tone: 'validee' },
     { label: 'En attente', value: formatMontant(String(values.pendingAmount)), meta: `(${values.pendingCount})`, tone: 'attente' },
     { label: 'Annulées', value: formatMontant(String(values.cancelledAmount)), meta: `(${values.cancelledCount})`, tone: 'annulee' },
     { label: 'CDE suspendues', value: formatMontant(String(values.suspendedAmount)), meta: `(${values.suspendedCount})`, tone: 'frigo' },

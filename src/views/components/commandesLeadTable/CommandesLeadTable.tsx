@@ -14,9 +14,9 @@ export function CommandesLeadTable({ viewModel }: CommandesLeadTableProps): Reac
   if (!commandes.isLeadCampaign || commandes.leadClients.length === 0) return null;
   return <>
     <div className="commandesList__table-wrapper"><table>
-      <thead><tr><th>Réf.</th><th>Date de prise</th><th>Rendez-vous</th><th>Client</th><th>Interlocuteur</th><th>Agent</th><th>Statut</th></tr></thead>
+      <thead><tr><th>Réf.</th><th>Date d'émission</th><th>Date de qualification</th><th>Rendez-vous</th><th>Client</th><th>Interlocuteur</th><th>Agent</th><th>Statut</th></tr></thead>
       <tbody>{commandes.leadClients.map((lead) => <tr key={lead.id_lead} onClick={() => viewModel.navigateToLead(lead.id_lead)} className="commandesList__row--clickable">
-        <td>{formatLeadClientReference(lead.id_lead)}</td><td>{formatCommandesDate(lead.created_at)}</td><td>{formatLeadSlot(lead.date_rdv, lead.heure_rdv)}</td><td>{getLeadProspectName(lead)}</td><td>{getLeadInterlocuteur(lead)}</td><td>{getLeadAgentName(lead)}</td>
+        <td>{formatLeadClientReference(lead.id_lead)}</td><td>{formatCommandesDate(lead.created_at)}</td><td>{lead.date_qualification ? formatCommandesDate(lead.date_qualification) : '—'}</td><td>{formatLeadSlot(lead.date_rdv, lead.heure_rdv)}</td><td>{getLeadProspectName(lead)}</td><td>{getLeadInterlocuteur(lead)}</td><td>{getLeadAgentName(lead)}</td>
         <td><span className={`statut-badge statut-badge--${lead.statut}`} style={{ backgroundColor: STATUT_RENDEZ_VOUS_COLORS[lead.statut] }}>{STATUT_RENDEZ_VOUS_LABELS[lead.statut]}</span></td>
       </tr>)}</tbody>
     </table></div>

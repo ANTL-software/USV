@@ -109,6 +109,7 @@ export function useCommandesList() {
         agent: requestFilters.agent,
         date_debut: requestFilters.date_debut,
         date_fin: requestFilters.date_fin,
+        date_field: requestFilters.date_field,
         page: requestFilters.page,
         limit: requestFilters.limit,
       });
@@ -136,6 +137,7 @@ export function useCommandesList() {
       agent: undefined,
       date_debut: currentMonthBounds.start,
       date_fin: currentMonthBounds.end,
+      date_field: 'emission_or_acceptation',
       page: 1,
     });
     setPeriodPreset('current_month');
@@ -208,6 +210,7 @@ export function useCommandesList() {
     filters.agent,
     filters.date_debut,
     filters.date_fin,
+    filters.date_field,
     filters.page,
     filters.soft_deleted,
     hasResolvedSelectedCampaign,
@@ -341,6 +344,7 @@ export function useCommandesList() {
       limit: PAGE_LIMIT,
       date_debut: currentMonthBounds.start,
       date_fin: currentMonthBounds.end,
+      date_field: 'emission_or_qualification',
     });
     setLeadClients([]);
     setLeadPagination(null);
@@ -394,6 +398,7 @@ export function useCommandesList() {
           agent: localAgentId ?? undefined,
           date_debut: localDateDebut || undefined,
           date_fin: localDateFin || undefined,
+          date_field: 'emission_or_qualification',
           page: 1,
         };
 
@@ -402,6 +407,7 @@ export function useCommandesList() {
           && previous.agent === nextFilters.agent
           && previous.date_debut === nextFilters.date_debut
           && previous.date_fin === nextFilters.date_fin
+          && previous.date_field === nextFilters.date_field
           && previous.page === nextFilters.page
         ) {
           return previous;
@@ -417,6 +423,7 @@ export function useCommandesList() {
       agent: localAgentId ?? undefined,
       date_debut: localDateDebut || undefined,
       date_fin: localDateFin || undefined,
+      date_field: 'emission_or_acceptation',
       soft_deleted: isCorbeille,
       page: 1,
     });
@@ -448,8 +455,8 @@ export function useCommandesList() {
     { value: '', label: 'Tous les commerciaux' },
     ...campaignAgents,
   ];
-  const statsValideesCount = stats?.validees.count ?? 0;
-  const statsValideesAmount = stats?.validees.total_montant ?? 0;
+  const statsValideesCount = stats?.validations?.count ?? 0;
+  const statsValideesAmount = stats?.validations?.total_montant ?? 0;
   const statsEnAttenteCount = stats?.enAttente.count ?? 0;
   const statsEnAttenteAmount = stats?.enAttente.total_montant ?? 0;
   const statsAnnuleesCount = stats?.annulees.count ?? 0;

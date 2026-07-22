@@ -59,8 +59,10 @@ test('les résumés commandes conservent les volumes et montants de chaque varia
     suspendedCount: 0,
   });
   assert.equal(saleCards[0].value, '6');
+  assert.equal(saleCards[0].label, 'Commandes émises');
   assert.match(saleCards[1].value, /125,00/);
   assert.equal(saleCards[2].meta, '(4)');
+  assert.equal(saleCards[2].label, 'CA validé');
   assert.equal(saleCards[5].tone, 'frigo');
 });
 

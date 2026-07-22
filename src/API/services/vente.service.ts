@@ -9,6 +9,14 @@ type RawVenteStat = {
   total_montant: number | string | null;
 };
 
+interface OperationPeriodVenteStats {
+  emises: RawVenteStat[];
+  validations: {
+    count: number | string;
+    total_montant: number | string | null;
+  };
+}
+
 interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -19,7 +27,7 @@ interface ApiResponse<T> {
     total: number;
     totalPages: number;
   };
-  stats?: VenteStats | RawVenteStat[];
+  stats?: VenteStats | RawVenteStat[] | OperationPeriodVenteStats;
 }
 
 interface VentesResponse {
@@ -41,18 +49,31 @@ const EMPTY_VENTE_STATS: VenteStats = {
   total: { count: 0, total_montant: 0 },
 };
 
-function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | undefined): VenteStats | undefined {
+function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | OperationPeriodVenteStats | undefined): VenteStats | undefined {
   if (!stats) {
     return undefined;
   }
 
   if (!Array.isArray(stats)) {
+    if ('emises' in stats) {
+      const emittedStats = normalizeVenteStats(stats.emises) ?? EMPTY_VENTE_STATS;
+      const validationCount = Number(stats.validations.count ?? 0);
+      const validationAmount = Number.parseFloat(String(stats.validations.total_montant ?? '0'));
+      return {
+        ...emittedStats,
+        validations: {
+          count: validationCount,
+          total_montant: Number.isNaN(validationAmount) ? 0 : validationAmount,
+        },
+      };
+    }
     return {
       validees: stats.validees ?? EMPTY_VENTE_STATS.validees,
       enAttente: stats.enAttente ?? EMPTY_VENTE_STATS.enAttente,
       annulees: stats.annulees ?? EMPTY_VENTE_STATS.annulees,
       frigo: stats.frigo ?? EMPTY_VENTE_STATS.frigo,
       total: stats.total ?? EMPTY_VENTE_STATS.total,
+      validations: stats.validations,
     };
   }
 
