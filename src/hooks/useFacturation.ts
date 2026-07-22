@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   downloadCampagneFacturationDocumentService,
+  downloadCampagneFacturXDocumentService,
   getCampagneFacturationPaStatusService,
   getLeadClientsService,
   getVentesService,
@@ -61,6 +62,7 @@ export function useFacturation() {
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
+  const [isGeneratingFacturX, setIsGeneratingFacturX] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
   const [isSendingInvoiceEmail, setIsSendingInvoiceEmail] = useState(false);
@@ -190,6 +192,23 @@ export function useFacturation() {
     }
   }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
 
+  const generateFacturX = useCallback(async (): Promise<void> => {
+    if (!selectedCampagne || !canGenerateInvoice || selectedVariant !== CAMPAIGN_VARIANTS.vente) return;
+    try {
+      setPreviewError(null);
+      setIsGeneratingFacturX(true);
+      const blob = await downloadCampagneFacturXDocumentService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+      });
+      triggerBlobDownload(blob, `factur-x_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
+    } catch (generationError) {
+      setPreviewError(generationError instanceof Error ? generationError.message : 'Impossible de générer le document Factur-X.');
+    } finally {
+      setIsGeneratingFacturX(false);
+    }
+  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne, selectedVariant]);
+
   const issueInvoiceThroughPa = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canIssueInvoiceThroughPa) return;
     const confirmed = await showConfirm(
@@ -241,7 +260,7 @@ export function useFacturation() {
       });
       setTestPaInvoice(invoice);
       await showSuccess(
-        `Document de test ${invoice.invoice_number || invoice.internal_reference} créé sur VosFactures. La facture réelle portera le n° ${invoice.expected_invoice_number || invoice.internal_reference}.`,
+        `Document de test ${invoice.invoice_number || invoice.internal_reference} créé sur VosFactures avec notre Factur-X joint. La facture réelle portera le n° ${invoice.expected_invoice_number || invoice.internal_reference}.`,
         'Test réussi',
       );
     } catch (testError) {
@@ -344,9 +363,11 @@ export function useFacturation() {
     emailOptions,
     error,
     generateInvoice,
+    generateFacturX,
     getVenteAmounts,
     isEmailModalOpen,
     isGeneratingInvoice,
+    isGeneratingFacturX,
     isIssuingPaInvoice,
     isTestingPaInvoice,
     isLoadingPaInvoice,

@@ -33,6 +33,7 @@ export {
   removeAgentCampagneService,
   transfererAgentService,
   downloadCampagneFacturationDocumentService,
+  downloadCampagneFacturXDocumentService,
   sendCampagneFacturationEmailService,
   getCampagneFacturationPaStatusService,
   issueCampagneFacturationThroughPaService,
