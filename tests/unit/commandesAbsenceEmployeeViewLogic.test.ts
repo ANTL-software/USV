@@ -11,6 +11,8 @@ import {
   formatFileSizeInKilobytes,
   getAbsenceEmptyMessage,
   getAbsenceReturnDate,
+  isDateAfterPeriod,
+  isDateBeforePeriod,
 } from '../../src/utils/scripts/index.ts';
 import type { AbsenceRequest, PlanningCreneau } from '../../src/utils/types/index.ts';
 
@@ -64,6 +66,13 @@ test('les résumés commandes conservent les volumes et montants de chaque varia
   assert.equal(saleCards[2].meta, '(4)');
   assert.equal(saleCards[2].label, 'CA validé');
   assert.equal(saleCards[5].tone, 'frigo');
+});
+
+test('les repères de période distinguent émission antérieure et validation ultérieure', () => {
+  assert.equal(isDateBeforePeriod('2026-06-29T10:30:00.000Z', '2026-07-01'), true);
+  assert.equal(isDateBeforePeriod('2026-07-01T00:00:00.000Z', '2026-07-01'), false);
+  assert.equal(isDateAfterPeriod('2026-08-01', '2026-07-31'), true);
+  assert.equal(isDateAfterPeriod('2026-07-31', '2026-07-31'), false);
 });
 
 test('une absence en jours expose période retour et libellés normalisés', () => {
