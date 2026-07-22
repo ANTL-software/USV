@@ -78,7 +78,7 @@ $subnav-height: 4dvh;
   }
 }
 
-@mixin centeredContainer($max-width: 75em) {
+@mixin centeredContainer($max-width: 100em) {
   max-width: $max-width;
   margin: 0 auto;
 }
