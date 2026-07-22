@@ -13,8 +13,9 @@ import {
   getAbsenceReturnDate,
   isDateAfterPeriod,
   isDateBeforePeriod,
+  isFrigoReminderDue,
 } from '../../src/utils/scripts/index.ts';
-import type { AbsenceRequest, PlanningCreneau } from '../../src/utils/types/index.ts';
+import type { AbsenceRequest, PlanningCreneau, Vente } from '../../src/utils/types/index.ts';
 
 function createAbsence(overrides: Partial<AbsenceRequest> = {}): AbsenceRequest {
   return {
@@ -73,6 +74,23 @@ test('les repères de période distinguent émission antérieure et validation u
   assert.equal(isDateBeforePeriod('2026-07-01T00:00:00.000Z', '2026-07-01'), false);
   assert.equal(isDateAfterPeriod('2026-08-01', '2026-07-31'), true);
   assert.equal(isDateAfterPeriod('2026-07-31', '2026-07-31'), false);
+});
+
+test('une commande frigo n’est signalée qu’à partir de sa relance planifiée', () => {
+  const vente: Vente = {
+    id_vente: 9,
+    id_campagne: 3,
+    date_vente: '2026-05-01T09:00:00.000Z',
+    frigo_rappel_at: '2026-06-01T09:00:00.000Z',
+    montant_total: '250.00',
+    statut_vente: 'frigo',
+    created_at: '2026-05-01T09:00:00.000Z',
+    updated_at: '2026-05-01T09:00:00.000Z',
+  };
+
+  assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T08:59:59.000Z')), false);
+  assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T09:00:00.000Z')), true);
+  assert.equal(isFrigoReminderDue({ ...vente, statut_vente: 'validee' }, new Date('2026-06-01T09:00:00.000Z')), false);
 });
 
 test('une absence en jours expose période retour et libellés normalisés', () => {

@@ -217,6 +217,7 @@ export type {
   VenteComplete,
   VenteListParams,
   VenteStats,
+  FrigoAlertCampaign,
 } from './vente.types.ts';
 
 export type {

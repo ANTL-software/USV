@@ -48,6 +48,7 @@ export function CommandesFilters({ state }: CommandesFiltersProps): ReactElement
       <div className="commandesList__filter-group commandesList__filter-group--campaign"><label>Campagne</label><Select<CommandesSelectOption, false>
         options={state.campagneOptions} value={state.campagneOptions.find(({ value }) => value === String(state.filters.campagne)) ?? null}
         onChange={(option) => state.handleCampagneChange(option ? Number(option.value) : null)} styles={commandesSelectStyles} placeholder="Campagne..." isClearable
+        formatOptionLabel={(option) => <span className="commandesList__campaign-option"><span>{option.label}</span>{state.hasActiveFrigoAlertForCampagne(Number(option.value)) && <span className="commandesList__frigo-alert-dot" title="Commande frigo à relancer" />}</span>}
       /></div>
     </div>
   );

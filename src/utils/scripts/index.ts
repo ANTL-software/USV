@@ -20,6 +20,7 @@ export {
   getMonthBounds,
   isDateAfterPeriod,
   isDateBeforePeriod,
+  isFrigoReminderDue,
   getVenteAgentName,
   getVenteProspectName,
 } from './commandesList.ts';

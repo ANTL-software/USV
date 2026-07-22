@@ -146,7 +146,7 @@ export { useUpdateCourrierView } from './useUpdateCourrierView.ts';
 export type { UpdateCourrierViewModel } from './useUpdateCourrierView.ts';
 export { useNouveauCourrierView } from './useNouveauCourrierView.ts';
 export type { NouveauCourrierViewModel } from './useNouveauCourrierView.ts';
-export { useNotifications } from './useNotifications.ts';
+export { useNotifications, useOptionalNotifications } from './useNotifications.ts';
 export { useIncident, useIncidents } from './useIncidents.ts';
 export { useIncidentTreatmentView } from './useIncidentTreatmentView.ts';
 export type { IncidentTreatmentViewModel } from './useIncidentTreatmentView.ts';
