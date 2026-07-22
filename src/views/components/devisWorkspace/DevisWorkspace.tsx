@@ -23,11 +23,16 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
         />
         <DevisClientContext form={viewModel.formState} onFormChange={viewModel.handleFormChange} />
         <DevisOfferComposition
-          includedLines={viewModel.includedCatalogLines}
-          lineSelection={viewModel.lineSelection}
-          onLineToggle={viewModel.handleLineToggle}
-          optionLines={viewModel.optionCatalogLines}
-          selectedTemplatePromise={viewModel.selectedTemplatePromise}
+          appointmentRate={viewModel.appointmentRate}
+          campaignType={viewModel.campaignType}
+          commercialCommissionRate={viewModel.commercialCommissionRate}
+          customClauses={viewModel.customClauses}
+          onAddCustomClause={viewModel.addCustomClause}
+          onAppointmentRateChange={viewModel.setAppointmentRate}
+          onCampaignTypeChange={viewModel.setCampaignType}
+          onCommercialCommissionRateChange={viewModel.setCommercialCommissionRate}
+          onRemoveCustomClause={viewModel.removeCustomClause}
+          onUpdateCustomClause={viewModel.updateCustomClause}
         />
         <DevisCommercialTerms
           assumptions={viewModel.selectedAssumptions}
@@ -38,13 +43,12 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
 
       <DevisPreview
         form={viewModel.formState}
-        monthlySubtotal={viewModel.monthlySubtotal}
-        oneShotSubtotal={viewModel.oneShotSubtotal}
-        projectedTotal={viewModel.projectedTotal}
-        selectedIncludedLines={viewModel.selectedIncludedLines}
-        selectedOptionLines={viewModel.selectedOptionLines}
+        campaignType={viewModel.campaignType}
+        quoteLines={viewModel.quoteLines}
         selectedTemplatePromise={viewModel.selectedTemplatePromise}
         selectedTemplateTitle={viewModel.selectedTemplateTitle}
+        isGeneratingQuote={viewModel.isGeneratingQuote}
+        onGenerateQuote={() => { void viewModel.generateQuote(); }}
       />
     </section>
   );

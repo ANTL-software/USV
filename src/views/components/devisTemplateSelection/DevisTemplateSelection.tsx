@@ -1,5 +1,8 @@
-import type { ChangeEvent, ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { MdDraw } from 'react-icons/md';
+import Select from 'react-select';
+import type { StylesConfig } from 'react-select';
+import { devisSelectStyles } from '../../../utils/styles/index.ts';
 import { FAMILY_LABELS } from '../../../utils/scripts/index.ts';
 import type { QuoteTemplate, TemplateFamily } from '../../../utils/types/index.ts';
 import { DevisTemplateGrid } from '../devisTemplateGrid/index.ts';
@@ -12,6 +15,11 @@ interface DevisTemplateSelectionProps {
   templates: QuoteTemplate[];
 }
 
+type FamilyOption = {
+  label: string;
+  value: TemplateFamily | 'all';
+};
+
 export function DevisTemplateSelection({
   familyFilter,
   onFamilyFilterChange,
@@ -19,9 +27,10 @@ export function DevisTemplateSelection({
   selectedTemplateIds,
   templates,
 }: DevisTemplateSelectionProps): ReactElement {
-  const handleFamilyChange = (event: ChangeEvent<HTMLSelectElement>): void => {
-    onFamilyFilterChange(event.target.value as TemplateFamily | 'all');
-  };
+  const familyOptions: FamilyOption[] = [
+    { value: 'all' as const, label: 'Toutes les familles' },
+    ...Object.entries(FAMILY_LABELS).map(([value, label]) => ({ value: value as TemplateFamily, label })),
+  ];
 
   return (
     <article className="devisView__panel">
@@ -36,12 +45,17 @@ export function DevisTemplateSelection({
       <div className="devisView__filters-grid">
         <label className="devisView__field">
           <span>Famille d’expertise</span>
-          <select value={familyFilter} onChange={handleFamilyChange}>
-            <option value="all">Toutes les familles</option>
-            {Object.entries(FAMILY_LABELS).map(([value, label]) => (
-              <option key={value} value={value}>{label}</option>
-            ))}
-          </select>
+          <Select
+            className="react-select-container"
+            classNamePrefix="react-select"
+            isSearchable={false}
+            menuPortalTarget={document.body}
+            menuPosition="fixed"
+            options={familyOptions}
+            styles={devisSelectStyles as StylesConfig<FamilyOption, false>}
+            value={familyOptions.find((option) => option.value === familyFilter) ?? null}
+            onChange={(option) => option && onFamilyFilterChange(option.value)}
+          />
         </label>
       </div>
 

@@ -40,6 +40,8 @@ export {
   testCampagneFacturationThroughPaService,
 } from './campagne.service.ts';
 
+export { downloadQuoteDocumentService } from './quote.service.ts';
+
 export {
   getAllProduitsService,
   getProduitByIdService,
