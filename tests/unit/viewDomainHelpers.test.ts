@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  buildEnrichmentComparisonFieldViews,
   buildEnrichmentFieldViews,
   buildEnrichmentSourceViews,
   buildVigieDateRange,
@@ -132,6 +133,66 @@ test('les comparaisons et sources enrichissement sont préparées hors du compos
     url: 'https://client.fr',
   }]);
   assert.equal(formatEnrichmentPayload({ source: 'public' }), '{\n  "source": "public"\n}');
+});
+
+test('la comparaison enrichissement expose téléphones et effectifs avant validation', () => {
+  const current = {
+    contacts_internes: {
+      telephone: '0140000000',
+      telephone_contact: null,
+      telephone_secondaire: null,
+    },
+    identite_societe: {
+      effectif: 12,
+      effectif_enrichi: null,
+      effectif_enrichi_nature: null,
+      effectif_enrichi_perimetre: null,
+      effectif_enrichi_annee: null,
+      effectif_enrichi_confiance: null,
+      effectif_estime: null,
+      effectif_estime_confiance: null,
+    },
+    enrichissement: {
+      telephone_tertiaire: null,
+      telephone_tertiaire_source: null,
+    },
+  } as ProspectEnrichmentSnapshot;
+  const proposed = {
+    ...current,
+    identite_societe: {
+      ...current.identite_societe,
+      effectif_enrichi: 18,
+      effectif_enrichi_nature: 'effectif_moyen_annuel_declare',
+      effectif_enrichi_perimetre: 'entreprise',
+      effectif_enrichi_annee: 2024,
+      effectif_enrichi_confiance: 'forte',
+      effectif_estime: 20,
+      effectif_estime_confiance: 'moyenne',
+    },
+    enrichissement: {
+      ...current.enrichissement,
+      telephone_tertiaire: '0612345678',
+      telephone_tertiaire_source: 'official_website_public_mobile_candidate',
+    },
+  } as ProspectEnrichmentSnapshot;
+
+  const fields = buildEnrichmentComparisonFieldViews(current, proposed);
+
+  assert.deepEqual(fields.find(({ label }) => label === 'Téléphone public proposé'), {
+    label: 'Téléphone public proposé',
+    currentValue: '—',
+    proposedValue: '0612345678',
+  });
+  assert.deepEqual(fields.find(({ label }) => label === 'Effectif enrichi'), {
+    label: 'Effectif enrichi',
+    currentValue: '—',
+    proposedValue: '18',
+  });
+  assert.deepEqual(fields.find(({ label }) => label === 'Nature / périmètre effectif'), {
+    label: 'Nature / périmètre effectif',
+    currentValue: '—',
+    proposedValue: 'effectif_moyen_annuel_declare · entreprise',
+  });
 });
 
 test('les périodes et libellés Vigie restent déterministes', () => {

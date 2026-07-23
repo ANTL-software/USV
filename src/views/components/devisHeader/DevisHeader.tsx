@@ -1,19 +1,20 @@
 import type { ReactElement } from 'react';
 import { MdArrowBack } from 'react-icons/md';
-import { formatCurrency } from '../../../utils/scripts/index.ts';
+import { QUOTE_CAMPAIGN_TYPE_LABELS } from '../../../utils/scripts/index.ts';
+import type { QuoteCampaignType } from '../../../utils/types/index.ts';
 import { Button } from '../button/index.ts';
 
 interface DevisHeaderProps {
+  campaignType: QuoteCampaignType;
   onBack: () => void;
   progressPercent: number;
-  projectedTotal: number;
   selectedTemplateTitle: string;
 }
 
 export function DevisHeader({
+  campaignType,
   onBack,
   progressPercent,
-  projectedTotal,
   selectedTemplateTitle,
 }: DevisHeaderProps): ReactElement {
   return (
@@ -44,8 +45,8 @@ export function DevisHeader({
             <strong>{progressPercent}% prêt</strong>
           </div>
           <div>
-            <span>Projection</span>
-            <strong>{formatCurrency(projectedTotal)}</strong>
+            <span>Modèle tarifaire</span>
+            <strong>{QUOTE_CAMPAIGN_TYPE_LABELS[campaignType]}</strong>
           </div>
         </div>
       </section>

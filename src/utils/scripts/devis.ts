@@ -2,6 +2,8 @@ import type {
   BillingRhythm,
   BudgetBand,
   Engagement,
+  QuoteCustomClause,
+  QuotePdfPayload,
   QuoteFormState,
   QuoteCampaignType,
   QuoteTemplate,
@@ -434,17 +436,6 @@ export function getStatusTone(status: TemplateStatus): 'primary' | 'warning' {
   return 'warning';
 }
 
-export function buildInitialLineSelection(template: QuoteTemplate): Record<string, boolean> {
-  return [...template.includedLines, ...template.optionLines].reduce<Record<string, boolean>>((accumulator, line) => {
-    accumulator[line.id] = false;
-    return accumulator;
-  }, {});
-}
-
-export function buildInitialLineAmounts(): Record<string, number | undefined> {
-  return {};
-}
-
 export const filterQuoteTemplates = (
   templates: QuoteTemplate[],
   family: TemplateFamily | 'all',
@@ -455,12 +446,6 @@ export const getSelectedQuoteTemplates = (
   selectedIds: string[],
 ): QuoteTemplate[] => templates.filter((template) => selectedIds.includes(template.id));
 
-export const getSelectedQuoteLines = (
-  templates: QuoteTemplate[],
-  selection: Record<string, boolean>,
-  source: 'includedLines' | 'optionLines',
-) => templates.flatMap((template) => template[source].filter((line) => selection[line.id]));
-
 export const getQuoteEngagementMonths = (engagement: QuoteFormState['engagement']): number => {
   if (engagement === '1_mois_reconduction') return 1;
   if (engagement === '6_mois') return 6;
@@ -468,37 +453,59 @@ export const getQuoteEngagementMonths = (engagement: QuoteFormState['engagement'
   return 3;
 };
 
-export function calculateQuoteTotals(
-  lines: QuoteTemplate['includedLines'],
-  includedSelection: Record<string, boolean>,
-  lineAmounts: Record<string, number | undefined>,
-  engagement: QuoteFormState['engagement'],
-): { monthlySubtotal: number; oneShotSubtotal: number; projectedTotal: number } {
-  const billedLines = lines.filter((line) => !includedSelection[line.id]);
-  const monthlySubtotal = billedLines
-    .filter((line) => line.mode === 'mensuel')
-    .reduce((sum, line) => sum + (lineAmounts[line.id] ?? 0), 0);
-  const oneShotSubtotal = billedLines
-    .filter((line) => line.mode === 'ponctuel')
-    .reduce((sum, line) => sum + (lineAmounts[line.id] ?? 0), 0);
+export const buildQuotePricingLines = (
+  campaignType: QuoteCampaignType,
+  commercialCommissionRate: number | undefined,
+  appointmentRate: number | undefined,
+  customClauses: QuoteCustomClause[],
+): QuotePdfPayload['lines'] => {
+  if (campaignType === 'commercial') {
+    if (commercialCommissionRate === undefined) return [];
+    return [{
+      id: 'commercial-commission',
+      label: 'Commission par vente',
+      description: 'Commission appliquée au montant HT de chaque vente conclue.',
+      mode: 'ponctuel',
+      included: false,
+      amount: commercialCommissionRate,
+      amount_kind: 'percentage',
+    }];
+  }
 
-  return {
-    monthlySubtotal,
-    oneShotSubtotal,
-    projectedTotal: oneShotSubtotal + (monthlySubtotal * getQuoteEngagementMonths(engagement)),
-  };
-}
+  const appointmentLine = appointmentRate === undefined ? [] : [{
+    id: 'qualified-appointment-base',
+    label: 'Rendez-vous pris',
+    description: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
+    mode: 'ponctuel' as const,
+    included: false,
+    amount: appointmentRate,
+    amount_kind: 'currency' as const,
+  }];
+  const clauseLines = customClauses
+    .filter((clause) => clause.label.trim() && (clause.amount !== undefined || clause.included))
+    .map((clause) => ({
+      id: clause.id,
+      label: clause.label.trim(),
+      description: 'Clause tarifaire personnalisée.',
+      mode: 'ponctuel' as const,
+      included: clause.included,
+      amount: clause.amount ?? 0,
+      amount_kind: 'currency' as const,
+    }));
+
+  return [...appointmentLine, ...clauseLines];
+};
 
 export const getQuoteChecklistProgress = (
   form: QuoteFormState,
-  selectedIncludedLinesCount: number,
+  quoteLineCount: number,
 ): { completed: number; total: number; percent: number } => {
   const checklist = [
     form.companyName.trim(),
     form.contactName.trim(),
     form.needSummary.trim(),
     form.objective.trim(),
-    selectedIncludedLinesCount > 0,
+    quoteLineCount > 0,
   ];
   const completed = checklist.filter(Boolean).length;
   const total = checklist.length;
