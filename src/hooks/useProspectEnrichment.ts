@@ -49,7 +49,12 @@ export function useProspectEnrichment() {
       try {
         setSearchLoading(true);
         setSearchError(null);
-        const response = await getAllProspectsService({ page: 1, limit: SEARCH_LIMIT, search: search.trim() });
+        const response = await getAllProspectsService({
+          page: 1,
+          limit: SEARCH_LIMIT,
+          search: search.trim(),
+          include_total: false,
+        });
         setResults(response.data);
       } catch (loadError) {
         setSearchError(loadError instanceof Error ? loadError.message : 'Impossible de rechercher les prospects');

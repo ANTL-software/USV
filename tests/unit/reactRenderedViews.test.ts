@@ -33,7 +33,7 @@ import {
 } from '../../src/utils/scripts/index.ts';
 import type { NavigationGroup } from '../../src/utils/scripts/index.ts';
 import type { Employe, Prospect } from '../../src/utils/types/index.ts';
-import type { LeadClient, QuoteFormState, QuoteLine, StatutRendezVous } from '../../src/utils/types/index.ts';
+import type { LeadClient, QuoteFormState, QuotePdfPayload, StatutRendezVous } from '../../src/utils/types/index.ts';
 
 const ROOT = process.cwd();
 let viteServer: ViteDevServer | null = null;
@@ -397,13 +397,12 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
   );
   interface DevisPreviewProps {
     form: QuoteFormState;
-    monthlySubtotal: number;
-    oneShotSubtotal: number;
-    projectedTotal: number;
-    selectedIncludedLines: QuoteLine[];
-    selectedOptionLines: QuoteLine[];
+    campaignType: 'commercial' | 'qualified_appointment';
+    quoteLines: QuotePdfPayload['lines'];
     selectedTemplatePromise: string;
     selectedTemplateTitle: string;
+    isGeneratingQuote: boolean;
+    onGenerateQuote: () => void;
   }
   const DevisPreview = await loadComponent<DevisPreviewProps>(
     '/src/views/components/devisPreview/DevisPreview.tsx',
@@ -422,32 +421,34 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
     phone: '0612345678',
     timeline: '30j',
   };
-  const line: QuoteLine = {
-    amount: 1200,
-    description: 'Pilotage commercial',
-    id: 'pilotage',
-    label: 'Pilotage',
-    mode: 'mensuel',
-  };
+  const quoteLines: QuotePdfPayload['lines'] = [{
+    amount: 75,
+    amount_kind: 'currency',
+    description: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
+    id: 'qualified-appointment-base',
+    included: false,
+    label: 'Rendez-vous pris',
+    mode: 'ponctuel',
+  }];
 
   const summaryHtml = renderToStaticMarkup(createElement(DevisWorkflowSummary));
   const previewHtml = renderToStaticMarkup(createElement(DevisPreview, {
     form,
-    monthlySubtotal: 1200,
-    oneShotSubtotal: 300,
-    projectedTotal: 3900,
-    selectedIncludedLines: [line],
-    selectedOptionLines: [],
+    campaignType: 'qualified_appointment',
+    quoteLines,
     selectedTemplatePromise: 'Une prospection structurée',
     selectedTemplateTitle: 'Cycle client',
+    isGeneratingQuote: false,
+    onGenerateQuote: () => undefined,
   }));
 
   assert.match(summaryHtml, /Étape 1/);
   assert.match(summaryHtml, /Choisir le modèle adapté/);
   assert.match(summaryHtml, /Valider le récap avant PDF/);
   assert.match(previewHtml, /Entreprise Démo/);
-  assert.match(previewHtml, /Enregistrer le brouillon/);
-  assert.match(previewHtml, /Préparer le futur document/);
+  assert.match(previewHtml, /Rendez-vous qualifié/);
+  assert.match(previewHtml, /Rendez-vous pris/);
+  assert.match(previewHtml, /Éditer le devis/);
 });
 
 test('le panneau lead conserve qualification impression et emplacement documentaire', async () => {

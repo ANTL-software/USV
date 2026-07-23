@@ -32,6 +32,12 @@ export interface EnrichmentFieldView {
   value: string;
 }
 
+export interface EnrichmentComparisonFieldView {
+  label: string;
+  currentValue: string;
+  proposedValue: string;
+}
+
 export interface EnrichmentSourceView {
   key: string;
   origin: string;
@@ -156,6 +162,33 @@ export function buildEnrichmentFieldViews(
     { label: 'Téléphone tertiaire', value: formatEnrichmentValue(enrichment.telephone_tertiaire) },
     { label: 'Statut', value: ENRICHMENT_STATUS_LABELS[enrichment.enrichissement_statut] },
     { label: 'Score', value: formatEnrichmentValue(enrichment.enrichissement_score) },
+  ];
+}
+
+export function buildEnrichmentComparisonFieldViews(
+  current: ProspectEnrichmentSnapshot,
+  proposed: ProspectEnrichmentSnapshot,
+): EnrichmentComparisonFieldView[] {
+  return [
+    { label: 'Site web', currentValue: formatEnrichmentValue(current.enrichissement.site_web), proposedValue: formatEnrichmentValue(proposed.enrichissement.site_web) },
+    { label: 'LinkedIn entreprise', currentValue: formatEnrichmentValue(current.enrichissement.linkedin_company_url), proposedValue: formatEnrichmentValue(proposed.enrichissement.linkedin_company_url) },
+    { label: 'Décideur', currentValue: formatEnrichmentValue(current.enrichissement.decisionnaire_nom), proposedValue: formatEnrichmentValue(proposed.enrichissement.decisionnaire_nom) },
+    { label: 'Fonction', currentValue: formatEnrichmentValue(current.enrichissement.decisionnaire_fonction), proposedValue: formatEnrichmentValue(proposed.enrichissement.decisionnaire_fonction) },
+    { label: 'Email pro', currentValue: formatEnrichmentValue(current.enrichissement.decisionnaire_email_pro), proposedValue: formatEnrichmentValue(proposed.enrichissement.decisionnaire_email_pro) },
+    { label: 'Téléphone principal', currentValue: formatEnrichmentValue(current.contacts_internes.telephone), proposedValue: formatEnrichmentValue(proposed.contacts_internes.telephone) },
+    { label: 'Téléphone contact', currentValue: formatEnrichmentValue(current.contacts_internes.telephone_contact), proposedValue: formatEnrichmentValue(proposed.contacts_internes.telephone_contact) },
+    { label: 'Téléphone secondaire', currentValue: formatEnrichmentValue(current.contacts_internes.telephone_secondaire), proposedValue: formatEnrichmentValue(proposed.contacts_internes.telephone_secondaire) },
+    { label: 'Téléphone public proposé', currentValue: formatEnrichmentValue(current.enrichissement.telephone_tertiaire), proposedValue: formatEnrichmentValue(proposed.enrichissement.telephone_tertiaire) },
+    { label: 'Source téléphone public', currentValue: formatEnrichmentValue(current.enrichissement.telephone_tertiaire_source), proposedValue: formatEnrichmentValue(proposed.enrichissement.telephone_tertiaire_source) },
+    { label: 'Effectif historique', currentValue: formatEnrichmentValue(current.identite_societe.effectif), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif) },
+    { label: 'Effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi) },
+    { label: 'Nature / périmètre effectif', currentValue: formatEnrichmentValue([current.identite_societe.effectif_enrichi_nature, current.identite_societe.effectif_enrichi_perimetre].filter(Boolean).join(' · ') || null), proposedValue: formatEnrichmentValue([proposed.identite_societe.effectif_enrichi_nature, proposed.identite_societe.effectif_enrichi_perimetre].filter(Boolean).join(' · ') || null) },
+    { label: 'Année effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi_annee), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi_annee) },
+    { label: 'Confiance effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi_confiance), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi_confiance) },
+    { label: 'Estimation web', currentValue: formatEnrichmentValue(current.identite_societe.effectif_estime), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_estime) },
+    { label: 'Confiance estimation web', currentValue: formatEnrichmentValue(current.identite_societe.effectif_estime_confiance), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_estime_confiance) },
+    { label: 'Statut', currentValue: ENRICHMENT_STATUS_LABELS[current.enrichissement.enrichissement_statut], proposedValue: ENRICHMENT_STATUS_LABELS[proposed.enrichissement.enrichissement_statut] },
+    { label: 'Score', currentValue: formatEnrichmentValue(current.enrichissement.enrichissement_score), proposedValue: formatEnrichmentValue(proposed.enrichissement.enrichissement_score) },
   ];
 }
 

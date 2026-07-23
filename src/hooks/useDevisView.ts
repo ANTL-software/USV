@@ -1,10 +1,8 @@
 import { useMemo, useState } from 'react';
 import {
   DEFAULT_FORM,
-  buildInitialLineAmounts,
+  buildQuotePricingLines,
   QUOTE_TEMPLATES,
-  buildInitialLineSelection,
-  calculateQuoteTotals,
   filterQuoteTemplates,
   getQuoteChecklistProgress,
   getSelectedQuoteTemplates,
@@ -15,7 +13,6 @@ import type {
   QuoteCustomClause,
   QuoteFormChangeHandler,
   QuoteFormState,
-  QuotePdfPayload,
   TemplateFamily,
 } from '../utils/types/index.ts';
 
@@ -28,12 +25,6 @@ export function useDevisView() {
   const [commercialCommissionRate, setCommercialCommissionRate] = useState<number | undefined>();
   const [appointmentRate, setAppointmentRate] = useState<number | undefined>();
   const [customClauses, setCustomClauses] = useState<QuoteCustomClause[]>([]);
-  const [lineSelection, setLineSelection] = useState<Record<string, boolean>>(
-    buildInitialLineSelection(initialTemplate),
-  );
-  const [lineAmounts, setLineAmounts] = useState<Record<string, number | undefined>>(
-    buildInitialLineAmounts(),
-  );
 
   const visibleTemplates = useMemo(
     () => filterQuoteTemplates(QUOTE_TEMPLATES, familyFilter),
@@ -43,61 +34,9 @@ export function useDevisView() {
     () => getSelectedQuoteTemplates(QUOTE_TEMPLATES, selectedTemplateIds),
     [selectedTemplateIds],
   );
-  const includedCatalogLines = useMemo(
-    () => selectedTemplates.flatMap((template) => template.includedLines),
-    [selectedTemplates],
-  );
-  const optionCatalogLines = useMemo(
-    () => selectedTemplates.flatMap((template) => template.optionLines),
-    [selectedTemplates],
-  );
-  const selectedIncludedLines = includedCatalogLines;
-  const selectedOptionLines = optionCatalogLines;
-  const quoteLines = useMemo<QuotePdfPayload['lines']>(() => {
-    if (campaignType === 'commercial') {
-      if (commercialCommissionRate === undefined) return [];
-      return [{
-        id: 'commercial-commission',
-        label: 'Commission par vente',
-        description: 'Commission appliquée au montant HT de chaque vente conclue.',
-        mode: 'ponctuel',
-        included: false,
-        amount: commercialCommissionRate,
-        amount_kind: 'percentage',
-      }];
-    }
-
-    const appointmentLine = appointmentRate === undefined ? [] : [{
-      id: 'qualified-appointment-base',
-      label: 'Rendez-vous pris',
-      description: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
-      mode: 'ponctuel' as const,
-      included: false,
-      amount: appointmentRate,
-      amount_kind: 'currency' as const,
-    }];
-    const clauseLines = customClauses
-      .filter((clause) => clause.label.trim() && (clause.amount !== undefined || clause.included))
-      .map((clause) => ({
-        id: clause.id,
-        label: clause.label.trim(),
-        description: 'Clause tarifaire personnalisée.',
-        mode: 'ponctuel' as const,
-        included: clause.included,
-        amount: clause.amount ?? 0,
-        amount_kind: 'currency' as const,
-      }));
-
-    return [...appointmentLine, ...clauseLines];
-  }, [appointmentRate, campaignType, commercialCommissionRate, customClauses]);
-  const totals = useMemo(
-    () => calculateQuoteTotals(
-      [...includedCatalogLines, ...optionCatalogLines],
-      lineSelection,
-      lineAmounts,
-      formState.engagement,
-    ),
-    [formState.engagement, includedCatalogLines, lineAmounts, lineSelection, optionCatalogLines],
+  const quoteLines = useMemo(
+    () => buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses),
+    [appointmentRate, campaignType, commercialCommissionRate, customClauses],
   );
   const checklist = useMemo(
     () => getQuoteChecklistProgress(formState, quoteLines.length),
@@ -120,14 +59,6 @@ export function useDevisView() {
     const template = QUOTE_TEMPLATES.find((entry) => entry.id === templateId);
     if (!template) return;
     setSelectedTemplateIds((previous) => toggleQuoteTemplateId(previous, templateId));
-    setLineSelection((previous) => ({
-      ...buildInitialLineSelection(template),
-      ...previous,
-    }));
-    setLineAmounts((previous) => ({
-      ...buildInitialLineAmounts(),
-      ...previous,
-    }));
   };
 
   const handleFormChange: QuoteFormChangeHandler = <Field extends keyof QuoteFormState>(
@@ -135,17 +66,6 @@ export function useDevisView() {
     value: QuoteFormState[Field],
   ): void => {
     setFormState((previous) => ({ ...previous, [field]: value }));
-  };
-
-  const handleLineToggle = (lineId: string): void => {
-    setLineSelection((previous) => ({ ...previous, [lineId]: !previous[lineId] }));
-  };
-
-  const handleLineAmountChange = (lineId: string, amount: number | undefined): void => {
-    setLineAmounts((previous) => ({
-      ...previous,
-      [lineId]: amount === undefined ? undefined : Math.max(0, amount),
-    }));
   };
 
   const addCustomClause = (): void => {
@@ -180,19 +100,11 @@ export function useDevisView() {
     familyFilter,
     formState,
     handleFormChange,
-    handleLineToggle,
-    handleLineAmountChange,
     handleTemplateToggle,
-    includedCatalogLines,
-    lineSelection,
-    lineAmounts,
-    optionCatalogLines,
     progressPercent: checklist.percent,
     quoteLines,
     removeCustomClause,
     selectedAssumptions,
-    selectedIncludedLines,
-    selectedOptionLines,
     selectedTemplateIds,
     selectedTemplatePromise,
     selectedTemplateTitle,
@@ -203,7 +115,6 @@ export function useDevisView() {
     setFamilyFilter,
     updateCustomClause,
     visibleTemplates,
-    ...totals,
   };
 }
 

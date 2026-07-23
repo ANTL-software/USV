@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import type { ProspectEnrichmentViewModel } from '../../../hooks/index.ts';
 import {
-  buildEnrichmentFieldViews,
+  buildEnrichmentComparisonFieldViews,
   formatEnrichmentKeyLabel,
   formatEnrichmentSourceOrigin,
 } from '../../../utils/scripts/index.ts';
@@ -30,6 +30,10 @@ export function ProspectEnrichmentPreview({
   if (!snapshot) {
     return null;
   }
+
+  const comparisonFields = preview
+    ? buildEnrichmentComparisonFieldViews(snapshot, preview.proposed_snapshot)
+    : [];
 
   return (
     <>
@@ -78,16 +82,16 @@ export function ProspectEnrichmentPreview({
             <div className="prospectEnrichment__previewColumn">
               <h3>État actuel</h3>
               <dl>
-                {buildEnrichmentFieldViews(snapshot.enrichissement).map((field) => (
-                  <div key={field.label}><dt>{field.label}</dt><dd>{field.value}</dd></div>
+                {comparisonFields.map((field) => (
+                  <div key={field.label}><dt>{field.label}</dt><dd>{field.currentValue}</dd></div>
                 ))}
               </dl>
             </div>
             <div className="prospectEnrichment__previewColumn prospectEnrichment__previewColumn--proposed">
               <h3>Proposition à enregistrer</h3>
               <dl>
-                {buildEnrichmentFieldViews(preview.proposed_snapshot.enrichissement).map((field) => (
-                  <div key={field.label}><dt>{field.label}</dt><dd>{field.value}</dd></div>
+                {comparisonFields.map((field) => (
+                  <div key={field.label}><dt>{field.label}</dt><dd>{field.proposedValue}</dd></div>
                 ))}
               </dl>
             </div>

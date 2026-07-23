@@ -12,9 +12,9 @@ export function DevisContent({ viewModel }: DevisContentProps): ReactElement {
   return (
     <div className="devisView__container">
       <DevisHeader
+        campaignType={viewModel.campaignType}
         onBack={viewModel.navigateBack}
         progressPercent={viewModel.progressPercent}
-        projectedTotal={viewModel.projectedTotal}
         selectedTemplateTitle={viewModel.selectedTemplateTitle}
       />
       <DevisWorkflowSummary />
