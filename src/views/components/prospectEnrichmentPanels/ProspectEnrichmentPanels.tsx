@@ -33,6 +33,11 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
           <div><dt>Code NAF</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.code_naf)}</dd></div>
           <div><dt>Activité</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.activite)}</dd></div>
           <div><dt>Effectif</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.effectif)}</dd></div>
+          <div><dt>Effectif enrichi</dt><dd>{snapshot.identite_societe.effectif_enrichi !== null && snapshot.identite_societe.effectif_enrichi !== undefined ? `env. ${formatEnrichmentValue(snapshot.identite_societe.effectif_enrichi)} salarié${Number(snapshot.identite_societe.effectif_enrichi) > 1 ? 's' : ''}` : '—'}</dd></div>
+          <div><dt>Nature / périmètre</dt><dd>{[snapshot.identite_societe.effectif_enrichi_nature, snapshot.identite_societe.effectif_enrichi_perimetre].filter(Boolean).map((value) => formatEnrichmentValue(value)).join(' · ') || '—'}</dd></div>
+          <div><dt>Année effectif enrichi</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.effectif_enrichi_annee)}</dd></div>
+          <div><dt>Confiance effectif enrichi</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.effectif_enrichi_confiance)}</dd></div>
+          <div><dt>Estimation web</dt><dd>{snapshot.identite_societe.effectif_estime !== null && snapshot.identite_societe.effectif_estime !== undefined ? `env. ${formatEnrichmentValue(snapshot.identite_societe.effectif_estime)} collaborateurs` : '—'}</dd></div>
           <div><dt>Adresse</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.adresse)}</dd></div>
           <div><dt>Ville</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.ville)}</dd></div>
           <div><dt>Source</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.source)}</dd></div>
@@ -70,6 +75,8 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
         <dl>
           <div><dt>Source principale</dt><dd>{formatEnrichmentSourceOrigin(snapshot.enrichissement.decisionnaire_source)}</dd></div>
           <div><dt>URL source</dt><dd>{snapshot.enrichissement.decisionnaire_source_url ? <a href={snapshot.enrichissement.decisionnaire_source_url} target="_blank" rel="noreferrer">{snapshot.enrichissement.decisionnaire_source_url}</a> : '—'}</dd></div>
+          <div><dt>Preuve effectif enrichi</dt><dd>{snapshot.identite_societe.effectif_enrichi_source_url ? <a href={snapshot.identite_societe.effectif_enrichi_source_url} target="_blank" rel="noreferrer">{formatEnrichmentSourceOrigin(snapshot.identite_societe.effectif_enrichi_source)}</a> : '—'}</dd></div>
+          <div><dt>Preuve estimation web</dt><dd>{snapshot.identite_societe.effectif_estime_source_url ? <a href={snapshot.identite_societe.effectif_estime_source_url} target="_blank" rel="noreferrer">{formatEnrichmentSourceOrigin(snapshot.identite_societe.effectif_estime_source)}</a> : '—'}</dd></div>
           <div><dt>Dernière vérification</dt><dd>{formatEnrichmentDate(snapshot.enrichissement.enrichissement_dernier_check_at)}</dd></div>
           <div><dt>Score</dt><dd>{formatEnrichmentValue(snapshot.enrichissement.enrichissement_score)}</dd></div>
           <div>
