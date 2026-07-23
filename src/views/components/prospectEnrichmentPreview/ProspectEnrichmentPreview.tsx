@@ -2,30 +2,35 @@ import type { ReactElement } from 'react';
 import type { ProspectEnrichmentViewModel } from '../../../hooks/index.ts';
 import {
   buildEnrichmentComparisonFieldViews,
+  extractWebsiteAnalysis,
   formatEnrichmentKeyLabel,
   formatEnrichmentSourceOrigin,
 } from '../../../utils/scripts/index.ts';
-import { Button } from '../index.ts';
+import { Button, ProspectWebsiteSignals } from '../index.ts';
 
 type ProspectEnrichmentPreviewProps = Pick<
   ProspectEnrichmentViewModel,
   | 'applyEnrichment'
   | 'applyLoading'
+  | 'candidateWebsiteUrl'
   | 'clearPreview'
   | 'preview'
   | 'previewEnrichment'
   | 'previewLoading'
   | 'snapshot'
+  | 'setCandidateWebsiteUrl'
 >;
 
 export function ProspectEnrichmentPreview({
   applyEnrichment,
   applyLoading,
+  candidateWebsiteUrl,
   clearPreview,
   preview,
   previewEnrichment,
   previewLoading,
   snapshot,
+  setCandidateWebsiteUrl,
 }: ProspectEnrichmentPreviewProps): ReactElement | null {
   if (!snapshot) {
     return null;
@@ -34,13 +39,26 @@ export function ProspectEnrichmentPreview({
   const comparisonFields = preview
     ? buildEnrichmentComparisonFieldViews(snapshot, preview.proposed_snapshot)
     : [];
+  const proposedWebsiteAnalysis = preview
+    ? extractWebsiteAnalysis(preview.proposed_snapshot)
+    : null;
 
   return (
     <>
       <section className="prospectEnrichment__actionBar">
         <div className="prospectEnrichment__actionText">
           <strong>Déclencher une recherche d’enrichissement</strong>
-          <span>L’action génère une proposition. Rien n’est sauvegardé tant que vous ne l’avez pas validée.</span>
+          <span>Le site peut être découvert automatiquement ou imposé pour ce test. Rien n’est sauvegardé sans validation.</span>
+          <label className="prospectEnrichment__manualUrl">
+            <span>Site candidat à contrôler (optionnel)</span>
+            <input
+              type="url"
+              value={candidateWebsiteUrl}
+              placeholder="https://entreprise.fr"
+              disabled={previewLoading || applyLoading}
+              onChange={(event) => setCandidateWebsiteUrl(event.target.value)}
+            />
+          </label>
         </div>
         <div className="prospectEnrichment__actionButtons">
           <Button style="gradient" onClick={() => void previewEnrichment()} disabled={previewLoading || applyLoading}>
@@ -62,7 +80,7 @@ export function ProspectEnrichmentPreview({
               <p>Vérifiez les données proposées avant de les sauvegarder dans les champs d’enrichissement.</p>
             </div>
             <div className="prospectEnrichment__previewButtons">
-              <Button style="green" onClick={() => void applyEnrichment()} disabled={applyLoading}>
+              <Button style="green" onClick={() => void applyEnrichment()} disabled={applyLoading || Boolean(preview.metadata.error)}>
                 <span>{applyLoading ? 'Enregistrement...' : 'Valider et enregistrer'}</span>
               </Button>
             </div>
@@ -77,6 +95,11 @@ export function ProspectEnrichmentPreview({
               <span><strong>Score match société :</strong> {preview.metadata.official_company_match_score}</span>
             )}
           </div>
+          {preview.metadata.error && (
+            <div className="prospectEnrichment__error">
+              Analyse incomplète : {preview.metadata.error}. Aucune donnée issue du moteur ne doit être validée.
+            </div>
+          )}
 
           <div className="prospectEnrichment__previewDiff">
             <div className="prospectEnrichment__previewColumn">
@@ -114,11 +137,24 @@ export function ProspectEnrichmentPreview({
               <h3>Signaux de sourcing</h3>
               <ul className="prospectEnrichment__scoreList">
                 <li><span>Candidats site web</span><strong>{preview.metadata.website_candidates_count ?? 0}</strong></li>
-                <li><span>Candidats LinkedIn entreprise</span><strong>{preview.metadata.linkedin_company_candidates_count ?? 0}</strong></li>
-                <li><span>Candidats LinkedIn décideur</span><strong>{preview.metadata.linkedin_decision_maker_candidates_count ?? 0}</strong></li>
+                <li><span>Identité du site retenu</span><strong>{preview.metadata.accepted_website_identity_score ?? 0} / 100</strong></li>
+                <li><span>Moteur</span><strong>{preview.metadata.search_providers?.join(', ') || 'Non configuré'}</strong></li>
               </ul>
+              {preview.metadata.website_candidates?.map((candidate) => (
+                <p key={candidate.url} className="prospectEnrichment__muted">
+                  <a href={candidate.url} target="_blank" rel="noreferrer">{candidate.url}</a>
+                  {' · '}
+                  {candidate.accepted
+                    ? `retenu (${candidate.identity_score}/100)`
+                    : `écarté (${candidate.identity_score}/100${candidate.reason ? ` · ${formatEnrichmentKeyLabel(candidate.reason)}` : ''})`}
+                </p>
+              ))}
+              {preview.metadata.search_warnings?.map((warning) => (
+                <p key={warning} className="prospectEnrichment__muted">{warning}</p>
+              ))}
             </div>
           </div>
+          <ProspectWebsiteSignals websiteAnalysis={proposedWebsiteAnalysis} />
         </section>
       )}
     </>

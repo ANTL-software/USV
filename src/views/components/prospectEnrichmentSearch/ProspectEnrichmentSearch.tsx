@@ -24,7 +24,7 @@ export function ProspectEnrichmentSearch({
   selectProspect,
   setSearch,
 }: ProspectEnrichmentSearchProps): ReactElement {
-  const hasQuery = search.trim().length >= 2;
+  const hasQuery = search.trim().length >= 3;
 
   return (
     <section className="prospectEnrichment__searchCard">
@@ -50,7 +50,7 @@ export function ProspectEnrichmentSearch({
         {searchLoading ? (
           <p className="prospectEnrichment__muted">Recherche en cours...</p>
         ) : !hasQuery ? (
-          <p className="prospectEnrichment__muted">Saisissez au moins 2 caractères pour lancer une recherche.</p>
+          <p className="prospectEnrichment__muted">Saisissez au moins 3 caractères pour lancer une recherche.</p>
         ) : results.length === 0 ? (
           <p className="prospectEnrichment__muted">Aucun prospect trouvé.</p>
         ) : (

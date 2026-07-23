@@ -22,6 +22,7 @@ export function useProspectEnrichment() {
   const [snapshotLoading, setSnapshotLoading] = useState(false);
   const [snapshotError, setSnapshotError] = useState<string | null>(null);
   const [preview, setPreview] = useState<ProspectEnrichmentPreview | null>(null);
+  const [candidateWebsiteUrl, setCandidateWebsiteUrl] = useState('');
   const [previewLoading, setPreviewLoading] = useState(false);
   const [applyLoading, setApplyLoading] = useState(false);
 
@@ -39,7 +40,7 @@ export function useProspectEnrichment() {
   }, []);
 
   useEffect(() => {
-    if (search.trim().length < 2) {
+    if (search.trim().length < 3) {
       setResults([]);
       setSearchError(null);
       return;
@@ -54,6 +55,7 @@ export function useProspectEnrichment() {
           limit: SEARCH_LIMIT,
           search: search.trim(),
           include_total: false,
+          fast_search: true,
         });
         setResults(response.data);
       } catch (loadError) {
@@ -76,6 +78,7 @@ export function useProspectEnrichment() {
   const selectProspect = useCallback((prospectId: number): void => {
     setSelectedProspectId(prospectId);
     setPreview(null);
+    setCandidateWebsiteUrl('');
   }, []);
 
   const clearPreview = useCallback((): void => setPreview(null), []);
@@ -84,7 +87,7 @@ export function useProspectEnrichment() {
     if (!selectedProspectId) return;
     try {
       setPreviewLoading(true);
-      setPreview(await previewProspectEnrichmentService(selectedProspectId));
+      setPreview(await previewProspectEnrichmentService(selectedProspectId, candidateWebsiteUrl));
     } catch (previewError) {
       await showError(
         previewError instanceof Error ? previewError.message : 'Impossible de générer la prévisualisation',
@@ -93,7 +96,7 @@ export function useProspectEnrichment() {
     } finally {
       setPreviewLoading(false);
     }
-  }, [selectedProspectId, showError]);
+  }, [candidateWebsiteUrl, selectedProspectId, showError]);
 
   const applyEnrichment = useCallback(async (): Promise<void> => {
     if (!selectedProspectId || !preview) return;
@@ -122,6 +125,7 @@ export function useProspectEnrichment() {
   return {
     applyEnrichment,
     applyLoading,
+    candidateWebsiteUrl,
     clearPreview,
     preview,
     previewEnrichment,
@@ -133,6 +137,7 @@ export function useProspectEnrichment() {
     selectedLabel,
     selectedProspectId,
     selectProspect,
+    setCandidateWebsiteUrl,
     setSearch,
     snapshot,
     snapshotError,

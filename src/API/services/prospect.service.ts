@@ -60,6 +60,7 @@ export const getAllProspectsService = async (filters?: ProspectFilters): Promise
   if (filters?.type_prospect) queryParams.set('type_prospect', filters.type_prospect);
   if (filters?.search) queryParams.set('search', filters.search);
   if (filters?.include_total === false) queryParams.set('include_total', 'false');
+  if (filters?.fast_search === true) queryParams.set('fast_search', 'true');
   // Tri par défaut par ID croissant
   queryParams.set('sort', 'id_prospect');
   queryParams.set('order', 'ASC');
@@ -101,8 +102,14 @@ export const getProspectEnrichmentSnapshotService = async (id: number): Promise<
   throw new Error(response.data.message || 'Impossible de récupérer la fiche d’enrichissement du prospect');
 };
 
-export const previewProspectEnrichmentService = async (id: number): Promise<ProspectEnrichmentPreview> => {
-  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentPreview; message?: string }> = await postRequest(`/prospects/${id}/enrichment/preview`, {});
+export const previewProspectEnrichmentService = async (
+  id: number,
+  websiteUrl?: string,
+): Promise<ProspectEnrichmentPreview> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentPreview; message?: string }> = await postRequest(
+    `/prospects/${id}/enrichment/preview`,
+    { website_url: websiteUrl?.trim() || null },
+  );
   if (response.data.success && response.data.data) {
     return response.data.data;
   }

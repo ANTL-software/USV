@@ -27,6 +27,19 @@
 #prospectEnrichment .prospectEnrichment__header h1 {
   margin: 0 0 0.35rem;
 }
+#prospectEnrichment .prospectEnrichment__manualBadge {
+  display: inline-flex;
+  width: fit-content;
+  margin-bottom: 0.65rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
 #prospectEnrichment .prospectEnrichment__header p {
   margin: 0;
   color: vars.$fontColorSecondary;
@@ -103,6 +116,18 @@
 #prospectEnrichment .prospectEnrichment__previewHeader > div:first-child p {
   margin: 0;
   color: vars.$fontColorSecondary;
+}
+#prospectEnrichment .prospectEnrichment__manualUrl {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.7rem;
+}
+#prospectEnrichment .prospectEnrichment__manualUrl input {
+  width: min(520px, 75vw);
+  padding: 0.7rem 0.85rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 9px;
 }
 #prospectEnrichment .prospectEnrichment__actionButtons,
 #prospectEnrichment .prospectEnrichment__previewButtons {

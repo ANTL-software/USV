@@ -16,8 +16,9 @@ export function ProspectEnrichmentHeader({ navigateBack }: ProspectEnrichmentHea
         </Button>
       </div>
       <header className="prospectEnrichment__header">
-        <h1>Enrichissement de donnée Prospect</h1>
-        <p>Consultez la fiche interne et les champs réservés à l’enrichissement public, sans écraser les données terrain.</p>
+        <span className="prospectEnrichment__manualBadge">Évaluation manuelle</span>
+        <h1>Enrichissement de données prospect</h1>
+        <p>Choisissez une fiche, lancez l’analyse et contrôlez chaque proposition. Aucune recherche ni sauvegarde ne part automatiquement.</p>
       </header>
     </>
   );
