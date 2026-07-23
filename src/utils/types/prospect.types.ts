@@ -112,6 +112,27 @@ export interface Prospect {
   effectif_estime_source?: string | null;
   effectif_estime_source_url?: string | null;
   effectif_estime_confiance?: string | null;
+  sirene_siren?: string | null;
+  sirene_raison_sociale?: string | null;
+  sirene_code_naf?: string | null;
+  sirene_code_naf_2025?: string | null;
+  sirene_activite?: string | null;
+  sirene_adresse?: string | null;
+  sirene_code_postal?: string | null;
+  sirene_ville?: string | null;
+  sirene_etat_administratif?: string | null;
+  sirene_date_creation?: string | null;
+  sirene_categorie_juridique?: string | null;
+  sirene_categorie_entreprise?: string | null;
+  sirene_tranche_effectif?: string | null;
+  sirene_annee_effectif?: number | null;
+  sirene_statut_diffusion?: string | null;
+  sirene_dernier_traitement_at?: string | null;
+  sirene_dernier_sync_at?: string | null;
+  qualite_score?: number | null;
+  qualite_statut?: 'exploitable' | 'a_verifier' | 'incomplete' | 'exclue';
+  qualite_raisons?: string[];
+  qualite_dernier_calcul_at?: string | null;
   source?: string | null;
   est_doublon: boolean;
   optout: boolean;
@@ -190,6 +211,7 @@ export interface ProspectFilters {
   type_prospect?: TypeProspect;
   search?: string;
   include_total?: boolean;
+  fast_search?: boolean;
 }
 
 export interface ProspectUpdateData {
@@ -245,6 +267,27 @@ export interface ProspectEnrichmentSnapshot {
     effectif_estime_source: string | null;
     effectif_estime_source_url: string | null;
     effectif_estime_confiance: string | null;
+    sirene_siren: string | null;
+    sirene_raison_sociale: string | null;
+    sirene_code_naf: string | null;
+    sirene_code_naf_2025: string | null;
+    sirene_activite: string | null;
+    sirene_adresse: string | null;
+    sirene_code_postal: string | null;
+    sirene_ville: string | null;
+    sirene_etat_administratif: string | null;
+    sirene_date_creation: string | null;
+    sirene_categorie_juridique: string | null;
+    sirene_categorie_entreprise: string | null;
+    sirene_tranche_effectif: string | null;
+    sirene_annee_effectif: number | null;
+    sirene_statut_diffusion: string | null;
+    sirene_dernier_traitement_at: string | null;
+    sirene_dernier_sync_at: string | null;
+    qualite_score: number | null;
+    qualite_statut: 'exploitable' | 'a_verifier' | 'incomplete' | 'exclue';
+    qualite_raisons: string[];
+    qualite_dernier_calcul_at: string | null;
     source: string | null;
     adresse: string | null;
     adresse_livraison: string | null;
@@ -310,9 +353,18 @@ export interface ProspectEnrichmentPreview {
     official_company_match_score?: number;
     official_company_resolved_by?: string | null;
     website_candidates_count?: number;
-    linkedin_company_candidates_count?: number;
-    linkedin_decision_maker_candidates_count?: number;
+    website_candidates?: Array<{
+      url: string;
+      accepted: boolean;
+      identity_score: number;
+      reason: string | null;
+    }>;
+    accepted_website_identity_score?: number;
+    search_providers?: string[];
+    search_warnings?: string[];
     evidence_breakdown?: Record<string, number>;
+    failed?: boolean;
+    error?: string;
   };
   proposed_snapshot: ProspectEnrichmentSnapshot;
 }

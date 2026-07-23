@@ -168,6 +168,7 @@ export {
   formatEnrichmentSourceOrigin,
   formatEnrichmentSourceType,
   formatEnrichmentValue,
+  formatSireneEmployeeRange,
   getEmailSignalStrength,
   getLegalSignalStrength,
   getPageSignalStrength,
@@ -178,7 +179,6 @@ export {
   buildEnrichmentComparisonFieldViews,
   buildEnrichmentFieldViews,
   buildEnrichmentSourceViews,
-  formatEnrichmentPayload,
 } from './prospectEnrichment.ts';
 export type {
   EnrichmentComparisonFieldView,
@@ -186,6 +186,7 @@ export type {
   EnrichmentSourceView,
   SignalStrength,
   WebsiteAnalysisPayload,
+  WebsiteDocumentPayload,
   WebsitePersonCandidate,
 } from './prospectEnrichment.ts';
 export {

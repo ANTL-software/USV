@@ -15,6 +15,15 @@ export type WebsitePersonCandidate = {
   score?: number;
 };
 
+export type WebsiteDocumentPayload = {
+  url: string;
+  extraction_method?: string;
+  text_length?: number;
+  emails?: string[];
+  phones?: string[];
+  people_count?: number;
+};
+
 export type WebsiteAnalysisPayload = {
   domain?: string | null;
   professional_emails?: string[];
@@ -23,6 +32,7 @@ export type WebsiteAnalysisPayload = {
   siret_candidates?: string[];
   siren_candidates?: string[];
   people_candidates?: WebsitePersonCandidate[];
+  documents?: WebsiteDocumentPayload[];
 };
 
 export type SignalStrength = 'fort' | 'moyen' | 'faible';
@@ -43,6 +53,7 @@ export interface EnrichmentSourceView {
   origin: string;
   type: string;
   url: string | null;
+  confidence: number | null;
 }
 
 export function formatEnrichmentValue(value: string | number | null | undefined): string {
@@ -60,6 +71,29 @@ export function formatEnrichmentDate(value: string | null | undefined): string {
   return Number.isNaN(date.getTime())
     ? value
     : date.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+}
+
+export function formatSireneEmployeeRange(value: string | null | undefined): string {
+  if (!value) return '—';
+  const labels: Record<string, string> = {
+    NN: 'Unité non employeuse',
+    '00': '0 salarié',
+    '01': '1 à 2 salariés',
+    '02': '3 à 5 salariés',
+    '03': '6 à 9 salariés',
+    '11': '10 à 19 salariés',
+    '12': '20 à 49 salariés',
+    '21': '50 à 99 salariés',
+    '22': '100 à 199 salariés',
+    '31': '200 à 249 salariés',
+    '32': '250 à 499 salariés',
+    '41': '500 à 999 salariés',
+    '42': '1 000 à 1 999 salariés',
+    '51': '2 000 à 4 999 salariés',
+    '52': '5 000 à 9 999 salariés',
+    '53': '10 000 salariés et plus',
+  };
+  return labels[value] || value;
 }
 
 export const formatEnrichmentKeyLabel = (value: string): string => value
@@ -83,6 +117,9 @@ export function formatEnrichmentSourceOrigin(value: string | null | undefined): 
     official_website_public_mobile_candidate: 'Site public validé (mobile candidat)',
     website_officiel: 'Site officiel analysé',
     document_public: 'Document public analysé',
+    site_officiel_valide: 'Site officiel validé',
+    document_public_valide: 'Document du site officiel',
+    moteur_recherche_configure: 'Moteur de recherche configuré',
     legacy_responsable: 'Champ responsable existant',
     legacy_nom_contact: 'Champ nom_contact existant',
     email_domain_inference: 'Inférence par domaine email',
@@ -102,15 +139,29 @@ export function formatEnrichmentSourceType(value: string | null | undefined): st
     website: 'Site web',
     linkedin_company: 'LinkedIn entreprise',
     linkedin_profile: 'LinkedIn profil',
+    identite_legale: 'Identité légale',
+    site_web: 'Site officiel',
+    decisionnaire: 'Décideur',
+    email_professionnel: 'Email professionnel',
+    telephone_public: 'Téléphone public',
+    effectif_public: 'Effectif public',
+    linkedin_entreprise: 'LinkedIn entreprise',
+    linkedin_decisionnaire: 'LinkedIn décideur',
   };
   return labels[value] || formatEnrichmentKeyLabel(value);
 }
 
 export function extractWebsiteAnalysis(snapshot: ProspectEnrichmentSnapshot): WebsiteAnalysisPayload | null {
-  const webOsint = snapshot.enrichissement.enrichissement_payload?.web_osint as
+  const pipeline = snapshot.enrichissement.enrichissement_payload?.pipeline_v3 as
     | { website_analysis?: WebsiteAnalysisPayload }
     | undefined;
-  return webOsint?.website_analysis ?? null;
+  if (pipeline?.website_analysis) {
+    return pipeline.website_analysis;
+  }
+  const legacyPayload = snapshot.enrichissement.enrichissement_payload?.web_osint as
+    | { website_analysis?: WebsiteAnalysisPayload }
+    | undefined;
+  return legacyPayload?.website_analysis ?? null;
 }
 
 export function getSignalStrengthLabel(strength: SignalStrength): string {
@@ -181,14 +232,23 @@ export function buildEnrichmentComparisonFieldViews(
     { label: 'Téléphone public proposé', currentValue: formatEnrichmentValue(current.enrichissement.telephone_tertiaire), proposedValue: formatEnrichmentValue(proposed.enrichissement.telephone_tertiaire) },
     { label: 'Source téléphone public', currentValue: formatEnrichmentValue(current.enrichissement.telephone_tertiaire_source), proposedValue: formatEnrichmentValue(proposed.enrichissement.telephone_tertiaire_source) },
     { label: 'Effectif historique', currentValue: formatEnrichmentValue(current.identite_societe.effectif), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif) },
+    { label: 'Raison sociale SIRENE', currentValue: formatEnrichmentValue(current.identite_societe.sirene_raison_sociale), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_raison_sociale) },
+    { label: 'SIREN officiel', currentValue: formatEnrichmentValue(current.identite_societe.sirene_siren), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_siren) },
+    { label: 'État administratif SIRENE', currentValue: formatEnrichmentValue(current.identite_societe.sirene_etat_administratif), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_etat_administratif) },
+    { label: 'Activité SIRENE', currentValue: formatEnrichmentValue(current.identite_societe.sirene_code_naf), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_code_naf) },
+    { label: 'Code NAF 2025', currentValue: formatEnrichmentValue(current.identite_societe.sirene_code_naf_2025), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_code_naf_2025) },
+    { label: 'Tranche d’effectif SIRENE', currentValue: formatSireneEmployeeRange(current.identite_societe.sirene_tranche_effectif), proposedValue: formatSireneEmployeeRange(proposed.identite_societe.sirene_tranche_effectif) },
+    { label: 'Année tranche SIRENE', currentValue: formatEnrichmentValue(current.identite_societe.sirene_annee_effectif), proposedValue: formatEnrichmentValue(proposed.identite_societe.sirene_annee_effectif) },
     { label: 'Effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi) },
     { label: 'Nature / périmètre effectif', currentValue: formatEnrichmentValue([current.identite_societe.effectif_enrichi_nature, current.identite_societe.effectif_enrichi_perimetre].filter(Boolean).join(' · ') || null), proposedValue: formatEnrichmentValue([proposed.identite_societe.effectif_enrichi_nature, proposed.identite_societe.effectif_enrichi_perimetre].filter(Boolean).join(' · ') || null) },
     { label: 'Année effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi_annee), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi_annee) },
     { label: 'Confiance effectif enrichi', currentValue: formatEnrichmentValue(current.identite_societe.effectif_enrichi_confiance), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_enrichi_confiance) },
     { label: 'Estimation web', currentValue: formatEnrichmentValue(current.identite_societe.effectif_estime), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_estime) },
     { label: 'Confiance estimation web', currentValue: formatEnrichmentValue(current.identite_societe.effectif_estime_confiance), proposedValue: formatEnrichmentValue(proposed.identite_societe.effectif_estime_confiance) },
-    { label: 'Statut', currentValue: ENRICHMENT_STATUS_LABELS[current.enrichissement.enrichissement_statut], proposedValue: ENRICHMENT_STATUS_LABELS[proposed.enrichissement.enrichissement_statut] },
-    { label: 'Score', currentValue: formatEnrichmentValue(current.enrichissement.enrichissement_score), proposedValue: formatEnrichmentValue(proposed.enrichissement.enrichissement_score) },
+    { label: 'Qualité opérationnelle', currentValue: formatEnrichmentValue(current.identite_societe.qualite_score), proposedValue: formatEnrichmentValue(proposed.identite_societe.qualite_score) },
+    { label: 'Statut qualité', currentValue: formatEnrichmentValue(current.identite_societe.qualite_statut), proposedValue: formatEnrichmentValue(proposed.identite_societe.qualite_statut) },
+    { label: 'Statut enrichissement', currentValue: ENRICHMENT_STATUS_LABELS[current.enrichissement.enrichissement_statut], proposedValue: ENRICHMENT_STATUS_LABELS[proposed.enrichissement.enrichissement_statut] },
+    { label: 'Confiance enrichissement', currentValue: formatEnrichmentValue(current.enrichissement.enrichissement_score), proposedValue: formatEnrichmentValue(proposed.enrichissement.enrichissement_score) },
   ];
 }
 
@@ -205,10 +265,7 @@ export function buildEnrichmentSourceViews(sources: unknown[]): EnrichmentSource
       origin: formatEnrichmentSourceOrigin(typeof record.origin === 'string' ? record.origin : null),
       type: formatEnrichmentSourceType(typeof record.type === 'string' ? record.type : null),
       url: rawUrl,
+      confidence: typeof record.confidence === 'number' ? Math.round(record.confidence * 100) : null,
     }];
   });
-}
-
-export function formatEnrichmentPayload(payload: Record<string, unknown>): string {
-  return JSON.stringify(payload, null, 2);
 }

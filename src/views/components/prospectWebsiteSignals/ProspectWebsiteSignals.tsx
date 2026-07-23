@@ -36,7 +36,7 @@ export function ProspectWebsiteSignals({ websiteAnalysis }: ProspectWebsiteSigna
 
   return (
     <article className="prospectEnrichment__panel">
-      <h2><IoGlobeOutline /> Signaux extraits du site</h2>
+      <h2><IoGlobeOutline /> Signaux du site officiel et de ses documents</h2>
       {!websiteAnalysis ? (
         <p className="prospectEnrichment__muted">Aucun signal on-site exploitable n’a encore été extrait pour cette fiche.</p>
       ) : (
@@ -112,7 +112,7 @@ export function ProspectWebsiteSignals({ websiteAnalysis }: ProspectWebsiteSigna
           </div>
 
           <div className="prospectEnrichment__signalBlock">
-            <h3>Personnes détectées sur le site</h3>
+            <h3>Personnes détectées sur le site et dans les documents</h3>
             {websiteAnalysis.people_candidates?.length ? (
               <div className="prospectEnrichment__peopleList">
                 {websiteAnalysis.people_candidates.map((person, index) => (
@@ -130,7 +130,30 @@ export function ProspectWebsiteSignals({ websiteAnalysis }: ProspectWebsiteSigna
                 ))}
               </div>
             ) : (
-              <p className="prospectEnrichment__muted">Aucune personne exploitable détectée sur les pages analysées.</p>
+              <p className="prospectEnrichment__muted">Aucune personne exploitable détectée dans les sources analysées.</p>
+            )}
+          </div>
+
+          <div className="prospectEnrichment__signalBlock">
+            <h3>Documents publics analysés</h3>
+            {websiteAnalysis.documents?.length ? (
+              <ul className="prospectEnrichment__plainList">
+                {websiteAnalysis.documents.map((document) => (
+                  <li key={document.url}>
+                    <div className="prospectEnrichment__signalLine">
+                      <a href={document.url} target="_blank" rel="noreferrer">{document.url}</a>
+                      <span className="prospectEnrichment__badge">
+                        {document.extraction_method === 'mistral_ocr' ? 'OCR' : 'Texte PDF'}
+                      </span>
+                    </div>
+                    <small>
+                      {document.emails?.length ?? 0} email(s) · {document.phones?.length ?? 0} téléphone(s) · {document.people_count ?? 0} personne(s)
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="prospectEnrichment__muted">Aucun document public exploitable détecté sur le domaine officiel.</p>
             )}
           </div>
         </div>

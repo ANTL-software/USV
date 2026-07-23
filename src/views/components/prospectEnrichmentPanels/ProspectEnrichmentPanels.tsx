@@ -11,9 +11,9 @@ import type { ProspectEnrichmentSnapshot } from '../../../utils/types/index.ts';
 import {
   buildEnrichmentSourceViews,
   formatEnrichmentDate,
-  formatEnrichmentPayload,
   formatEnrichmentSourceOrigin,
   formatEnrichmentValue,
+  formatSireneEmployeeRange,
 } from '../../../utils/scripts/index.ts';
 
 interface ProspectEnrichmentPanelsProps {
@@ -33,6 +33,15 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
           <div><dt>Code NAF</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.code_naf)}</dd></div>
           <div><dt>Activité</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.activite)}</dd></div>
           <div><dt>Effectif</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.effectif)}</dd></div>
+          <div><dt>Raison sociale SIRENE</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_raison_sociale)}</dd></div>
+          <div><dt>SIREN officiel</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_siren)}</dd></div>
+          <div><dt>État administratif</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_etat_administratif)}</dd></div>
+          <div><dt>Code NAF 2025</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_code_naf_2025)}</dd></div>
+          <div><dt>Date de création SIRENE</dt><dd>{formatEnrichmentDate(snapshot.identite_societe.sirene_date_creation)}</dd></div>
+          <div><dt>Catégorie juridique</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_categorie_juridique)}</dd></div>
+          <div><dt>Catégorie d’entreprise</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_categorie_entreprise)}</dd></div>
+          <div><dt>Tranche d’effectif SIRENE</dt><dd>{formatSireneEmployeeRange(snapshot.identite_societe.sirene_tranche_effectif)}</dd></div>
+          <div><dt>Année tranche d’effectif</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_annee_effectif)}</dd></div>
           <div><dt>Effectif enrichi</dt><dd>{snapshot.identite_societe.effectif_enrichi !== null && snapshot.identite_societe.effectif_enrichi !== undefined ? `env. ${formatEnrichmentValue(snapshot.identite_societe.effectif_enrichi)} salarié${Number(snapshot.identite_societe.effectif_enrichi) > 1 ? 's' : ''}` : '—'}</dd></div>
           <div><dt>Nature / périmètre</dt><dd>{[snapshot.identite_societe.effectif_enrichi_nature, snapshot.identite_societe.effectif_enrichi_perimetre].filter(Boolean).map((value) => formatEnrichmentValue(value)).join(' · ') || '—'}</dd></div>
           <div><dt>Année effectif enrichi</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.effectif_enrichi_annee)}</dd></div>
@@ -40,6 +49,11 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
           <div><dt>Estimation web</dt><dd>{snapshot.identite_societe.effectif_estime !== null && snapshot.identite_societe.effectif_estime !== undefined ? `env. ${formatEnrichmentValue(snapshot.identite_societe.effectif_estime)} collaborateurs` : '—'}</dd></div>
           <div><dt>Adresse</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.adresse)}</dd></div>
           <div><dt>Ville</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.ville)}</dd></div>
+          <div><dt>Adresse SIRENE</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.sirene_adresse)}</dd></div>
+          <div><dt>Localité SIRENE</dt><dd>{[snapshot.identite_societe.sirene_code_postal, snapshot.identite_societe.sirene_ville].filter(Boolean).join(' ') || '—'}</dd></div>
+          <div><dt>Dernière synchronisation SIRENE</dt><dd>{formatEnrichmentDate(snapshot.identite_societe.sirene_dernier_sync_at)}</dd></div>
+          <div><dt>Qualité opérationnelle</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.qualite_score)} / 100 · {formatEnrichmentValue(snapshot.identite_societe.qualite_statut)}</dd></div>
+          <div><dt>Points à compléter</dt><dd>{snapshot.identite_societe.qualite_raisons.length > 0 ? snapshot.identite_societe.qualite_raisons.map((reason) => reason.replace(/_/g, ' ')).join(' · ') : 'Aucun'}</dd></div>
           <div><dt>Source</dt><dd>{formatEnrichmentValue(snapshot.identite_societe.source)}</dd></div>
         </dl>
       </article>
@@ -87,7 +101,7 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
                   {sources.map((source) => (
                     <div key={source.key} className="prospectEnrichment__sourceItem">
                       <strong>{source.type}</strong>
-                      <span>{source.origin}</span>
+                      <span>{source.origin}{source.confidence !== null ? ` · confiance ${source.confidence}%` : ''}</span>
                       {source.url ? <a href={source.url} target="_blank" rel="noreferrer">{source.url}</a> : <span>—</span>}
                     </div>
                   ))}
@@ -95,7 +109,6 @@ export function ProspectEnrichmentPanels({ snapshot }: ProspectEnrichmentPanelsP
               ) : '—'}
             </dd>
           </div>
-          <div><dt>Payload enrichissement</dt><dd><pre>{formatEnrichmentPayload(snapshot.enrichissement.enrichissement_payload)}</pre></dd></div>
         </dl>
       </article>
     </>
