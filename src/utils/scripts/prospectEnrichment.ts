@@ -75,6 +75,8 @@ export function formatEnrichmentSourceOrigin(value: string | null | undefined): 
     web_osint_ranked: 'Sourcing web pondéré',
     official_website_public: 'Site public validé',
     official_website_public_mobile_candidate: 'Site public validé (mobile candidat)',
+    website_officiel: 'Site officiel analysé',
+    document_public: 'Document public analysé',
     legacy_responsable: 'Champ responsable existant',
     legacy_nom_contact: 'Champ nom_contact existant',
     email_domain_inference: 'Inférence par domaine email',
@@ -88,6 +90,9 @@ export function formatEnrichmentSourceType(value: string | null | undefined): st
   }
   const labels: Record<string, string> = {
     official_company_registry: 'Registre officiel',
+    employee_count_official_range: 'Tranche d’effectif officielle',
+    employee_count_declared: 'Effectif déclaré',
+    employee_count_estimate: 'Estimation de taille',
     website: 'Site web',
     linkedin_company: 'LinkedIn entreprise',
     linkedin_profile: 'LinkedIn profil',
