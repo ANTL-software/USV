@@ -5,6 +5,12 @@ export type {
   SocialVisual,
   SocialPlatformStatus,
   SocialDraftInput,
+  SocialPlatformState,
+  SocialReadinessCheck,
+  SocialReadinessSnapshot,
+  SocialPublicationPackage,
+  SocialWorkflowStage,
+  SocialPublicationStatus,
 } from './socialPublication.types.ts';
 
 export type {
