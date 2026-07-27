@@ -81,6 +81,31 @@ export interface SocialPublicationPackage {
   anomalies: string[];
 }
 
+export type SocialPublicationHistoryStatus = 'scheduled' | 'published' | 'failed';
+
+export interface SocialPublicationHistoryEntry {
+  draftId: string;
+  subject: string;
+  category: SocialEditorialDraft['categorie'];
+  platform: SocialPlatform;
+  scheduledAt: string | null;
+  processedAt: string | null;
+  status: SocialPublicationHistoryStatus;
+  postId: string | null;
+  error: string | null;
+  createdBy: string | null;
+  validatedBy: string | null;
+  scheduledBy: string | null;
+}
+
+export interface SocialPublicationHistoryPage {
+  items: SocialPublicationHistoryEntry[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface SocialWorkflowStage {
   key: 'review' | 'schedule' | 'archive';
   label: string;

@@ -31,6 +31,14 @@
   padding: 1.55em;
 }
 
+#socialPublicationView .socialPublicationView__hero > div {
+  max-width: 760px;
+}
+
+#socialPublicationView .socialPublicationView__hero > button {
+  flex-shrink: 0;
+}
+
 #socialPublicationView .socialPublicationView__eyebrow,
 #socialPublicationView .socialPublicationView__section-kicker {
   color: vars.$utilsPrimary;
@@ -437,6 +445,50 @@
 
 #socialPublicationView .socialPublicationView__table td strong {
   color: vars.$fontColorPrimary;
+}
+
+#socialPublicationView .socialPublicationView__history-filters,
+#socialPublicationView .socialPublicationView__pagination {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+#socialPublicationView .socialPublicationView__history-filters label {
+  display: grid;
+  gap: .4rem;
+  min-width: 240px;
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+
+#socialPublicationView .socialPublicationView__history-table small {
+  display: block;
+  margin-top: .25rem;
+  color: vars.$fontColorSecondary;
+}
+
+#socialPublicationView .socialPublicationView__history-status {
+  font-weight: 700;
+}
+
+#socialPublicationView .socialPublicationView__history-status--scheduled {
+  color: vars.$utilsPrimary;
+}
+
+#socialPublicationView .socialPublicationView__history-status--published {
+  color: #2d8b57;
+}
+
+#socialPublicationView .socialPublicationView__history-status--failed {
+  color: #bd3c47;
+}
+
+#socialPublicationView .socialPublicationView__pagination {
+  margin: 1.25rem 0 0;
+  align-items: center;
 }
 
 #socialPublicationView .socialPublicationView__check,

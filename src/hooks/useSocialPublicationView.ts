@@ -3,5 +3,9 @@ import { useSocialPublication } from './useSocialPublication.ts';
 
 export function useSocialPublicationView() {
   const navigate = useNavigate();
-  return { socialPublication: useSocialPublication(), navigateBack: () => void navigate('/commercial') };
+  return {
+    socialPublication: useSocialPublication(),
+    navigateBack: () => void navigate('/commercial'),
+    navigateToHistory: () => void navigate('/commercial/publications-reseaux-sociaux/historique'),
+  };
 }

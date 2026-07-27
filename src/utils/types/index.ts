@@ -9,6 +9,9 @@ export type {
   SocialReadinessCheck,
   SocialReadinessSnapshot,
   SocialPublicationPackage,
+  SocialPublicationHistoryEntry,
+  SocialPublicationHistoryPage,
+  SocialPublicationHistoryStatus,
   SocialWorkflowStage,
   SocialPublicationStatus,
 } from './socialPublication.types.ts';
