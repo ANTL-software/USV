@@ -10,6 +10,7 @@ import {
   emptySocialText,
   platformLabels,
   platformOptions,
+  formatSocialDate,
   type SocialSelectOption,
 } from './socialPublication.constants.ts';
 
@@ -25,12 +26,22 @@ export function SocialDraftComposer({ state }: { state: SocialPublicationState }
   const [feedback, setFeedback] = useState<{ error: boolean; message: string } | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
+  const visualNameCounts = useMemo(() => state.visuals.reduce<Map<string, number>>((counts, visual) => {
+    counts.set(visual.name, (counts.get(visual.name) ?? 0) + 1);
+    return counts;
+  }, new Map<string, number>()), [state.visuals]);
   const visualOptions = useMemo<SocialSelectOption<string>[]>(
-    () => state.visuals.map((visual) => ({
-      value: visual.fileId,
-      label: visual.folder ? `${visual.folder} · ${visual.name}` : visual.name,
-    })),
-    [state.visuals],
+    () => state.visuals.map((visual) => {
+      const location = visual.folder ? `${visual.folder} · ` : '';
+      const isDuplicateName = (visualNameCounts.get(visual.name) ?? 0) > 1;
+      const duplicateHint = isDuplicateName ? ' · version distincte' : '';
+      const modifiedAt = ` · modifié le ${formatSocialDate(visual.modifiedTime)}`;
+      return {
+        value: visual.fileId,
+        label: `${location}${visual.name}${duplicateHint}${modifiedAt}`,
+      };
+    }),
+    [state.visuals, visualNameCounts],
   );
   const selectedVisual = state.visuals.find((visual) => visual.fileId === visualId) ?? null;
 
