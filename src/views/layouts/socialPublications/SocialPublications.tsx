@@ -7,6 +7,6 @@ import './socialPublications.scss';
 
 function SocialPublications(): ReactElement {
   const viewModel = useSocialPublicationView();
-  return <div id="socialPublicationView"><Header /><SubNav /><main><div className="socialPublicationView__container"><div className="socialPublicationView__back"><Button style="back" onClick={viewModel.navigateBack}><MdArrowBack /><span>Retour</span></Button></div><section className="socialPublicationView__hero"><p className="socialPublicationView__eyebrow">Commercial / Réseaux sociaux</p><h1>Posts réseaux sociaux</h1><p className="socialPublicationView__subtitle">Un espace partagé pour préparer, valider et programmer les publications ANTL sans dépendre d’un poste local.</p></section><SocialPublicationWorkspace state={viewModel.socialPublication} /></div></main><BackToTop /></div>;
+  return <div id="socialPublicationView"><Header /><SubNav /><main><div className="socialPublicationView__container"><div className="socialPublicationView__back"><Button style="back" onClick={viewModel.navigateBack}><MdArrowBack /><span>Retour</span></Button></div><section className="socialPublicationView__hero"><p className="socialPublicationView__eyebrow">Commercial / Réseaux sociaux</p><h1>Posts réseaux sociaux</h1><p className="socialPublicationView__subtitle">Un espace partagé pour préparer, valider et programmer les publications antl sans dépendre d’un poste local.</p></section><SocialPublicationWorkspace state={viewModel.socialPublication} /></div></main><BackToTop /></div>;
 }
 export default WithAuth(SocialPublications);
