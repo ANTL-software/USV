@@ -24,10 +24,14 @@
 }
 
 #socialPublicationView .socialPublicationView__hero {
+  align-items: center;
   background:
     radial-gradient(circle at 88% 22%, rgba(124, 58, 237, .13), transparent 28%),
     rgba(255, 255, 255, .92);
   border-radius: 1.25em;
+  display: flex;
+  gap: 1.5em;
+  justify-content: space-between;
   padding: 1.55em;
 }
 
@@ -35,8 +39,36 @@
   max-width: 760px;
 }
 
-#socialPublicationView .socialPublicationView__hero > button {
+#socialPublicationView .socialPublicationView__history-action {
+  align-items: center;
+  box-shadow: 0 .65em 1.35em rgba(124, 58, 237, .25);
   flex-shrink: 0;
+  font-size: 1rem;
+  min-height: 4.6em;
+  padding: .8em 1.2em;
+}
+
+#socialPublicationView .socialPublicationView__history-action svg {
+  font-size: 1.55rem;
+}
+
+#socialPublicationView .socialPublicationView__history-action > span {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: .18em;
+  text-align: left;
+}
+
+#socialPublicationView .socialPublicationView__history-action small {
+  font-size: .76rem;
+  font-weight: 500;
+  opacity: .9;
+}
+
+#socialPublicationView .socialPublicationView__history-action:hover {
+  box-shadow: 0 .8em 1.6em rgba(124, 58, 237, .35);
+  transform: translateY(-2px);
 }
 
 #socialPublicationView .socialPublicationView__eyebrow,
@@ -701,6 +733,15 @@
 }
 
 @media (max-width: vars.$tabletWidth) {
+  #socialPublicationView .socialPublicationView__hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  #socialPublicationView .socialPublicationView__history-action {
+    width: 100%;
+  }
+
   #socialPublicationView .socialPublicationView__form {
     grid-template-columns: 1fr;
   }
