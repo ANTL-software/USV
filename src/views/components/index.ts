@@ -205,6 +205,7 @@ export { BookingPageContent } from './bookingPageContent/index.ts';
 export { CentreAppelsContent } from './centreAppelsContent/index.ts';
 export { CommercialHubContent } from './commercialHubContent/index.ts';
 export { SocialPublicationWorkspace } from './socialPublicationWorkspace/index.ts';
+export { SocialPublicationHistoryContent } from './socialPublicationHistory/index.ts';
 export { CommerciauxHubContent } from './commerciauxHubContent/index.ts';
 export { IncidentsHubContent } from './incidentsHubContent/index.ts';
 export { QualiteHubContent } from './qualiteHubContent/index.ts';

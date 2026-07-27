@@ -3,6 +3,7 @@ import { getRequest, postRequest } from '../APICalls.ts';
 import type {
   SocialDraftInput,
   SocialEditorialDraft,
+  SocialPublicationHistoryPage,
   SocialPublicationPackage,
   SocialPublicationStatus,
   SocialReadinessCheck,
@@ -32,6 +33,18 @@ export const getSocialVisualsService = async (): Promise<SocialVisual[]> => (
 export const getSocialDraftsService = async (): Promise<SocialEditorialDraft[]> => (
   unwrap(await getRequest('/publications-reseaux-sociaux/drafts'), 'Brouillons indisponibles.')
 );
+
+export const getSocialPublicationHistoryService = async (
+  page: number,
+  platform: SocialPlatform | null,
+): Promise<SocialPublicationHistoryPage> => {
+  const params = new URLSearchParams({ page: String(page), limit: '25' });
+  if (platform) params.set('platform', platform);
+  return unwrap(
+    await getRequest(`/publications-reseaux-sociaux/history?${params.toString()}`),
+    'Historique des publications indisponible.',
+  );
+};
 
 export const createSocialDraftService = async (payload: SocialDraftInput): Promise<SocialEditorialDraft> => (
   unwrap(

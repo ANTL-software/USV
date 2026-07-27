@@ -45,6 +45,7 @@ export {
   getSocialPublicationStatusService,
   getSocialVisualsService,
   getSocialDraftsService,
+  getSocialPublicationHistoryService,
   createSocialDraftService,
   verifySocialDraftReadinessService,
   validateSocialDraftService,
