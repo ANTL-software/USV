@@ -72,7 +72,7 @@ export interface SocialPlatformStatus {
 export interface SocialPublicationPackage {
   packageId: string;
   draftId: string;
-  platform: 'facebook' | 'linkedin';
+  platform: SocialPlatform;
   workflowStatus: string;
   preparedAt: string;
   approval: { mehdi: boolean; nelly: boolean };
