@@ -213,6 +213,7 @@ export function buildEnrichmentFieldViews(
     { label: 'Téléphone tertiaire', value: formatEnrichmentValue(enrichment.telephone_tertiaire) },
     { label: 'Statut', value: ENRICHMENT_STATUS_LABELS[enrichment.enrichissement_statut] },
     { label: 'Score', value: formatEnrichmentValue(enrichment.enrichissement_score) },
+    { label: 'Lot', value: formatEnrichmentValue(enrichment.enrichissement_lot_reference) },
   ];
 }
 

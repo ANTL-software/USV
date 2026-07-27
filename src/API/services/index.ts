@@ -37,6 +37,7 @@ export {
 } from './campagne.service.ts';
 
 export { downloadQuoteDocumentService } from './quote.service.ts';
+export { getSocialPublicationStatusService, getSocialVisualsService, getSocialDraftsService, createSocialDraftService, validateSocialDraftService, scheduleSocialDraftService, cancelSocialDraftService } from './socialPublication.service.ts';
 
 export {
   getAllProduitsService,
@@ -174,6 +175,11 @@ export {
   getProspectEnrichmentSnapshotService,
   previewProspectEnrichmentService,
   applyProspectEnrichmentService,
+  getProspectEnrichmentRunsService,
+  createProspectEnrichmentRunService,
+  startProspectEnrichmentRunService,
+  cancelProspectEnrichmentRunService,
+  deleteProspectEnrichmentRunService,
   getProspectsSignalesService,
   updateProspectService,
   getProspectAppelsService,

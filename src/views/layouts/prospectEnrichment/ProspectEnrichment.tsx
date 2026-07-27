@@ -7,6 +7,7 @@ import {
   BackToTop,
   Header,
   ProspectEnrichmentContent,
+  ProspectEnrichmentBatch,
   ProspectEnrichmentHeader,
   ProspectEnrichmentSearch,
   SubNav,
@@ -22,6 +23,7 @@ function ProspectEnrichment(): ReactElement {
       <main>
         <div className="prospectEnrichment__container">
           <ProspectEnrichmentHeader navigateBack={viewModel.navigateBack} />
+          <ProspectEnrichmentBatch {...viewModel} />
           <ProspectEnrichmentSearch {...viewModel} />
           <ProspectEnrichmentContent viewModel={viewModel} />
         </div>

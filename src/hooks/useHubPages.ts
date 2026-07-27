@@ -9,6 +9,7 @@ export interface CommercialPageViewModel {
   navigateToConfiguration: () => void;
   navigateToDevis: () => void;
   navigateToFacturation: () => void;
+  navigateToSocialPublications: () => void;
 }
 
 export interface CommerciauxPageViewModel {
@@ -77,6 +78,7 @@ export function useCommercialPage(): CommercialPageViewModel {
     navigateToConfiguration: () => void navigate('/commercial/configuration-antl'),
     navigateToDevis: () => void navigate('/commercial/devis'),
     navigateToFacturation: () => void navigate('/commercial/facturation'),
+    navigateToSocialPublications: () => void navigate('/commercial/publications-reseaux-sociaux'),
   };
 }
 

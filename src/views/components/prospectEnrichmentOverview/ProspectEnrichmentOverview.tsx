@@ -29,6 +29,11 @@ export function ProspectEnrichmentOverview({ snapshot }: ProspectEnrichmentOverv
         </strong>
         <small>Score de confiance : {formatEnrichmentValue(snapshot.enrichissement.enrichissement_score)}</small>
       </div>
+      <div className="prospectEnrichment__overviewCard">
+        <span>Lot d’enrichissement</span>
+        <strong>{formatEnrichmentValue(snapshot.enrichissement.enrichissement_lot_reference)}</strong>
+        <small>{snapshot.enrichissement.enrichissement_lot_at ? `Terminé le ${new Date(snapshot.enrichissement.enrichissement_lot_at).toLocaleDateString('fr-FR')}` : 'Aucun lot appliqué'}</small>
+      </div>
     </section>
   );
 }

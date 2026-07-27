@@ -13,7 +13,7 @@
   background: white;
   border-radius: 12px;
   width: 100%;
-  max-width: 55em;
+  max-width: min(96vw, 88em);
   box-shadow: 0 1.25em 3.75em rgba(0, 0, 0, 0.2);
   display: flex;
   flex-direction: column;
@@ -51,9 +51,11 @@
   color: #374151;
 }
 #prospectDetailModal .modalBody {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5em;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: start;
+  column-gap: 2.25em;
+  row-gap: 2.5em;
   padding: 1.5em;
   overflow-y: auto;
 }
@@ -61,6 +63,10 @@
   display: flex;
   flex-direction: column;
   gap: 0.75em;
+  padding: 0.25em 0;
+}
+#prospectDetailModal .prospectDetail__section--alert {
+  grid-column: span 3;
 }
 #prospectDetailModal .prospectDetail__section h3 {
   margin: 0;
@@ -107,6 +113,31 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   flex: 1;
+}
+@media (max-width: 70em) {
+  #prospectDetailModal .modalBody {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 1.75em;
+    row-gap: 2em;
+  }
+  #prospectDetailModal .prospectDetail__section--alert {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 42em) {
+  #prospectDetailOverlay {
+    padding: 0;
+  }
+  #prospectDetailModal {
+    border-radius: 0;
+    max-height: 100dvh;
+  }
+  #prospectDetailModal .modalBody {
+    grid-template-columns: 1fr;
+  }
+  #prospectDetailModal .prospectDetail__section--alert {
+    grid-column: auto;
+  }
 }
 #prospectDetailModal .detailValue a {
   color: vars.$utilsPrimary;

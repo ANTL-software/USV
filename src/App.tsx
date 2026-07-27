@@ -39,6 +39,7 @@ import {
   Courriers as CourriersWithAuth,
   Devis as DevisWithAuth,
   Facturation as FacturationWithAuth,
+  SocialPublications as SocialPublicationsWithAuth,
   Home as HomeWithAuth,
   IncidentDeclaration as IncidentDeclarationWithAuth,
   IncidentList as IncidentListWithAuth,
@@ -138,6 +139,7 @@ function App(): ReactElement {
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
         <Route path={"commercial"} element={<CommercialWithAuth />}></Route>
         <Route path={"commercial/facturation"} element={<FacturationWithAuth />}></Route>
+        <Route path={"commercial/publications-reseaux-sociaux"} element={<SocialPublicationsWithAuth />}></Route>
         <Route path={"commercial/devis"} element={<DevisWithAuth />}></Route>
         <Route path={"commercial/configuration-antl"} element={<AntlConfigurationWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>

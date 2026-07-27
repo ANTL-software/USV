@@ -1,4 +1,13 @@
 export type {
+  SocialPlatform,
+  SocialDraftStatus,
+  SocialEditorialDraft,
+  SocialVisual,
+  SocialPlatformStatus,
+  SocialDraftInput,
+} from './socialPublication.types.ts';
+
+export type {
   TypePoste,
   PermissionSection,
   PermissionRecord,
@@ -203,6 +212,8 @@ export type {
   EnrichissementStatut,
   ProspectEnrichmentSnapshot,
   ProspectEnrichmentPreview,
+  ProspectEnrichmentRun,
+  ProspectEnrichmentRunStatus,
 } from './prospect.types.ts';
 
 export type {

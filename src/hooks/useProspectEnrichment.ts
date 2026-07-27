@@ -1,18 +1,31 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   applyProspectEnrichmentService,
+  cancelProspectEnrichmentRunService,
+  createProspectEnrichmentRunService,
+  deleteProspectEnrichmentRunService,
   getAllProspectsService,
+  getProspectEnrichmentRunsService,
   getProspectEnrichmentSnapshotService,
   previewProspectEnrichmentService,
+  startProspectEnrichmentRunService,
 } from '../API/services/index.ts';
-import type { Prospect, ProspectEnrichmentPreview, ProspectEnrichmentSnapshot } from '../utils/types/index.ts';
+import type { Prospect, ProspectEnrichmentPreview, ProspectEnrichmentRun, ProspectEnrichmentSnapshot } from '../utils/types/index.ts';
 import { extractWebsiteAnalysis } from '../utils/scripts/index.ts';
 import { useAlert } from './useAlert.ts';
+import { useCampagnes } from './useCampagnes.ts';
+import { confirm } from '../utils/services/index.ts';
 
 const SEARCH_LIMIT = 12;
 
 export function useProspectEnrichment() {
   const { showError, showSuccess } = useAlert();
+  const { campagnes, isLoading: campagnesLoading } = useCampagnes();
+  const [batchCampaignId, setBatchCampaignId] = useState<number | null>(null);
+  const [batchReference, setBatchReference] = useState('');
+  const [batchLimit, setBatchLimit] = useState(25);
+  const [batchRuns, setBatchRuns] = useState<ProspectEnrichmentRun[]>([]);
+  const [batchLoading, setBatchLoading] = useState(false);
   const [search, setSearch] = useState('');
   const [results, setResults] = useState<Prospect[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
@@ -38,6 +51,69 @@ export function useProspectEnrichment() {
       setSnapshotLoading(false);
     }
   }, []);
+
+  const loadBatchRuns = useCallback(async (): Promise<void> => {
+    try {
+      setBatchRuns(await getProspectEnrichmentRunsService());
+    } catch {
+      setBatchRuns([]);
+    }
+  }, []);
+
+  useEffect(() => { void loadBatchRuns(); }, [loadBatchRuns]);
+
+  useEffect(() => {
+    if (!batchRuns.some((run) => run.statut === 'en_cours')) return undefined;
+    const interval = window.setInterval(() => { void loadBatchRuns(); }, 3000);
+    return () => window.clearInterval(interval);
+  }, [batchRuns, loadBatchRuns]);
+
+  const createBatchRun = useCallback(async (): Promise<void> => {
+    if (!batchCampaignId) {
+      await showError('Sélectionnez une campagne avant de créer le lot.', 'Campagne requise');
+      return;
+    }
+    const reference = batchReference.trim();
+    if (!reference) {
+      await showError('Saisissez une référence de lot.', 'Référence requise');
+      return;
+    }
+    if (!await confirm(`Créer le lot « ${reference} » pour la campagne sélectionnée ? Les fiches déjà enrichies seront exclues.`, 'Créer un lot ciblé')) return;
+    try {
+      setBatchLoading(true);
+      const run = await createProspectEnrichmentRunService({ reference, id_campagne: batchCampaignId, limite_prospects: batchLimit });
+      setBatchRuns((runs) => [run, ...runs.filter((item) => item.id_enrichissement_lot !== run.id_enrichissement_lot)]);
+      setBatchReference('');
+      await showSuccess(`Lot ${run.reference} créé pour ${run.nom_campagne}. Le worker le traitera séparément.`, 'Lot créé');
+    } catch (error) {
+      await showError(error instanceof Error ? error.message : 'Impossible de créer le lot', 'Erreur de lot');
+    } finally {
+      setBatchLoading(false);
+    }
+  }, [batchCampaignId, batchLimit, batchReference, showError, showSuccess]);
+
+  const updateBatchRun = useCallback(async (id: number, action: 'start' | 'cancel' | 'delete'): Promise<void> => {
+    const label = action === 'start' ? 'démarrer' : action === 'cancel' ? 'annuler' : 'supprimer';
+    if (!await confirm(`Voulez-vous ${label} ce lot ?`, 'Confirmation')) return;
+    try {
+      setBatchLoading(true);
+      if (action === 'delete') {
+        await deleteProspectEnrichmentRunService(id);
+        setBatchRuns((runs) => runs.filter((run) => run.id_enrichissement_lot !== id));
+      } else {
+        const run = action === 'start'
+          ? await startProspectEnrichmentRunService(id)
+          : await cancelProspectEnrichmentRunService(id);
+        setBatchRuns((runs) => runs.map((item) => item.id_enrichissement_lot === id ? run : item));
+      }
+      const completion = action === 'delete' ? 'supprimé' : action === 'start' ? 'démarré' : 'annulé';
+      await showSuccess(`Lot ${completion}.`, 'Lot mis à jour');
+    } catch (error) {
+      await showError(error instanceof Error ? error.message : 'Impossible de mettre à jour le lot', 'Erreur de lot');
+    } finally {
+      setBatchLoading(false);
+    }
+  }, [showError, showSuccess]);
 
   useEffect(() => {
     if (search.trim().length < 3) {
@@ -143,6 +219,18 @@ export function useProspectEnrichment() {
     snapshotError,
     snapshotLoading,
     websiteAnalysis,
+    batchCampaignId,
+    batchLimit,
+    batchLoading,
+    batchReference,
+    batchRuns,
+    campagnes,
+    campagnesLoading,
+    createBatchRun,
+    updateBatchRun,
+    setBatchCampaignId,
+    setBatchLimit,
+    setBatchReference,
   };
 }
 
