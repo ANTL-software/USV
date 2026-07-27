@@ -1,4 +1,4 @@
-import { postRequest, getRequest, putRequest } from '../APICalls.ts';
+import { postRequest, getRequest, putRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import type {
   ImportProspectRow,
@@ -12,6 +12,7 @@ import type {
   ProspectUpdateData,
   ProspectEnrichmentSnapshot,
   ProspectEnrichmentPreview,
+  ProspectEnrichmentRun,
 } from '../../utils/types/index.ts';
 import type { Appel, VenteComplete, RendezVousItem } from '../../utils/types/index.ts';
 
@@ -125,6 +126,34 @@ export const applyProspectEnrichmentService = async (
     return response.data.data;
   }
   throw new Error(response.data.message || 'Impossible d’enregistrer l’enrichissement');
+};
+
+export const getProspectEnrichmentRunsService = async (): Promise<ProspectEnrichmentRun[]> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentRun[]; message?: string }> = await getRequest('/prospects/enrichment/runs');
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de récupérer les lots d’enrichissement');
+};
+
+export const createProspectEnrichmentRunService = async (
+  data: { reference: string; id_campagne: number; limite_prospects: number },
+): Promise<ProspectEnrichmentRun> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentRun; message?: string }> = await postRequest('/prospects/enrichment/runs', data);
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de créer le lot d’enrichissement');
+};
+
+const updateProspectEnrichmentRunStatus = async (id: number, action: 'start' | 'cancel'): Promise<ProspectEnrichmentRun> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectEnrichmentRun; message?: string }> = await postRequest(`/prospects/enrichment/runs/${id}/${action}`, {});
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de mettre à jour le lot');
+};
+
+export const startProspectEnrichmentRunService = (id: number): Promise<ProspectEnrichmentRun> => updateProspectEnrichmentRunStatus(id, 'start');
+export const cancelProspectEnrichmentRunService = (id: number): Promise<ProspectEnrichmentRun> => updateProspectEnrichmentRunStatus(id, 'cancel');
+
+export const deleteProspectEnrichmentRunService = async (id: number): Promise<void> => {
+  const response: AxiosResponse<{ success: boolean; message?: string }> = await deleteRequest<undefined, { success: boolean; message?: string }>(`/prospects/enrichment/runs/${id}`);
+  if (!response.data.success) throw new Error(response.data.message || 'Impossible de supprimer le lot');
 };
 
 export const updateProspectService = async (id: number, data: ProspectUpdateData): Promise<Prospect> => {

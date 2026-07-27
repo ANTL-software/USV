@@ -172,6 +172,8 @@ export interface Prospect {
   enrichissement_statut?: EnrichissementStatut;
   enrichissement_score?: number | null;
   enrichissement_dernier_check_at?: string | null;
+  enrichissement_lot_reference?: string | null;
+  enrichissement_lot_at?: string | null;
   enrichissement_payload?: Record<string, unknown>;
   enrichissement_sources?: unknown[];
   created_at: string;
@@ -332,6 +334,8 @@ export interface ProspectEnrichmentSnapshot {
     enrichissement_statut: EnrichissementStatut;
     enrichissement_score: number | null;
     enrichissement_dernier_check_at: string | null;
+    enrichissement_lot_reference: string | null;
+    enrichissement_lot_at: string | null;
     enrichissement_payload: Record<string, unknown>;
     enrichissement_sources: unknown[];
   };
@@ -367,4 +371,21 @@ export interface ProspectEnrichmentPreview {
     error?: string;
   };
   proposed_snapshot: ProspectEnrichmentSnapshot;
+}
+
+export type ProspectEnrichmentRunStatus = 'en_attente' | 'en_cours' | 'pause' | 'termine' | 'echec' | 'annule';
+
+export interface ProspectEnrichmentRun {
+  id_enrichissement_lot: number;
+  reference: string;
+  id_campagne: number;
+  nom_campagne: string;
+  statut: ProspectEnrichmentRunStatus;
+  total_cible: number;
+  total_traite: number;
+  total_enrichi: number;
+  total_faible_confiance: number;
+  total_echecs_techniques: number;
+  limite_prospects: number;
+  created_at: string;
 }

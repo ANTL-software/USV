@@ -18,6 +18,7 @@ export { ConvertisseurImage } from './convertisseurImage/index.ts';
 export { Courriers } from './courriers/index.ts';
 export { Devis } from './devis/index.ts';
 export { Facturation } from './facturation/index.ts';
+export { SocialPublications } from './socialPublications/index.ts';
 export { Home } from './home/index.ts';
 export {
   IncidentDeclaration,
