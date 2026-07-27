@@ -1,50 +1,699 @@
 @use "../../../utils/styles/variables" as vars;
 @use "../../../utils/styles/mixins" as mixins;
 
-#socialPublicationView { @include mixins.mainView; }
-#socialPublicationView main { padding: 1.5em 1em 2.5em; }
-#socialPublicationView .socialPublicationView__container { @include mixins.centeredContainer(82em); display: flex; flex-direction: column; gap: 1.25em; }
-#socialPublicationView .socialPublicationView__hero, #socialPublicationView .socialPublicationView__panel, #socialPublicationView .socialPublicationView__status-card { background: rgba(255, 255, 255, .88); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, .6); box-shadow: vars.$shadowLight; }
-#socialPublicationView .socialPublicationView__hero { border-radius: 1.25em; padding: 1.5em; }
-#socialPublicationView .socialPublicationView__eyebrow { color: vars.$utilsPrimary; font-size: .78rem; font-weight: 700; letter-spacing: .08em; margin: 0; text-transform: uppercase; }
-#socialPublicationView .socialPublicationView__hero h1 { color: vars.$fontColorPrimary; font-size: clamp(1.85rem, 2vw, 2.6rem); margin: .1em 0 .35em; }
-#socialPublicationView .socialPublicationView__subtitle { color: vars.$fontColorSecondary; line-height: 1.6; margin: 0; max-width: 48em; }
-#socialPublicationView .socialPublicationView__content { display: grid; gap: 1.25em; }
-#socialPublicationView .socialPublicationView__status { display: grid; gap: .85em; grid-template-columns: repeat(auto-fit, minmax(12em, 1fr)); }
-#socialPublicationView .socialPublicationView__status-card { border-radius: 1em; border-top: .3em solid vars.$warningColor; display: grid; gap: .3em; padding: 1em 1.1em; }
-#socialPublicationView .socialPublicationView__status-card--ready { border-top-color: vars.$successColor; }
-#socialPublicationView .socialPublicationView__status-card span { color: vars.$fontColorSecondary; font-size: .82rem; font-weight: 600; }
-#socialPublicationView .socialPublicationView__status-card strong { color: vars.$fontColorPrimary; }
-#socialPublicationView .socialPublicationView__panel { border-radius: 1.1em; padding: 1.2em; }
-#socialPublicationView .socialPublicationView__panel-header { align-items: flex-start; display: flex; gap: .8em; margin-bottom: 1em; }
-#socialPublicationView .socialPublicationView__panel-header > svg { color: vars.$utilsPrimary; flex-shrink: 0; font-size: 1.55rem; margin-top: .1em; }
-#socialPublicationView .socialPublicationView__panel-header h2 { color: vars.$fontColorPrimary; font-size: 1.15rem; margin: 0; }
-#socialPublicationView .socialPublicationView__panel-header p { color: vars.$fontColorSecondary; line-height: 1.5; margin: .2em 0 0; }
-#socialPublicationView .socialPublicationView__panel-header--actions { align-items: center; justify-content: space-between; }
-#socialPublicationView .socialPublicationView__form { display: grid; gap: .9em; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-#socialPublicationView .socialPublicationView__field { display: flex; flex-direction: column; gap: .35em; }
-#socialPublicationView .socialPublicationView__field span { color: vars.$fontColorSecondary; font-size: .86rem; font-weight: 600; }
-#socialPublicationView .socialPublicationView__field input, #socialPublicationView .socialPublicationView__draft-actions input, #socialPublicationView .socialPublicationView__field textarea { @include mixins.formInput("#socialPublicationView .socialPublicationView__field input, #socialPublicationView .socialPublicationView__draft-actions input, #socialPublicationView .socialPublicationView__field textarea"); }
-#socialPublicationView .socialPublicationView__field input, #socialPublicationView .socialPublicationView__draft-actions input { min-height: 3rem; }
-#socialPublicationView .socialPublicationView__field textarea { min-height: 7.5rem; padding: .75em; resize: vertical; }
-#socialPublicationView .socialPublicationView__wide { grid-column: 1 / -1; }
-#socialPublicationView .socialSelect__control { min-height: 3rem; }
-#socialPublicationView .socialSelect__value-container { min-height: 3rem; }
-#socialPublicationView .socialPublicationView__form-actions { display: flex; grid-column: 1 / -1; justify-content: flex-end; }
-#socialPublicationView .socialPublicationView__form-actions button, #socialPublicationView .socialPublicationView__draft-actions button, #socialPublicationView .socialPublicationView__panel-header--actions button { align-items: center; display: inline-flex; gap: .4em; justify-content: center; min-height: 3rem; }
-#socialPublicationView .socialPublicationView__feedback { background: rgba(124, 58, 237, .09); border: 1px solid rgba(124, 58, 237, .16); border-radius: .8em; color: vars.$utilsDark; margin: 0 0 1em; padding: .8em 1em; }
-#socialPublicationView .socialPublicationView__drafts { display: grid; gap: .75em; }
-#socialPublicationView .socialPublicationView__draft { align-items: center; background: vars.$whiteBackground; border: 1px solid vars.$borderColor; border-radius: .95em; display: flex; gap: 1em; justify-content: space-between; padding: 1em; }
-#socialPublicationView .socialPublicationView__draft-main { display: grid; gap: .3em; }
-#socialPublicationView .socialPublicationView__draft-main strong { color: vars.$fontColorPrimary; }
-#socialPublicationView .socialPublicationView__draft-main p { color: vars.$fontColorSecondary; margin: 0; }
-#socialPublicationView .socialPublicationView__badge { border-radius: 999px; font-size: .72rem; font-weight: 700; padding: .25em .65em; text-transform: capitalize; width: fit-content; }
-#socialPublicationView .socialPublicationView__badge--brouillon { background: rgba(148, 163, 184, .18); color: #475569; }
-#socialPublicationView .socialPublicationView__badge--valide { background: rgba(39, 174, 96, .12); color: #187541; }
-#socialPublicationView .socialPublicationView__badge--programme { background: rgba(124, 58, 237, .12); color: vars.$utilsDark; }
-#socialPublicationView .socialPublicationView__badge--publie { background: rgba(39, 174, 96, .18); color: #187541; }
-#socialPublicationView .socialPublicationView__badge--annule, #socialPublicationView .socialPublicationView__badge--echec_publication { background: rgba(231, 76, 60, .13); color: vars.$errorColor; }
-#socialPublicationView .socialPublicationView__draft-actions { align-items: center; display: flex; flex-wrap: wrap; gap: .55em; justify-content: flex-end; }
-#socialPublicationView .socialPublicationView__empty { align-items: center; border: 1px dashed vars.$borderColor; border-radius: .9em; color: vars.$fontColorSecondary; display: flex; gap: .65em; justify-content: center; margin-top: .85em; padding: 1.15em; }
-#socialPublicationView .socialPublicationView__empty p { margin: 0; }
-@media (max-width: vars.$tabletWidth) { #socialPublicationView .socialPublicationView__form { grid-template-columns: 1fr; } #socialPublicationView .socialPublicationView__wide { grid-column: auto; } #socialPublicationView .socialPublicationView__draft, #socialPublicationView .socialPublicationView__panel-header--actions { align-items: stretch; flex-direction: column; } #socialPublicationView .socialPublicationView__draft-actions { justify-content: flex-start; } }
+#socialPublicationView {
+  @include mixins.mainView;
+}
+
+#socialPublicationView main {
+  padding: 1.5em 1em 3em;
+}
+
+#socialPublicationView .socialPublicationView__container {
+  @include mixins.centeredContainer(82em);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+}
+
+#socialPublicationView .socialPublicationView__hero,
+#socialPublicationView .socialPublicationView__panel {
+  background: rgba(255, 255, 255, .9);
+  border: 1px solid rgba(255, 255, 255, .68);
+  box-shadow: vars.$shadowLight;
+}
+
+#socialPublicationView .socialPublicationView__hero {
+  background:
+    radial-gradient(circle at 88% 22%, rgba(124, 58, 237, .13), transparent 28%),
+    rgba(255, 255, 255, .92);
+  border-radius: 1.25em;
+  padding: 1.55em;
+}
+
+#socialPublicationView .socialPublicationView__eyebrow,
+#socialPublicationView .socialPublicationView__section-kicker {
+  color: vars.$utilsPrimary;
+  font-size: .75rem;
+  font-weight: 800;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+
+#socialPublicationView .socialPublicationView__eyebrow {
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__hero h1 {
+  color: vars.$fontColorPrimary;
+  font-size: clamp(1.85rem, 2vw, 2.55rem);
+  margin: .12em 0 .3em;
+}
+
+#socialPublicationView .socialPublicationView__subtitle {
+  color: vars.$fontColorSecondary;
+  line-height: 1.6;
+  margin: 0;
+  max-width: 52em;
+}
+
+#socialPublicationView .socialPublicationView__content {
+  display: grid;
+  gap: 1.25em;
+}
+
+#socialPublicationView .socialPublicationView__panel {
+  border-radius: 1.1em;
+  padding: 1.25em;
+}
+
+#socialPublicationView .socialPublicationView__panel-header {
+  align-items: flex-start;
+  display: flex;
+  margin-bottom: 1.1em;
+}
+
+#socialPublicationView .socialPublicationView__panel-header--actions {
+  align-items: center;
+  gap: 1em;
+  justify-content: space-between;
+}
+
+#socialPublicationView .socialPublicationView__heading-copy {
+  align-items: flex-start;
+  display: flex;
+  gap: .8em;
+}
+
+#socialPublicationView .socialPublicationView__heading-copy > svg {
+  color: vars.$utilsPrimary;
+  flex-shrink: 0;
+  font-size: 1.55rem;
+  margin-top: .15em;
+}
+
+#socialPublicationView .socialPublicationView__heading-copy h2 {
+  color: vars.$fontColorPrimary;
+  font-size: 1.18rem;
+  margin: .08em 0 0;
+}
+
+#socialPublicationView .socialPublicationView__heading-copy p {
+  color: vars.$fontColorSecondary;
+  line-height: 1.5;
+  margin: .25em 0 0;
+}
+
+#socialPublicationView .socialPublicationView__panel-header button,
+#socialPublicationView .socialPublicationView__form-actions button,
+#socialPublicationView .socialPublicationView__visual-header button,
+#socialPublicationView .socialPublicationView__draft-actions button {
+  align-items: center;
+  display: inline-flex;
+  gap: .42em;
+  justify-content: center;
+  min-height: 3rem;
+}
+
+#socialPublicationView .socialPublicationView__status {
+  display: grid;
+  gap: .8em;
+  grid-template-columns: repeat(auto-fit, minmax(12em, 1fr));
+}
+
+#socialPublicationView .socialPublicationView__status-card {
+  background: vars.$whiteBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: .9em;
+  display: grid;
+  gap: .25em;
+  min-height: 8.2em;
+  padding: .95em 1em;
+}
+
+#socialPublicationView .socialPublicationView__status-card--ready {
+  border-color: rgba(39, 174, 96, .32);
+}
+
+#socialPublicationView .socialPublicationView__status-card--configuration_required {
+  border-color: rgba(243, 156, 18, .4);
+}
+
+#socialPublicationView .socialPublicationView__status-card--disabled {
+  opacity: .68;
+}
+
+#socialPublicationView .socialPublicationView__status-title {
+  align-items: center;
+  color: vars.$fontColorSecondary;
+  display: flex;
+  font-size: .82rem;
+  font-weight: 700;
+  justify-content: space-between;
+}
+
+#socialPublicationView .socialPublicationView__status-card strong {
+  color: vars.$fontColorPrimary;
+}
+
+#socialPublicationView .socialPublicationView__status-card p {
+  color: vars.$fontColorSecondary;
+  font-size: .78rem;
+  line-height: 1.4;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__status-dot {
+  background: vars.$warningColor;
+  border-radius: 50%;
+  display: inline-block;
+  height: .62em;
+  width: .62em;
+}
+
+#socialPublicationView .socialPublicationView__status-card--ready .socialPublicationView__status-dot,
+#socialPublicationView .socialPublicationView__status-dot--ready {
+  background: vars.$successColor;
+}
+
+#socialPublicationView .socialPublicationView__status-card--disabled .socialPublicationView__status-dot {
+  background: #94a3b8;
+}
+
+#socialPublicationView .socialPublicationView__form {
+  display: grid;
+  gap: .95em;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+#socialPublicationView .socialPublicationView__field {
+  display: flex;
+  flex-direction: column;
+  gap: .4em;
+}
+
+#socialPublicationView .socialPublicationView__field > span {
+  color: vars.$fontColorSecondary;
+  font-size: .84rem;
+  font-weight: 700;
+}
+
+#socialPublicationView .socialPublicationView__field input,
+#socialPublicationView .socialPublicationView__field textarea,
+#socialPublicationView .socialPublicationView__draft-actions input {
+  @include mixins.formInput("#socialPublicationView .socialPublicationView__field input, #socialPublicationView .socialPublicationView__field textarea, #socialPublicationView .socialPublicationView__draft-actions input");
+}
+
+#socialPublicationView .socialPublicationView__field input,
+#socialPublicationView .socialPublicationView__draft-actions input {
+  height: 3rem;
+  min-height: 3rem;
+}
+
+#socialPublicationView .socialPublicationView__field textarea {
+  line-height: 1.55;
+  min-height: 7.6rem;
+  padding: .75em;
+  resize: vertical;
+}
+
+#socialPublicationView .socialPublicationView__wide {
+  grid-column: 1 / -1;
+}
+
+#socialPublicationView .socialSelect__control {
+  border-color: vars.$borderColor;
+  border-radius: .65em;
+  height: 3rem;
+  max-height: 3rem;
+  min-height: 3rem;
+}
+
+#socialPublicationView .socialSelect__control--is-focused {
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 1px vars.$utilsPrimary;
+}
+
+#socialPublicationView .socialSelect__value-container {
+  flex-wrap: nowrap;
+  height: calc(3rem - 2px);
+  min-height: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+#socialPublicationView .socialSelect__indicators {
+  height: calc(3rem - 2px);
+  min-height: 0;
+}
+
+#socialPublicationView .socialSelect__multi-value {
+  background: rgba(124, 58, 237, .09);
+  border-radius: .4em;
+  flex: 0 0 auto;
+}
+
+#socialPublicationView .socialPublicationView__visual {
+  background: rgba(248, 250, 252, .8);
+  border: 1px solid vars.$borderColor;
+  border-radius: .9em;
+  display: grid;
+  gap: .75em;
+  padding: 1em;
+}
+
+#socialPublicationView .socialPublicationView__visual-header {
+  align-items: center;
+  display: flex;
+  gap: 1em;
+  justify-content: space-between;
+}
+
+#socialPublicationView .socialPublicationView__visual-header > div {
+  align-items: center;
+  color: vars.$fontColorPrimary;
+  display: flex;
+  font-weight: 700;
+  gap: .5em;
+}
+
+#socialPublicationView .socialPublicationView__visual-header svg {
+  color: vars.$utilsPrimary;
+  font-size: 1.25rem;
+}
+
+#socialPublicationView .socialPublicationView__field-help {
+  color: vars.$fontColorSecondary;
+  font-size: .8rem;
+  margin: -.25em 0 0;
+}
+
+#socialPublicationView .socialPublicationView__field-help--error,
+#socialPublicationView .socialPublicationView__table-error,
+#socialPublicationView .socialPublicationView__result-error {
+  color: vars.$errorColor;
+}
+
+#socialPublicationView .socialPublicationView__drive-link,
+#socialPublicationView .socialPublicationView__visual-detail a {
+  align-items: center;
+  color: vars.$utilsPrimary;
+  display: inline-flex;
+  font-size: .84rem;
+  font-weight: 700;
+  gap: .35em;
+  text-decoration: none;
+  width: fit-content;
+}
+
+#socialPublicationView .socialPublicationView__form-actions {
+  display: flex;
+  grid-column: 1 / -1;
+  justify-content: flex-end;
+}
+
+#socialPublicationView .socialPublicationView__feedback {
+  background: rgba(124, 58, 237, .08);
+  border: 1px solid rgba(124, 58, 237, .17);
+  border-radius: .7em;
+  color: vars.$utilsDark;
+  line-height: 1.45;
+  margin: 0;
+  padding: .72em .9em;
+}
+
+#socialPublicationView .socialPublicationView__feedback--error {
+  background: rgba(231, 76, 60, .08);
+  border-color: rgba(231, 76, 60, .2);
+  color: vars.$errorColor;
+}
+
+#socialPublicationView .socialPublicationView__policy,
+#socialPublicationView .socialPublicationView__summary {
+  background: rgba(148, 163, 184, .12);
+  border: 1px solid vars.$borderColor;
+  border-radius: 999px;
+  color: vars.$fontColorSecondary;
+  font-size: .78rem;
+  font-weight: 700;
+  padding: .5em .8em;
+  white-space: nowrap;
+}
+
+#socialPublicationView .socialPublicationView__policy--active {
+  background: rgba(39, 174, 96, .1);
+  border-color: rgba(39, 174, 96, .25);
+  color: #187541;
+}
+
+#socialPublicationView .socialPublicationView__workflow {
+  display: grid;
+  gap: 0;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+#socialPublicationView .socialPublicationView__workflow-step {
+  border-top: 2px solid rgba(124, 58, 237, .2);
+  display: grid;
+  gap: .3em;
+  padding: 1.15em .75em .6em;
+  position: relative;
+}
+
+#socialPublicationView .socialPublicationView__workflow-step > span {
+  align-items: center;
+  background: vars.$utilsPrimary;
+  border: .25em solid #fff;
+  border-radius: 50%;
+  color: #fff;
+  display: flex;
+  font-size: .7rem;
+  font-weight: 800;
+  height: 2.45em;
+  justify-content: center;
+  left: .55em;
+  position: absolute;
+  top: -1.25em;
+  width: 2.45em;
+}
+
+#socialPublicationView .socialPublicationView__workflow-step strong {
+  color: vars.$fontColorPrimary;
+  margin-top: .2em;
+}
+
+#socialPublicationView .socialPublicationView__workflow-step small {
+  color: vars.$fontColorSecondary;
+}
+
+#socialPublicationView .socialPublicationView__workflow-stages {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6em;
+  margin-top: 1em;
+}
+
+#socialPublicationView .socialPublicationView__workflow-stages > span {
+  align-items: center;
+  background: rgba(248, 250, 252, .9);
+  border: 1px solid vars.$borderColor;
+  border-radius: 999px;
+  color: vars.$fontColorSecondary;
+  display: inline-flex;
+  font-size: .78rem;
+  font-weight: 700;
+  gap: .45em;
+  padding: .45em .72em;
+}
+
+#socialPublicationView .socialPublicationView__table-wrap {
+  border: 1px solid vars.$borderColor;
+  border-radius: .85em;
+  overflow-x: auto;
+}
+
+#socialPublicationView .socialPublicationView__table {
+  border-collapse: collapse;
+  min-width: 44em;
+  width: 100%;
+}
+
+#socialPublicationView .socialPublicationView__table th {
+  background: rgba(248, 250, 252, .95);
+  color: vars.$fontColorSecondary;
+  font-size: .76rem;
+  letter-spacing: .04em;
+  padding: .8em 1em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+#socialPublicationView .socialPublicationView__table td {
+  border-top: 1px solid vars.$borderColor;
+  color: vars.$fontColorSecondary;
+  font-size: .86rem;
+  padding: .9em 1em;
+}
+
+#socialPublicationView .socialPublicationView__table td strong {
+  color: vars.$fontColorPrimary;
+}
+
+#socialPublicationView .socialPublicationView__check,
+#socialPublicationView .socialPublicationView__table-ready,
+#socialPublicationView .socialPublicationView__result-ok {
+  color: #187541;
+  font-weight: 700;
+}
+
+#socialPublicationView .socialPublicationView__check--error {
+  color: vars.$errorColor;
+}
+
+#socialPublicationView .socialPublicationView__drafts {
+  display: grid;
+  gap: .9em;
+}
+
+#socialPublicationView .socialPublicationView__draft {
+  background: vars.$whiteBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: .95em;
+  display: grid;
+  gap: .85em;
+  padding: 1em;
+}
+
+#socialPublicationView .socialPublicationView__draft-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 1em;
+  justify-content: space-between;
+}
+
+#socialPublicationView .socialPublicationView__draft-header h3 {
+  color: vars.$fontColorPrimary;
+  font-size: 1.05rem;
+  margin: .45em 0 .18em;
+}
+
+#socialPublicationView .socialPublicationView__draft-header p {
+  color: vars.$fontColorSecondary;
+  font-size: .85rem;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__badge {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: .7rem;
+  font-weight: 800;
+  padding: .28em .68em;
+}
+
+#socialPublicationView .socialPublicationView__badge--brouillon {
+  background: rgba(148, 163, 184, .18);
+  color: #475569;
+}
+
+#socialPublicationView .socialPublicationView__badge--valide {
+  background: rgba(39, 174, 96, .11);
+  color: #187541;
+}
+
+#socialPublicationView .socialPublicationView__badge--programme {
+  background: rgba(124, 58, 237, .11);
+  color: vars.$utilsDark;
+}
+
+#socialPublicationView .socialPublicationView__badge--publie {
+  background: rgba(39, 174, 96, .17);
+  color: #187541;
+}
+
+#socialPublicationView .socialPublicationView__badge--annule,
+#socialPublicationView .socialPublicationView__badge--echec_publication {
+  background: rgba(231, 76, 60, .11);
+  color: vars.$errorColor;
+}
+
+#socialPublicationView .socialPublicationView__draft-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55em;
+  justify-content: flex-end;
+}
+
+#socialPublicationView .socialPublicationView__draft-dates > span {
+  background: rgba(248, 250, 252, .9);
+  border: 1px solid vars.$borderColor;
+  border-radius: .65em;
+  color: vars.$fontColorSecondary;
+  display: grid;
+  font-size: .7rem;
+  gap: .16em;
+  padding: .48em .65em;
+}
+
+#socialPublicationView .socialPublicationView__draft-dates strong {
+  color: vars.$fontColorPrimary;
+  font-size: .78rem;
+}
+
+#socialPublicationView .socialPublicationView__draft-details {
+  border-bottom: 1px solid vars.$borderColor;
+  border-top: 1px solid vars.$borderColor;
+  padding: .75em 0;
+}
+
+#socialPublicationView .socialPublicationView__draft-details summary {
+  color: vars.$utilsPrimary;
+  cursor: pointer;
+  font-size: .83rem;
+  font-weight: 800;
+}
+
+#socialPublicationView .socialPublicationView__draft-detail-grid {
+  display: grid;
+  gap: .65em;
+  grid-template-columns: repeat(auto-fit, minmax(15em, 1fr));
+  margin-top: .75em;
+}
+
+#socialPublicationView .socialPublicationView__draft-detail-grid article {
+  background: rgba(248, 250, 252, .85);
+  border: 1px solid vars.$borderColor;
+  border-radius: .7em;
+  display: grid;
+  gap: .4em;
+  padding: .75em;
+}
+
+#socialPublicationView .socialPublicationView__draft-detail-grid strong {
+  color: vars.$fontColorPrimary;
+  font-size: .82rem;
+}
+
+#socialPublicationView .socialPublicationView__draft-detail-grid p {
+  color: vars.$fontColorSecondary;
+  font-size: .82rem;
+  line-height: 1.55;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+#socialPublicationView .socialPublicationView__visual-detail {
+  display: grid;
+  gap: .2em;
+  margin-top: .75em;
+}
+
+#socialPublicationView .socialPublicationView__visual-detail > span {
+  color: vars.$fontColorPrimary;
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+#socialPublicationView .socialPublicationView__visual-detail p {
+  color: vars.$fontColorSecondary;
+  font-size: .82rem;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__readiness {
+  align-items: center;
+  color: #187541;
+  display: flex;
+  font-size: .8rem;
+  font-weight: 700;
+  gap: .4em;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__readiness--error {
+  color: vars.$errorColor;
+}
+
+#socialPublicationView .socialPublicationView__draft-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55em;
+}
+
+#socialPublicationView .socialPublicationView__draft-actions input {
+  max-width: 14.5em;
+}
+
+#socialPublicationView .socialPublicationView__archived {
+  color: vars.$fontColorSecondary;
+  font-size: .82rem;
+  font-style: italic;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__empty {
+  align-items: center;
+  border: 1px dashed vars.$borderColor;
+  border-radius: .85em;
+  color: vars.$fontColorSecondary;
+  display: flex;
+  gap: .6em;
+  justify-content: center;
+  margin: 0;
+  padding: 1.15em;
+}
+
+#socialPublicationView .socialPublicationView__empty p {
+  margin: 0;
+}
+
+@media (max-width: vars.$tabletWidth) {
+  #socialPublicationView .socialPublicationView__form {
+    grid-template-columns: 1fr;
+  }
+
+  #socialPublicationView .socialPublicationView__wide {
+    grid-column: auto;
+  }
+
+  #socialPublicationView .socialPublicationView__workflow {
+    gap: 1.1em .2em;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  #socialPublicationView .socialPublicationView__panel-header--actions,
+  #socialPublicationView .socialPublicationView__draft-header,
+  #socialPublicationView .socialPublicationView__visual-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  #socialPublicationView .socialPublicationView__draft-dates {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 36em) {
+  #socialPublicationView main {
+    padding-left: .6em;
+    padding-right: .6em;
+  }
+
+  #socialPublicationView .socialPublicationView__panel,
+  #socialPublicationView .socialPublicationView__hero {
+    border-radius: .9em;
+    padding: 1em;
+  }
+
+  #socialPublicationView .socialPublicationView__workflow {
+    grid-template-columns: 1fr;
+  }
+
+  #socialPublicationView .socialPublicationView__draft-actions,
+  #socialPublicationView .socialPublicationView__draft-actions button,
+  #socialPublicationView .socialPublicationView__draft-actions input {
+    max-width: none;
+    width: 100%;
+  }
+}

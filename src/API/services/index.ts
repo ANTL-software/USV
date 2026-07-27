@@ -37,7 +37,18 @@ export {
 } from './campagne.service.ts';
 
 export { downloadQuoteDocumentService } from './quote.service.ts';
-export { getSocialPublicationStatusService, getSocialVisualsService, getSocialDraftsService, createSocialDraftService, validateSocialDraftService, scheduleSocialDraftService, cancelSocialDraftService } from './socialPublication.service.ts';
+export {
+  getSocialPublicationStatusService,
+  getSocialVisualsService,
+  getSocialDraftsService,
+  createSocialDraftService,
+  verifySocialDraftReadinessService,
+  validateSocialDraftService,
+  scheduleSocialDraftService,
+  rescheduleSocialDraftService,
+  cancelSocialDraftService,
+  prepareSocialDraftPackagesService,
+} from './socialPublication.service.ts';
 
 export {
   getAllProduitsService,
