@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { IoCloudUpload, IoTrash } from 'react-icons/io5';
 
 import type { AntlConfigurationViewModel } from '../../../hooks/index.ts';
-import { getCampagneLogoUrl } from '../../../utils/scripts/index.ts';
+import { getAntlConfigurationRibUrl } from '../../../utils/scripts/index.ts';
 import { Button } from '../index.ts';
 
 interface AntlConfigurationBillingProps {
@@ -44,7 +44,7 @@ export function AntlConfigurationBilling({ viewModel }: AntlConfigurationBilling
             <div className="campagneForm__logo-display">
               <div className="campagneForm__logo-info campagneForm__logo-info--full">
                 <p className="campagneForm__logo-filename">{existing.rib_file_name}</p>
-                <p className="campagneForm__file-link"><a href={getCampagneLogoUrl(existing.rib_path) || '#'} target="_blank" rel="noreferrer">Ouvrir le fichier</a></p>
+                <p className="campagneForm__file-link"><a href={getAntlConfigurationRibUrl()} target="_blank" rel="noreferrer">Ouvrir le fichier</a></p>
                 <div className="campagneForm__logo-actions">
                   <Button style="seaGreen" type="button" onClick={configuration.openRibUpload}><IoCloudUpload /> Remplacer le RIB</Button>
                   <Button style="red" type="button" onClick={() => { void viewModel.confirmDeleteRib(); }}><IoTrash /> Supprimer</Button>

@@ -8,7 +8,7 @@ export function AgentPhotoTooltip({ employee, x, y }: AgentPhotoTooltipProps): R
   const position: CSSProperties = { left: x + 15, top: y + 15 };
   return (
     <div className="agentsList__photo-tooltip" style={position}>
-      {employee.photo_path ? <img src={getEmployePhotoUrl(employee.photo_path) || ''} alt={`${employee.prenom} ${employee.nom}`} className="agentsList__tooltip-img" /> : <div className="agentsList__tooltip-placeholder"><span>Aucune photo</span></div>}
+      {employee.photo_path ? <img src={getEmployePhotoUrl(employee.id_employe, employee.photo_path) || ''} alt={`${employee.prenom} ${employee.nom}`} className="agentsList__tooltip-img" /> : <div className="agentsList__tooltip-placeholder"><span>Aucune photo</span></div>}
     </div>
   );
 }

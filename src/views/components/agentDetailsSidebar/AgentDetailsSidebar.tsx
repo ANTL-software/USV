@@ -58,7 +58,7 @@ export function AgentDetailsSidebar({
           {currentEmploye?.photo_path ? (
             <div className="agentDetails__photo-wrapper">
               <img
-                src={getEmployePhotoUrl(currentEmploye.photo_path) || ''}
+                src={getEmployePhotoUrl(currentEmploye.id_employe, currentEmploye.photo_path) || ''}
                 alt={`${currentEmploye.prenom} ${currentEmploye.nom}`}
                 className="agentDetails__photo-img"
               />
