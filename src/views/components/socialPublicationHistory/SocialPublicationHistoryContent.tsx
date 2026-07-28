@@ -4,6 +4,7 @@ import { MdChevronLeft, MdChevronRight, MdHistory, MdRefresh } from 'react-icons
 import type { SocialPublicationHistoryState } from '../../../hooks/index.ts';
 import type { SocialPlatform } from '../../../utils/types/index.ts';
 import { Button } from '../index.ts';
+import { SocialPublicationHistoryDetailModal } from './SocialPublicationHistoryDetailModal.tsx';
 
 const platformOptions: Array<{ value: SocialPlatform | null; label: string }> = [
   { value: null, label: 'Tous les réseaux' },
@@ -33,9 +34,10 @@ export function SocialPublicationHistoryContent({ state }: { state: SocialPublic
       </div>
       {state.error && <p className="socialPublicationView__table-error">{state.error}</p>}
       {state.isLoading ? <p className="socialPublicationView__empty">Chargement de l’historique…</p> : state.data?.items.length ? (
-        <div className="socialPublicationView__table-wrap"><table className="socialPublicationView__table socialPublicationView__history-table"><thead><tr><th>Publication</th><th>Réseau</th><th>Programmée</th><th>Résultat</th><th>Responsable</th><th>Identifiant</th></tr></thead><tbody>{state.data.items.map((item) => <tr key={`${item.draftId}-${item.platform}`}><td><strong>{item.subject}</strong><small>{item.category}</small></td><td>{platformOptions.find((option) => option.value === item.platform)?.label}</td><td>{formatDate(item.scheduledAt)}</td><td><span className={`socialPublicationView__history-status socialPublicationView__history-status--${item.status}`}>{statusLabels[item.status]}{item.processedAt ? ` · ${formatDate(item.processedAt)}` : ''}</span>{item.error && <small className="socialPublicationView__table-error">{item.error}</small>}</td><td>{item.scheduledBy || item.validatedBy || item.createdBy || 'Système'}</td><td>{item.postId || '—'}</td></tr>)}</tbody></table></div>
+        <div className="socialPublicationView__table-wrap"><table className="socialPublicationView__table socialPublicationView__history-table"><thead><tr><th>Publication</th><th>Réseau</th><th>Programmée</th><th>Résultat</th><th>Responsable</th><th>Identifiant</th></tr></thead><tbody>{state.data.items.map((item) => <tr key={`${item.draftId}-${item.platform}`} className="socialPublicationView__history-row" tabIndex={0} onClick={() => void state.openDetail(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); void state.openDetail(item); } }}><td><strong>{item.subject}</strong><small>{item.category}</small></td><td>{platformOptions.find((option) => option.value === item.platform)?.label}</td><td>{formatDate(item.scheduledAt)}</td><td><span className={`socialPublicationView__history-status socialPublicationView__history-status--${item.status}`}>{statusLabels[item.status]}{item.processedAt ? ` · ${formatDate(item.processedAt)}` : ''}</span>{item.error && <small className="socialPublicationView__table-error">{item.error}</small>}</td><td>{item.scheduledBy || item.validatedBy || item.createdBy || 'Système'}</td><td>{item.postId || '—'}</td></tr>)}</tbody></table></div>
       ) : <p className="socialPublicationView__empty">Aucune publication programmée ou diffusée.</p>}
       <div className="socialPublicationView__pagination"><Button style="white" disabled={page <= 1 || state.isLoading} onClick={() => state.setPage(page - 1)}><MdChevronLeft />Précédent</Button><span>Page {page} / {totalPages}</span><Button style="white" disabled={page >= totalPages || state.isLoading} onClick={() => state.setPage(page + 1)}>Suivant<MdChevronRight /></Button></div>
+      <SocialPublicationHistoryDetailModal entry={state.selectedEntry} detail={state.selectedDetail} error={state.detailError} isLoading={state.isDetailLoading} onClose={state.closeDetail} />
     </section>
   );
 }

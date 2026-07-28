@@ -3,6 +3,7 @@ import { getRequest, postRequest } from '../APICalls.ts';
 import type {
   SocialDraftInput,
   SocialEditorialDraft,
+  SocialPublicationDetail,
   SocialPublicationHistoryPage,
   SocialPublicationPackage,
   SocialPublicationStatus,
@@ -32,6 +33,10 @@ export const getSocialVisualsService = async (): Promise<SocialVisual[]> => (
 
 export const getSocialDraftsService = async (): Promise<SocialEditorialDraft[]> => (
   unwrap(await getRequest('/publications-reseaux-sociaux/drafts'), 'Brouillons indisponibles.')
+);
+
+export const getSocialPublicationDetailService = async (id: string): Promise<SocialPublicationDetail> => (
+  unwrap(await getRequest(`/publications-reseaux-sociaux/drafts/${id}`), 'Détail de la publication indisponible.')
 );
 
 export const getSocialPublicationHistoryService = async (

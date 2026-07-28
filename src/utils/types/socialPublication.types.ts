@@ -106,6 +106,10 @@ export interface SocialPublicationHistoryPage {
   totalPages: number;
 }
 
+export interface SocialPublicationDetail extends SocialEditorialDraft {
+  visuel_apercu_url: string | null;
+}
+
 export interface SocialWorkflowStage {
   key: 'review' | 'schedule' | 'archive';
   label: string;
