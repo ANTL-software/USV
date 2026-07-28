@@ -97,11 +97,16 @@ test('les views ne dépendent jamais directement des services ou des contexts', 
 });
 
 test('le viewer PDF désactive explicitement l évaluation JavaScript de PDF.js', async () => {
-  const viewerPath = path.join(COMPONENTS_ROOT, 'pdfViewer', 'ModernPDFViewer.tsx');
+  const viewerPath = path.join(COMPONENTS_ROOT, 'pdfViewer', 'SecurePDFRenderer.tsx');
   const source = await readFile(viewerPath, 'utf8');
+  const packageJson = JSON.parse(await readFile(path.join(ROOT, 'package.json'), 'utf8')) as {
+    dependencies: Record<string, string>;
+  };
 
-  assert.equal(source.includes('transformGetDocumentParams'), true);
   assert.equal(/isEvalSupported\s*:\s*false/.test(source), true);
+  assert.equal(source.includes("from 'react-pdf'"), true);
+  assert.equal(packageJson.dependencies['@react-pdf-viewer/core'], undefined);
+  assert.equal(packageJson.dependencies['@react-pdf-viewer/default-layout'], undefined);
 });
 
 test('les composants délèguent contexte services et routage tout en gardant leur état visuel local', async () => {

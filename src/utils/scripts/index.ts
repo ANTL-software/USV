@@ -52,6 +52,7 @@ export {
 export {
   formatPhoneNumber,
   getApiBaseUrl,
+  getAntlConfigurationRibUrl,
   getCampagneLogoUrl,
   getEmployePhotoUrl,
   getGreetingName,

@@ -28,11 +28,11 @@ axios.interceptors.request.use(async (config) => {
   const protectedMethods = ['post', 'patch', 'delete', 'put'];
   if (protectedMethods.includes(config.method?.toLowerCase() || '')) {
     try {
-      // Exclure les routes d'authentification ( pas besoin de CSRF )
+      // Le login initialise la session. Le refresh et le logout restent
+      // protégés car ils utilisent des cookies cross-origin.
       const isAuthRoute = config.url?.includes('/login') || 
                          config.url?.includes('/register') || 
-                         config.url?.includes('/csrf-token') ||
-                         config.url?.includes('/refresh');
+                         config.url?.includes('/csrf-token');
       if (!isAuthRoute) {
         const csrfHeaders = await csrfService.getCSRFHeaders();
         Object.assign(config.headers as Record<string, string>, csrfHeaders);

@@ -5,6 +5,25 @@ export const isOnProduction = (): boolean => {
   return !(isDev && isDevPort);
 };
 
+const alignLoopbackApiHostname = (apiUrl: string): string => {
+  try {
+    const parsedUrl = new URL(apiUrl);
+    const pageHostname = window.location.hostname;
+    const loopbackHostnames = new Set(['localhost', '127.0.0.1']);
+
+    if (
+      loopbackHostnames.has(parsedUrl.hostname)
+      && loopbackHostnames.has(pageHostname)
+    ) {
+      parsedUrl.hostname = pageHostname;
+    }
+
+    return parsedUrl.toString().replace(/\/+$/, '');
+  } catch {
+    return apiUrl.replace(/\/+$/, '');
+  }
+};
+
 export const getApiBaseUrl = (): string => {
   const configuredUrl = import.meta.env.VITE_API_BASE_URL?.trim();
 
@@ -14,14 +33,18 @@ export const getApiBaseUrl = (): string => {
   const isLocalUrl = configuredUrl && (configuredUrl.includes('localhost') || configuredUrl.includes('127.0.0.1'));
 
   if (configuredUrl && !(isProd && isLocalUrl)) {
-    return configuredUrl.replace(/\/+$/, '');
+    return isProd
+      ? configuredUrl.replace(/\/+$/, '')
+      : alignLoopbackApiHostname(configuredUrl);
   }
 
   if (isProd) {
     return "https://api.antl.fr/api";
   }
 
-  return "http://localhost:8800/api";
+  // Conserver le même hostname loopback que Vite afin que les cookies
+  // SameSite=Lax soient envoyés à l'API locale.
+  return alignLoopbackApiHostname(configuredUrl || "http://localhost:8800/api");
 };
 
 /**
@@ -62,23 +85,20 @@ export const getCampagneLogoUrl = (logoPath: string | null | undefined): string 
  * @param photoPath - Chemin relatif de la photo (ex: /uploads/employe_photos/filename.png)
  * @returns URL complète de l'image (ex: http://localhost:8800/uploads/employe_photos/filename.png)
  */
-export const getEmployePhotoUrl = (photoPath: string | null | undefined): string | null => {
-  if (!photoPath) {
+export const getEmployePhotoUrl = (
+  employeId: number | null | undefined,
+  photoPath: string | null | undefined,
+): string | null => {
+  if (!employeId || !photoPath) {
     return null;
   }
 
-  if (photoPath.startsWith('http://') || photoPath.startsWith('https://')) {
-    return photoPath;
-  }
-
-  if (photoPath.startsWith('/uploads/')) {
-    const apiBaseUrl = getApiBaseUrl();
-    const serverUrl = apiBaseUrl.replace(/\/api$/, '');
-    return `${serverUrl}${photoPath}`;
-  }
-
-  return photoPath;
+  return `${getApiBaseUrl()}/employes/${employeId}/photo`;
 };
+
+export const getAntlConfigurationRibUrl = (): string => (
+  `${getApiBaseUrl()}/antl-configuration/rib/file`
+);
 
 /**
  * Détermine l'environnement actuel de l'application
