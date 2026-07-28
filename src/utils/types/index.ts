@@ -10,6 +10,7 @@ export type {
   SocialReadinessSnapshot,
   SocialPublicationPackage,
   SocialPublicationHistoryEntry,
+  SocialPublicationDetail,
   SocialPublicationHistoryPage,
   SocialPublicationHistoryStatus,
   SocialWorkflowStage,

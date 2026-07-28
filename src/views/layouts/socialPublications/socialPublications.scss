@@ -502,6 +502,17 @@
   color: vars.$fontColorSecondary;
 }
 
+#socialPublicationView .socialPublicationView__history-row {
+  cursor: pointer;
+  transition: background-color vars.$transitionMedium;
+}
+
+#socialPublicationView .socialPublicationView__history-row:hover,
+#socialPublicationView .socialPublicationView__history-row:focus {
+  background: rgba(124, 58, 237, .08);
+  outline: none;
+}
+
 #socialPublicationView .socialPublicationView__history-status {
   font-weight: 700;
 }
@@ -516,6 +527,145 @@
 
 #socialPublicationView .socialPublicationView__history-status--failed {
   color: #bd3c47;
+}
+
+#socialPublicationView .socialPublicationView__history-detail {
+  color: vars.$fontColorPrimary;
+}
+
+#socialPublicationView .socialPublicationView__history-detail h2,
+#socialPublicationView .socialPublicationView__history-detail h3,
+#socialPublicationView .socialPublicationView__history-detail p {
+  margin-top: 0;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header {
+  align-items: flex-start;
+  border-bottom: 1px solid vars.$borderColor;
+  display: flex;
+  gap: 1em;
+  justify-content: space-between;
+  margin-bottom: 1.25em;
+  padding-bottom: 1.1em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header h2 {
+  margin-bottom: .25em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header p {
+  color: vars.$fontColorSecondary;
+  margin-bottom: 0;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header dl {
+  display: grid;
+  gap: .55em;
+  margin: 0;
+  min-width: 12em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header dl div {
+  display: flex;
+  flex-direction: column;
+  gap: .1em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header dt,
+#socialPublicationView .socialPublicationView__history-detail-meta span {
+  color: vars.$fontColorSecondary;
+  font-size: .76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-header dd {
+  font-weight: 700;
+  margin: 0;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-grid {
+  display: grid;
+  gap: 1.25em;
+  grid-template-columns: minmax(0, 1.25fr) minmax(15em, .75fr);
+}
+
+#socialPublicationView .socialPublicationView__history-detail-grid section {
+  background: rgba(248, 250, 252, .85);
+  border: 1px solid vars.$borderColor;
+  border-radius: .85em;
+  padding: 1em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-grid h3 {
+  align-items: center;
+  display: flex;
+  font-size: .94rem;
+  gap: .45em;
+  margin-bottom: .7em;
+}
+
+#socialPublicationView .socialPublicationView__history-copy {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+#socialPublicationView .socialPublicationView__history-visual {
+  color: vars.$fontColorPrimary;
+  display: block;
+  text-decoration: none;
+}
+
+#socialPublicationView .socialPublicationView__history-visual img {
+  border-radius: .65em;
+  display: block;
+  height: 13em;
+  object-fit: cover;
+  width: 100%;
+}
+
+#socialPublicationView .socialPublicationView__history-visual span {
+  align-items: center;
+  display: flex;
+  font-size: .83rem;
+  font-weight: 700;
+  gap: .35em;
+  margin-top: .65em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-meta {
+  display: grid;
+  gap: .75em;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 1.25em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-meta div {
+  background: rgba(124, 58, 237, .06);
+  border-radius: .7em;
+  display: flex;
+  flex-direction: column;
+  gap: .25em;
+  padding: .75em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-meta strong {
+  font-size: .88rem;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-error {
+  background: rgba(220, 38, 38, .08);
+  border: 1px solid rgba(220, 38, 38, .2);
+  border-radius: .7em;
+  color: vars.$errorColor;
+  margin: 1em 0 0;
+  padding: .8em;
+}
+
+#socialPublicationView .socialPublicationView__history-detail-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.25em;
 }
 
 #socialPublicationView .socialPublicationView__pagination {
@@ -742,6 +892,14 @@
     width: 100%;
   }
 
+  #socialPublicationView .socialPublicationView__history-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  #socialPublicationView .socialPublicationView__history-detail-meta {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   #socialPublicationView .socialPublicationView__form {
     grid-template-columns: 1fr;
   }
@@ -781,6 +939,17 @@
 
   #socialPublicationView .socialPublicationView__workflow {
     grid-template-columns: 1fr;
+  }
+
+  #socialPublicationView .socialPublicationView__history-detail-header {
+    flex-direction: column;
+  }
+
+  #socialPublicationView .socialPublicationView__history-detail-header dl,
+  #socialPublicationView .socialPublicationView__history-detail-meta {
+    grid-template-columns: 1fr;
+    min-width: 0;
+    width: 100%;
   }
 
   #socialPublicationView .socialPublicationView__draft-actions,
