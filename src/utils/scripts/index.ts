@@ -36,6 +36,7 @@ export {
   getStatutAppelLabel,
 } from './formatters.ts';
 export {
+  ACCESS_MANAGEMENT_PERMISSION,
   SECTIONS_CONFIG,
   getAllowedSections,
   getFirstAllowedPath,

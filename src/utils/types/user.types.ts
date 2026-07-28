@@ -4,7 +4,6 @@ export type TypePoste = 'direction' | 'commercial' | 'support' | 'rh' | 'techniq
 
 export interface PermissionSection {
   enabled: boolean;
-  subsections?: string[];
 }
 
 export type PermissionRecord = Record<string, PermissionSection>;

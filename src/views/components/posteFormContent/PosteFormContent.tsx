@@ -5,7 +5,7 @@ import type { PosteFormViewModel } from '../../../hooks/index.ts';
 
 // constants
 import { TYPE_OPTIONS, COLOR_PALETTE } from '../../../utils/constants/index.ts';
-import { SECTIONS_CONFIG } from '../../../utils/scripts/index.ts';
+import { ACCESS_MANAGEMENT_PERMISSION, SECTIONS_CONFIG } from '../../../utils/scripts/index.ts';
 
 import { BackToTop, Button, Header, SubNav } from '../index.ts';
 
@@ -15,7 +15,7 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
   const {
     form, setForm, isEdit, isLoading, isFetching,
     error, success, handleChange, handleSelectChange,
-    togglePermissionSection, togglePermissionSubsection, handleSubmit, navigateBack,
+    togglePermissionSection, handleSubmit, navigateBack,
   } = viewModel;
 
   if (isFetching) {
@@ -108,12 +108,13 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
             </div>
 
             <div className="posteForm__field permissions-section">
-              <label>Permissions et accès aux menus</label>
+              <label>Permissions et accès aux sous-applications</label>
+              <p className="posteForm__permission-help">
+                Chaque droit ouvre le menu correspondant et l’ensemble de ses écrans internes.
+              </p>
               <div className="permissions-grid">
                 {SECTIONS_CONFIG.map(section => {
-                  const hasSubsections = section.subsections.length > 0;
                   const isSectionEnabled = !!form.permissions[section.id]?.enabled;
-                  const allowedSubsections = form.permissions[section.id]?.subsections || [];
 
                   return (
                     <div 
@@ -133,36 +134,33 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
                         </label>
                       </div>
 
-                      {hasSubsections && isSectionEnabled && (
+                      {isSectionEnabled && (
                         <div className="permission-card-body">
-                          <span className="permission-sub-label">Sous-applications accessibles :</span>
-                          <div className="permission-pills">
-                            {section.subsections.map(sub => {
-                              const isSubEnabled = allowedSubsections.includes(sub.id);
-                              return (
-                                <button
-                                  key={sub.id}
-                                  type="button"
-                                  className={`permission-pill ${isSubEnabled ? 'permission-pill--active' : ''}`}
-                                  onClick={() => togglePermissionSubsection(section.id, sub.id)}
-                                  disabled={isLoading}
-                                >
-                                  {sub.name}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )}
-
-                      {!hasSubsections && isSectionEnabled && (
-                        <div className="permission-card-body">
-                          <span className="permission-full-access">Accès complet à la section</span>
+                          <span className="permission-full-access">Accès complet à cette sous-application</span>
                         </div>
                       )}
                     </div>
                   );
                 })}
+                <div className={`permission-card ${form.permissions[ACCESS_MANAGEMENT_PERMISSION]?.enabled ? 'permission-card--enabled' : ''}`}>
+                  <div className="permission-card-header">
+                    <span className="permission-card-name">Gestion des accès</span>
+                    <label className="permission-toggle">
+                      <input
+                        type="checkbox"
+                        checked={!!form.permissions[ACCESS_MANAGEMENT_PERMISSION]?.enabled}
+                        onChange={() => togglePermissionSection(ACCESS_MANAGEMENT_PERMISSION)}
+                        disabled={isLoading}
+                      />
+                      <span className="permission-toggle-slider"></span>
+                    </label>
+                  </div>
+                  {form.permissions[ACCESS_MANAGEMENT_PERMISSION]?.enabled && (
+                    <div className="permission-card-body">
+                      <span className="permission-full-access">Création et modification des postes et profils employés</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
 

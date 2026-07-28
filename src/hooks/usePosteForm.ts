@@ -13,20 +13,14 @@ interface PosteFormState {
 }
 
 const INITIAL_PERMISSIONS: PermissionRecord = {
-  mail: { enabled: false, subsections: [] },
+  mail: { enabled: false },
   booking: { enabled: false },
-  operations: { enabled: false, subsections: [] },
+  operations: { enabled: false },
   commercial: { enabled: false },
-  incidents: { enabled: false, subsections: [] },
-  commerciaux: { enabled: false, subsections: [] },
-  projets: { enabled: false }
-};
-
-const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
-  operations: ['supervision', 'commandes', 'campagnes', 'prospects', 'produits', 'qualite', 'demandes-absence', 'employes', 'postes', 'materiel'],
-  incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
-  mail: ['mail_new', 'mail_list', 'mail_convert'],
-  commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
+  incidents: { enabled: false },
+  commerciaux: { enabled: false },
+  projets: { enabled: false },
+  'access-management': { enabled: false },
 };
 
 const INITIAL_FORM: PosteFormState = {
@@ -84,32 +78,6 @@ export function usePosteForm() {
       perms[sectionId] = {
         ...current,
         enabled: nextEnabled,
-        ...(nextEnabled && DEFAULT_SUBSECTIONS_BY_SECTION[sectionId] && {
-          subsections: DEFAULT_SUBSECTIONS_BY_SECTION[sectionId]
-        })
-      };
-      
-      return { ...prev, permissions: perms };
-    });
-  };
-
-  const togglePermissionSubsection = (sectionId: string, subsectionId: string) => {
-    setForm(prev => {
-      const perms = { ...prev.permissions };
-      const current = perms[sectionId] || { enabled: false, subsections: [] };
-      if (!current.enabled) return prev;
-      
-      const subs = current.subsections ? [...current.subsections] : [];
-      const index = subs.indexOf(subsectionId);
-      if (index > -1) {
-        subs.splice(index, 1);
-      } else {
-        subs.push(subsectionId);
-      }
-      
-      perms[sectionId] = {
-        ...current,
-        subsections: subs
       };
       
       return { ...prev, permissions: perms };
@@ -145,7 +113,7 @@ export function usePosteForm() {
     }
   };
 
-  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, togglePermissionSection, togglePermissionSubsection, handleSubmit, navigateBack: () => void navigate('/operations/postes') };
+  return { form, setForm, isEdit, isLoading, isFetching, error, success, handleChange, handleSelectChange, togglePermissionSection, handleSubmit, navigateBack: () => void navigate('/operations/postes') };
 }
 
 export type PosteFormViewModel = ReturnType<typeof usePosteForm>;

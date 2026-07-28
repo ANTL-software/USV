@@ -1,17 +1,12 @@
 import type { Employe } from '../types/index.ts';
 
-export interface SubsectionConfig {
-  id: string;
-  name: string;
-  path: string;
-}
+export const ACCESS_MANAGEMENT_PERMISSION = 'access-management';
 
 export interface SectionConfig {
   id: string;
   name: string;
   path: string;
   aliases?: string[];
-  subsections: SubsectionConfig[];
 }
 
 export const SECTIONS_CONFIG: SectionConfig[] = [
@@ -19,69 +14,37 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
     id: 'mail',
     name: 'Gestion des courriers',
     path: '/mail',
-    subsections: [
-      { id: 'mail_new', name: 'Ajouter un courrier', path: '/mail/new' },
-      { id: 'mail_list', name: 'Liste des courriers', path: '/mail/list' },
-      { id: 'mail_convert', name: 'Convertisseur', path: '/mail/convert' }
-    ]
   },
   {
     id: 'booking',
     name: 'Agenda',
     path: '/booking',
-    subsections: []
   },
   {
     id: 'operations',
     name: 'Gestion opérationnelle',
     path: '/operations',
     aliases: ['/campagnes', '/prospects', '/produits', '/paniers'],
-    subsections: [
-      { id: 'supervision', name: 'Supervision', path: '/supervision' },
-      { id: 'commandes', name: 'Commandes', path: '/operations/commandes' },
-      { id: 'campagnes', name: 'Campagnes', path: '/campagnes' },
-      { id: 'prospects', name: 'Prospects', path: '/operations/prospects' },
-      { id: 'produits', name: 'Produits', path: '/produits' },
-      { id: 'qualite', name: 'Qualité', path: '/operations/qualite' },
-      { id: 'demandes-absence', name: 'Demandes d\'absence', path: '/operations/demandes-absence' },
-      { id: 'employes', name: 'Employés', path: '/operations/employes' },
-      { id: 'postes', name: 'Postes & planning', path: '/operations/postes' },
-      { id: 'materiel', name: 'Matériel', path: '/operations/materiel' }
-    ]
   },
   {
     id: 'commercial',
     name: 'Commercial',
     path: '/commercial',
-    subsections: []
   },
   {
     id: 'incidents',
     name: 'Gestion des incidents',
     path: '/incidents',
-    subsections: [
-      { id: 'declarer', name: 'Déclarer un incident', path: '/incidents/declarer' },
-      { id: 'qualifier', name: 'Qualifier un incident', path: '/incidents/qualification' },
-      { id: 'traiter', name: 'Traiter un incident', path: '/incidents/traitement' },
-      { id: 'liste', name: 'Liste des incidents', path: '/incidents/liste' }
-    ]
   },
   {
     id: 'commerciaux',
     name: 'Gestion commerciaux',
     path: '/commerciaux',
-    subsections: [
-      { id: 'notes-direction', name: 'Notes de direction (Lecture)', path: '/commerciaux/notes-direction' },
-      { id: 'notes-direction-create', name: 'Notes de direction (Création)', path: '/commerciaux/notes-direction' },
-      { id: 'notes-direction-delete', name: 'Notes de direction (Suppression)', path: '/commerciaux/notes-direction' },
-      { id: 'mon_planning', name: 'Mon planning', path: '/commerciaux/mon_planning' }
-    ]
   },
   {
     id: 'projets',
     name: 'Gestion de projets',
     path: '/projets',
-    subsections: []
   }
 ];
 
@@ -89,7 +52,7 @@ export function hasAccessToSection(user: Employe | null, sectionId: string): boo
   if (!user) return false;
   
   if (user.poste && user.poste.permissions) {
-    const perms = user.poste.permissions as Record<string, { enabled: boolean; subsections?: string[] }>;
+    const perms = user.poste.permissions as Record<string, { enabled: boolean }>;
     return !!perms[sectionId]?.enabled;
   }
   
@@ -114,36 +77,8 @@ export function hasAccessToSection(user: Employe | null, sectionId: string): boo
 }
 
 export function hasAccessToSubsection(user: Employe | null, sectionId: string, subsectionId: string): boolean {
-  if (!user) return false;
-  
-  if (user.poste && user.poste.permissions) {
-    const perms = user.poste.permissions as Record<string, { enabled: boolean; subsections?: string[] }>;
-    const sec = perms[sectionId];
-    if (!sec || !sec.enabled) return false;
-    if (!sec.subsections) return false;
-    return sec.subsections.includes(subsectionId);
-  }
-  
-  // Fallback aux rôles par défaut
-  const title = user.poste?.libelle_poste;
-  if (!title) return false;
-  
-  const fullAccessRoles = [
-    'CEO', 'Business Developer', 'Sales Development', 
-    'Sales Manager', 'Sales manager', 'Office Manager', 'QA Manager', 'CTO'
-  ];
-  if (fullAccessRoles.some(role => title.toLowerCase() === role.toLowerCase())) {
-    return true;
-  }
-  
-  const commercialRoles = ['Sales Expert', 'Sales Junior', 'Sales Senior'];
-  if (commercialRoles.some(role => title.toLowerCase() === role.toLowerCase())) {
-    if (sectionId === 'commerciaux') {
-      return ['notes-direction', 'mon_planning'].includes(subsectionId);
-    }
-  }
-  
-  return false;
+  void subsectionId;
+  return hasAccessToSection(user, sectionId);
 }
 
 export function hasAccessToPath(user: Employe | null, path: string): boolean {
@@ -157,9 +92,6 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   
   if (cleanPath.startsWith('/mail')) {
     if (!hasAccessToSection(user, 'mail')) return false;
-    if (cleanPath === '/mail/new') return hasAccessToSubsection(user, 'mail', 'mail_new');
-    if (cleanPath === '/mail/list' || cleanPath.startsWith('/mail/update')) return hasAccessToSubsection(user, 'mail', 'mail_list');
-    if (cleanPath === '/mail/convert') return hasAccessToSubsection(user, 'mail', 'mail_convert');
     return true;
   }
   
@@ -173,8 +105,6 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   
   if (cleanPath.startsWith('/commerciaux')) {
     if (!hasAccessToSection(user, 'commerciaux')) return false;
-    if (cleanPath === '/commerciaux/notes-direction') return hasAccessToSubsection(user, 'commerciaux', 'notes-direction');
-    if (cleanPath === '/commerciaux/mon_planning') return hasAccessToSubsection(user, 'commerciaux', 'mon_planning');
     return true;
   }
   
@@ -184,13 +114,6 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
 
   if (cleanPath.startsWith('/incidents')) {
     if (!hasAccessToSection(user, 'incidents')) return false;
-    if (cleanPath.startsWith('/incidents/declarer')) return hasAccessToSubsection(user, 'incidents', 'declarer');
-    if (cleanPath.startsWith('/incidents/qualification')) return hasAccessToSubsection(user, 'incidents', 'qualifier');
-    if (cleanPath === '/incidents/traitement') return hasAccessToSubsection(user, 'incidents', 'traiter');
-    if (cleanPath.startsWith('/incidents/traitement/')) {
-      return hasAccessToSubsection(user, 'incidents', 'traiter') || hasAccessToSubsection(user, 'incidents', 'liste');
-    }
-    if (cleanPath.startsWith('/incidents/liste')) return hasAccessToSubsection(user, 'incidents', 'liste');
     return true;
   }
   
@@ -203,18 +126,6 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     cleanPath.startsWith('/paniers')
   ) {
     if (!hasAccessToSection(user, 'operations')) return false;
-    
-    if (cleanPath.startsWith('/operations/vigie')) return hasAccessToSubsection(user, 'operations', 'supervision');
-    if (cleanPath.startsWith('/supervision')) return hasAccessToSubsection(user, 'operations', 'supervision');
-    if (cleanPath.startsWith('/operations/commandes')) return hasAccessToSubsection(user, 'operations', 'commandes');
-    if (cleanPath.startsWith('/campagnes')) return hasAccessToSubsection(user, 'operations', 'campagnes');
-    if (cleanPath.startsWith('/operations/prospects') || cleanPath.startsWith('/prospects/import') || cleanPath.includes('/inject')) return hasAccessToSubsection(user, 'operations', 'prospects');
-    if (cleanPath.startsWith('/produits') || cleanPath.startsWith('/paniers')) return hasAccessToSubsection(user, 'operations', 'produits');
-    if (cleanPath.startsWith('/operations/qualite')) return hasAccessToSubsection(user, 'operations', 'qualite');
-    if (cleanPath.startsWith('/operations/demandes-absence')) return hasAccessToSubsection(user, 'operations', 'demandes-absence');
-    if (cleanPath.startsWith('/operations/employes')) return hasAccessToSubsection(user, 'operations', 'employes');
-    if (cleanPath.startsWith('/operations/postes')) return hasAccessToSubsection(user, 'operations', 'postes');
-    if (cleanPath.startsWith('/operations/materiel')) return hasAccessToSubsection(user, 'operations', 'materiel');
     
     return true;
   }
