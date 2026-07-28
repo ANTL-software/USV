@@ -48,7 +48,8 @@ function SocialDraftDetails({ draft }: { draft: SocialEditorialDraft }): ReactEl
       <div className="socialPublicationView__visual-detail">
         <span>Visuel</span>
         <p>{draft.visuel_notes || 'Aucune note visuelle.'}</p>
-        {draft.visuel_url && <a href={draft.visuel_url} target="_blank" rel="noreferrer"><MdOpenInNew /> Ouvrir le visuel</a>}
+        {draft.visuel_apercu_url && <a href={draft.visuel_apercu_url} target="_blank" rel="noreferrer" className="socialPublicationView__draft-visual-preview"><img src={draft.visuel_apercu_url} alt={`Visuel de ${draft.sujet}`} /></a>}
+        {(draft.visuel_apercu_url || draft.visuel_url) && <a href={draft.visuel_apercu_url || draft.visuel_url || undefined} target="_blank" rel="noreferrer"><MdOpenInNew /> Ouvrir le visuel</a>}
       </div>
     </details>
   );
