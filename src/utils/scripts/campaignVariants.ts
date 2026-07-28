@@ -7,7 +7,7 @@ export type CampaignVariant = keyof typeof CAMPAIGN_VARIANTS;
 
 export const CAMPAIGN_VARIANT_OPTIONS = [
   { value: CAMPAIGN_VARIANTS.vente, label: 'Vente' },
-  { value: CAMPAIGN_VARIANTS.lead_b2b, label: 'Lead B2B (MMA)' },
+  { value: CAMPAIGN_VARIANTS.lead_b2b, label: 'Lead B2B' },
 ] as const;
 
 export function normalizeCampaignVariant(value: string | null | undefined): CampaignVariant {
