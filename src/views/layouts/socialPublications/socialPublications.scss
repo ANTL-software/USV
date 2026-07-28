@@ -834,6 +834,27 @@
   margin: 0;
 }
 
+#socialPublicationView .socialPublicationView__draft-visual-preview {
+  border: 1px solid vars.$borderColor;
+  border-radius: .7em;
+  display: block;
+  margin-top: .55em;
+  max-width: 24em;
+  overflow: hidden;
+}
+
+#socialPublicationView .socialPublicationView__draft-visual-preview img {
+  display: block;
+  height: 13em;
+  object-fit: cover;
+  transition: transform vars.$transitionMedium;
+  width: 100%;
+}
+
+#socialPublicationView .socialPublicationView__draft-visual-preview:hover img {
+  transform: scale(1.025);
+}
+
 #socialPublicationView .socialPublicationView__readiness {
   align-items: center;
   color: #187541;

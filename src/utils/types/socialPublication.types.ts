@@ -26,6 +26,7 @@ export interface SocialEditorialDraft {
   textes: Record<SocialPlatform, string>;
   visuel_drive_id: string | null;
   visuel_url: string | null;
+  visuel_apercu_url?: string | null;
   visuel_notes: string | null;
   statut: SocialDraftStatus;
   date_souhaitee: string | null;
