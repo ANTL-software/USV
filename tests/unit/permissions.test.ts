@@ -27,15 +27,15 @@ test('les permissions explicites priment sur les rôles fallback', () => {
       id_poste: 1,
       libelle_poste: 'Custom',
       permissions: {
-        operations: { enabled: true },
-        commerciaux: { enabled: false },
+        operations: { enabled: true, subsections: ['supervision', 'campagnes'] },
+        commerciaux: { enabled: false, subsections: [] },
       },
     },
   });
 
   assert.equal(hasAccessToSection(user, 'operations'), true);
   assert.equal(hasAccessToSubsection(user, 'operations', 'supervision'), true);
-  assert.equal(hasAccessToSubsection(user, 'operations', 'produits'), true);
+  assert.equal(hasAccessToSubsection(user, 'operations', 'produits'), false);
   assert.equal(hasAccessToSection(user, 'commerciaux'), false);
 });
 
@@ -61,13 +61,13 @@ test('le fallback par rôle ouvre les accès attendus', () => {
   assert.equal(hasAccessToSubsection(commercial, 'commerciaux', 'mon_planning'), true);
 });
 
-test('hasAccessToPath ouvre toutes les vues internes du menu parent', () => {
+test('hasAccessToPath applique le module sélectionné dans le menu parent', () => {
   const user = createUser({
     poste: {
       id_poste: 4,
       libelle_poste: 'Ops',
       permissions: {
-        operations: { enabled: true },
+        operations: { enabled: true, subsections: ['supervision', 'prospects', 'produits'] },
       },
     },
   });
@@ -76,7 +76,7 @@ test('hasAccessToPath ouvre toutes les vues internes du menu parent', () => {
   assert.equal(hasAccessToPath(user, '/prospects/import'), true);
   assert.equal(hasAccessToPath(user, '/operations/prospects'), true);
   assert.equal(hasAccessToPath(user, '/produits'), true);
-  assert.equal(hasAccessToPath(user, '/operations/postes'), true);
+  assert.equal(hasAccessToPath(user, '/operations/postes'), false);
   assert.equal(hasAccessToPath(user, '/commercial'), false);
 });
 
@@ -108,13 +108,13 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
   assert.equal(getFirstAllowedPath(null), '/auth');
 });
 
-test('les accès incidents suivent le menu parent', () => {
+test('les accès incidents suivent les modules du menu parent', () => {
   const lecteur = createUser({
     poste: {
       id_poste: 6,
       libelle_poste: 'Lecteur incidents',
       permissions: {
-        incidents: { enabled: true },
+        incidents: { enabled: true, subsections: ['liste'] },
       },
     },
   });
@@ -123,23 +123,23 @@ test('les accès incidents suivent le menu parent', () => {
   assert.equal(hasAccessToSubsection(lecteur, 'incidents', 'liste'), true);
   assert.equal(hasAccessToPath(lecteur, '/incidents/liste'), true);
   assert.equal(hasAccessToPath(lecteur, '/incidents/traitement/12'), true);
-  assert.equal(hasAccessToPath(lecteur, '/incidents/traitement'), true);
-  assert.equal(hasAccessToPath(lecteur, '/incidents/declarer'), true);
-  assert.equal(hasAccessToPath(lecteur, '/incidents/qualification'), true);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/traitement'), false);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/declarer'), false);
+  assert.equal(hasAccessToPath(lecteur, '/incidents/qualification'), false);
 });
 
-test('une permission incidents ouvre toutes les routes incidents', () => {
+test('le module traitement ouvre uniquement les routes traitement', () => {
   const intervenant = createUser({
     poste: {
       id_poste: 7,
       libelle_poste: 'Intervenant incidents',
       permissions: {
-        incidents: { enabled: true },
+        incidents: { enabled: true, subsections: ['traiter'] },
       },
     },
   });
 
   assert.equal(hasAccessToPath(intervenant, '/incidents/traitement'), true);
   assert.equal(hasAccessToPath(intervenant, '/incidents/traitement/12'), true);
-  assert.equal(hasAccessToPath(intervenant, '/incidents/liste'), true);
+  assert.equal(hasAccessToPath(intervenant, '/incidents/liste'), false);
 });

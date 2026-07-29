@@ -15,7 +15,7 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
   const {
     form, setForm, isEdit, isLoading, isFetching,
     error, success, handleChange, handleSelectChange,
-    togglePermissionSection, handleSubmit, navigateBack,
+    togglePermissionSection, togglePermissionSubsection, handleSubmit, navigateBack,
   } = viewModel;
 
   if (isFetching) {
@@ -109,12 +109,11 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
 
             <div className="posteForm__field permissions-section">
               <label>Permissions et accès aux sous-applications</label>
-              <p className="posteForm__permission-help">
-                Chaque droit ouvre le menu correspondant et l’ensemble de ses écrans internes.
-              </p>
+              <p className="posteForm__permission-help">Activez le menu, puis les modules utiles. Les boutons restent regroupés dans leur sous-application.</p>
               <div className="permissions-grid">
                 {SECTIONS_CONFIG.map(section => {
                   const isSectionEnabled = !!form.permissions[section.id]?.enabled;
+                  const allowedSubsections = form.permissions[section.id]?.subsections || [];
 
                   return (
                     <div 
@@ -136,7 +135,29 @@ export function PosteFormContent({ viewModel }: PosteFormContentProps): ReactEle
 
                       {isSectionEnabled && (
                         <div className="permission-card-body">
-                          <span className="permission-full-access">Accès complet à cette sous-application</span>
+                          {section.subsections.length > 0 ? (
+                            <>
+                              <span className="permission-sub-label">Modules accessibles :</span>
+                              <div className="permission-pills">
+                                {section.subsections.map(subsection => {
+                                  const isEnabled = allowedSubsections.includes(subsection.id);
+                                  return (
+                                    <button
+                                      key={subsection.id}
+                                      type="button"
+                                      className={`permission-pill ${isEnabled ? 'permission-pill--active' : ''}`}
+                                      onClick={() => togglePermissionSubsection(section.id, subsection.id)}
+                                      disabled={isLoading}
+                                    >
+                                      {subsection.name}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </>
+                          ) : (
+                            <span className="permission-full-access">Accès complet à cette sous-application</span>
+                          )}
                         </div>
                       )}
                     </div>
