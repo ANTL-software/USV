@@ -20,7 +20,7 @@ test('USV attache le CSRF runtime aux mutations de session incluses', async () =
   assert.match(runtimeUtils, /parsedUrl\.hostname\s*=\s*pageHostname/);
 });
 
-test('la CSP de production exclut unsafe-eval', async () => {
+test('la CSP de production exclut les scripts unsafe-eval et unsafe-inline', async () => {
   const vercelConfig = JSON.parse(
     await readFile(path.join(ROOT, 'vercel.json'), 'utf8'),
   ) as {
@@ -35,4 +35,6 @@ test('la CSP de production exclut unsafe-eval', async () => {
 
   assert.ok(productionPolicy);
   assert.equal(productionPolicy.value.includes("'unsafe-eval'"), false);
+  const scriptPolicy = productionPolicy.value.match(/script-src\s+([^;]+)/)?.[1] ?? '';
+  assert.equal(scriptPolicy.includes("'unsafe-inline'"), false);
 });

@@ -16,6 +16,6 @@ test('normalizeCampaignVariant borne les valeurs supportées', () => {
 
 test('getCampaignVariantLabel retourne un libellé lisible pour USV', () => {
   assert.equal(getCampaignVariantLabel(CAMPAIGN_VARIANTS.vente), 'Vente');
-  assert.equal(getCampaignVariantLabel(CAMPAIGN_VARIANTS.lead_b2b), 'Lead B2B (MMA)');
+  assert.equal(getCampaignVariantLabel(CAMPAIGN_VARIANTS.lead_b2b), 'Lead B2B');
   assert.equal(getCampaignVariantLabel('legacy'), 'Vente');
 });

@@ -17,10 +17,11 @@ if (typeof window !== 'undefined') {
   });
 }
 
-// Interceptor pour ajouter le token CSRF automatiquement (JWT dans cookies httpOnly cross-domain)
+// Interceptor pour ajouter le token CSRF automatiquement.
 axios.interceptors.request.use(async (config) => {
-  // Les cookies JWT httpOnly sont automatiquement envoyés avec withCredentials: true
-  // Domain: .antl.app permet le partage entre antl.app et api.antl.app
+  // Les JWT httpOnly restent host-only sur l'API et sont envoyés avec
+  // withCredentials. Seul le marqueur de session non sensible est partagé
+  // entre les sous-domaines ANTL.
   
   config.headers = config.headers || {};
   

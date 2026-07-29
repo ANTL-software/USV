@@ -5,6 +5,14 @@ export const isOnProduction = (): boolean => {
   return !(isDev && isDevPort);
 };
 
+export const isLoopbackApiUrl = (apiUrl: string): boolean => {
+  try {
+    return new Set(['localhost', '127.0.0.1', '::1', '[::1]']).has(new URL(apiUrl).hostname);
+  } catch {
+    return false;
+  }
+};
+
 const alignLoopbackApiHostname = (apiUrl: string): string => {
   try {
     const parsedUrl = new URL(apiUrl);
@@ -30,7 +38,7 @@ export const getApiBaseUrl = (): string => {
   // Si on est en production (non-local) mais que l'URL configurée pointe vers localhost,
   // on ignore cette configuration locale erronée.
   const isProd = isOnProduction();
-  const isLocalUrl = configuredUrl && (configuredUrl.includes('localhost') || configuredUrl.includes('127.0.0.1'));
+  const isLocalUrl = configuredUrl ? isLoopbackApiUrl(configuredUrl) : false;
 
   if (configuredUrl && !(isProd && isLocalUrl)) {
     return isProd

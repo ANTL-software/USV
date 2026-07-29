@@ -21,7 +21,7 @@ function createUser(overrides: Partial<Employe> = {}): Employe {
   };
 }
 
-test('les permissions explicites priment sur les rôles fallback', () => {
+test('les accès reposent uniquement sur les permissions explicites du poste', () => {
   const user = createUser({
     poste: {
       id_poste: 1,
@@ -39,7 +39,7 @@ test('les permissions explicites priment sur les rôles fallback', () => {
   assert.equal(hasAccessToSection(user, 'commerciaux'), false);
 });
 
-test('le fallback par rôle ouvre les accès attendus', () => {
+test('un intitulé de poste privilégié ne donne aucun accès implicite', () => {
   const manager = createUser({
     poste: {
       id_poste: 2,
@@ -54,11 +54,11 @@ test('le fallback par rôle ouvre les accès attendus', () => {
     },
   });
 
-  assert.equal(hasAccessToSection(manager, 'operations'), true);
-  assert.equal(hasAccessToSubsection(manager, 'operations', 'produits'), true);
-  assert.equal(hasAccessToSection(commercial, 'commerciaux'), true);
+  assert.equal(hasAccessToSection(manager, 'operations'), false);
+  assert.equal(hasAccessToSubsection(manager, 'operations', 'produits'), false);
+  assert.equal(hasAccessToSection(commercial, 'commerciaux'), false);
   assert.equal(hasAccessToSection(commercial, 'operations'), false);
-  assert.equal(hasAccessToSubsection(commercial, 'commerciaux', 'mon_planning'), true);
+  assert.equal(hasAccessToSubsection(commercial, 'commerciaux', 'mon_planning'), false);
 });
 
 test('hasAccessToPath applique le module sélectionné dans le menu parent', () => {
@@ -78,6 +78,36 @@ test('hasAccessToPath applique le module sélectionné dans le menu parent', () 
   assert.equal(hasAccessToPath(user, '/produits'), true);
   assert.equal(hasAccessToPath(user, '/operations/postes'), false);
   assert.equal(hasAccessToPath(user, '/commercial'), false);
+});
+
+test('les écrans de modification RH exigent la permission gestion des accès', () => {
+  const lecteurRh = createUser({
+    poste: {
+      id_poste: 9,
+      libelle_poste: 'Lecture RH',
+      permissions: {
+        operations: { enabled: true, subsections: ['employes', 'postes'] },
+        'access-management': { enabled: false },
+      },
+    },
+  });
+  const gestionnaireRh = createUser({
+    poste: {
+      ...lecteurRh.poste!,
+      permissions: {
+        ...lecteurRh.poste!.permissions,
+        'access-management': { enabled: true },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes'), true);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/details/2'), true);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/new'), false);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/2'), false);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/postes/2'), false);
+  assert.equal(hasAccessToPath(gestionnaireRh, '/operations/employes/new'), true);
+  assert.equal(hasAccessToPath(gestionnaireRh, '/operations/postes/2'), true);
 });
 
 test('la section commercial suit la permission principale du poste', () => {
@@ -100,6 +130,15 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
     poste: {
       id_poste: 5,
       libelle_poste: 'Office Manager',
+      permissions: {
+        mail: { enabled: true },
+        booking: { enabled: true },
+        operations: { enabled: true },
+        commercial: { enabled: true },
+        incidents: { enabled: true },
+        commerciaux: { enabled: true },
+        projets: { enabled: true },
+      },
     },
   });
 
