@@ -4,7 +4,6 @@ export const courrierModel = (fetchedCourrier: ICourrier): ICourrier => {
   return {
     id: fetchedCourrier.id,
     fileName: fetchedCourrier.fileName,
-    path: fetchedCourrier.path,
     fileExtention: fetchedCourrier.fileExtention,
     active: fetchedCourrier.active,
     department: fetchedCourrier.department,

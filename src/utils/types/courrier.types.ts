@@ -1,7 +1,6 @@
 export interface ICourrier {
   id: number;
   fileName: string;
-  path: string;
   fileExtention: string;
   active: boolean;
   department?: string;

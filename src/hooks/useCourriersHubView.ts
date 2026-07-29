@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getErrorMessage } from '../utils/scripts/index.ts';
+import { getErrorMessage, hasAccessToSubsection } from '../utils/scripts/index.ts';
 import { useCourrier } from './useCourrier.ts';
+import { useUserContext } from './useUserContext.ts';
 
 export function useCourriersHubView() {
   const navigate = useNavigate();
+  const { user } = useUserContext();
   const { getCourrierStats, stats } = useCourrier();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +36,13 @@ export function useCourriersHubView() {
   const navigateList = useCallback((): void => { void navigate('/mail/list'); }, [navigate]);
   const navigateConvert = useCallback((): void => { void navigate('/mail/convert'); }, [navigate]);
 
-  return { error, navigateConvert, navigateList, navigateNew, values };
+  const access = {
+    convert: hasAccessToSubsection(user, 'mail', 'mail_convert'),
+    list: hasAccessToSubsection(user, 'mail', 'mail_list'),
+    new: hasAccessToSubsection(user, 'mail', 'mail_new'),
+  };
+
+  return { access, error, navigateConvert, navigateList, navigateNew, values };
 }
 
 export type CourriersHubViewModel = ReturnType<typeof useCourriersHubView>;

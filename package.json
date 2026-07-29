@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@twilio/voice-sdk": "^2.18.3",
-    "@types/react-color": "^3.0.13",
     "aos": "^2.3.4",
     "axios": "^1.18.1",
     "date-fns": "^4.1.0",
@@ -30,8 +29,7 @@
     "react-pdf": "^10.4.1",
     "react-router-dom": "7.18.1",
     "react-select": "^5.10.2",
-    "recharts": "^3.8.1",
-    "sass": "^1.102.0"
+    "recharts": "^3.8.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -40,12 +38,14 @@
     "@types/node": "^25.4.0",
     "@types/react": "^19.2.14",
     "@types/react-big-calendar": "^1.16.3",
+    "@types/react-color": "^3.0.13",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^5.1.4",
     "eslint": "^9.15.0",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "sass": "^1.102.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.0",
     "vite": "^7.3.6"

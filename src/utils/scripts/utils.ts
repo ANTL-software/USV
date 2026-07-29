@@ -89,9 +89,9 @@ export const getCampagneLogoUrl = (logoPath: string | null | undefined): string 
 };
 
 /**
- * Construit l'URL complète pour une photo d'un employé
- * @param photoPath - Chemin relatif de la photo (ex: /uploads/employe_photos/filename.png)
- * @returns URL complète de l'image (ex: http://localhost:8800/uploads/employe_photos/filename.png)
+ * Construit l'endpoint authentifié d'une photo employé.
+ * Le chemin de stockage sert uniquement à détecter la présence d'une photo et
+ * n'est jamais utilisé comme URL publique.
  */
 export const getEmployePhotoUrl = (
   employeId: number | null | undefined,

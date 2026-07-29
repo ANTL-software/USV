@@ -19,8 +19,12 @@ export const ADMIN_USER = {
     id_poste: 1,
     libelle_poste: 'CEO',
     permissions: {
+      'access-management': { enabled: true },
       booking: { enabled: true },
-      commercial: { enabled: true },
+      commercial: {
+        enabled: true,
+        subsections: ['publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
+      },
       commerciaux: {
         enabled: true,
         subsections: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
@@ -31,11 +35,15 @@ export const ADMIN_USER = {
         enabled: true,
         subsections: [
           'supervision',
+          'vigie',
           'commandes',
           'campagnes',
           'prospects',
           'produits',
           'qualite',
+          'qualite-signalements',
+          'qualite-ecoutes',
+          'qualite-statistiques',
           'demandes-absence',
           'employes',
           'postes',
@@ -117,7 +125,11 @@ export async function handleCommonApiRequest(route: Route): Promise<boolean> {
   const { method, path } = describeApiRequest(route);
 
   if (method === 'GET' && path === '/csrf-token') {
-    await fulfillJson(route, apiSuccess({ token: 'playwright-csrf-token' }));
+    await fulfillJson(route, {
+      success: true,
+      csrfToken: 'playwright-csrf-token',
+      headerName: 'x-csrf-token',
+    });
     return true;
   }
 
@@ -132,6 +144,19 @@ export async function handleCommonApiRequest(route: Route): Promise<boolean> {
   }
 
   if (method === 'GET' && path === '/employes/absence-requests/pending') {
+    await fulfillJson(route, apiSuccess([]));
+    return true;
+  }
+
+  if (method === 'GET' && path === '/incidents') {
+    await fulfillJson(route, {
+      ...apiSuccess([]),
+      pagination: { page: 1, limit: 1, total: 0, totalPages: 0 },
+    });
+    return true;
+  }
+
+  if (method === 'GET' && path === '/ventes/frigo-alertes') {
     await fulfillJson(route, apiSuccess([]));
     return true;
   }

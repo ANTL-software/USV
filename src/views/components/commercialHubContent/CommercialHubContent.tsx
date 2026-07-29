@@ -8,4 +8,26 @@ interface CommercialHubContentProps {
   viewModel: CommercialPageViewModel;
 }
 
-export function CommercialHubContent({ viewModel }: CommercialHubContentProps): ReactElement { return <div id="centreAppels"><Header /><SubNav /><main><div className="centreAppels__back"><Button style="back" onClick={viewModel.navigateBack}><MdArrowBack /><span>Retour</span></Button></div><div className="centreAppels__wrapper"><div className="centreAppels__row"><section className="centreAppels__card" onClick={viewModel.navigateToSocialPublications}><div className="centreAppels__card-icon"><IoMegaphoneOutline /></div><h2>Posts réseaux sociaux</h2></section><section className="centreAppels__card" onClick={viewModel.navigateToFacturation}><div className="centreAppels__card-icon"><IoReceiptOutline /></div><h2>Facturation</h2></section><section className="centreAppels__card" onClick={viewModel.navigateToDevis}><div className="centreAppels__card-icon"><IoDocumentTextOutline /></div><h2>Devis</h2></section><section className="centreAppels__card" onClick={viewModel.navigateToConfiguration}><div className="centreAppels__card-icon"><IoSettingsOutline /></div><h2>Configuration antl</h2></section></div></div></main><BackToTop /></div>; }
+export function CommercialHubContent({ viewModel }: CommercialHubContentProps): ReactElement {
+  const { access } = viewModel;
+  return (
+    <div id="centreAppels">
+      <Header />
+      <SubNav />
+      <main>
+        <div className="centreAppels__back">
+          <Button style="back" onClick={viewModel.navigateBack}><MdArrowBack /><span>Retour</span></Button>
+        </div>
+        <div className="centreAppels__wrapper">
+          <div className="centreAppels__row">
+            {access.socialPublications && <section className="centreAppels__card" onClick={viewModel.navigateToSocialPublications}><div className="centreAppels__card-icon"><IoMegaphoneOutline /></div><h2>Posts réseaux sociaux</h2></section>}
+            {access.facturation && <section className="centreAppels__card" onClick={viewModel.navigateToFacturation}><div className="centreAppels__card-icon"><IoReceiptOutline /></div><h2>Facturation</h2></section>}
+            {access.devis && <section className="centreAppels__card" onClick={viewModel.navigateToDevis}><div className="centreAppels__card-icon"><IoDocumentTextOutline /></div><h2>Devis</h2></section>}
+            {access.configuration && <section className="centreAppels__card" onClick={viewModel.navigateToConfiguration}><div className="centreAppels__card-icon"><IoSettingsOutline /></div><h2>Configuration ANTL</h2></section>}
+          </div>
+        </div>
+      </main>
+      <BackToTop />
+    </div>
+  );
+}

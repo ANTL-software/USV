@@ -19,6 +19,8 @@ interface LoadedPdf {
   numPages: number;
 }
 
+const PDF_OPTIONS = { isEvalSupported: false } as const;
+
 const SecurePDFRenderer = ({ pdfUrl, fileName }: SecurePDFRendererProps): ReactElement => {
   const [numPages, setNumPages] = useState(0);
   const [pageNumber, setPageNumber] = useState(1);
@@ -91,7 +93,7 @@ const SecurePDFRenderer = ({ pdfUrl, fileName }: SecurePDFRendererProps): ReactE
           file={pdfUrl}
           loading={<div className="pdf-viewer-loading"><p>Chargement du PDF...</p></div>}
           error=""
-          options={{ isEvalSupported: false }}
+          options={PDF_OPTIONS}
           onLoadSuccess={handleDocumentLoad}
           onLoadError={() => setError('Impossible de charger le PDF')}
         >
