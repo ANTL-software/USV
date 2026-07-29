@@ -7,6 +7,7 @@ import {
   hasAccessToPath,
   hasAccessToSection,
   hasAccessToSubsection,
+  SECTIONS_CONFIG,
 } from '../../src/utils/scripts/permissions.ts';
 import type { Employe } from '../../src/utils/types/user.types.ts';
 
@@ -110,19 +111,88 @@ test('les écrans de modification RH exigent la permission gestion des accès', 
   assert.equal(hasAccessToPath(gestionnaireRh, '/operations/postes/2'), true);
 });
 
-test('la section commercial suit la permission principale du poste', () => {
+test('les sous-applications commerciales exigent leur droit dédié', () => {
   const user = createUser({
     poste: {
       id_poste: 8,
       libelle_poste: 'Gestion commerciale',
       permissions: {
-        commercial: { enabled: true },
+        commercial: { enabled: true, subsections: ['devis', 'publications-reseaux-sociaux'] },
       },
     },
   });
 
   assert.equal(hasAccessToSection(user, 'commercial'), true);
   assert.equal(hasAccessToPath(user, '/commercial'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/devis'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/publications-reseaux-sociaux'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/publications-reseaux-sociaux/historique'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/facturation'), false);
+  assert.equal(hasAccessToPath(user, '/commercial/configuration-antl'), false);
+});
+
+test('qualité et vigie ne réutilisent plus un droit opérationnel trop large', () => {
+  const user = createUser({
+    poste: {
+      id_poste: 10,
+      libelle_poste: 'Qualité',
+      permissions: {
+        operations: {
+          enabled: true,
+          subsections: ['qualite', 'qualite-ecoutes', 'vigie'],
+        },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(user, '/operations/qualite'), true);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/ecoutes'), true);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/signalements'), false);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/statistiques'), false);
+  assert.equal(hasAccessToPath(user, '/operations/vigie'), true);
+  assert.equal(hasAccessToPath(user, '/supervision'), false);
+
+  const orphanLeaf = createUser({
+    poste: {
+      id_poste: 11,
+      libelle_poste: 'Écoute isolée',
+      permissions: {
+        operations: { enabled: true, subsections: ['qualite-ecoutes'] },
+      },
+    },
+  });
+  assert.equal(hasAccessToPath(orphanLeaf, '/operations/qualite/ecoutes'), false);
+});
+
+test('la matrice des postes recense chaque carte de hub comme sous-application', () => {
+  const bySection = new Map(SECTIONS_CONFIG.map((section) => [
+    section.id,
+    section.subsections.map((subsection) => subsection.id),
+  ]));
+
+  assert.deepEqual(bySection.get('mail'), ['mail_new', 'mail_list', 'mail_convert']);
+  assert.deepEqual(bySection.get('commercial'), [
+    'publications-reseaux-sociaux',
+    'facturation',
+    'devis',
+    'configuration-antl',
+  ]);
+  assert.deepEqual(bySection.get('operations'), [
+    'supervision',
+    'vigie',
+    'commandes',
+    'campagnes',
+    'prospects',
+    'produits',
+    'qualite',
+    'qualite-signalements',
+    'qualite-ecoutes',
+    'qualite-statistiques',
+    'demandes-absence',
+    'employes',
+    'postes',
+    'materiel',
+  ]);
 });
 
 test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {

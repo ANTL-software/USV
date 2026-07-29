@@ -2,7 +2,6 @@ export interface NoteDirectionData {
   id: number;
   name: string;
   filename: string;
-  path: string;
   mime_type: string;
   size: number;
   date_created: string;
@@ -22,7 +21,6 @@ export class NoteDirectionModel implements NoteDirectionData {
   id: number;
   name: string;
   filename: string;
-  path: string;
   mime_type: string;
   size: number;
   date_created: string;
@@ -38,7 +36,6 @@ export class NoteDirectionModel implements NoteDirectionData {
     this.id = data.id;
     this.name = data.name;
     this.filename = data.filename;
-    this.path = data.path;
     this.mime_type = data.mime_type;
     this.size = data.size;
     this.date_created = data.date_created;
@@ -88,7 +85,6 @@ export class NoteDirectionModel implements NoteDirectionData {
       id: this.id,
       name: this.name,
       filename: this.filename,
-      path: this.path,
       mime_type: this.mime_type,
       size: this.size,
       date_created: this.date_created,
