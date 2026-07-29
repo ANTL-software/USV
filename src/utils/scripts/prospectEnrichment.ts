@@ -63,6 +63,11 @@ export function formatEnrichmentValue(value: string | number | null | undefined)
   return typeof value === 'number' ? value.toLocaleString('fr-FR') : value.trim() || '—';
 }
 
+export function formatEnrichmentPayload(payload: unknown): string {
+  if (payload === null || payload === undefined) return '—';
+  return JSON.stringify(payload, null, 2);
+}
+
 export function formatEnrichmentDate(value: string | null | undefined): string {
   if (!value) {
     return '—';

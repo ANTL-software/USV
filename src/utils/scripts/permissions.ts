@@ -89,36 +89,15 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
 
 export function hasAccessToSection(user: Employe | null, sectionId: string): boolean {
   if (!user) return false;
-  
-  if (user.poste && user.poste.permissions) {
-    const perms = user.poste.permissions as Record<string, { enabled: boolean; subsections?: string[] }>;
-    return !!perms[sectionId]?.enabled;
-  }
-  
-  // Fallback aux rôles par défaut
-  const title = user.poste?.libelle_poste;
-  if (!title) return false;
-  
-  const fullAccessRoles = [
-    'CEO', 'Business Developer', 'Sales Development', 
-    'Sales Manager', 'Sales manager', 'Office Manager', 'QA Manager', 'CTO'
-  ];
-  if (fullAccessRoles.some(role => title.toLowerCase() === role.toLowerCase())) {
-    return true;
-  }
-  
-  const commercialRoles = ['Sales Expert', 'Sales Junior', 'Sales Senior'];
-  if (commercialRoles.some(role => title.toLowerCase() === role.toLowerCase())) {
-    return sectionId === 'commerciaux';
-  }
-  
-  return false;
+  const permissions = user.poste?.permissions;
+  if (!permissions) return false;
+  return permissions[sectionId]?.enabled === true;
 }
 
 export function hasAccessToSubsection(user: Employe | null, sectionId: string, subsectionId: string): boolean {
   if (!user || !hasAccessToSection(user, sectionId)) return false;
   const permissions = user.poste?.permissions;
-  if (!permissions) return hasAccessToSection(user, sectionId);
+  if (!permissions) return false;
   const section = permissions[sectionId];
   return section?.subsections?.includes(subsectionId) === true;
 }
@@ -178,6 +157,12 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     cleanPath.startsWith('/paniers')
   ) {
     if (!hasAccessToSection(user, 'operations')) return false;
+    if (cleanPath === '/operations/employes/new' || /^\/operations\/employes\/\d+$/.test(cleanPath)) {
+      return hasAccessToSection(user, ACCESS_MANAGEMENT_PERMISSION);
+    }
+    if (/^\/operations\/postes\/(?:new|\d+)$/.test(cleanPath)) {
+      return hasAccessToSection(user, ACCESS_MANAGEMENT_PERMISSION);
+    }
     if (cleanPath.startsWith('/operations/vigie') || cleanPath.startsWith('/supervision')) return hasAccessToSubsection(user, 'operations', 'supervision');
     if (cleanPath.startsWith('/operations/commandes')) return hasAccessToSubsection(user, 'operations', 'commandes');
     if (cleanPath.startsWith('/campagnes')) return hasAccessToSubsection(user, 'operations', 'campagnes');

@@ -1,10 +1,17 @@
-import { getApiBaseUrl, getEnvironment, isOnProduction } from './utils.ts';
+import {
+  getApiBaseUrl,
+  getEnvironment,
+  isLoopbackApiUrl,
+  isOnProduction,
+} from './utils.ts';
 
 /**
  * Script de test pour vérifier la configuration d'environnement
  * À utiliser uniquement en développement
  */
 export const testEnvironmentConfig = (): void => {
+  const apiBaseUrl = getApiBaseUrl();
+
   console.group('🧪 Test Configuration Environnement');
   
   // Variables d'environnement
@@ -23,23 +30,23 @@ export const testEnvironmentConfig = (): void => {
   console.log('\nFonctions utilitaires:');
   console.log('- getEnvironment():', getEnvironment());
   console.log('- isOnProduction():', isOnProduction());
-  console.log('- getApiBaseUrl():', getApiBaseUrl());
+  console.log('- getApiBaseUrl():', apiBaseUrl);
   
   // Tests conditionnels
   console.log('\nTests:');
   if (getEnvironment() === 'development') {
     console.log('✅ Mode développement détecté correctement');
-    if (getApiBaseUrl().includes('localhost')) {
+    if (isLoopbackApiUrl(apiBaseUrl)) {
       console.log('✅ Backend local configuré correctement');
     } else {
-      console.warn('⚠️ Backend local non configuré - utilise:', getApiBaseUrl());
+      console.warn('⚠️ Backend local non configuré - utilise:', apiBaseUrl);
     }
   } else {
     console.log('✅ Mode production détecté correctement');
-    if (!getApiBaseUrl().includes('localhost')) {
+    if (!isLoopbackApiUrl(apiBaseUrl)) {
       console.log('✅ Backend production configuré correctement');
     } else {
-      console.warn('⚠️ Backend production utilise localhost:', getApiBaseUrl());
+      console.warn('⚠️ Backend production utilise une adresse locale:', apiBaseUrl);
     }
   }
   
