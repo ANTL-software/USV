@@ -6,8 +6,6 @@ import { csrfService } from '../../utils/services/index.ts';
 import type { LoginCredentials, ApiResponse, Employe } from '../../utils/types/index.ts';
 
 interface LoginResponseData {
-  token: string;
-  refreshToken: string;
   employe: Employe;
 }
 

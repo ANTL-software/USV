@@ -1191,6 +1191,10 @@ Ce fichier AGENTS.md doit être mis à jour dans les cas suivants :
 - Après une mutation réussie, l'état React doit refléter immédiatement la réponse API ; l'affichage d'une notification ne doit pas retarder la mise à jour de la vue.
 - `playwright-report/` et `test-results/` sont des artefacts locaux et ne doivent jamais être commités.
 
+### Contrôle d'accès des menus USV
+
+Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dans les permissions de poste, la navigation et les garde-fous de route. Le droit doit être testé ; masquer un lien ne suffit pas à sécuriser la sous-application.
+
 ### Comment mettre à jour
 
 1. Ajouter une entrée dans le tableau d'historique en bas du fichier

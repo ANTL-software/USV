@@ -53,7 +53,7 @@ test('la navigation expose seulement les sections autorisées et marque les alia
   assert.equal(operationsNavigation.some(({ id }) => id === 'commercial'), false);
 });
 
-test('le menu Header respecte les permissions fines des sous-sections', () => {
+test('le menu Header respecte les modules autorisés', () => {
   const groups = buildHeaderMobileNavigation(createUser(), '/mail/new');
   const mailItems = groups.find(({ id }) => id === 'mail')?.items ?? [];
 

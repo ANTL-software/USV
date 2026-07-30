@@ -36,6 +36,7 @@ export {
   getStatutAppelLabel,
 } from './formatters.ts';
 export {
+  ACCESS_MANAGEMENT_PERMISSION,
   SECTIONS_CONFIG,
   getAllowedSections,
   getFirstAllowedPath,
@@ -52,11 +53,13 @@ export {
 export {
   formatPhoneNumber,
   getApiBaseUrl,
+  getAntlConfigurationRibUrl,
   getCampagneLogoUrl,
   getEmployePhotoUrl,
   getGreetingName,
   getSalutation,
   getErrorMessage,
+  isLoopbackApiUrl,
   isTestEnvironment,
   logEnvironmentInfo,
   sanitizePhoneNumber,
@@ -165,6 +168,7 @@ export {
   extractWebsiteAnalysis,
   formatEnrichmentDate,
   formatEnrichmentKeyLabel,
+  formatEnrichmentPayload,
   formatEnrichmentSourceOrigin,
   formatEnrichmentSourceType,
   formatEnrichmentValue,

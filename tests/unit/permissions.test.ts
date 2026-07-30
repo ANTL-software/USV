@@ -7,6 +7,7 @@ import {
   hasAccessToPath,
   hasAccessToSection,
   hasAccessToSubsection,
+  SECTIONS_CONFIG,
 } from '../../src/utils/scripts/permissions.ts';
 import type { Employe } from '../../src/utils/types/user.types.ts';
 
@@ -21,7 +22,7 @@ function createUser(overrides: Partial<Employe> = {}): Employe {
   };
 }
 
-test('les permissions explicites priment sur les rôles fallback', () => {
+test('les accès reposent uniquement sur les permissions explicites du poste', () => {
   const user = createUser({
     poste: {
       id_poste: 1,
@@ -39,7 +40,7 @@ test('les permissions explicites priment sur les rôles fallback', () => {
   assert.equal(hasAccessToSection(user, 'commerciaux'), false);
 });
 
-test('le fallback par rôle ouvre les accès attendus', () => {
+test('un intitulé de poste privilégié ne donne aucun accès implicite', () => {
   const manager = createUser({
     poste: {
       id_poste: 2,
@@ -54,14 +55,14 @@ test('le fallback par rôle ouvre les accès attendus', () => {
     },
   });
 
-  assert.equal(hasAccessToSection(manager, 'operations'), true);
-  assert.equal(hasAccessToSubsection(manager, 'operations', 'produits'), true);
-  assert.equal(hasAccessToSection(commercial, 'commerciaux'), true);
+  assert.equal(hasAccessToSection(manager, 'operations'), false);
+  assert.equal(hasAccessToSubsection(manager, 'operations', 'produits'), false);
+  assert.equal(hasAccessToSection(commercial, 'commerciaux'), false);
   assert.equal(hasAccessToSection(commercial, 'operations'), false);
-  assert.equal(hasAccessToSubsection(commercial, 'commerciaux', 'mon_planning'), true);
+  assert.equal(hasAccessToSubsection(commercial, 'commerciaux', 'mon_planning'), false);
 });
 
-test('hasAccessToPath gère les alias et sous-routes sensibles', () => {
+test('hasAccessToPath applique le module sélectionné dans le menu parent', () => {
   const user = createUser({
     poste: {
       id_poste: 4,
@@ -80,19 +81,118 @@ test('hasAccessToPath gère les alias et sous-routes sensibles', () => {
   assert.equal(hasAccessToPath(user, '/commercial'), false);
 });
 
-test('la section commercial suit la permission principale du poste', () => {
+test('les écrans de modification RH exigent la permission gestion des accès', () => {
+  const lecteurRh = createUser({
+    poste: {
+      id_poste: 9,
+      libelle_poste: 'Lecture RH',
+      permissions: {
+        operations: { enabled: true, subsections: ['employes', 'postes'] },
+        'access-management': { enabled: false },
+      },
+    },
+  });
+  const gestionnaireRh = createUser({
+    poste: {
+      ...lecteurRh.poste!,
+      permissions: {
+        ...lecteurRh.poste!.permissions,
+        'access-management': { enabled: true },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes'), true);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/details/2'), true);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/new'), false);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/employes/2'), false);
+  assert.equal(hasAccessToPath(lecteurRh, '/operations/postes/2'), false);
+  assert.equal(hasAccessToPath(gestionnaireRh, '/operations/employes/new'), true);
+  assert.equal(hasAccessToPath(gestionnaireRh, '/operations/postes/2'), true);
+});
+
+test('les sous-applications commerciales exigent leur droit dédié', () => {
   const user = createUser({
     poste: {
       id_poste: 8,
       libelle_poste: 'Gestion commerciale',
       permissions: {
-        commercial: { enabled: true },
+        commercial: { enabled: true, subsections: ['devis', 'publications-reseaux-sociaux'] },
       },
     },
   });
 
   assert.equal(hasAccessToSection(user, 'commercial'), true);
   assert.equal(hasAccessToPath(user, '/commercial'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/devis'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/publications-reseaux-sociaux'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/publications-reseaux-sociaux/historique'), true);
+  assert.equal(hasAccessToPath(user, '/commercial/facturation'), false);
+  assert.equal(hasAccessToPath(user, '/commercial/configuration-antl'), false);
+});
+
+test('qualité et vigie ne réutilisent plus un droit opérationnel trop large', () => {
+  const user = createUser({
+    poste: {
+      id_poste: 10,
+      libelle_poste: 'Qualité',
+      permissions: {
+        operations: {
+          enabled: true,
+          subsections: ['qualite', 'qualite-ecoutes', 'vigie'],
+        },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(user, '/operations/qualite'), true);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/ecoutes'), true);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/signalements'), false);
+  assert.equal(hasAccessToPath(user, '/operations/qualite/statistiques'), false);
+  assert.equal(hasAccessToPath(user, '/operations/vigie'), true);
+  assert.equal(hasAccessToPath(user, '/supervision'), false);
+
+  const orphanLeaf = createUser({
+    poste: {
+      id_poste: 11,
+      libelle_poste: 'Écoute isolée',
+      permissions: {
+        operations: { enabled: true, subsections: ['qualite-ecoutes'] },
+      },
+    },
+  });
+  assert.equal(hasAccessToPath(orphanLeaf, '/operations/qualite/ecoutes'), false);
+});
+
+test('la matrice des postes recense chaque carte de hub comme sous-application', () => {
+  const bySection = new Map(SECTIONS_CONFIG.map((section) => [
+    section.id,
+    section.subsections.map((subsection) => subsection.id),
+  ]));
+
+  assert.deepEqual(bySection.get('mail'), ['mail_new', 'mail_list', 'mail_convert']);
+  assert.deepEqual(bySection.get('commercial'), [
+    'publications-reseaux-sociaux',
+    'facturation',
+    'devis',
+    'configuration-antl',
+  ]);
+  assert.deepEqual(bySection.get('operations'), [
+    'supervision',
+    'vigie',
+    'commandes',
+    'campagnes',
+    'prospects',
+    'produits',
+    'qualite',
+    'qualite-signalements',
+    'qualite-ecoutes',
+    'qualite-statistiques',
+    'demandes-absence',
+    'employes',
+    'postes',
+    'materiel',
+  ]);
 });
 
 test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
@@ -100,6 +200,15 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
     poste: {
       id_poste: 5,
       libelle_poste: 'Office Manager',
+      permissions: {
+        mail: { enabled: true },
+        booking: { enabled: true },
+        operations: { enabled: true },
+        commercial: { enabled: true },
+        incidents: { enabled: true },
+        commerciaux: { enabled: true },
+        projets: { enabled: true },
+      },
     },
   });
 
@@ -108,7 +217,7 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
   assert.equal(getFirstAllowedPath(null), '/auth');
 });
 
-test('les accès incidents suivent les sous-sections du poste', () => {
+test('les accès incidents suivent les modules du menu parent', () => {
   const lecteur = createUser({
     poste: {
       id_poste: 6,
@@ -128,7 +237,7 @@ test('les accès incidents suivent les sous-sections du poste', () => {
   assert.equal(hasAccessToPath(lecteur, '/incidents/qualification'), false);
 });
 
-test('le traitement incidents nécessite le droit dédié', () => {
+test('le module traitement ouvre uniquement les routes traitement', () => {
   const intervenant = createUser({
     poste: {
       id_poste: 7,

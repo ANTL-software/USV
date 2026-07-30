@@ -16,18 +16,40 @@ const INITIAL_PERMISSIONS: PermissionRecord = {
   mail: { enabled: false, subsections: [] },
   booking: { enabled: false },
   operations: { enabled: false, subsections: [] },
-  commercial: { enabled: false },
+  commercial: { enabled: false, subsections: [] },
   incidents: { enabled: false, subsections: [] },
   commerciaux: { enabled: false, subsections: [] },
-  projets: { enabled: false }
+  projets: { enabled: false },
+  'access-management': { enabled: false },
 };
 
 const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
-  operations: ['supervision', 'commandes', 'campagnes', 'prospects', 'produits', 'qualite', 'demandes-absence', 'employes', 'postes', 'materiel'],
+  operations: [
+    'supervision',
+    'vigie',
+    'commandes',
+    'campagnes',
+    'prospects',
+    'produits',
+    'qualite',
+    'qualite-signalements',
+    'qualite-ecoutes',
+    'qualite-statistiques',
+    'demandes-absence',
+    'employes',
+    'postes',
+    'materiel',
+  ],
+  commercial: ['publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
   incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
   mail: ['mail_new', 'mail_list', 'mail_convert'],
   commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
 };
+const QUALITY_SUBSECTIONS = [
+  'qualite-signalements',
+  'qualite-ecoutes',
+  'qualite-statistiques',
+];
 
 const INITIAL_FORM: PosteFormState = {
   libelle_poste: '',
@@ -84,9 +106,7 @@ export function usePosteForm() {
       perms[sectionId] = {
         ...current,
         enabled: nextEnabled,
-        ...(nextEnabled && DEFAULT_SUBSECTIONS_BY_SECTION[sectionId] && {
-          subsections: DEFAULT_SUBSECTIONS_BY_SECTION[sectionId]
-        })
+        ...(nextEnabled && DEFAULT_SUBSECTIONS_BY_SECTION[sectionId] ? { subsections: DEFAULT_SUBSECTIONS_BY_SECTION[sectionId] } : {}),
       };
       
       return { ...prev, permissions: perms };
@@ -98,20 +118,25 @@ export function usePosteForm() {
       const perms = { ...prev.permissions };
       const current = perms[sectionId] || { enabled: false, subsections: [] };
       if (!current.enabled) return prev;
-      
-      const subs = current.subsections ? [...current.subsections] : [];
-      const index = subs.indexOf(subsectionId);
-      if (index > -1) {
-        subs.splice(index, 1);
+
+      const subsections = [...(current.subsections || [])];
+      const index = subsections.indexOf(subsectionId);
+      if (index === -1) {
+        subsections.push(subsectionId);
+        if (QUALITY_SUBSECTIONS.includes(subsectionId) && !subsections.includes('qualite')) {
+          subsections.push('qualite');
+        }
       } else {
-        subs.push(subsectionId);
+        subsections.splice(index, 1);
+        if (subsectionId === 'qualite') {
+          QUALITY_SUBSECTIONS.forEach((qualityPermission) => {
+            const qualityIndex = subsections.indexOf(qualityPermission);
+            if (qualityIndex !== -1) subsections.splice(qualityIndex, 1);
+          });
+        }
       }
-      
-      perms[sectionId] = {
-        ...current,
-        subsections: subs
-      };
-      
+
+      perms[sectionId] = { ...current, subsections };
       return { ...prev, permissions: perms };
     });
   };

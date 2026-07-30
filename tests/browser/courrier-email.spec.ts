@@ -15,7 +15,6 @@ interface EmailRequest {
 const courrier = {
   id: 41,
   fileName: 'contrat-client.pdf',
-  path: '/uploads/courriers/contrat-client.pdf',
   fileExtention: '.pdf',
   active: true,
   department: 'Commercial',
@@ -106,8 +105,13 @@ test('la liste des courriers ouvre EmailModal et conserve le destinataire métie
   expect(unhandledRequests).toEqual([]);
 });
 
-test('le viewer PDF sécurisé rend un document réel sans casser la toolbar', async ({ page }) => {
+test('le viewer PDF sécurisé rend un document réel avec ses contrôles', async ({ page }) => {
   const unhandledRequests: string[] = [];
+  const browserErrors: string[] = [];
+  page.on('pageerror', (error) => browserErrors.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error') browserErrors.push(message.text());
+  });
 
   await page.route('**/secure-test-document.pdf', async (route) => {
     await route.fulfill({
@@ -152,8 +156,11 @@ test('le viewer PDF sécurisé rend un document réel sans casser la toolbar', a
   await row.getByTitle('Visualiser').click();
 
   await expect(page.getByRole('heading', { name: courrier.fileName })).toBeVisible();
-  await expect(page.locator('.rpv-core__viewer')).toBeVisible();
   await expect(page.locator('.pdf-viewer-loading')).toBeHidden({ timeout: 15000 });
-  await expect(page.locator('.rpv-toolbar')).toBeVisible();
+  await expect(page.locator('.pdf-viewer')).toBeVisible({ timeout: 15000 });
+  await expect(page.locator('.react-pdf__Document')).toBeVisible();
+  await expect(page.locator('.pdf-controls')).toBeVisible();
+  await expect(page.getByText('Page 1 / 1', { exact: true })).toBeVisible();
+  expect(browserErrors).toEqual([]);
   expect(unhandledRequests).toEqual([]);
 });

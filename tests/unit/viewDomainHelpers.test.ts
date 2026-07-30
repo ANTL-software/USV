@@ -131,6 +131,7 @@ test('les comparaisons et sources enrichissement sont préparées hors du compos
     type: 'Site web',
     origin: 'Site public validé',
     url: 'https://client.fr',
+    confidence: null,
   }]);
   assert.equal(formatEnrichmentPayload({ source: 'public' }), '{\n  "source": "public"\n}');
 });

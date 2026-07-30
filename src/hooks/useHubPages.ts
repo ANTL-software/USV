@@ -5,6 +5,12 @@ import { useBookingCalendarView } from './useBookingCalendarView.ts';
 import type { BookingCalendarViewModel } from './useBookingCalendarView.ts';
 
 export interface CommercialPageViewModel {
+  access: {
+    configuration: boolean;
+    devis: boolean;
+    facturation: boolean;
+    socialPublications: boolean;
+  };
   navigateBack: () => void;
   navigateToConfiguration: () => void;
   navigateToDevis: () => void;
@@ -13,6 +19,10 @@ export interface CommercialPageViewModel {
 }
 
 export interface CommerciauxPageViewModel {
+  access: {
+    notes: boolean;
+    planning: boolean;
+  };
   navigateBack: () => void;
   navigateToNotes: () => void;
   navigateToPlanning: () => void;
@@ -30,6 +40,7 @@ export interface CentreAppelsPageViewModel {
     qualite: boolean;
     demandesAbsence: boolean;
     supervision: boolean;
+    vigie: boolean;
   };
   navigateBack: () => void;
   navigateToCampagnes: () => void;
@@ -60,6 +71,11 @@ export interface IncidentsHubPageViewModel {
 }
 
 export interface QualitePageViewModel {
+  access: {
+    ecoutes: boolean;
+    signalements: boolean;
+    statistiques: boolean;
+  };
   navigateBack: () => void;
   navigateToEcoutes: () => void;
   navigateToSignalements: () => void;
@@ -73,7 +89,14 @@ export interface BookingPageViewModel {
 
 export function useCommercialPage(): CommercialPageViewModel {
   const navigate = useNavigate();
+  const { user } = useUserContext();
   return {
+    access: {
+      configuration: hasAccessToSubsection(user, 'commercial', 'configuration-antl'),
+      devis: hasAccessToSubsection(user, 'commercial', 'devis'),
+      facturation: hasAccessToSubsection(user, 'commercial', 'facturation'),
+      socialPublications: hasAccessToSubsection(user, 'commercial', 'publications-reseaux-sociaux'),
+    },
     navigateBack: () => void navigate('/home'),
     navigateToConfiguration: () => void navigate('/commercial/configuration-antl'),
     navigateToDevis: () => void navigate('/commercial/devis'),
@@ -84,7 +107,12 @@ export function useCommercialPage(): CommercialPageViewModel {
 
 export function useCommerciauxPage(): CommerciauxPageViewModel {
   const navigate = useNavigate();
+  const { user } = useUserContext();
   return {
+    access: {
+      notes: hasAccessToSubsection(user, 'commerciaux', 'notes-direction'),
+      planning: hasAccessToSubsection(user, 'commerciaux', 'mon_planning'),
+    },
     navigateBack: () => void navigate('/home'),
     navigateToNotes: () => void navigate('/commerciaux/notes-direction'),
     navigateToPlanning: () => void navigate('/commerciaux/mon_planning'),
@@ -106,6 +134,7 @@ export function useCentreAppelsPage(): CentreAppelsPageViewModel {
       prospects: hasAccessToSubsection(user, 'operations', 'prospects'),
       qualite: hasAccessToSubsection(user, 'operations', 'qualite'),
       supervision: hasAccessToSubsection(user, 'operations', 'supervision'),
+      vigie: hasAccessToSubsection(user, 'operations', 'vigie'),
     },
     navigateBack: () => void navigate('/home'),
     navigateToCampagnes: () => void navigate('/campagnes'),
@@ -142,7 +171,13 @@ export function useIncidentsHubPage(): IncidentsHubPageViewModel {
 
 export function useQualitePage(): QualitePageViewModel {
   const navigate = useNavigate();
+  const { user } = useUserContext();
   return {
+    access: {
+      ecoutes: hasAccessToSubsection(user, 'operations', 'qualite-ecoutes'),
+      signalements: hasAccessToSubsection(user, 'operations', 'qualite-signalements'),
+      statistiques: hasAccessToSubsection(user, 'operations', 'qualite-statistiques'),
+    },
     navigateBack: () => void navigate('/operations'),
     navigateToEcoutes: () => void navigate('/operations/qualite/ecoutes'),
     navigateToSignalements: () => void navigate('/operations/qualite/signalements'),
