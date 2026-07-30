@@ -5,7 +5,6 @@ import App from "./App.tsx";
 import { UserProvider } from "./context/user/index.ts";
 import { NotificationProvider } from "./context/notification/index.ts";
 import { CourrierProvider } from "./context/courrier/index.ts";
-import { BookingProvider } from "./context/booking/index.ts";
 import { LoaderProvider } from "./context/loader/index.ts";
 import { AlertProvider } from "./context/alert/index.ts";
 import { VenteProvider } from "./context/vente/index.ts";
@@ -45,13 +44,11 @@ createRoot(document.getElementById("root")!).render(
       <CourrierProvider>
         <LoaderProvider>
           <AlertProvider>
-            <BookingProvider>
-              <VenteProvider>
-                <ProjetProvider>
-                  <App />
-                </ProjetProvider>
-              </VenteProvider>
-            </BookingProvider>
+            <VenteProvider>
+              <ProjetProvider>
+                <App />
+              </ProjetProvider>
+            </VenteProvider>
           </AlertProvider>
         </LoaderProvider>
       </CourrierProvider>

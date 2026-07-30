@@ -19,6 +19,7 @@ import {
   handleBookingUpdateError,
   handleBookingCancelError,
   handleEmployeLoadError,
+  hasAccessToSection,
 } from '../../utils/scripts/index.ts';
 import { UserContext } from '../user/index.ts';
 
@@ -29,6 +30,7 @@ interface BookingProviderProps {
 export const BookingProvider = ({ children }: BookingProviderProps) => {
   const userCtx = useContext(UserContext);
   const isAuthenticated = !!userCtx?.user;
+  const canAccessBooking = hasAccessToSection(userCtx?.user ?? null, 'booking');
 
   const [bookings, setBookings] = useState<BookingModel[]>([]);
   const [employes, setEmployes] = useState<EmployeOption[]>([]);
@@ -38,7 +40,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
 
   // Chargement initial des employés seulement
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || !canAccessBooking) {
       setEmployes([]);
       setConfig(null);
       setLoadingEmployes(false);
@@ -55,7 +57,7 @@ export const BookingProvider = ({ children }: BookingProviderProps) => {
         showError(handleEmployeLoadError(err), 'Chargement impossible');
       })
       .finally(() => setLoadingEmployes(false));
-  }, [isAuthenticated]);
+  }, [canAccessBooking, isAuthenticated]);
 
   // Chargement de la config à la demande (appelé depuis BookingCalendar)
   const fetchConfig = useCallback(async (): Promise<void> => {

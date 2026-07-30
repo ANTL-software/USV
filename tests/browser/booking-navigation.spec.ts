@@ -6,6 +6,7 @@ import {
   fulfillJson,
   installApiRoute,
 } from './support.ts';
+import type { Employe } from '../../src/utils/types/index.ts';
 
 interface CreateBookingRequest {
   debut: string;
@@ -15,6 +16,59 @@ interface CreateBookingRequest {
   id_employe: number;
   personne_externe?: string;
 }
+
+const COMMERCIAL_ONLY_USER: Employe = {
+  id_employe: 15,
+  identifiant: 'commercial.test',
+  nom: 'VENDEUR',
+  prenom: 'Camille',
+  actif: true,
+  poste: {
+    id_poste: 8,
+    libelle_poste: 'Commercial',
+    permissions: {
+      commerciaux: {
+        enabled: true,
+        subsections: ['mon_planning'],
+      },
+    },
+  },
+};
+
+test('un accès commerciaux isolé ne précharge ni Booking ni les notifications interdites', async ({ page }) => {
+  const unhandledRequests: string[] = [];
+  const restrictedRequests: string[] = [];
+  const restrictedPaths = new Set([
+    '/employes',
+    '/employes/absence-requests/pending',
+    '/incidents',
+    '/ventes/frigo-alertes',
+  ]);
+
+  page.on('request', (request) => {
+    const url = new URL(request.url());
+    const path = url.pathname.startsWith('/api') ? url.pathname.slice(4) : url.pathname;
+    if (restrictedPaths.has(path)) {
+      restrictedRequests.push(`${request.method()} ${path}`);
+    }
+  });
+
+  await installApiRoute(
+    page,
+    async () => false,
+    unhandledRequests,
+    COMMERCIAL_ONLY_USER,
+  );
+
+  await page.goto('/home');
+
+  await expect(page).toHaveURL(/\/commerciaux$/);
+  await expect(page.getByRole('heading', { name: 'Gestion commerciaux' })).toBeVisible();
+  await page.waitForTimeout(200);
+
+  expect(restrictedRequests).toEqual([]);
+  expect(unhandledRequests).toEqual([]);
+});
 
 test('Booking, Header et SubNav rendent le parcours de création et la navigation', async ({ page }) => {
   const unhandledRequests: string[] = [];

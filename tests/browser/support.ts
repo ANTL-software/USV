@@ -1,4 +1,5 @@
 import type { Page, Route } from '@playwright/test';
+import type { Employe } from '../../src/utils/types/index.ts';
 
 export interface ApiRequestDescriptor {
   method: string;
@@ -121,7 +122,10 @@ export function apiSuccess<T>(data: T, message = 'OK'): { success: true; message
   return { success: true, message, data };
 }
 
-export async function handleCommonApiRequest(route: Route): Promise<boolean> {
+export async function handleCommonApiRequest(
+  route: Route,
+  authenticatedUser: Employe = ADMIN_USER,
+): Promise<boolean> {
   const { method, path } = describeApiRequest(route);
 
   if (method === 'GET' && path === '/csrf-token') {
@@ -134,7 +138,7 @@ export async function handleCommonApiRequest(route: Route): Promise<boolean> {
   }
 
   if (method === 'GET' && path === '/auth/me') {
-    await fulfillJson(route, apiSuccess(ADMIN_USER));
+    await fulfillJson(route, apiSuccess(authenticatedUser));
     return true;
   }
 
@@ -168,9 +172,10 @@ export async function installApiRoute(
   page: Page,
   handler: (route: Route, request: ApiRequestDescriptor) => Promise<boolean>,
   unhandledRequests: string[],
+  authenticatedUser: Employe = ADMIN_USER,
 ): Promise<void> {
   await page.route('**/api/**', async (route) => {
-    if (await handleCommonApiRequest(route)) return;
+    if (await handleCommonApiRequest(route, authenticatedUser)) return;
 
     const request = describeApiRequest(route);
     if (await handler(route, request)) return;
