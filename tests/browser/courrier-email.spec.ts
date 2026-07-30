@@ -29,11 +29,18 @@ const courrier = {
 };
 
 function createMinimalPdf(): Buffer {
+  const firstPageContent = 'BT /F1 18 Tf 40 80 Td (ANTL PDF test - page 1) Tj ET';
+  const secondPageContent = 'BT /F1 18 Tf 40 80 Td (ANTL PDF test - page 2) Tj ET';
+  const createStream = (content: string): string => (
+    `<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}\nendstream`
+  );
   const objects = [
     '<< /Type /Catalog /Pages 2 0 R >>',
-    '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>',
-    '<< /Length 44 >>\nstream\nBT /F1 18 Tf 40 80 Td (ANTL PDF test) Tj ET\nendstream',
+    '<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >>',
+    '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 144] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >>',
+    createStream(firstPageContent),
+    createStream(secondPageContent),
     '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
   ];
   let body = '%PDF-1.4\n';
@@ -159,8 +166,20 @@ test('le viewer PDF sécurisé rend un document réel avec ses contrôles', asyn
   await expect(page.locator('.pdf-viewer-loading')).toBeHidden({ timeout: 15000 });
   await expect(page.locator('.pdf-viewer')).toBeVisible({ timeout: 15000 });
   await expect(page.locator('.react-pdf__Document')).toBeVisible();
-  await expect(page.locator('.pdf-controls')).toBeVisible();
-  await expect(page.getByText('Page 1 / 1', { exact: true })).toBeVisible();
+  await expect(page.getByRole('toolbar', { name: 'Outils du document' })).toBeVisible();
+  await expect(page.getByText('2 pages', { exact: true })).toBeVisible();
+  await expect(page.locator('.pdf-page')).toHaveCount(2);
+  await expect(page.getByLabel('Page 1 sur 2')).toBeVisible();
+  await page.getByLabel('Page 2 sur 2').scrollIntoViewIfNeeded();
+  await expect(page.getByLabel('Page 2 sur 2')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Zoom arrière' })).toBeEnabled();
+  await expect(page.getByRole('button', { name: 'Zoom avant' })).toBeEnabled();
+  await expect(page.getByLabel('Niveau de zoom')).toHaveText('110 %');
+  await page.getByRole('button', { name: 'Zoom avant' }).click();
+  await expect(page.getByLabel('Niveau de zoom')).toHaveText('135 %');
+  await expect(page.getByRole('link', { name: 'Télécharger' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Précédente' })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: 'Suivante' })).toHaveCount(0);
   expect(browserErrors).toEqual([]);
   expect(unhandledRequests).toEqual([]);
 });

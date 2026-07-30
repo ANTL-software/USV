@@ -1,0 +1,130 @@
+@use "../../../utils/styles/variables" as vars;
+
+#documentViewerToolbar.documentViewerToolbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75em;
+  min-height: 3.5em;
+  padding: 0.65em 0.8em;
+  background: vars.$whiteBackground;
+  border-bottom: 1px solid vars.$borderColor;
+  box-shadow: 0 1px 0 rgba(44, 62, 80, 0.04);
+  z-index: 2;
+}
+
+#documentViewerToolbar .documentViewerToolbar__status {
+  color: vars.$fontColorSecondary;
+  font-size: 0.82em;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+#documentViewerToolbar .documentViewerToolbar__actions,
+#documentViewerToolbar .documentViewerToolbar__zoom {
+  display: flex;
+  align-items: center;
+}
+
+#documentViewerToolbar .documentViewerToolbar__actions {
+  justify-content: flex-end;
+  gap: 0.65em;
+}
+
+#documentViewerToolbar .documentViewerToolbar__zoom {
+  gap: 0.2em;
+  padding: 0.2em;
+  background: vars.$greyBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: 9px;
+}
+
+#documentViewerToolbar .documentViewerToolbar__iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15em;
+  height: 2.15em;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: vars.$fontColorPrimary;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background vars.$transitionFast, color vars.$transitionFast;
+}
+
+#documentViewerToolbar .documentViewerToolbar__iconButton:hover:not(:disabled) {
+  background: vars.$whiteBackground;
+  color: vars.$utilsPrimary;
+  box-shadow: vars.$shadowLight;
+}
+
+#documentViewerToolbar .documentViewerToolbar__iconButton:focus-visible,
+#documentViewerToolbar .documentViewerToolbar__download:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.24);
+  outline-offset: 2px;
+}
+
+#documentViewerToolbar .documentViewerToolbar__iconButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+#documentViewerToolbar .documentViewerToolbar__scale {
+  min-width: 4em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.78em;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  text-align: center;
+}
+
+#documentViewerToolbar .documentViewerToolbar__download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  min-height: 2.55em;
+  padding: 0.45em 0.85em;
+  border-radius: 9px;
+  background: vars.$utilsGradient;
+  color: vars.$whiteBackground;
+  font-size: 0.86em;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform vars.$transitionFast, box-shadow vars.$transitionFast;
+}
+
+#documentViewerToolbar .documentViewerToolbar__download:hover {
+  color: vars.$whiteBackground;
+  box-shadow: 0 5px 14px rgba(124, 58, 237, 0.24);
+  transform: translateY(-1px);
+}
+
+@media (max-width: vars.$mobileWidth) {
+  #documentViewerToolbar.documentViewerToolbar {
+    min-height: 3.2em;
+    padding: 0.5em 0.6em;
+  }
+
+  #documentViewerToolbar .documentViewerToolbar__status {
+    font-size: 0.74em;
+  }
+
+  #documentViewerToolbar .documentViewerToolbar__actions {
+    gap: 0.4em;
+  }
+
+  #documentViewerToolbar .documentViewerToolbar__download {
+    width: 2.4em;
+    min-height: 2.4em;
+    padding: 0;
+  }
+
+  #documentViewerToolbar .documentViewerToolbar__download span {
+    display: none;
+  }
+}

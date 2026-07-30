@@ -2,20 +2,32 @@
 import "./modal.scss";
 
 // hooks | libraries
-import { ReactElement } from "react";
+import { ReactElement, ReactNode, useId } from "react";
+import type { MouseEvent } from "react";
 import { MdClose } from "react-icons/md";
+
+type ModalVariant = "default" | "document";
 
 interface IModalProps {
   isVisible: boolean;
   onClose: () => void;
   title: string;
-  children: React.ReactNode;
+  children: ReactNode;
+  variant?: ModalVariant;
 }
 
-function Modal({ isVisible, onClose, title, children }: IModalProps): ReactElement | null {
+function Modal({
+  isVisible,
+  onClose,
+  title,
+  children,
+  variant = "default",
+}: IModalProps): ReactElement | null {
+  const titleId = useId();
+
   if (!isVisible) return null;
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleBackdropClick = (e: MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -24,10 +36,21 @@ function Modal({ isVisible, onClose, title, children }: IModalProps): ReactEleme
   return (
     <div id="modal">
       <div className="modalBackdrop" onClick={handleBackdropClick}>
-        <div className="modalContainer" onClick={(e) => e.stopPropagation()}>
+        <div
+          aria-labelledby={titleId}
+          aria-modal="true"
+          className={`modalContainer modalContainer--${variant}`}
+          onClick={(e) => e.stopPropagation()}
+          role="dialog"
+        >
           <div className="modalHeader">
-            <h3>{title}</h3>
-            <button className="closeBtn" onClick={onClose}>
+            <h3 id={titleId}>{title}</h3>
+            <button
+              aria-label="Fermer la fenêtre"
+              className="closeBtn"
+              onClick={onClose}
+              type="button"
+            >
               <MdClose />
             </button>
           </div>
