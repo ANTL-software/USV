@@ -57,6 +57,7 @@ services → types → models → context → hooks → components → layouts
 
 - Les mises à jour de sécurité doivent être validées par les tests unitaires, le build et les parcours Playwright concernés; ne jamais utiliser `npm audit fix --force` sans analyser les ruptures proposées.
 - Le viewer historique `@react-pdf-viewer` reste sur sa version compatible tant qu'une migration visuelle complète n'est pas validée. Son moteur PDF doit conserver `isEvalSupported: false` dans `ModernPDFViewer` pour neutraliser l'évaluation dynamique vulnérable.
+- Le viewer de documents partagé affiche toutes les pages PDF dans un défilement vertical continu. Le téléchargement et le zoom restent regroupés dans la barre d'outils supérieure commune aux PDF et aux images.
 - Toute évolution du viewer PDF doit exécuter le scénario navigateur `courrier-email.spec.ts` avec un vrai document PDF et vérifier le chargement du viewer ainsi que de sa toolbar.
 
 ---
@@ -719,6 +720,8 @@ USV/
 │   │   │   ├── header/Header.tsx
 │   │   │   ├── subNav/SubNav.tsx
 │   │   │   ├── footer/Footer.tsx
+│   │   │   ├── documentViewerModal/ # Aperçu partagé PDF/image
+│   │   │   ├── documentViewerToolbar/ # Zoom et téléchargement
 │   │   │   └── ...
 │   │   └── layouts/             # Tous les layouts et pages
 │   │       ├── home/Home.tsx
@@ -1208,6 +1211,7 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-07-30 | Refonte du viewer de documents partagé : PDF multipage en scroll continu, zoom et téléchargement dans une toolbar compacte, modale ajustée au document | AI Agent |
 | 2026-07-20 | Mise à jour des dépendances vulnérables, neutralisation de l'évaluation dynamique PDF et ajout d'un test navigateur avec document réel | AI Agent |
 | 2026-07-18 | Ajout des tests navigateur Playwright sur les parcours critiques et synchronisation immédiate du détail prospect après modification | AI Agent |
 | 2026-05-20 | **Refactor "Booking salle de production" → "Agenda ANTL"** : Couleur par employé (SketchPicker), chevauchement RDV autorisé, champs personne_externe/description, renommage view `/home` | AI Agent |

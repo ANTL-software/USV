@@ -1,0 +1,46 @@
+@use "../../../utils/styles/variables" as vars;
+
+#documentImageViewer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background: #e9edf3;
+}
+
+#documentImageViewer .documentImageViewer__viewport {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  padding: 1.2em;
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+
+#documentImageViewer .documentImageViewer__canvas {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 100%;
+  margin: 0 auto;
+  transition: width vars.$transitionFast;
+}
+
+#documentImageViewer .documentImageViewer__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(44, 62, 80, 0.12);
+  border-radius: 6px;
+  background: vars.$whiteBackground;
+  box-shadow: 0 8px 24px rgba(44, 62, 80, 0.12);
+  object-fit: contain;
+}
+
+@media (max-width: vars.$mobileWidth) {
+  #documentImageViewer .documentImageViewer__viewport {
+    padding: 0.7em;
+  }
+}

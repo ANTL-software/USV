@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import type { EmployeeDetailsViewModel } from '../../../hooks/index.ts';
-import { Modal, PdfViewer } from '../index.ts';
+import { DocumentViewerModal } from '../index.ts';
 
 type AgentDocumentViewerModalProps = Pick<
   EmployeeDetailsViewModel,
@@ -12,18 +12,12 @@ export function AgentDocumentViewerModal({
   pdfModal,
 }: AgentDocumentViewerModalProps): ReactElement {
   return (
-    <Modal
+    <DocumentViewerModal
+      fileName={pdfModal.fileName}
+      fileType={pdfModal.fileType}
+      fileUrl={pdfModal.pdfUrl}
       isVisible={pdfModal.visible}
       onClose={closePdfModal}
-      title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
-    >
-      {pdfModal.fileType === 'image' ? (
-        <img src={pdfModal.pdfUrl} alt={pdfModal.fileName} className="modal-content-image" />
-      ) : (
-        <div id="pdfViewerDocument">
-          <PdfViewer pdfUrl={pdfModal.pdfUrl} fileName={pdfModal.fileName || 'document.pdf'} />
-        </div>
-      )}
-    </Modal>
+    />
   );
 }

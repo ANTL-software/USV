@@ -1,7 +1,7 @@
 import type { ReactElement } from 'react';
 import { IoMegaphoneOutline, IoClose, IoCloudUpload, IoDocumentText } from 'react-icons/io5';
 import { MdArrowBack, MdVisibility, MdDelete } from 'react-icons/md';
-import { BackToTop, Button, Header, PdfViewer as ModernPDFViewer, SubNav } from '../index.ts';
+import { BackToTop, Button, DocumentViewerModal, Header, SubNav } from '../index.ts';
 import type { NotesDirectionPageViewModel } from '../../../hooks/index.ts';
 
 interface NotesDirectionContentProps { viewModel: NotesDirectionPageViewModel; }
@@ -207,33 +207,13 @@ export function NotesDirectionContent({ viewModel }: NotesDirectionContentProps)
         </div>
       )}
 
-      {/* Modal - Visualisation PDF/Image */}
-      {pdfModal.visible && (
-        <div id="pdfViewerDocument">
-          <div className="pdfViewerDocument__header">
-            <h3>Visualisation de la note</h3>
-            <button className="pdfViewerDocument__close" onClick={closePdfModal}>
-              <IoClose />
-            </button>
-          </div>
-          <div className="pdfViewerDocument__content">
-            {pdfModal.fileType === 'pdf' ? (
-              <ModernPDFViewer
-                pdfUrl={pdfModal.pdfUrl}
-                fileName={pdfModal.fileName || "note.pdf"}
-              />
-            ) : (
-              <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', overflow: 'auto' }}>
-                <img
-                  src={pdfModal.pdfUrl}
-                  alt={pdfModal.fileName}
-                  style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
+      <DocumentViewerModal
+        fileName={pdfModal.fileName}
+        fileType={pdfModal.fileType}
+        fileUrl={pdfModal.pdfUrl}
+        isVisible={pdfModal.visible}
+        onClose={closePdfModal}
+      />
 
       <BackToTop />
     </div>

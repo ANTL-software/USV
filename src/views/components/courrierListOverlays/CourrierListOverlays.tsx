@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { MdKeyboardArrowUp, MdNavigateBefore, MdNavigateNext } from 'react-icons/md';
 
 import type { ListeCourriersViewModel } from '../../../hooks/index.ts';
-import { EmailModal, Modal, PdfViewer } from '../index.ts';
+import { DocumentViewerModal, EmailModal } from '../index.ts';
 
 interface CourrierListOverlaysProps {
   viewModel: ListeCourriersViewModel;
@@ -58,20 +58,13 @@ export function CourrierListOverlays({ viewModel }: CourrierListOverlaysProps): 
         </div>
       )}
 
-      <Modal
+      <DocumentViewerModal
+        fileName={pdfModal.fileName}
+        fileType={pdfModal.fileType}
+        fileUrl={pdfModal.pdfUrl}
         isVisible={pdfModal.visible}
         onClose={courrierActions.closePdfModal}
-        title={pdfModal.fileName || `Visualisation ${pdfModal.fileType.toUpperCase()}`}
-      >
-        {pdfModal.fileType === 'image' ? (
-          <img src={pdfModal.pdfUrl} alt={pdfModal.fileName} className="modal-content-image" />
-        ) : (
-          <PdfViewer
-            pdfUrl={pdfModal.pdfUrl}
-            fileName={pdfModal.fileName || 'document.pdf'}
-          />
-        )}
-      </Modal>
+      />
 
       <EmailModal viewModel={courrierActions.emailComposer} />
 
