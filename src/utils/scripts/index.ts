@@ -86,7 +86,11 @@ export {
   validateCourrierUpdateForm,
 } from './courrierValidation.ts';
 export type { ValidationResult } from './courrierValidation.ts';
-export { handleAuthError } from './authErrorHandling.ts';
+export {
+  getAxiosResponseMessage,
+  handleAuthError,
+  isCsrfAxiosError,
+} from './authErrorHandling.ts';
 export { validatePasswordStrength } from './passwordValidation.ts';
 export type { PasswordStrength } from './passwordValidation.ts';
 export {

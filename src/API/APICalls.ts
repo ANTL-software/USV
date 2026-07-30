@@ -3,7 +3,7 @@ import axios from "axios";
 import type { AxiosResponse } from "axios";
 
 // utils
-import { getApiBaseUrl } from "../utils/scripts/utils.ts";
+import { getApiBaseUrl, isCsrfAxiosError } from "../utils/scripts/index.ts";
 import { csrfService } from "../utils/services/csrfService.ts";
 
 axios.defaults.timeout = 300000; // 5 minutes pour supporter les imports CSV volumineux
@@ -87,8 +87,9 @@ axios.interceptors.response.use(
         window.location.href = '/auth';
         return Promise.reject(refreshError);
       }
-    } else if (error.response?.status === 403) {
-      // Token CSRF invalide - nettoyer et redemander
+    } else if (isCsrfAxiosError(error)) {
+      // Nettoyer uniquement un vrai échec CSRF. Un 403 métier correspond à
+      // un droit de poste refusé et ne doit pas invalider la session CSRF.
       console.warn('Token CSRF invalide');
       csrfService.clearToken();
     }

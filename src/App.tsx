@@ -17,6 +17,7 @@ import {
   useLocation
 } from "react-router-dom";
 import AOS from 'aos';
+import { BookingProvider } from "./context/booking/index.ts";
 
 import {
   AbsenceDemandes as AbsenceDemandesWithAuth,
@@ -134,7 +135,14 @@ function App(): ReactElement {
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>
         <Route path={"mail/update/:id"} element={<UpdateCourrierWithAuth />}></Route>
         <Route path={"mail/convert"} element={<ConvertisseurImageWithAuth />}></Route>
-        <Route path={"booking"} element={<BookingPageWithAuth />}></Route>
+        <Route
+          path={"booking"}
+          element={(
+            <BookingProvider>
+              <BookingPageWithAuth />
+            </BookingProvider>
+          )}
+        ></Route>
         <Route path={"commerciaux"} element={<CommerciauxWithAuth />}></Route>
         <Route path={"commerciaux/notes-direction"} element={<NotesDirectionWithAuth />}></Route>
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>

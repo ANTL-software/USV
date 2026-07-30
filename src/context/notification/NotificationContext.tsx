@@ -41,7 +41,8 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
       const hasPendingAbsences = pendingAbsences.length > 0;
 
       let hasDeclaredIncidents = false;
-      if (hasAccessToSection(user, 'incidents')) {
+      const canQualifyIncidents = hasAccessToSubsection(user, 'incidents', 'qualifier');
+      if (canQualifyIncidents) {
         try {
           const declaredResult = await getIncidentsService({ statut: 'declare', page: 1, limit: 1 });
           hasDeclaredIncidents = declaredResult.pagination.total > 0;
