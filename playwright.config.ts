@@ -13,6 +13,7 @@ export default defineConfig({
   use: {
     baseURL: browserBaseUrl,
     screenshot: 'only-on-failure',
+    serviceWorkers: 'block',
     trace: 'on-first-retry',
   },
   projects: [
@@ -23,6 +24,10 @@ export default defineConfig({
   ],
   webServer: {
     command: `npm run dev -- --host 127.0.0.1 --port ${browserPort}`,
+    env: {
+      ...process.env,
+      VITE_API_BASE_URL: `${browserBaseUrl}/api`,
+    },
     reuseExistingServer: !process.env.CI,
     timeout: 120000,
     url: browserBaseUrl,

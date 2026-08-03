@@ -1,12 +1,6 @@
-import type {
-  Employe,
-  ProgpaCommercialStats,
-  ProgpaDistributionItem,
-  ProgpaEvolutionDay,
-  ProgpaEvolutionMonth,
-} from '../types/index.ts';
+import type { Campagne, Employe, ProgpaEtape, ProgpaParCommercial, ProgpaParJour } from '../types/index.ts';
 
-export type QualitePeriodMode = 'jour' | 'mois' | 'depuis' | 'jusquau' | 'entre';
+export type QualitePeriodPreset = 'today' | 'current_month' | 'previous_month' | 'custom';
 
 export interface QualiteSelectOption {
   value: string;
@@ -14,18 +8,17 @@ export interface QualiteSelectOption {
 }
 
 export interface QualiteDateRange {
-  dateDebut: string | null;
-  dateFin: string | null;
+  dateDebut: string;
+  dateFin: string;
 }
 
-export const QUALITE_PROGPA_COLORS = ['#ef4444', '#f97316', '#fb7185', '#f59e0b', '#84cc16', '#22c55e'];
+export const QUALITE_PROGPA_COLORS = ['#64748b', '#7c3aed', '#2563eb', '#0891b2', '#f59e0b', '#16a34a'];
 
 export const QUALITE_PERIOD_OPTIONS: QualiteSelectOption[] = [
-  { value: 'jour', label: 'Jour précis' },
-  { value: 'mois', label: 'Mois en cours' },
-  { value: 'depuis', label: 'Depuis le' },
-  { value: 'jusquau', label: 'Jusqu’au' },
-  { value: 'entre', label: 'Entre deux dates' },
+  { value: 'today', label: 'Aujourd’hui' },
+  { value: 'current_month', label: 'Mois en cours' },
+  { value: 'previous_month', label: 'Mois précédent' },
+  { value: 'custom', label: 'Période personnalisée' },
 ];
 
 export const toQualiteIsoDate = (date: Date): string => [
@@ -36,139 +29,106 @@ export const toQualiteIsoDate = (date: Date): string => [
 
 export const getQualiteToday = (): string => toQualiteIsoDate(new Date());
 
-export function getQualiteMonthBounds(referenceDate = new Date()): { start: string; end: string } {
+export function getQualiteMonthBounds(referenceDate = new Date(), offset = 0): QualiteDateRange {
+  const year = referenceDate.getFullYear();
+  const month = referenceDate.getMonth() + offset;
   return {
-    start: toQualiteIsoDate(new Date(referenceDate.getFullYear(), referenceDate.getMonth(), 1)),
-    end: toQualiteIsoDate(new Date(referenceDate.getFullYear(), referenceDate.getMonth() + 1, 0)),
+    dateDebut: toQualiteIsoDate(new Date(year, month, 1)),
+    dateFin: toQualiteIsoDate(new Date(year, month + 1, 0)),
   };
 }
 
-export function buildQualiteDateRange(
-  mode: QualitePeriodMode,
-  startDate: string,
-  endDate: string,
-  today = getQualiteToday(),
+export function getQualitePresetRange(
+  preset: QualitePeriodPreset,
+  referenceDate = new Date(),
 ): QualiteDateRange {
-  const monthBounds = getQualiteMonthBounds(new Date(`${today}T12:00:00`));
-
-  if (startDate && endDate) return { dateDebut: startDate, dateFin: endDate };
-  if (mode === 'mois') return { dateDebut: startDate || monthBounds.start, dateFin: endDate || monthBounds.end };
-  if (mode === 'jour') return { dateDebut: startDate || today, dateFin: endDate || startDate || today };
-  if (startDate) return { dateDebut: startDate, dateFin: null };
-  if (endDate) return { dateDebut: null, dateFin: endDate };
+  if (preset === 'current_month') return getQualiteMonthBounds(referenceDate);
+  if (preset === 'previous_month') return getQualiteMonthBounds(referenceDate, -1);
+  const today = toQualiteIsoDate(referenceDate);
   return { dateDebut: today, dateFin: today };
+}
+
+const parseIsoDate = (date: string): Date => new Date(`${date}T12:00:00`);
+
+export function getQualiteRangeLabel(dateDebut: string, dateFin: string): string {
+  if (dateDebut === dateFin) return `Le ${parseIsoDate(dateDebut).toLocaleDateString('fr-FR')}`;
+  return `Du ${parseIsoDate(dateDebut).toLocaleDateString('fr-FR')} au ${parseIsoDate(dateFin).toLocaleDateString('fr-FR')}`;
 }
 
 export const formatQualitePercent = (value: number): string => `${value.toFixed(1)} %`;
 export const formatQualiteProgpa = (value: number): string => `${value.toFixed(1)} / 5`;
-export const formatQualiteDateLabel = (date: string): string => new Date(date).toLocaleDateString('fr-FR', {
+export const formatQualiteDateLabel = (date: string): string => parseIsoDate(date).toLocaleDateString('fr-FR', {
   day: '2-digit',
   month: 'short',
 });
+export const formatQualiteDateLong = (date: string): string => parseIsoDate(date).toLocaleDateString('fr-FR', {
+  weekday: 'short',
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+});
 
-export function formatQualiteMonthLabel(month: string): string {
-  const [year, monthIndex] = month.split('-');
-  return new Date(Number(year), Number(monthIndex) - 1, 1).toLocaleDateString('fr-FR', {
-    month: 'short',
-    year: 'numeric',
-  });
-}
-
-export function formatQualiteTooltipProgpa(value: unknown): [string, string] {
-  const rawValue = Array.isArray(value) ? value[0] : value;
-  const numericValue = typeof rawValue === 'number' ? rawValue : Number(rawValue || 0);
-  return [`${numericValue.toFixed(1)} / 5`, 'Progpa moyen'];
-}
-
-export const formatQualiteVolumeTooltip = (value: unknown, percentage: number): [string, string] => [
-  `${Number(value || 0)} appels (${percentage.toFixed(1)} %)`,
-  'Volume',
-];
-
-export const formatQualiteRankingTooltip = (value: unknown, calls: number): [string, string] => [
-  `${Number(value || 0).toFixed(1)} / 5`,
-  `${calls} appels`,
-];
-
-function getNumericPayloadValue(payload: unknown, key: string): number {
-  if (!payload || typeof payload !== 'object') return 0;
-  const value = (payload as Record<string, unknown>)[key];
-  return typeof value === 'number' ? value : Number(value || 0);
-}
-
-export function formatQualiteChartDateLabel(payload: unknown): string {
-  if (!payload || typeof payload !== 'object') return '';
-  const value = (payload as Record<string, unknown>).date;
-  if (typeof value !== 'string' || !value) return '';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('fr-FR');
-}
-
-export const formatQualiteDistributionTooltip = (value: unknown, payload: unknown): [string, string] => (
-  formatQualiteVolumeTooltip(value, getNumericPayloadValue(payload, 'pourcentage'))
-);
-
-export const formatQualiteCommercialRankingTooltip = (value: unknown, payload: unknown): [string, string] => (
-  formatQualiteRankingTooltip(value, getNumericPayloadValue(payload, 'appels'))
-);
-
-export function getQualiteRangeLabel(
-  mode: QualitePeriodMode,
-  dateDebut: string | null,
-  dateFin: string | null,
-): string {
-  if (dateDebut && dateFin) {
-    if (dateDebut === dateFin) return `Le ${new Date(dateDebut).toLocaleDateString('fr-FR')}`;
-    return `Du ${new Date(dateDebut).toLocaleDateString('fr-FR')} au ${new Date(dateFin).toLocaleDateString('fr-FR')}`;
-  }
-  if (mode === 'jour' && dateDebut) return `Le ${new Date(dateDebut).toLocaleDateString('fr-FR')}`;
-  if (mode === 'mois') return 'Mois en cours';
-  if (mode === 'depuis' && dateDebut) return `Depuis le ${new Date(dateDebut).toLocaleDateString('fr-FR')}`;
-  if (mode === 'jusquau' && dateFin) return `Jusqu’au ${new Date(dateFin).toLocaleDateString('fr-FR')}`;
-  return 'Aujourd’hui';
+export function buildQualiteCampaignOptions(campagnes: Campagne[]): QualiteSelectOption[] {
+  return [...campagnes]
+    .sort((left, right) => {
+      if (left.statut === 'active' && right.statut !== 'active') return -1;
+      if (right.statut === 'active' && left.statut !== 'active') return 1;
+      return left.nom_campagne.localeCompare(right.nom_campagne, 'fr');
+    })
+    .map((campagne) => ({
+      value: String(campagne.id_campagne),
+      label: `${campagne.nom_campagne}${campagne.statut === 'active' ? '' : ' · inactive'}`,
+    }));
 }
 
 export function buildQualiteCommercialOptions(
   employes: Employe[],
-  statistiques: ProgpaCommercialStats[],
+  statistiques: ProgpaParCommercial[],
 ): QualiteSelectOption[] {
-  const commercialIds = new Set(statistiques.map((item) => item.id_employe));
-  const commerciaux = employes
+  const statsById = new Map(statistiques.map((item) => [item.id_employe, item]));
+  const employeOptions = employes
     .filter((employe) => {
       const posteLabel = employe.poste?.libelle_poste?.toLowerCase() || '';
       return employe.poste?.type_poste === 'commercial'
         || (employe.id_rang_commercial !== null && employe.id_rang_commercial !== undefined)
         || ['sales', 'business developer', 'commercial', 'stagiaire'].some((label) => posteLabel.includes(label))
-        || commercialIds.has(employe.id_employe);
+        || statsById.has(employe.id_employe);
     })
-    .sort((left, right) => `${left.prenom} ${left.nom}`.localeCompare(`${right.prenom} ${right.nom}`, 'fr'));
+    .map((employe) => ({
+      value: String(employe.id_employe),
+      label: `${employe.prenom} ${employe.nom.toUpperCase()} (${employe.identifiant})`,
+    }));
+  const knownIds = new Set(employeOptions.map((option) => option.value));
+  const historicalOptions = statistiques
+    .filter((item) => !knownIds.has(String(item.id_employe)))
+    .map((item) => ({
+      value: String(item.id_employe),
+      label: `${item.prenom} ${item.nom.toUpperCase()} (${item.identifiant})`,
+    }));
+  const commerciaux = [...employeOptions, ...historicalOptions]
+    .sort((left, right) => left.label.localeCompare(right.label, 'fr'));
 
   return [
     { value: '', label: 'Tous les commerciaux' },
-    ...commerciaux.map((employe) => ({
-      value: String(employe.id_employe),
-      label: `${employe.prenom} ${employe.nom.toUpperCase()} (${employe.identifiant})`,
-    })),
+    ...commerciaux,
   ];
 }
 
-export const buildQualiteRankingData = (stats: ProgpaCommercialStats[]) => stats.slice(0, 10).map((item) => ({
-  nom: `${item.prenom} ${item.nom}`,
-  moyenne: item.moyenne_progpa,
-  appels: item.total_appels,
+export const buildQualiteDistributionData = (items: ProgpaEtape[]) => items.map((item) => ({
+  ...item,
+  color: QUALITE_PROGPA_COLORS[item.progpa] || '#7c3aed',
 }));
 
-export const buildQualiteDistributionData = (items: ProgpaDistributionItem[]) => items.map((item, index) => ({
+export const buildQualiteDailyData = (items: ProgpaParJour[]) => items.map((item) => ({
   ...item,
-  color: QUALITE_PROGPA_COLORS[index] || '#7c3aed',
-}));
-
-export const buildQualiteDailyData = (items: ProgpaEvolutionDay[]) => items.map((item) => ({
-  ...item,
+  ...item.niveaux,
   label: formatQualiteDateLabel(item.date),
 }));
 
-export const buildQualiteMonthlyData = (items: ProgpaEvolutionMonth[]) => items.map((item) => ({
+export const buildQualiteCommercialData = (items: ProgpaParCommercial[]) => items.map((item) => ({
   ...item,
-  label: formatQualiteMonthLabel(item.mois),
+  ...item.niveaux,
+  label: `${item.prenom} ${item.nom}`,
 }));
+
+export const getQualiteStepColor = (progpa: number): string => QUALITE_PROGPA_COLORS[progpa] || '#7c3aed';

@@ -1,39 +1,33 @@
-import type { ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import type { QualiteStatsPageViewModel } from '../../../hooks/index.ts';
-import { formatQualitePercent, formatQualiteProgpa } from '../../../utils/scripts/index.ts';
-import { QualiteCommercialInsight, QualiteSummaryCard } from '../index.ts';
+import { formatQualitePercent, formatQualiteProgpa, getQualiteStepColor } from '../../../utils/scripts/index.ts';
 
-type QualiteStatsOverviewProps = Pick<
-  QualiteStatsPageViewModel,
-  'data' | 'periodeSummary' | 'selectedCommercial'
->;
+type QualiteStatsOverviewProps = Pick<QualiteStatsPageViewModel, 'data'>;
 
-export function QualiteStatsOverview({
-  data,
-  periodeSummary,
-  selectedCommercial,
-}: QualiteStatsOverviewProps): ReactElement | null {
-  if (!data || !periodeSummary) return null;
+export function QualiteStatsOverview({ data }: QualiteStatsOverviewProps): ReactElement | null {
+  if (!data) return null;
+  const summary = data.synthese;
 
   return (
     <>
-      <section className="qualiteStats__summary-grid">
-        <QualiteSummaryCard title="Moyenne période" value={formatQualiteProgpa(periodeSummary.moyenne_progpa)} subtitle={`${periodeSummary.total_appels} appels analysés`} />
-        <QualiteSummaryCard title="Moyenne du jour" value={formatQualiteProgpa(data.synthese.aujourd_hui.moyenne_progpa)} subtitle={`${data.synthese.aujourd_hui.total_appels} appels aujourd’hui`} />
-        <QualiteSummaryCard title="Moyenne du mois" value={formatQualiteProgpa(data.synthese.mois_en_cours.moyenne_progpa)} subtitle={`${data.synthese.mois_en_cours.total_appels} appels ce mois`} />
-        <QualiteSummaryCard title="Taux de saisie" value={formatQualitePercent(periodeSummary.taux_saisie_progpa)} subtitle={`${periodeSummary.prospects_uniques} prospects uniques`} />
+      <section className="qualiteStats__kpi-grid">
+        <article className="qualiteStats__kpi-card"><span>Appels clôturés</span><strong>{summary.total_appels}</strong><small>{summary.prospects_uniques} prospects uniques</small></article>
+        <article className="qualiteStats__kpi-card"><span>Non traités</span><strong>{summary.niveaux.niveau_0}</strong><small>ProgPA 0 · aucun contact</small></article>
+        <article className="qualiteStats__kpi-card"><span>Avec progression</span><strong>{summary.appels_avec_progression}</strong><small>{formatQualitePercent(summary.taux_progression)} des appels</small></article>
+        <article className="qualiteStats__kpi-card"><span>ProgPA moyen</span><strong>{formatQualiteProgpa(summary.moyenne_progpa)}</strong><small>Sur les appels clôturés</small></article>
       </section>
-      {selectedCommercial && (
-        <section className="qualiteStats__panel">
-          <div className="qualiteStats__panel-header">
-            <div>
-              <h2>Focus commercial</h2>
-              <p>{selectedCommercial.prenom} {selectedCommercial.nom.toUpperCase()} - {selectedCommercial.identifiant}</p>
-            </div>
-          </div>
-          <QualiteCommercialInsight commercial={selectedCommercial} />
-        </section>
-      )}
+
+      <section className="qualiteStats__steps-card">
+        <div className="qualiteStats__section-heading"><div><h2>Toutes les étapes</h2><p>Le nombre correspond au niveau exact enregistré au closing.</p></div><span>{data.campagne.nom_campagne}</span></div>
+        <div className="qualiteStats__steps-grid">
+          {data.etapes.map((step) => (
+            <article key={step.progpa} className="qualiteStats__step" style={{ '--step-color': getQualiteStepColor(step.progpa) } as CSSProperties}>
+              <span className="qualiteStats__step-index">{step.progpa}</span>
+              <div><strong>{step.nombre}</strong><span>{step.label}</span><small>{formatQualitePercent(step.pourcentage)}</small></div>
+            </article>
+          ))}
+        </div>
+      </section>
     </>
   );
 }

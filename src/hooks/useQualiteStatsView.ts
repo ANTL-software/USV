@@ -1,105 +1,138 @@
 import { useMemo, useState } from 'react';
+import { useCampagnes } from './useCampagnes.ts';
 import { useEmployes } from './useEmployes.ts';
 import { useQualiteProgpaStats } from './useQualiteProgpaStats.ts';
 import {
   QUALITE_PERIOD_OPTIONS,
+  buildQualiteCampaignOptions,
+  buildQualiteCommercialData,
   buildQualiteCommercialOptions,
   buildQualiteDailyData,
-  buildQualiteDateRange,
   buildQualiteDistributionData,
-  buildQualiteMonthlyData,
-  buildQualiteRankingData,
-  getQualiteMonthBounds,
+  getQualitePresetRange,
   getQualiteRangeLabel,
-  getQualiteToday,
 } from '../utils/scripts/index.ts';
-import type { QualitePeriodMode } from '../utils/scripts/index.ts';
+import type { QualitePeriodPreset } from '../utils/scripts/index.ts';
+
+interface AppliedQualiteFilters {
+  idCampagne: number | null;
+  idEmploye: number | null;
+  dateDebut: string;
+  dateFin: string;
+}
 
 export function useQualiteStatsView() {
+  const { campagnes, isLoading: campagnesLoading } = useCampagnes();
   const { employes, isLoading: employesLoading } = useEmployes();
-  const today = useMemo(() => getQualiteToday(), []);
-  const monthBounds = useMemo(() => getQualiteMonthBounds(), []);
-  const [periodMode, setPeriodMode] = useState<QualitePeriodMode>('jour');
-  const [startDate, setStartDate] = useState(today);
-  const [endDate, setEndDate] = useState(today);
+  const defaultRange = useMemo(() => getQualitePresetRange('today'), []);
+  const [periodPreset, setPeriodPreset] = useState<QualitePeriodPreset>('today');
+  const [dateDebut, setDateDebutState] = useState(defaultRange.dateDebut);
+  const [dateFin, setDateFinState] = useState(defaultRange.dateFin);
+  const [selectedCampagneId, setSelectedCampagneId] = useState<number | null>(null);
   const [selectedEmployeId, setSelectedEmployeId] = useState<number | null>(null);
-  const [appliedFilters, setAppliedFilters] = useState({
-    periodMode: 'jour' as QualitePeriodMode,
-    dateDebut: today as string | null,
-    dateFin: today as string | null,
-    idEmploye: null as number | null,
+  const [filterError, setFilterError] = useState<string | null>(null);
+  const [appliedFilters, setAppliedFilters] = useState<AppliedQualiteFilters>({
+    idCampagne: null,
+    idEmploye: null,
+    ...defaultRange,
   });
+
+  const campaignOptions = useMemo(() => buildQualiteCampaignOptions(campagnes), [campagnes]);
+  const defaultCampaignId = campaignOptions[0] ? Number(campaignOptions[0].value) : null;
+  const draftCampaignId = selectedCampagneId ?? defaultCampaignId;
+  const requestedCampaignId = appliedFilters.idCampagne ?? defaultCampaignId;
+
   const { data, isLoading, error, reload } = useQualiteProgpaStats(
+    requestedCampaignId,
     appliedFilters.dateDebut,
     appliedFilters.dateFin,
     appliedFilters.idEmploye,
   );
 
   const commercialOptions = useMemo(
-    () => buildQualiteCommercialOptions(employes, data?.commerciaux || []),
-    [data?.commerciaux, employes],
+    () => buildQualiteCommercialOptions(employes, data?.par_commercial || []),
+    [data?.par_commercial, employes],
   );
-  const rankingData = useMemo(() => buildQualiteRankingData(data?.commerciaux || []), [data?.commerciaux]);
-  const distributionData = useMemo(() => buildQualiteDistributionData(data?.repartition || []), [data?.repartition]);
-  const evolutionJoursData = useMemo(() => buildQualiteDailyData(data?.evolution_jours || []), [data?.evolution_jours]);
-  const evolutionMoisData = useMemo(() => buildQualiteMonthlyData(data?.evolution_mois || []), [data?.evolution_mois]);
+  const distributionData = useMemo(() => buildQualiteDistributionData(data?.etapes || []), [data?.etapes]);
+  const dailyData = useMemo(() => buildQualiteDailyData(data?.par_jour || []), [data?.par_jour]);
+  const commercialData = useMemo(() => buildQualiteCommercialData(data?.par_commercial || []), [data?.par_commercial]);
 
-  const changePeriodMode = (value: QualitePeriodMode): void => {
-    setPeriodMode(value);
-    if (value === 'jour' || value === 'entre') {
-      setStartDate(today);
-      setEndDate(today);
-    } else if (value === 'mois') {
-      setStartDate(monthBounds.start);
-      setEndDate(monthBounds.end);
-    } else if (value === 'depuis') {
-      setStartDate(today);
-      setEndDate('');
-    } else {
-      setStartDate('');
-      setEndDate(today);
-    }
+  const changePeriodPreset = (value: QualitePeriodPreset): void => {
+    setPeriodPreset(value);
+    if (value === 'custom') return;
+    const range = getQualitePresetRange(value);
+    setDateDebutState(range.dateDebut);
+    setDateFinState(range.dateFin);
+  };
+
+  const setDateDebut = (value: string): void => {
+    setDateDebutState(value);
+    setPeriodPreset('custom');
+  };
+
+  const setDateFin = (value: string): void => {
+    setDateFinState(value);
+    setPeriodPreset('custom');
   };
 
   const applyFilters = (): void => {
-    const range = buildQualiteDateRange(periodMode, startDate, endDate, today);
-    setAppliedFilters({ periodMode, ...range, idEmploye: selectedEmployeId });
+    if (!draftCampaignId) {
+      setFilterError('Sélectionnez une campagne.');
+      return;
+    }
+    if (!dateDebut || !dateFin || dateDebut > dateFin) {
+      setFilterError('La période sélectionnée est invalide.');
+      return;
+    }
+    setFilterError(null);
+    setAppliedFilters({
+      idCampagne: draftCampaignId,
+      idEmploye: selectedEmployeId,
+      dateDebut,
+      dateFin,
+    });
   };
 
   const resetFilters = (): void => {
-    setPeriodMode('jour');
-    setStartDate(today);
-    setEndDate(today);
+    const range = getQualitePresetRange('today');
+    setPeriodPreset('today');
+    setDateDebutState(range.dateDebut);
+    setDateFinState(range.dateFin);
+    setSelectedCampagneId(null);
     setSelectedEmployeId(null);
-    setAppliedFilters({ periodMode: 'jour', dateDebut: today, dateFin: today, idEmploye: null });
+    setFilterError(null);
+    setAppliedFilters({ idCampagne: defaultCampaignId, idEmploye: null, ...range });
   };
 
   return {
     appliedFilters,
     applyFilters,
-    changePeriodMode,
+    campaignOptions,
+    campagnesLoading,
+    changePeriodPreset,
+    commercialData,
     commercialOptions,
+    dailyData,
     data,
+    dateDebut,
+    dateFin,
     distributionData,
     employesLoading,
-    endDate,
     error,
-    evolutionJoursData,
-    evolutionMoisData,
+    filterError,
     isLoading,
-    periodMode,
-    periodeLabel: getQualiteRangeLabel(appliedFilters.periodMode, appliedFilters.dateDebut, appliedFilters.dateFin),
-    periodeSummary: data?.synthese?.periode || null,
-    rankingData,
+    periodeLabel: getQualiteRangeLabel(appliedFilters.dateDebut, appliedFilters.dateFin),
+    periodPreset,
     reload,
     resetFilters,
-    selectedCommercial: data?.commercial || null,
+    selectedCampaignOption: campaignOptions.find((option) => option.value === String(draftCampaignId)) || null,
+    selectedCampagneId: draftCampaignId,
+    selectedCommercialOption: commercialOptions.find((option) => option.value === String(selectedEmployeId ?? '')) || commercialOptions[0],
     selectedEmployeId,
-    selectedEmployeOption: commercialOptions.find((option) => option.value === String(selectedEmployeId ?? '')) || commercialOptions[0],
-    selectedPeriodOption: QUALITE_PERIOD_OPTIONS.find((option) => option.value === periodMode) || QUALITE_PERIOD_OPTIONS[0],
-    setEndDate,
+    selectedPeriodOption: QUALITE_PERIOD_OPTIONS.find((option) => option.value === periodPreset) || QUALITE_PERIOD_OPTIONS[0],
+    setDateDebut,
+    setDateFin,
+    setSelectedCampagneId,
     setSelectedEmployeId,
-    setStartDate,
-    startDate,
   };
 }

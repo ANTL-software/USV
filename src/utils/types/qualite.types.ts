@@ -1,60 +1,58 @@
-export interface ProgpaSummary {
-  total_appels: number;
-  appels_avec_progpa: number;
-  moyenne_progpa: number;
-  max_progpa_atteint: number;
-  prospects_uniques: number;
-  taux_saisie_progpa: number;
+export interface ProgpaNiveaux {
+  niveau_0: number;
+  niveau_1: number;
+  niveau_2: number;
+  niveau_3: number;
+  niveau_4: number;
+  niveau_5: number;
 }
 
-export interface ProgpaDistributionItem {
+export interface ProgpaSynthese {
+  total_appels: number;
+  prospects_uniques: number;
+  moyenne_progpa: number;
+  appels_avec_progression: number;
+  taux_progression: number;
+  niveaux: ProgpaNiveaux;
+}
+
+export interface ProgpaEtape {
   progpa: number;
   label: string;
   nombre: number;
   pourcentage: number;
 }
 
-export interface ProgpaEvolutionDay {
+export interface ProgpaParJour extends ProgpaSynthese {
   date: string;
-  moyenne_progpa: number;
-  total_appels: number;
-  max_progpa: number;
 }
 
-export interface ProgpaEvolutionMonth {
-  mois: string;
-  moyenne_progpa: number;
-  total_appels: number;
-  max_progpa: number;
-}
-
-export interface ProgpaCommercialStats {
+export interface ProgpaParCommercial extends ProgpaSynthese {
   id_employe: number;
   nom: string;
   prenom: string;
   identifiant: string;
-  total_appels: number;
-  appels_avec_progpa: number;
-  moyenne_progpa: number;
-  max_progpa_atteint: number;
-  prospects_uniques: number;
-  moyenne_max_fiche: number;
-  taux_saisie_progpa: number;
+}
+
+export interface ProgpaParCommercialJour extends ProgpaParCommercial {
+  date: string;
 }
 
 export interface QualiteProgpaStatsResponse {
-  periode: {
-    date_debut: string | null;
-    date_fin: string | null;
+  filtres: {
+    id_campagne: number;
+    id_employe: number | null;
+    date_debut: string;
+    date_fin: string;
   };
-  synthese: {
-    periode: ProgpaSummary;
-    aujourd_hui: ProgpaSummary;
-    mois_en_cours: ProgpaSummary;
+  campagne: {
+    id_campagne: number;
+    nom_campagne: string;
+    type_campagne: 'vente' | 'lead_b2b';
   };
-  repartition: ProgpaDistributionItem[];
-  evolution_jours: ProgpaEvolutionDay[];
-  evolution_mois: ProgpaEvolutionMonth[];
-  commerciaux: ProgpaCommercialStats[];
-  commercial: ProgpaCommercialStats | null;
+  synthese: ProgpaSynthese;
+  etapes: ProgpaEtape[];
+  par_jour: ProgpaParJour[];
+  par_commercial: ProgpaParCommercial[];
+  par_commercial_jour: ProgpaParCommercialJour[];
 }

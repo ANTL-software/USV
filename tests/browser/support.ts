@@ -111,9 +111,14 @@ export function describeApiRequest(route: Route): ApiRequestDescriptor {
 }
 
 export async function fulfillJson(route: Route, data: unknown, status = 200): Promise<void> {
+  const requestOrigin = route.request().headers().origin;
   await route.fulfill({
     body: JSON.stringify(data),
     contentType: 'application/json',
+    headers: requestOrigin ? {
+      'access-control-allow-credentials': 'true',
+      'access-control-allow-origin': requestOrigin,
+    } : undefined,
     status,
   });
 }
