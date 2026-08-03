@@ -35,6 +35,7 @@ export function LeadClientSummary({ lead }: LeadClientSummaryProps): ReactElemen
           <div className="grid-item"><span className="grid-label">Rendez-vous client</span><span className="grid-value">{formatLeadDateTime(lead.date_rdv, lead.heure_rdv)}</span></div>
           <div className="grid-item"><span className="grid-label">Commercial</span><span className="grid-value">{formatLeadAgentLabel(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Campagne</span><span className="grid-value">{lead.campagne?.nom_campagne ?? '—'}</span></div>
+          <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>
           <div className="grid-item full-width"><span className="grid-label">Motif</span><span className="grid-value">{lead.motif ?? '—'}</span></div>
           {lead.notes && <div className="grid-item full-width"><span className="grid-label">Notes du rendez-vous</span><p className="notes-text">{lead.notes}</p></div>}
           {lead.derniere_note_closing && <div className="grid-item full-width"><span className="grid-label">Dernière note de closing (campagne)</span><p className="notes-text">{lead.derniere_note_closing}</p></div>}

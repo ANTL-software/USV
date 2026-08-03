@@ -73,6 +73,7 @@ export interface RendezVousItem {
 export type LeadClient = Omit<RendezVousItem, 'id_rendez_vous'> & {
   id_lead: number;
   id_appel?: number | null;
+  entreprise_plus_de_cinq_salaries: boolean;
 };
 
 export interface LeadClientListParams {
