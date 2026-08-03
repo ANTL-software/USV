@@ -53,7 +53,10 @@ export function useQualiteStatsView() {
     () => buildQualiteCommercialOptions(employes, data?.par_commercial || []),
     [data?.par_commercial, employes],
   );
-  const distributionData = useMemo(() => buildQualiteDistributionData(data?.etapes || []), [data?.etapes]);
+  const distributionData = useMemo(
+    () => buildQualiteDistributionData(data?.etapes || [], data?.suivi_en_cours),
+    [data?.etapes, data?.suivi_en_cours],
+  );
   const dailyData = useMemo(() => buildQualiteDailyData(data?.par_jour || []), [data?.par_jour]);
   const commercialData = useMemo(() => buildQualiteCommercialData(data?.par_commercial || []), [data?.par_commercial]);
 

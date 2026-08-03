@@ -183,6 +183,10 @@
   content: "";
 }
 
+#qualiteStats .qualiteStats__kpi-card--followup::before {
+  background: linear-gradient(90deg, #c026d3, #7c3aed);
+}
+
 #qualiteStats .qualiteStats__kpi-card > span {
   color: vars.$fontColorSecondary;
   font-size: 0.83rem;
@@ -263,6 +267,11 @@
   border-left: 4px solid var(--step-color);
   border-radius: 12px;
   background: #fbfcfe;
+}
+
+#qualiteStats .qualiteStats__step--followup {
+  background: linear-gradient(110deg, #fdf4ff, #faf5ff);
+  border-color: #f0abfc;
 }
 
 #qualiteStats .qualiteStats__step-index {
@@ -392,6 +401,12 @@
   margin-top: 0.15rem;
   color: #64748b;
   font-size: 0.76rem;
+}
+
+#qualiteStats .qualiteStats__followup-cell {
+  background: #fdf4ff;
+  color: #a21caf;
+  font-weight: 850;
 }
 
 #qualiteStats .qualiteStats__date-cell {

@@ -292,6 +292,7 @@ export type {
   ProgpaParCommercialJour,
   ProgpaParJour,
   ProgpaSynthese,
+  ProgpaSuiviEnCours,
   QualiteProgpaStatsResponse,
 } from './qualite.types.ts';
 
@@ -367,6 +368,7 @@ export {
 export type {
   StatutAppel,
   OrigineAppel,
+  CommercialFollowupType,
   Appel,
 } from './appel.types.ts';
 

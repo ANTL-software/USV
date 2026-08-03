@@ -13,7 +13,14 @@ export interface ProgpaSynthese {
   moyenne_progpa: number;
   appels_avec_progression: number;
   taux_progression: number;
+  suivis_en_cours: number;
   niveaux: ProgpaNiveaux;
+}
+
+export interface ProgpaSuiviEnCours {
+  label: string;
+  nombre: number;
+  pourcentage: number;
 }
 
 export interface ProgpaEtape {
@@ -52,6 +59,7 @@ export interface QualiteProgpaStatsResponse {
   };
   synthese: ProgpaSynthese;
   etapes: ProgpaEtape[];
+  suivi_en_cours: ProgpaSuiviEnCours;
   par_jour: ProgpaParJour[];
   par_commercial: ProgpaParCommercial[];
   par_commercial_jour: ProgpaParCommercialJour[];

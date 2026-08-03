@@ -23,6 +23,7 @@ const synthese = {
   moyenne_progpa: 1.5,
   appels_avec_progression: 8,
   taux_progression: 66.7,
+  suivis_en_cours: 2,
   niveaux,
 };
 const responseData: QualiteProgpaStatsResponse = {
@@ -35,8 +36,13 @@ const responseData: QualiteProgpaStatsResponse = {
     { progpa: 2, label: 'Présentation', nombre: 2, pourcentage: 16.7 },
     { progpa: 3, label: 'Découverte', nombre: 1, pourcentage: 8.3 },
     { progpa: 4, label: 'Proposition', nombre: 1, pourcentage: 8.3 },
-    { progpa: 5, label: 'Rendez-vous pris', nombre: 1, pourcentage: 8.3 },
+    { progpa: 5, label: 'Commande', nombre: 1, pourcentage: 8.3 },
   ],
+  suivi_en_cours: {
+    label: 'Suivi de rendez-vous client',
+    nombre: 2,
+    pourcentage: 16.7,
+  },
   par_jour: [{ date: '2026-07-15', ...synthese }],
   par_commercial: [{ id_employe: 7, nom: 'Durand', prenom: 'Alice', identifiant: 'alice', ...synthese }],
   par_commercial_jour: [{
@@ -77,7 +83,8 @@ test('le parcours qualité transmet campagne, période et commercial puis prépa
     id_employe: '7',
   });
   assert.equal(result.campagne.nom_campagne, 'MMA');
-  assert.equal(result.etapes[5].label, 'Rendez-vous pris');
+  assert.equal(result.etapes[5].label, 'Commande');
   assert.equal(buildQualiteDailyData(result.par_jour)[0].niveau_2, 2);
   assert.equal(buildQualiteDistributionData(result.etapes)[5].color, '#16a34a');
+  assert.equal(buildQualiteDistributionData(result.etapes, result.suivi_en_cours)[6].color, '#c026d3');
 });

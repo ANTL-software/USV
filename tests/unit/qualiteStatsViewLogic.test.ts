@@ -34,6 +34,7 @@ const commercialStats = (id: number): ProgpaParCommercial => ({
   moyenne_progpa: 1.5,
   appels_avec_progression: 8,
   taux_progression: 66.7,
+  suivis_en_cours: 0,
   niveaux,
 });
 
@@ -112,7 +113,7 @@ test('la liste commerciale agrège rôle, rang et présence dans les statistique
   ]);
 });
 
-test('les séries graphiques exposent les six volumes exacts', () => {
+test('les séries graphiques exposent les six volumes exacts et le suivi commercial', () => {
   const day: ProgpaParJour = {
     date: '2026-07-15',
     total_appels: 12,
@@ -120,15 +121,22 @@ test('les séries graphiques exposent les six volumes exacts', () => {
     moyenne_progpa: 1.5,
     appels_avec_progression: 8,
     taux_progression: 66.7,
+    suivis_en_cours: 2,
     niveaux,
   };
   const distribution = buildQualiteDistributionData([
     { progpa: 0, label: 'Aucun contact', nombre: 4, pourcentage: 33.3 },
     { progpa: 5, label: 'Commande', nombre: 1, pourcentage: 8.3 },
-  ]);
+  ], {
+    label: 'Suivi de commande',
+    nombre: 2,
+    pourcentage: 16.7,
+  });
 
   assert.equal(distribution[0].color, '#64748b');
   assert.equal(distribution[1].color, '#16a34a');
+  assert.equal(distribution[2].color, '#c026d3');
+  assert.equal(distribution[2].progpa, 'suivi_en_cours');
   assert.deepEqual(buildQualiteDailyData([day])[0], { ...day, ...niveaux, label: '15 juil.' });
   assert.equal(buildQualiteCommercialData([commercialStats(1)])[0].niveau_5, 1);
 });
