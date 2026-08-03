@@ -29,11 +29,12 @@ const niveaux = {
 function buildStats(idCampagne: number, dateDebut: string, dateFin: string): QualiteProgpaStatsResponse {
   const isMma = idCampagne === MMA_CAMPAIGN.id_campagne;
   const synthese = {
-    total_appels: 12,
+    total_appels: 13,
     prospects_uniques: 9,
     moyenne_progpa: 1.5,
     appels_avec_progression: 8,
-    taux_progression: 66.7,
+    taux_progression: 61.5,
+    suivis_en_cours: 1,
     niveaux,
   };
   const etapes = [
@@ -42,7 +43,7 @@ function buildStats(idCampagne: number, dateDebut: string, dateFin: string): Qua
     { progpa: 2, label: 'Présentation', nombre: 2, pourcentage: 16.7 },
     { progpa: 3, label: 'Découverte', nombre: 1, pourcentage: 8.3 },
     { progpa: 4, label: 'Proposition', nombre: 1, pourcentage: 8.3 },
-    { progpa: 5, label: isMma ? 'Rendez-vous pris' : 'Commande', nombre: 1, pourcentage: 8.3 },
+    { progpa: 5, label: 'Commande', nombre: 1, pourcentage: 7.7 },
   ];
   const sophie = {
     id_employe: 1,
@@ -68,6 +69,11 @@ function buildStats(idCampagne: number, dateDebut: string, dateFin: string): Qua
     },
     synthese,
     etapes,
+    suivi_en_cours: {
+      label: isMma ? 'Suivi de rendez-vous client' : 'Suivi de commande',
+      nombre: 1,
+      pourcentage: 7.7,
+    },
     par_jour: [{ date: dateDebut, ...synthese }],
     par_commercial: [sophie, alice],
     par_commercial_jour: [
@@ -104,9 +110,10 @@ test('les statistiques ProgPA se pilotent par campagne, période et TLV', async 
 
   await expect(page.getByRole('heading', { name: 'Statistiques ProgPA' })).toBeVisible();
   await expect(page.getByText('Détail journalier par commercial')).toBeVisible();
-  await expect(page.locator('.qualiteStats__step')).toHaveCount(6);
+  await expect(page.locator('.qualiteStats__step')).toHaveCount(7);
   await expect(page.locator('.qualiteStats__table tbody tr')).toHaveCount(2);
-  await expect(page.getByText('66.7 % des appels')).toBeVisible();
+  await expect(page.getByText('61.5 % des appels')).toBeVisible();
+  await expect(page.getByText('Suivi de commande', { exact: true }).first()).toBeVisible();
 
   const currentMonth = getQualitePresetRange('current_month');
   await page.locator('#periodPreset').click();
@@ -118,7 +125,8 @@ test('les statistiques ProgPA se pilotent par campagne, période et TLV', async 
   await page.getByText('MMA', { exact: true }).click();
   await page.getByRole('button', { name: 'Afficher les statistiques' }).click();
 
-  await expect(page.getByRole('columnheader', { name: 'Rendez-vous pris' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Commande' })).toBeVisible();
+  await expect(page.getByRole('columnheader', { name: 'Suivi de rendez-vous client' })).toBeVisible();
   await expect.poll(() => statsRequests.at(-1)?.get('id_campagne')).toBe('10');
   await expect.poll(() => statsRequests.at(-1)?.get('date_debut')).toBe(currentMonth.dateDebut);
   expect(unhandledRequests).toEqual([]);

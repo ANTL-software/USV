@@ -362,6 +362,7 @@ export type {
 } from './commandeDetails.ts';
 export {
   QUALITE_PERIOD_OPTIONS,
+  QUALITE_FOLLOWUP_COLOR,
   QUALITE_PROGPA_COLORS,
   buildQualiteCampaignOptions,
   buildQualiteCommercialOptions,

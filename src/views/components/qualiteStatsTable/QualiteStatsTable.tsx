@@ -29,13 +29,14 @@ export function QualiteStatsTable({ data }: QualiteStatsTableProps): ReactElemen
               <th>Découverte</th>
               <th>Proposition</th>
               <th>{finalStepLabel}</th>
+              <th>{data.suivi_en_cours.label}</th>
               <th>Avec progression</th>
               <th>ProgPA moyen</th>
             </tr>
           </thead>
           <tbody>
             {data.par_commercial_jour.length === 0 && (
-              <tr><td colSpan={11} className="qualiteStats__empty-row">Aucun appel clôturé sur cette période.</td></tr>
+              <tr><td colSpan={12} className="qualiteStats__empty-row">Aucun appel clôturé sur cette période.</td></tr>
             )}
             {data.par_commercial_jour.map((row) => (
               <tr key={`${row.date}-${row.id_employe}`}>
@@ -48,6 +49,7 @@ export function QualiteStatsTable({ data }: QualiteStatsTableProps): ReactElemen
                 <td>{row.niveaux.niveau_3}</td>
                 <td>{row.niveaux.niveau_4}</td>
                 <td>{row.niveaux.niveau_5}</td>
+                <td className="qualiteStats__followup-cell">{row.suivis_en_cours}</td>
                 <td><strong>{row.appels_avec_progression}</strong><span>{formatQualitePercent(row.taux_progression)}</span></td>
                 <td>{formatQualiteProgpa(row.moyenne_progpa)}</td>
               </tr>

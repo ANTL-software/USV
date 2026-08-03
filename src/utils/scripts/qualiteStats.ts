@@ -1,4 +1,4 @@
-import type { Campagne, Employe, ProgpaEtape, ProgpaParCommercial, ProgpaParJour } from '../types/index.ts';
+import type { Campagne, Employe, ProgpaEtape, ProgpaParCommercial, ProgpaParJour, ProgpaSuiviEnCours } from '../types/index.ts';
 
 export type QualitePeriodPreset = 'today' | 'current_month' | 'previous_month' | 'custom';
 
@@ -13,6 +13,7 @@ export interface QualiteDateRange {
 }
 
 export const QUALITE_PROGPA_COLORS = ['#64748b', '#7c3aed', '#2563eb', '#0891b2', '#f59e0b', '#16a34a'];
+export const QUALITE_FOLLOWUP_COLOR = '#c026d3';
 
 export const QUALITE_PERIOD_OPTIONS: QualiteSelectOption[] = [
   { value: 'today', label: 'Aujourd’hui' },
@@ -114,10 +115,22 @@ export function buildQualiteCommercialOptions(
   ];
 }
 
-export const buildQualiteDistributionData = (items: ProgpaEtape[]) => items.map((item) => ({
-  ...item,
-  color: QUALITE_PROGPA_COLORS[item.progpa] || '#7c3aed',
-}));
+export const buildQualiteDistributionData = (
+  items: ProgpaEtape[],
+  suiviEnCours?: ProgpaSuiviEnCours | null,
+) => [
+  ...items.map((item) => ({
+    ...item,
+    key: `niveau_${item.progpa}`,
+    color: QUALITE_PROGPA_COLORS[item.progpa] || '#7c3aed',
+  })),
+  ...(suiviEnCours ? [{
+    ...suiviEnCours,
+    progpa: 'suivi_en_cours' as const,
+    key: 'suivis_en_cours',
+    color: QUALITE_FOLLOWUP_COLOR,
+  }] : []),
+];
 
 export const buildQualiteDailyData = (items: ProgpaParJour[]) => items.map((item) => ({
   ...item,

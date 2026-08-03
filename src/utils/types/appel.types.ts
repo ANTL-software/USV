@@ -23,6 +23,7 @@ export type StatutAppel =
   | 'amd_machine_start_auto';
 
 export type OrigineAppel = 'auto' | 'manuel' | 'rappel';
+export type CommercialFollowupType = 'vente' | 'lead';
 
 export interface Appel {
   id_appel: number;
@@ -46,7 +47,10 @@ export interface Appel {
   bridged_to_agent_at?: string | null;
   ended_by_system?: boolean;
   end_reason?: string | null;
-  progpa_atteint: number;
+  progpa_atteint: number | null;
+  type_suivi_commercial?: CommercialFollowupType | null;
+  id_vente_suivie?: number | null;
+  id_lead_suivi?: number | null;
   created_at: string;
   updated_at: string;
   agent?: Employe;

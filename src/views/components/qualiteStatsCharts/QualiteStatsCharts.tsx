@@ -11,7 +11,7 @@ import {
   YAxis,
 } from 'recharts';
 import type { QualiteStatsPageViewModel } from '../../../hooks/index.ts';
-import { getQualiteStepColor } from '../../../utils/scripts/index.ts';
+import { QUALITE_FOLLOWUP_COLOR, getQualiteStepColor } from '../../../utils/scripts/index.ts';
 
 type QualiteStatsChartsProps = Pick<
   QualiteStatsPageViewModel,
@@ -72,6 +72,7 @@ export function QualiteStatsCharts({
                     fill={getQualiteStepColor(step.progpa)}
                   />
                 ))}
+                <Bar dataKey="suivis_en_cours" name={data.suivi_en_cours.label} stackId="progpa" fill={QUALITE_FOLLOWUP_COLOR} />
               </BarChart>
             </ResponsiveContainer>
           )}
@@ -100,6 +101,7 @@ export function QualiteStatsCharts({
                     fill={getQualiteStepColor(step.progpa)}
                   />
                 ))}
+                <Bar dataKey="suivis_en_cours" name={data.suivi_en_cours.label} stackId="progpa" fill={QUALITE_FOLLOWUP_COLOR} />
               </BarChart>
             </ResponsiveContainer>
           )}
