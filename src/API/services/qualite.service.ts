@@ -15,11 +15,12 @@ class QualiteService {
   }
 
   public async getProgpaStats(
+    idCampagne: number,
     dateDebut?: string | null,
     dateFin?: string | null,
     idEmploye?: number | null
   ): Promise<QualiteProgpaStatsResponse> {
-    const params: Record<string, string> = {};
+    const params: Record<string, string> = { id_campagne: String(idCampagne) };
 
     if (dateDebut) params.date_debut = dateDebut;
     if (dateFin) params.date_fin = dateFin;

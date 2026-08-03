@@ -285,11 +285,12 @@ export type {
 } from './projet.types.ts';
 
 export type {
-  ProgpaCommercialStats,
-  ProgpaDistributionItem,
-  ProgpaEvolutionDay,
-  ProgpaEvolutionMonth,
-  ProgpaSummary,
+  ProgpaEtape,
+  ProgpaNiveaux,
+  ProgpaParCommercial,
+  ProgpaParCommercialJour,
+  ProgpaParJour,
+  ProgpaSynthese,
   QualiteProgpaStatsResponse,
 } from './qualite.types.ts';
 

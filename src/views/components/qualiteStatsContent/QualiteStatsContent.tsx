@@ -25,7 +25,7 @@ export function QualiteStatsContent({ viewModel }: QualiteStatsContentProps): Re
       </section>
     );
   }
-  if (!viewModel.data || !viewModel.periodeSummary) return null;
+  if (!viewModel.data) return null;
 
   return (
     <>

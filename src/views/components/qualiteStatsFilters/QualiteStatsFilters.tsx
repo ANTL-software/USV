@@ -1,96 +1,103 @@
 import type { ReactElement } from 'react';
 import Select from 'react-select';
 import type { StylesConfig } from 'react-select';
-import { MdRefresh } from 'react-icons/md';
+import { MdRefresh, MdTune } from 'react-icons/md';
 import type { QualiteStatsPageViewModel } from '../../../hooks/index.ts';
 import { QUALITE_PERIOD_OPTIONS } from '../../../utils/scripts/index.ts';
-import type { QualitePeriodMode, QualiteSelectOption } from '../../../utils/scripts/index.ts';
+import type { QualitePeriodPreset, QualiteSelectOption } from '../../../utils/scripts/index.ts';
 import { reactSelectStyles } from '../../../utils/styles/index.ts';
 import { Button } from '../index.ts';
 
 type QualiteStatsFiltersProps = Pick<
   QualiteStatsPageViewModel,
-  | 'appliedFilters'
   | 'applyFilters'
-  | 'changePeriodMode'
+  | 'campaignOptions'
+  | 'campagnesLoading'
+  | 'changePeriodPreset'
   | 'commercialOptions'
+  | 'dateDebut'
+  | 'dateFin'
   | 'employesLoading'
-  | 'endDate'
+  | 'filterError'
   | 'periodeLabel'
   | 'resetFilters'
-  | 'selectedEmployeOption'
+  | 'selectedCampaignOption'
+  | 'selectedCommercialOption'
   | 'selectedPeriodOption'
-  | 'setEndDate'
+  | 'setDateDebut'
+  | 'setDateFin'
+  | 'setSelectedCampagneId'
   | 'setSelectedEmployeId'
-  | 'setStartDate'
-  | 'startDate'
 >;
 
 const selectStyles = reactSelectStyles as StylesConfig<QualiteSelectOption, false>;
 
-export function QualiteStatsFilters({
-  appliedFilters,
-  applyFilters,
-  changePeriodMode,
-  commercialOptions,
-  employesLoading,
-  endDate,
-  periodeLabel,
-  resetFilters,
-  selectedEmployeOption,
-  selectedPeriodOption,
-  setEndDate,
-  setSelectedEmployeId,
-  setStartDate,
-  startDate,
-}: QualiteStatsFiltersProps): ReactElement {
+export function QualiteStatsFilters(props: QualiteStatsFiltersProps): ReactElement {
   return (
-    <section className="qualiteStats__filters">
-      <div className="qualiteStats__filters-grid">
-        <div className="qualiteStats__field">
-          <label htmlFor="periodMode">Raccourci de période</label>
+    <section className="qualiteStats__filter-card">
+      <div className="qualiteStats__filter-title">
+        <MdTune />
+        <div><h2>Périmètre d’analyse</h2><p>Une campagne à la fois pour conserver la bonne signification des étapes.</p></div>
+      </div>
+
+      <div className="qualiteStats__filter-grid">
+        <div className="qualiteStats__field qualiteStats__field--campaign">
+          <label htmlFor="campaignSelect">Campagne</label>
           <Select<QualiteSelectOption, false>
-            inputId="periodMode"
-            options={QUALITE_PERIOD_OPTIONS}
-            value={selectedPeriodOption}
-            onChange={(option) => changePeriodMode((option?.value as QualitePeriodMode | undefined) || 'jour')}
+            inputId="campaignSelect"
+            options={props.campaignOptions}
+            value={props.selectedCampaignOption}
+            onChange={(option) => props.setSelectedCampagneId(option?.value ? Number(option.value) : null)}
             styles={selectStyles}
-            className="react-select-container"
+            isLoading={props.campagnesLoading}
+            placeholder="Sélectionner une campagne"
             classNamePrefix="react-select"
             menuPortalTarget={document.body}
           />
-        </div>
-        <div className="qualiteStats__field">
-          <label htmlFor="startDate">Date début</label>
-          <input id="startDate" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} max={endDate || undefined} />
-        </div>
-        <div className="qualiteStats__field">
-          <label htmlFor="endDate">Date fin</label>
-          <input id="endDate" type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} min={startDate || undefined} />
         </div>
         <div className="qualiteStats__field">
           <label htmlFor="commercialSelect">Commercial</label>
           <Select<QualiteSelectOption, false>
             inputId="commercialSelect"
-            options={commercialOptions}
-            value={selectedEmployeOption}
-            onChange={(option) => setSelectedEmployeId(option?.value ? Number(option.value) : null)}
+            options={props.commercialOptions}
+            value={props.selectedCommercialOption}
+            onChange={(option) => props.setSelectedEmployeId(option?.value ? Number(option.value) : null)}
             styles={selectStyles}
-            isLoading={employesLoading}
-            className="react-select-container"
+            isLoading={props.employesLoading}
             classNamePrefix="react-select"
             menuPortalTarget={document.body}
           />
         </div>
+        <div className="qualiteStats__field">
+          <label htmlFor="periodPreset">Période rapide</label>
+          <Select<QualiteSelectOption, false>
+            inputId="periodPreset"
+            options={QUALITE_PERIOD_OPTIONS}
+            value={props.selectedPeriodOption}
+            onChange={(option) => props.changePeriodPreset((option?.value as QualitePeriodPreset | undefined) || 'today')}
+            styles={selectStyles}
+            classNamePrefix="react-select"
+            menuPortalTarget={document.body}
+          />
+        </div>
+        <div className="qualiteStats__field">
+          <label htmlFor="dateDebut">Date minimum</label>
+          <input id="dateDebut" type="date" value={props.dateDebut} onChange={(event) => props.setDateDebut(event.target.value)} max={props.dateFin} />
+        </div>
+        <div className="qualiteStats__field">
+          <label htmlFor="dateFin">Date maximum</label>
+          <input id="dateFin" type="date" value={props.dateFin} onChange={(event) => props.setDateFin(event.target.value)} min={props.dateDebut} />
+        </div>
       </div>
-      <div className="qualiteStats__filters-actions">
-        <Button style="grey" onClick={resetFilters}>Réinitialiser</Button>
-        <Button style="orange" onClick={applyFilters}><MdRefresh /><span>Appliquer</span></Button>
+
+      <div className="qualiteStats__filter-footer">
+        <div className="qualiteStats__period-chip">{props.periodeLabel}</div>
+        <div className="qualiteStats__filter-actions">
+          <Button style="grey" onClick={props.resetFilters}>Réinitialiser</Button>
+          <Button style="orange" onClick={props.applyFilters}><MdRefresh /><span>Afficher les statistiques</span></Button>
+        </div>
       </div>
-      <div className="qualiteStats__active-filters">
-        <span>{periodeLabel}</span>
-        <span>{appliedFilters.idEmploye ? 'Vue commerciale ciblée' : 'Vue globale'}</span>
-      </div>
+      {props.filterError && <p className="qualiteStats__filter-error">{props.filterError}</p>}
     </section>
   );
 }

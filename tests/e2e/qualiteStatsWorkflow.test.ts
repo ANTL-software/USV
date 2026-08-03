@@ -9,34 +9,44 @@ interface ApiResponse<T> {
 }
 
 const requestedParams: Array<Record<string, string> | undefined> = [];
-const summary = {
+const niveaux = {
+  niveau_0: 4,
+  niveau_1: 3,
+  niveau_2: 2,
+  niveau_3: 1,
+  niveau_4: 1,
+  niveau_5: 1,
+};
+const synthese = {
   total_appels: 12,
-  appels_avec_progpa: 9,
-  moyenne_progpa: 3.8,
-  max_progpa_atteint: 5,
   prospects_uniques: 8,
-  taux_saisie_progpa: 75,
+  moyenne_progpa: 1.5,
+  appels_avec_progression: 8,
+  taux_progression: 66.7,
+  niveaux,
 };
 const responseData: QualiteProgpaStatsResponse = {
-  periode: { date_debut: '2026-07-01', date_fin: '2026-07-15' },
-  synthese: { periode: summary, aujourd_hui: summary, mois_en_cours: summary },
-  repartition: [{ progpa: 4, label: '4/5', nombre: 9, pourcentage: 75 }],
-  evolution_jours: [{ date: '2026-07-15', moyenne_progpa: 3.8, total_appels: 12, max_progpa: 5 }],
-  evolution_mois: [{ mois: '2026-07', moyenne_progpa: 3.8, total_appels: 12, max_progpa: 5 }],
-  commerciaux: [{
+  filtres: { id_campagne: 10, id_employe: 7, date_debut: '2026-07-01', date_fin: '2026-07-15' },
+  campagne: { id_campagne: 10, nom_campagne: 'MMA', type_campagne: 'lead_b2b' },
+  synthese,
+  etapes: [
+    { progpa: 0, label: 'Aucun contact', nombre: 4, pourcentage: 33.3 },
+    { progpa: 1, label: 'Identification', nombre: 3, pourcentage: 25 },
+    { progpa: 2, label: 'Présentation', nombre: 2, pourcentage: 16.7 },
+    { progpa: 3, label: 'Découverte', nombre: 1, pourcentage: 8.3 },
+    { progpa: 4, label: 'Proposition', nombre: 1, pourcentage: 8.3 },
+    { progpa: 5, label: 'Rendez-vous pris', nombre: 1, pourcentage: 8.3 },
+  ],
+  par_jour: [{ date: '2026-07-15', ...synthese }],
+  par_commercial: [{ id_employe: 7, nom: 'Durand', prenom: 'Alice', identifiant: 'alice', ...synthese }],
+  par_commercial_jour: [{
+    date: '2026-07-15',
     id_employe: 7,
     nom: 'Durand',
     prenom: 'Alice',
     identifiant: 'alice',
-    total_appels: 12,
-    appels_avec_progpa: 9,
-    moyenne_progpa: 3.8,
-    max_progpa_atteint: 5,
-    prospects_uniques: 8,
-    moyenne_max_fiche: 4.2,
-    taux_saisie_progpa: 75,
+    ...synthese,
   }],
-  commercial: null,
 };
 
 const apiModuleUrl = pathToFileURL(path.resolve('src/API/APICalls.ts')).href;
@@ -55,26 +65,19 @@ mock.module(apiModuleUrl, {
   },
 });
 
-test('le parcours statistiques qualité transmet période et commercial puis prépare les graphiques', async () => {
+test('le parcours qualité transmet campagne, période et commercial puis prépare les graphiques', async () => {
   const { qualiteService } = await import('../../src/API/services/index.ts');
-  const {
-    buildQualiteDailyData,
-    buildQualiteDistributionData,
-    buildQualiteRankingData,
-  } = await import('../../src/utils/scripts/index.ts');
+  const { buildQualiteDailyData, buildQualiteDistributionData } = await import('../../src/utils/scripts/index.ts');
 
-  const result = await qualiteService.getProgpaStats('2026-07-01', '2026-07-15', 7);
+  const result = await qualiteService.getProgpaStats(10, '2026-07-01', '2026-07-15', 7);
   assert.deepEqual(requestedParams[0], {
+    id_campagne: '10',
     date_debut: '2026-07-01',
     date_fin: '2026-07-15',
     id_employe: '7',
   });
-  assert.equal(result.synthese.periode.moyenne_progpa, 3.8);
-  assert.equal(buildQualiteDailyData(result.evolution_jours)[0].label, '15 juil.');
-  assert.equal(buildQualiteDistributionData(result.repartition)[0].color, '#ef4444');
-  assert.deepEqual(buildQualiteRankingData(result.commerciaux)[0], {
-    nom: 'Alice Durand',
-    moyenne: 3.8,
-    appels: 12,
-  });
+  assert.equal(result.campagne.nom_campagne, 'MMA');
+  assert.equal(result.etapes[5].label, 'Rendez-vous pris');
+  assert.equal(buildQualiteDailyData(result.par_jour)[0].niveau_2, 2);
+  assert.equal(buildQualiteDistributionData(result.etapes)[5].color, '#16a34a');
 });
