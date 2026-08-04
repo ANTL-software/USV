@@ -35,7 +35,9 @@ export function formatBillingDate(value: string | null | undefined): string {
   });
 }
 
-export function formatBillingDateTime(dateValue: string, timeValue?: string): string {
+export function formatBillingDateTime(dateValue?: string | null, timeValue?: string): string {
+  if (!dateValue) return '—';
+
   const date = new Date(timeValue ? `${dateValue}T${timeValue}` : dateValue);
   return Number.isNaN(date.getTime()) ? `${dateValue}${timeValue ? ` ${timeValue}` : ''}` : date.toLocaleString('fr-FR', {
     day: '2-digit', month: '2-digit', year: 'numeric',
