@@ -6,6 +6,8 @@ import type {
   QuotePdfPayload,
   QuoteFormState,
   QuoteCampaignType,
+  QuoteProjectSection,
+  QuoteThirdPartyService,
   QuoteTemplate,
   TemplateFamily,
   TemplateStatus,
@@ -420,6 +422,153 @@ export const DEFAULT_FORM: QuoteFormState = {
   engagement: '1_mois_reconduction',
 };
 
+export const PROJECT_QUOTE_SECTIONS: QuoteProjectSection[] = [
+  {
+    id: 'architecture',
+    title: '',
+    titlePlaceholder: 'Conception & Architecture Technique',
+    lines: [
+      {
+        id: 'architecture-cadrage',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Cadrage, Architecture & Authentification Centralisée',
+        descriptionPlaceholder: 'Modélisation de la base PostgreSQL, authentification centralisée et architecture de l’API.',
+        amount: undefined,
+        included: false,
+      },
+    ],
+  },
+  {
+    id: 'mobile',
+    title: '',
+    titlePlaceholder: 'Application Mobile - iOS & Android',
+    lines: [
+      {
+        id: 'mobile-socle',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Socle Application Mobile & Parcours Utilisateur',
+        descriptionPlaceholder: 'Configuration React Native / Expo, profils, navigation et notifications push.',
+        amount: undefined,
+        included: false,
+      },
+      {
+        id: 'mobile-reservation',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Catalogue, Recherche & Prise de Rendez-vous',
+        descriptionPlaceholder: 'Exploration des prestataires, filtres, sélection des prestations et calendrier dynamique.',
+        amount: undefined,
+        included: false,
+      },
+      {
+        id: 'mobile-geolocation',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Rendez-vous immédiat & Géolocalisation',
+        descriptionPlaceholder: 'Demande immédiate, cartographie, estimation du trajet et notifications temps réel.',
+        amount: undefined,
+        included: false,
+      },
+    ],
+  },
+  {
+    id: 'backend',
+    title: '',
+    titlePlaceholder: 'Back-End, Paiements & Sécurité',
+    lines: [
+      {
+        id: 'backend-metier',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Développement Back-End & Logique Métier',
+        descriptionPlaceholder: 'API REST Node.js, règles de disponibilité, gestion des créneaux et notifications.',
+        amount: undefined,
+        included: false,
+      },
+      {
+        id: 'backend-stripe',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Intégration Paiement Sécurisé & Séquestre',
+        descriptionPlaceholder: 'Verrouillage des fonds, libération après validation, annulations et remboursements.',
+        amount: undefined,
+        included: false,
+      },
+    ],
+  },
+  {
+    id: 'backoffice',
+    title: '',
+    titlePlaceholder: 'Back-Office Administrateur',
+    lines: [
+      {
+        id: 'backoffice-gestion',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Interface Web de Gestion & Configuration',
+        descriptionPlaceholder: 'Tableau de bord, gestion des paramètres, modération et suivi des transactions.',
+        amount: undefined,
+        included: false,
+      },
+    ],
+  },
+  {
+    id: 'web-deployment',
+    title: '',
+    titlePlaceholder: 'Web, Branding & Déploiement',
+    lines: [
+      {
+        id: 'web-vitrine',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Site Vitrine & Redirection App Stores',
+        descriptionPlaceholder: 'Landing page responsive, liens vers les stores, SEO de base et formulaires de contact.',
+        amount: undefined,
+        included: false,
+      },
+      {
+        id: 'deployment-devops',
+        label: '',
+        description: '',
+        labelPlaceholder: 'Mise en Service, DevOps & Déploiement',
+        descriptionPlaceholder: 'Infrastructure, domaine, emails, certificats SSL et publication initiale sur les stores.',
+        amount: undefined,
+        included: false,
+      },
+    ],
+  },
+];
+
+export const PROJECT_THIRD_PARTY_SERVICES: QuoteThirdPartyService[] = [
+  {
+    id: 'infomaniak',
+    label: 'Infomaniak',
+    description: 'Nom de domaine et adresse email professionnelle : environ 10 à 20 € par an.',
+  },
+  {
+    id: 'supabase',
+    label: 'Supabase - PostgreSQL',
+    description: 'Plan professionnel ou supérieur, dimensionné selon la charge et le volume de données.',
+  },
+  {
+    id: 'hetzner',
+    label: 'Hetzner',
+    description: 'Hébergement du back-end et des services d’authentification, dimensionné selon la charge.',
+  },
+  {
+    id: 'developer-accounts',
+    label: 'Comptes développeurs',
+    description: 'Apple Developer : 99 $ par an. Google Play Console : 25 $ en paiement unique.',
+  },
+  {
+    id: 'stripe',
+    label: 'Stripe',
+    description: 'Frais de transaction prélevés directement par Stripe sur les flux de paiement.',
+  },
+];
+
 export function formatCurrency(value: number): string {
   return value.toLocaleString('fr-FR', {
     style: 'currency',
@@ -494,6 +643,46 @@ export const buildQuotePricingLines = (
     }));
 
   return [...appointmentLine, ...clauseLines];
+};
+
+export const buildProjectQuotePricingLines = (
+  sections: QuoteProjectSection[],
+): QuotePdfPayload['lines'] => sections.flatMap((section) => section.lines
+  .filter((line) => line.label.trim() && (line.included || line.amount !== undefined))
+  .map((line) => ({
+    id: line.id,
+    label: line.label.trim(),
+    description: line.description.trim(),
+    mode: 'ponctuel' as const,
+    included: line.included,
+    amount: line.amount ?? 0,
+    amount_kind: 'currency' as const,
+  })));
+
+export const buildProjectQuoteSections = (
+  sections: QuoteProjectSection[],
+): NonNullable<QuotePdfPayload['project_sections']> => sections
+  .map((section) => ({
+    id: section.id,
+    title: section.title.trim(),
+    lines: section.lines
+      .filter((line) => line.label.trim() && (line.included || line.amount !== undefined))
+      .map((line) => ({
+        id: line.id,
+        label: line.label.trim(),
+        description: line.description.trim(),
+        included: line.included,
+        amount: line.amount ?? 0,
+      })),
+  }))
+  .filter((section) => section.title && section.lines.length > 0);
+
+export const getProjectQuoteTotals = (sections: QuoteProjectSection[]): { ht: number; ttc: number } => {
+  const ht = sections.flatMap((section) => section.lines)
+    .filter((line) => !line.included)
+    .reduce((total, line) => total + (line.amount ?? 0), 0);
+
+  return { ht, ttc: ht * 1.2 };
 };
 
 export const getQuoteChecklistProgress = (

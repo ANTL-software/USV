@@ -484,6 +484,194 @@
 #devisView .devisView__add-clause {
   justify-self: start;
 }
+#devisView .devisView__project-sections {
+  display: grid;
+  gap: 1em;
+}
+#devisView .devisView__project-description-help {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+}
+#devisView .devisView__project-section {
+  display: grid;
+  gap: 0.8em;
+  padding: 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 1em;
+  background: rgba(248, 245, 255, 0.5);
+}
+#devisView .devisView__project-section-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+#devisView .devisView__project-section-heading input {
+  @include mixins.formInput("#devisView .devisView__project-section-heading input");
+  min-height: 2.55rem;
+  padding: 0.4em 0;
+  border-width: 0 0 1px;
+  border-radius: 0;
+  background: transparent;
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+  font-weight: 700;
+  flex: 1;
+  min-width: min(100%, 15rem);
+}
+#devisView .devisView__project-section-heading span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+#devisView .devisView__project-lines {
+  display: grid;
+  gap: 0.7em;
+}
+#devisView .devisView__project-line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(11.5em, 0.42fr);
+  gap: 0.85em;
+  padding: 0.75em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 0.8em;
+  background: vars.$whiteBackground;
+  transition:
+    border-color vars.$transitionMedium,
+    box-shadow vars.$transitionMedium;
+}
+#devisView .devisView__project-line.is-active {
+  border-color: rgba(124, 58, 237, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(124, 58, 237, 0.08);
+}
+#devisView .devisView__project-line-content {
+  display: grid;
+  gap: 0.55em;
+}
+#devisView .devisView__project-line-content input,
+#devisView .devisView__project-line-content textarea,
+#devisView .devisView__project-line-controls input[type='number'] {
+  @include mixins.formInput("#devisView .devisView__project-line-content input, #devisView .devisView__project-line-content textarea, #devisView .devisView__project-line-controls input[type='number']");
+  font-family: inherit;
+}
+#devisView .devisView__project-line-content input {
+  min-height: 2.55rem;
+  font-weight: 700;
+}
+#devisView .devisView__project-line-content textarea {
+  min-height: 4.9rem;
+  resize: vertical;
+  line-height: 1.45;
+}
+#devisView .devisView__project-line-controls {
+  display: grid;
+  align-content: center;
+  gap: 0.65em;
+}
+#devisView .devisView__project-line-controls > label:first-child {
+  display: grid;
+  gap: 0.35em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+#devisView .devisView__project-line-controls > label:first-child > div {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+}
+#devisView .devisView__project-line-controls input[type='number'] {
+  width: 6.7rem;
+  min-height: 2.55rem;
+  text-align: right;
+  font-weight: 700;
+}
+#devisView .devisView__project-line-controls small {
+  color: vars.$fontColorSecondary;
+  font-weight: 700;
+}
+#devisView .devisView__included-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+#devisView .devisView__included-toggle input {
+  accent-color: vars.$utilsPrimary;
+}
+#devisView .devisView__project-line-controls > button {
+  @include mixins.resetButton;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.35rem;
+  height: 2.35rem;
+  border-radius: 0.65em;
+  color: vars.$fontColorSecondary;
+}
+#devisView .devisView__project-line-controls > button:hover {
+  color: vars.$utilsDark;
+  background: rgba(124, 58, 237, 0.08);
+}
+#devisView .devisView__third-party-services {
+  display: grid;
+  gap: 0.35em;
+  margin-top: 1em;
+  padding: 0.95em 1em;
+  border-radius: 0.9em;
+  background: #f8fafc;
+}
+#devisView .devisView__third-party-services strong {
+  color: vars.$fontColorPrimary;
+}
+#devisView .devisView__third-party-services span,
+#devisView .devisView__third-party-services li {
+  color: vars.$fontColorSecondary;
+  line-height: 1.45;
+}
+#devisView .devisView__third-party-services ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25em 1.2em;
+  margin: 0.15em 0 0;
+  padding-left: 1.15em;
+}
+#devisView .devisView__third-party-editor {
+  display: grid;
+  gap: 0.55em;
+  margin-top: 0.35em;
+}
+#devisView .devisView__third-party-editor > div {
+  display: grid;
+  grid-template-columns: minmax(8em, 0.55fr) minmax(0, 1fr) auto;
+  gap: 0.5em;
+}
+#devisView .devisView__third-party-editor input {
+  @include mixins.formInput("#devisView .devisView__third-party-editor input");
+  min-height: 2.45rem;
+  font-family: inherit;
+}
+#devisView .devisView__third-party-editor input:first-child {
+  font-weight: 700;
+}
+#devisView .devisView__third-party-editor button {
+  @include mixins.resetButton;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.45rem;
+  height: 2.45rem;
+  border-radius: 0.65em;
+  color: vars.$fontColorSecondary;
+}
+#devisView .devisView__third-party-editor button:hover {
+  color: vars.$utilsDark;
+  background: rgba(124, 58, 237, 0.08);
+}
 @media (max-width: vars.$mobileWidth) {
   #devisView .devisView__custom-clause {
     grid-template-columns: minmax(0, 1fr) 6rem auto;
@@ -491,6 +679,24 @@
 
   #devisView .devisView__custom-clause > input:first-child {
     grid-column: 1 / -1;
+  }
+
+  #devisView .devisView__project-line {
+    grid-template-columns: 1fr;
+  }
+
+  #devisView .devisView__project-line-controls {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    align-items: end;
+  }
+
+  #devisView .devisView__third-party-editor > div {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  #devisView .devisView__third-party-editor input:nth-child(2) {
+    grid-column: 1 / -1;
+    grid-row: 2;
   }
 }
 

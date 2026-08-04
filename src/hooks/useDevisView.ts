@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import {
   DEFAULT_FORM,
+  PROJECT_QUOTE_SECTIONS,
+  PROJECT_THIRD_PARTY_SERVICES,
+  buildProjectQuotePricingLines,
   buildQuotePricingLines,
   QUOTE_TEMPLATES,
   filterQuoteTemplates,
@@ -13,6 +16,9 @@ import type {
   QuoteCustomClause,
   QuoteFormChangeHandler,
   QuoteFormState,
+  QuoteProjectLine,
+  QuoteProjectSection,
+  QuoteThirdPartyService,
   TemplateFamily,
 } from '../utils/types/index.ts';
 
@@ -25,6 +31,15 @@ export function useDevisView() {
   const [commercialCommissionRate, setCommercialCommissionRate] = useState<number | undefined>();
   const [appointmentRate, setAppointmentRate] = useState<number | undefined>();
   const [customClauses, setCustomClauses] = useState<QuoteCustomClause[]>([]);
+  const [projectSections, setProjectSections] = useState<QuoteProjectSection[]>(() => (
+    PROJECT_QUOTE_SECTIONS.map((section) => ({
+      ...section,
+      lines: section.lines.map((line) => ({ ...line })),
+    }))
+  ));
+  const [thirdPartyServices, setThirdPartyServices] = useState<QuoteThirdPartyService[]>(() => (
+    PROJECT_THIRD_PARTY_SERVICES.map((service) => ({ ...service }))
+  ));
 
   const visibleTemplates = useMemo(
     () => filterQuoteTemplates(QUOTE_TEMPLATES, familyFilter),
@@ -34,9 +49,21 @@ export function useDevisView() {
     () => getSelectedQuoteTemplates(QUOTE_TEMPLATES, selectedTemplateIds),
     [selectedTemplateIds],
   );
+  const isProjectQuote = selectedTemplateIds.includes('conception');
+  const isConquestQuote = selectedTemplateIds.includes('conquete');
+  const conquestQuoteLines = useMemo(
+    () => (isConquestQuote
+      ? buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses)
+      : []),
+    [appointmentRate, campaignType, commercialCommissionRate, customClauses, isConquestQuote],
+  );
+  const projectQuoteLines = useMemo(
+    () => (isProjectQuote ? buildProjectQuotePricingLines(projectSections) : []),
+    [isProjectQuote, projectSections],
+  );
   const quoteLines = useMemo(
-    () => buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses),
-    [appointmentRate, campaignType, commercialCommissionRate, customClauses],
+    () => [...conquestQuoteLines, ...projectQuoteLines],
+    [conquestQuoteLines, projectQuoteLines],
   );
   const checklist = useMemo(
     () => getQuoteChecklistProgress(formState, quoteLines.length),
@@ -46,13 +73,19 @@ export function useDevisView() {
     () => selectedTemplates.flatMap((template) => template.assumptions),
     [selectedTemplates],
   );
+  const documentTemplates = useMemo(
+    () => (isProjectQuote
+      ? selectedTemplates.filter((template) => template.id === 'conception')
+      : selectedTemplates),
+    [isProjectQuote, selectedTemplates],
+  );
   const selectedTemplatePromise = useMemo(
-    () => selectedTemplates.map((template) => template.promise).join(' '),
-    [selectedTemplates],
+    () => documentTemplates.map((template) => template.promise).join(' '),
+    [documentTemplates],
   );
   const selectedTemplateTitle = useMemo(
-    () => selectedTemplates.map((template) => template.title).join(' + '),
-    [selectedTemplates],
+    () => documentTemplates.map((template) => template.title).join(' + '),
+    [documentTemplates],
   );
 
   const handleTemplateToggle = (templateId: string): void => {
@@ -91,19 +124,98 @@ export function useDevisView() {
     setCustomClauses((previous) => previous.filter((clause) => clause.id !== clauseId));
   };
 
+  const addProjectLine = (sectionId: string): void => {
+    setProjectSections((previous) => previous.map((section) => {
+      if (section.id !== sectionId) return section;
+
+      return {
+        ...section,
+        lines: [...section.lines, {
+          id: `project-line-${Date.now()}-${section.lines.length}`,
+          label: '',
+          description: '',
+          amount: undefined,
+          included: false,
+          isCustom: true,
+        }],
+      };
+    }));
+  };
+
+  const updateProjectLine = <Field extends keyof Omit<QuoteProjectLine, 'id'>>(
+    sectionId: string,
+    lineId: string,
+    field: Field,
+    value: QuoteProjectLine[Field],
+  ): void => {
+    setProjectSections((previous) => previous.map((section) => {
+      if (section.id !== sectionId) return section;
+
+      return {
+        ...section,
+        lines: section.lines.map((line) => (
+          line.id === lineId ? { ...line, [field]: value } : line
+        )),
+      };
+    }));
+  };
+
+  const removeProjectLine = (sectionId: string, lineId: string): void => {
+    setProjectSections((previous) => previous.map((section) => (
+      section.id === sectionId
+        ? { ...section, lines: section.lines.filter((line) => line.id !== lineId) }
+        : section
+    )));
+  };
+
+  const updateProjectSectionTitle = (sectionId: string, title: string): void => {
+    setProjectSections((previous) => previous.map((section) => (
+      section.id === sectionId ? { ...section, title } : section
+    )));
+  };
+
+  const addThirdPartyService = (): void => {
+    setThirdPartyServices((previous) => [...previous, {
+      id: `third-party-${Date.now()}-${previous.length}`,
+      label: '',
+      description: '',
+      isCustom: true,
+    }]);
+  };
+
+  const updateThirdPartyService = <Field extends keyof Omit<QuoteThirdPartyService, 'id'>>(
+    serviceId: string,
+    field: Field,
+    value: QuoteThirdPartyService[Field],
+  ): void => {
+    setThirdPartyServices((previous) => previous.map((service) => (
+      service.id === serviceId ? { ...service, [field]: value } : service
+    )));
+  };
+
+  const removeThirdPartyService = (serviceId: string): void => {
+    setThirdPartyServices((previous) => previous.filter((service) => service.id !== serviceId));
+  };
+
   return {
     addCustomClause,
+    addProjectLine,
+    addThirdPartyService,
     appointmentRate,
     campaignType,
     commercialCommissionRate,
+    conquestQuoteLines,
     customClauses,
     familyFilter,
     formState,
     handleFormChange,
     handleTemplateToggle,
     progressPercent: checklist.percent,
+    projectSections,
     quoteLines,
     removeCustomClause,
+    removeProjectLine,
+    removeThirdPartyService,
     selectedAssumptions,
     selectedTemplateIds,
     selectedTemplatePromise,
@@ -113,7 +225,13 @@ export function useDevisView() {
     setCampaignType,
     setCommercialCommissionRate,
     setFamilyFilter,
+    thirdPartyServices,
+    isProjectQuote,
+    isConquestQuote,
     updateCustomClause,
+    updateProjectLine,
+    updateProjectSectionTitle,
+    updateThirdPartyService,
     visibleTemplates,
   };
 }
