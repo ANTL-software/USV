@@ -10,7 +10,7 @@ import {
   venteBillingDateLabel,
   venteBillingProspectLabel,
 } from '../../../utils/scripts/index.ts';
-import { STATUT_RENDEZ_VOUS_LABELS, STATUT_VENTE_LABELS } from '../../../utils/types/index.ts';
+import { STATUT_VENTE_LABELS } from '../../../utils/types/index.ts';
 import { Loader } from '../index.ts';
 
 interface FacturationPreviewProps {
@@ -44,17 +44,23 @@ export function FacturationPreview({ state }: FacturationPreviewProps): ReactEle
       </>
     );
   } else {
+    const smallCompanyCount = preview.rows.filter((lead) => !lead.entreprise_plus_de_cinq_salaries).length;
+    const largeCompanyCount = preview.rows.length - smallCompanyCount;
     content = (
       <>
+        <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>Règle de facturation MMA :</strong> seuls les rendez-vous au statut effectué, dont la date de passage à effectué est comprise dans la période, sont retenus.</div>
         <div className="facturationView__kpis">
-          <div className="facturationView__kpi"><span>Total leads</span><strong>{preview.stats.total}</strong></div>
-          <div className="facturationView__kpi"><span>Planifiés</span><strong>{preview.stats.planifies}</strong></div>
-          <div className="facturationView__kpi"><span>Effectués</span><strong>{preview.stats.effectues}</strong></div>
-          <div className="facturationView__kpi"><span>Annulés</span><strong>{preview.stats.annules}</strong></div>
+          <div className="facturationView__kpi"><span>Rendez-vous facturables</span><strong>{preview.stats.total}</strong></div>
+          <div className="facturationView__kpi"><span>Entreprises de 5 salariés ou moins</span><strong>{smallCompanyCount} × 75 € HT</strong></div>
+          <div className="facturationView__kpi"><span>Entreprises de plus de 5 salariés</span><strong>{largeCompanyCount} × 150 € HT</strong></div>
+          <div className="facturationView__kpi"><span>CA facturable</span><strong>{formatBillingCurrency(state.previewTotals.totalHt)} HT<br />{formatBillingCurrency(state.previewTotals.totalTtc)} TTC</strong></div>
         </div>
         <div className="facturationView__table-wrapper">
-          <table><thead><tr><th>Lead</th><th>Client</th><th>Créneau</th><th>Statut</th><th>Interlocuteur</th></tr></thead>
-            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={5} className="facturationView__table-empty">Aucun rendez-vous client sur la période.</td></tr> : preview.rows.map((lead) => <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.date_rdv, lead.heure_rdv)}</td><td>{STATUT_RENDEZ_VOUS_LABELS[lead.statut]}</td><td>{lead.interlocuteur_nom ?? lead.prospect?.nom_contact ?? '—'}</td></tr>)}</tbody>
+          <table><thead><tr><th>Lead</th><th>Client</th><th>Date effectué</th><th>Catégorie</th><th>Montant</th></tr></thead>
+            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={5} className="facturationView__table-empty">Aucun rendez-vous effectué sur la période.</td></tr> : preview.rows.map((lead) => {
+              const amounts = state.getLeadAmounts(lead);
+              return <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.date_effectue)}</td><td>{lead.entreprise_plus_de_cinq_salaries ? 'Plus de 5 salariés' : '5 salariés ou moins'}</td><td>{formatBillingCurrency(amounts.totalHt)} HT<br />{formatBillingCurrency(amounts.totalTtc)} TTC</td></tr>;
+            })}</tbody>
           </table>
         </div>
       </>

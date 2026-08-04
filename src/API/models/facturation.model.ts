@@ -4,6 +4,7 @@ import type {
   CampaignBillingSettings,
   Campagne,
   InvoiceRecipient,
+  LeadClient,
   ResolvedBillingProfile,
   Vente,
   VenteStats,
@@ -13,6 +14,9 @@ const parseNumericAmount = (value: number | string): number => {
   const numericAmount = typeof value === 'string' ? Number.parseFloat(value) : value;
   return Number.isNaN(numericAmount) ? 0 : numericAmount;
 };
+
+export const MMA_SMALL_COMPANY_LEAD_PRICE_HT = 75;
+export const MMA_LARGE_COMPANY_LEAD_PRICE_HT = 150;
 
 const isFilled = (value: string | string[] | null | undefined): boolean => Array.isArray(value)
   ? value.length > 0
@@ -68,9 +72,17 @@ export function computeFacturableHt(vente: Vente, settings: CampaignBillingSetti
   return articlesHt + shippingHt;
 }
 
+export function computeFacturableLeadHt(lead: LeadClient): number {
+  return lead.entreprise_plus_de_cinq_salaries
+    ? MMA_LARGE_COMPANY_LEAD_PRICE_HT
+    : MMA_SMALL_COMPANY_LEAD_PRICE_HT;
+}
+
 export function computePreviewTotals(preview: BillingPreview | null, settings: CampaignBillingSettings): BillingAmounts {
-  if (!preview || preview.source !== 'ventes') return { totalHt: 0, totalTtc: 0 };
-  const totalHt = preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente, settings), 0);
+  if (!preview) return { totalHt: 0, totalTtc: 0 };
+  const totalHt = preview.source === 'ventes'
+    ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente, settings), 0)
+    : preview.rows.reduce((sum, lead) => sum + computeFacturableLeadHt(lead), 0);
   return { totalHt, totalTtc: computeTtcAmount(totalHt, settings.vatRate) };
 }
 

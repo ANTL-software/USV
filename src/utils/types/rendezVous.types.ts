@@ -60,6 +60,7 @@ export interface RendezVousItem {
   notes?: string | null;
   statut: StatutRendezVous;
   date_qualification?: string | null;
+  date_effectue?: string | null;
   created_at: string;
   updated_at: string;
   deleted_at?: string | null;
@@ -82,7 +83,7 @@ export interface LeadClientListParams {
   agent?: number;
   date_debut?: string;
   date_fin?: string;
-  date_field?: 'emission' | 'emission_or_qualification';
+  date_field?: 'emission' | 'emission_or_qualification' | 'completion';
   page?: number;
   limit?: number;
   soft_deleted?: boolean;

@@ -1,7 +1,13 @@
 import { useCallback, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { downloadQuoteDocumentService } from '../API/services/index.ts';
-import { BILLING_LABELS, ENGAGEMENT_LABELS, getQuoteEngagementMonths, TIMELINE_LABELS } from '../utils/scripts/index.ts';
+import {
+  BILLING_LABELS,
+  ENGAGEMENT_LABELS,
+  buildProjectQuoteSections,
+  getQuoteEngagementMonths,
+  TIMELINE_LABELS,
+} from '../utils/scripts/index.ts';
 import { triggerBlobDownload } from '../utils/services/index.ts';
 import type { QuotePdfPayload } from '../utils/types/index.ts';
 import { useAlert } from './useAlert.ts';
@@ -18,14 +24,35 @@ export function useDevisPage() {
   const generateQuote = useCallback(async (): Promise<void> => {
     const companyName = devis.formState.companyName.trim();
     const quoteLines = devis.quoteLines;
+    const projectSections = devis.isProjectQuote
+      ? buildProjectQuoteSections(devis.projectSections)
+      : undefined;
+    const conquestSections = devis.isConquestQuote ? [{
+      id: 'conquete',
+      title: 'Conquête',
+      lines: devis.conquestQuoteLines
+        .map(({ id, label, description, included, amount, amount_kind }) => ({
+          id,
+          label,
+          description,
+          included,
+          amount,
+          amount_kind,
+        })),
+    }] : [];
 
     if (!companyName || quoteLines.length === 0) {
       await showError('Renseignez l’entreprise et au moins une ligne incluse ou chiffrée avant de générer le devis.', 'Devis incomplet');
       return;
     }
 
+    if (devis.isProjectQuote && (!projectSections || projectSections.length === 0)) {
+      await showError('Renseignez l’intitulé de la phase qui contient chaque prestation retenue.', 'Projet incomplet');
+      return;
+    }
+
     const payload: QuotePdfPayload = {
-      pricing_model: devis.campaignType,
+      pricing_model: devis.isProjectQuote ? 'project_delivery' : devis.campaignType,
       client: {
         company_name: companyName,
         contact_name: devis.formState.contactName.trim(),
@@ -44,7 +71,12 @@ export function useDevisPage() {
         billing_label: BILLING_LABELS[devis.formState.billingRhythm],
       },
       lines: quoteLines,
-      assumptions: devis.selectedAssumptions.map((assumption) => assumption.label),
+      assumptions: devis.isProjectQuote ? [] : devis.selectedAssumptions.map((assumption) => assumption.label),
+      project_sections: [...conquestSections, ...(projectSections || [])],
+      third_party_services: devis.isProjectQuote ? devis.thirdPartyServices
+        .filter((service) => service.label.trim() && service.description.trim())
+        .map(({ id, label, description }) => ({ id, label: label.trim(), description: description.trim() }))
+        : undefined,
     };
 
     try {

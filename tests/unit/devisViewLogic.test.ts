@@ -3,12 +3,17 @@ import test from 'node:test';
 
 import {
   DEFAULT_FORM,
+  PROJECT_QUOTE_SECTIONS,
+  PROJECT_THIRD_PARTY_SERVICES,
   QUOTE_TEMPLATES,
   QUOTE_CAMPAIGN_TYPE_LABELS,
   buildQuotePricingLines,
+  buildProjectQuotePricingLines,
+  buildProjectQuoteSections,
   filterQuoteTemplates,
   getQuoteChecklistProgress,
   getQuoteEngagementMonths,
+  getProjectQuoteTotals,
   getSelectedQuoteTemplates,
   toggleQuoteTemplateId,
 } from '../../src/utils/scripts/index.ts';
@@ -33,6 +38,7 @@ test('les filtres et sélections devis restent strictement limités au catalogue
   assert.deepEqual(getSelectedQuoteTemplates(QUOTE_TEMPLATES, ['conquete', 'inconnu']).map(({ id }) => id), ['conquete']);
   assert.deepEqual(toggleQuoteTemplateId(['conquete'], 'branding'), ['conquete', 'branding']);
   assert.deepEqual(toggleQuoteTemplateId(['conquete', 'branding'], 'conquete'), ['branding']);
+  assert.deepEqual(toggleQuoteTemplateId(['conquete'], 'conception'), ['conquete', 'conception']);
 });
 
 test('la tarification commerciale produit uniquement la commission HT convenue', () => {
@@ -61,6 +67,40 @@ test('la tarification au rendez-vous garde les paliers et clauses valides sans l
     { id: 'large-company', label: 'Entreprise de plus de 5 personnes', amount: 150, included: false, amount_kind: 'currency' },
     { id: 'included', label: 'Ciblage fourni', amount: 0, included: true, amount_kind: 'currency' },
   ]);
+});
+
+test('la matrice Conception produit un devis projet uniquement à partir des briques retenues', () => {
+  const sections = PROJECT_QUOTE_SECTIONS.map((section) => ({
+    ...section,
+    lines: section.lines.map((line) => ({ ...line })),
+  }));
+  assert.ok(sections.every((section) => section.title === ''));
+  assert.ok(sections.every((section) => section.lines.every((line) => line.label === '' && line.description === '')));
+
+  sections[0].title = 'Architecture SaaS';
+  sections[0].lines[0].label = 'Socle API et authentification';
+  sections[0].lines[0].description = 'API sécurisée pour une application SaaS responsive.';
+  sections[0].lines[0].amount = 1800;
+  sections[1].title = 'Application web responsive React.js';
+  sections[1].lines[0].label = 'Interface SaaS responsive';
+  sections[1].lines[0].description = 'Parcours React.js adapté aux usages web et mobile.';
+  sections[1].lines[0].amount = 2500;
+  sections[2].title = 'Services plateforme';
+  sections[2].lines[1].label = 'Paiement sécurisé';
+  sections[2].lines[1].description = 'Paiement et facturation intégrés.';
+  sections[2].lines[1].included = true;
+
+  const pricingLines = buildProjectQuotePricingLines(sections);
+  const pdfSections = buildProjectQuoteSections(sections);
+
+  assert.deepEqual(pricingLines.map((line) => line.label), [
+    'Socle API et authentification',
+    'Interface SaaS responsive',
+    'Paiement sécurisé',
+  ]);
+  assert.equal(pdfSections.length, 3);
+  assert.deepEqual(getProjectQuoteTotals(sections), { ht: 4300, ttc: 5160 });
+  assert.equal(PROJECT_THIRD_PARTY_SERVICES.length, 5);
 });
 
 test('engagement et checklist pilotent une progression déterministe', () => {

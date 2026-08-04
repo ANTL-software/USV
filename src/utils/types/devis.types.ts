@@ -6,12 +6,38 @@ export type Timeline = 'urgent' | '30j' | '60j' | 'cadre';
 export type BillingRhythm = 'mensuel' | '50_50' | 'acompte';
 export type Engagement = '1_mois_reconduction' | '3_mois' | '6_mois' | 'mission_unique';
 export type QuoteCampaignType = 'commercial' | 'qualified_appointment';
+export type QuotePricingModel = QuoteCampaignType | 'project_delivery';
 
 export type QuoteCustomClause = {
   id: string;
   label: string;
   amount: number | undefined;
   included: boolean;
+};
+
+export type QuoteProjectLine = {
+  id: string;
+  label: string;
+  description: string;
+  labelPlaceholder?: string;
+  descriptionPlaceholder?: string;
+  amount: number | undefined;
+  included: boolean;
+  isCustom?: boolean;
+};
+
+export type QuoteProjectSection = {
+  id: string;
+  title: string;
+  titlePlaceholder?: string;
+  lines: QuoteProjectLine[];
+};
+
+export type QuoteThirdPartyService = {
+  id: string;
+  label: string;
+  description: string;
+  isCustom?: boolean;
 };
 
 export type QuoteLine = {
@@ -64,7 +90,7 @@ export type QuoteFormChangeHandler = <Field extends keyof QuoteFormState>(
 ) => void;
 
 export type QuotePdfPayload = {
-  pricing_model: QuoteCampaignType;
+  pricing_model: QuotePricingModel;
   client: {
     company_name: string;
     contact_name: string;
@@ -92,4 +118,17 @@ export type QuotePdfPayload = {
     amount_kind: 'currency' | 'percentage';
   }>;
   assumptions: string[];
+  project_sections?: Array<{
+    id: string;
+    title: string;
+    lines: Array<{
+      id: string;
+      label: string;
+      description: string;
+      included: boolean;
+      amount: number;
+      amount_kind?: 'currency' | 'percentage';
+    }>;
+  }>;
+  third_party_services?: QuoteThirdPartyService[];
 };

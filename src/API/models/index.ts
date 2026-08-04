@@ -12,6 +12,7 @@ export {
   buildFallbackVenteStats,
   buildResolvedBillingProfile,
   computeFacturableHt,
+  computeFacturableLeadHt,
   computePreviewTotals,
   computeTtcAmount,
   getCampaignBillingSettings,

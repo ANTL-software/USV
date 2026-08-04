@@ -13,6 +13,7 @@ import {
   buildFallbackVenteStats,
   buildResolvedBillingProfile,
   computeFacturableHt,
+  computeFacturableLeadHt,
   computePreviewTotals,
   computeTtcAmount,
   getCampaignBillingSettings,
@@ -23,6 +24,7 @@ import type {
   CampaignInvoicePaStatus,
   FacturationPeriodPreset,
   InvoiceEmailOption,
+  LeadClient,
   Vente,
 } from '../utils/types/index.ts';
 import {
@@ -117,6 +119,7 @@ export function useFacturation() {
             campagne: selectedCampagne.id_campagne,
             date_debut: resolvedPeriod.start,
             date_fin: resolvedPeriod.end,
+            date_field: 'completion',
             page: 1,
             limit: 6,
           });
@@ -334,14 +337,18 @@ export function useFacturation() {
         { label: 'Commandes validées', value: String(preview.stats.total.count), tone: 'primary' },
         { label: 'CA validé', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }]
       : [...cards,
-        { label: 'RDV client sur la période', value: String(preview.stats.total), tone: 'primary' },
-        { label: 'RDV effectués', value: String(preview.stats.effectues), tone: 'success' }];
+        { label: 'RDV facturables', value: String(preview.stats.total), tone: 'primary' },
+        { label: 'CA facturable', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }];
   }, [missingRequiredFields.length, preview, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
 
   const getVenteAmounts = useCallback((vente: Vente) => {
     const totalHt = computeFacturableHt(vente, billingSettings);
     return { totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
   }, [billingSettings]);
+  const getLeadAmounts = useCallback((lead: LeadClient) => {
+    const totalHt = computeFacturableLeadHt(lead);
+    return { totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
+  }, [billingSettings.vatRate]);
 
   const setDateStart = useCallback((value: string): void => {
     setPeriodPreset('custom');
@@ -364,6 +371,7 @@ export function useFacturation() {
     error,
     generateInvoice,
     generateFacturX,
+    getLeadAmounts,
     getVenteAmounts,
     isEmailModalOpen,
     isGeneratingInvoice,
