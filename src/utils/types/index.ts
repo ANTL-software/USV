@@ -247,6 +247,7 @@ export type {
   BillingPeriod,
   BillingPreview,
   BillingSummaryCard,
+  CampaignInvoicePaStatus,
   CampaignBillingSettings,
   FacturationPeriodPreset,
   InvoiceEmailOption,

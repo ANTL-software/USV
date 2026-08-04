@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   downloadCampagneFacturationDocumentService,
+  downloadCampagneFacturXDocumentService,
+  getCampagneFacturationPaStatusService,
   getLeadClientsService,
   getVentesService,
+  issueCampagneFacturationThroughPaService,
   sendCampagneFacturationEmailService,
+  testCampagneFacturationThroughPaService,
 } from '../API/services/index.ts';
 import {
   buildFallbackVenteStats,
@@ -17,6 +21,7 @@ import {
 import type {
   BillingPreview,
   BillingSummaryCard,
+  CampaignInvoicePaStatus,
   FacturationPeriodPreset,
   InvoiceEmailOption,
   LeadClient,
@@ -59,9 +64,15 @@ export function useFacturation() {
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
   const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
+  const [isGeneratingFacturX, setIsGeneratingFacturX] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
   const [isSendingInvoiceEmail, setIsSendingInvoiceEmail] = useState(false);
+  const [paInvoice, setPaInvoice] = useState<CampaignInvoicePaStatus | null>(null);
+  const [isLoadingPaInvoice, setIsLoadingPaInvoice] = useState(false);
+  const [isIssuingPaInvoice, setIsIssuingPaInvoice] = useState(false);
+  const [isTestingPaInvoice, setIsTestingPaInvoice] = useState(false);
+  const [testPaInvoice, setTestPaInvoice] = useState<CampaignInvoicePaStatus | null>(null);
 
   const activeCampagnes = useMemo(() => campagnes.filter((campagne) => campagne.statut === 'active'), [campagnes]);
   const selectedCampagne = activeCampagnes.find((campagne) => campagne.id_campagne === requestedCampagneId)
@@ -87,6 +98,14 @@ export function useFacturation() {
   );
   const resolvedRecipientEmail = selectedRecipientEmail.trim();
   const canSendInvoiceEmail = canGenerateInvoice && !isSendingInvoiceEmail && isValidEmail(resolvedRecipientEmail);
+  const canIssueInvoiceThroughPa = canGenerateInvoice
+    && selectedVariant === CAMPAIGN_VARIANTS.vente
+    && previewTotals.totalHt > 0
+    && !isIssuingPaInvoice;
+  const canTestInvoiceThroughPa = canGenerateInvoice
+    && selectedVariant === CAMPAIGN_VARIANTS.vente
+    && previewTotals.totalHt > 0
+    && !isTestingPaInvoice;
 
   useEffect(() => {
     if (!selectedCampagne || !resolvedPeriod.start || !resolvedPeriod.end) return;
@@ -130,6 +149,35 @@ export function useFacturation() {
     return () => { isCancelled = true; };
   }, [resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
 
+  useEffect(() => {
+    if (!selectedCampagne || !resolvedPeriod.start || !resolvedPeriod.end) {
+      setPaInvoice(null);
+      return;
+    }
+
+    let isCancelled = false;
+    const loadPaInvoice = async (): Promise<void> => {
+      try {
+        setIsLoadingPaInvoice(true);
+        const invoice = await getCampagneFacturationPaStatusService(selectedCampagne.id_campagne, {
+          date_debut: resolvedPeriod.start,
+          date_fin: resolvedPeriod.end,
+        });
+        if (!isCancelled) setPaInvoice(invoice);
+      } catch (loadError) {
+        if (!isCancelled) {
+          setPaInvoice(null);
+          setPreviewError(loadError instanceof Error ? loadError.message : 'Impossible de récupérer le statut VosFactures.');
+        }
+      } finally {
+        if (!isCancelled) setIsLoadingPaInvoice(false);
+      }
+    };
+
+    void loadPaInvoice();
+    return () => { isCancelled = true; };
+  }, [resolvedPeriod.end, resolvedPeriod.start, selectedCampagne]);
+
   const generateInvoice = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canGenerateInvoice) return;
     try {
@@ -146,6 +194,87 @@ export function useFacturation() {
       setIsGeneratingInvoice(false);
     }
   }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
+
+  const generateFacturX = useCallback(async (): Promise<void> => {
+    if (!selectedCampagne || !canGenerateInvoice || selectedVariant !== CAMPAIGN_VARIANTS.vente) return;
+    try {
+      setPreviewError(null);
+      setIsGeneratingFacturX(true);
+      const blob = await downloadCampagneFacturXDocumentService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+      });
+      triggerBlobDownload(blob, `factur-x_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
+    } catch (generationError) {
+      setPreviewError(generationError instanceof Error ? generationError.message : 'Impossible de générer le document Factur-X.');
+    } finally {
+      setIsGeneratingFacturX(false);
+    }
+  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne, selectedVariant]);
+
+  const issueInvoiceThroughPa = useCallback(async (): Promise<void> => {
+    if (!selectedCampagne || !canIssueInvoiceThroughPa) return;
+    const confirmed = await showConfirm(
+      `Émettre la facture réglementaire de ${formatBillingDate(resolvedPeriod.start)} au ${formatBillingDate(resolvedPeriod.end)} sur VosFactures pour ${formatBillingCurrency(previewTotals.totalHt)} HT ? Cette action créera ou reprendra l’unique facture de cette campagne pour cette période.`,
+      'Confirmer l’émission via VosFactures',
+      'Émettre la facture',
+      'Annuler',
+    );
+    if (!confirmed) return;
+
+    try {
+      setPreviewError(null);
+      setIsIssuingPaInvoice(true);
+      const invoice = await issueCampagneFacturationThroughPaService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+      });
+      setPaInvoice(invoice);
+      await showSuccess(
+        `La facture ${invoice.invoice_number || invoice.internal_reference} est enregistrée sur VosFactures.`,
+        'Facture émise',
+      );
+    } catch (issuanceError) {
+      await showError(
+        issuanceError instanceof Error ? issuanceError.message : 'Impossible d’émettre la facture via VosFactures.',
+        'Échec de l’émission',
+      );
+    } finally {
+      setIsIssuingPaInvoice(false);
+    }
+  }, [canIssueInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
+
+  const testInvoiceThroughPa = useCallback(async (): Promise<void> => {
+    if (!selectedCampagne || !canTestInvoiceThroughPa) return;
+    const confirmed = await showConfirm(
+      `Créer une facture de test VosFactures pour ${formatBillingDate(resolvedPeriod.start)} au ${formatBillingDate(resolvedPeriod.end)} et ${formatBillingCurrency(previewTotals.totalHt)} HT ? Aucun enregistrement réglementaire ne sera créé dans ANTL.`,
+      'Confirmer le test VosFactures',
+      'Créer le test',
+      'Annuler',
+    );
+    if (!confirmed) return;
+
+    try {
+      setPreviewError(null);
+      setIsTestingPaInvoice(true);
+      const invoice = await testCampagneFacturationThroughPaService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+      });
+      setTestPaInvoice(invoice);
+      await showSuccess(
+        `Document de test ${invoice.invoice_number || invoice.internal_reference} créé sur VosFactures avec notre Factur-X joint. La facture réelle portera le n° ${invoice.expected_invoice_number || invoice.internal_reference}.`,
+        'Test réussi',
+      );
+    } catch (testError) {
+      await showError(
+        testError instanceof Error ? testError.message : 'Impossible de créer la facture de test VosFactures.',
+        'Échec du test',
+      );
+    } finally {
+      setIsTestingPaInvoice(false);
+    }
+  }, [canTestInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
 
   const openEmailModal = useCallback((): void => {
     setPreviewError(null);
@@ -234,19 +363,28 @@ export function useFacturation() {
     activeCampagnes,
     billingSettings,
     canGenerateInvoice,
+    canIssueInvoiceThroughPa,
+    canTestInvoiceThroughPa,
     canSendInvoiceEmail,
     closeEmailModal,
     emailOptions,
     error,
     generateInvoice,
+    generateFacturX,
     getLeadAmounts,
     getVenteAmounts,
     isEmailModalOpen,
     isGeneratingInvoice,
+    isGeneratingFacturX,
+    isIssuingPaInvoice,
+    isTestingPaInvoice,
+    isLoadingPaInvoice,
     isLoading,
     isSendingInvoiceEmail,
     missingRequiredFields,
     openEmailModal,
+    issueInvoiceThroughPa,
+    paInvoice,
     periodPreset,
     preview,
     previewError,
@@ -264,6 +402,8 @@ export function useFacturation() {
     setRequestedCampagneId,
     setSelectedRecipientEmail,
     summaryCards,
+    testInvoiceThroughPa,
+    testPaInvoice,
   };
 }
 

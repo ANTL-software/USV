@@ -33,7 +33,11 @@ export {
   removeAgentCampagneService,
   transfererAgentService,
   downloadCampagneFacturationDocumentService,
+  downloadCampagneFacturXDocumentService,
   sendCampagneFacturationEmailService,
+  getCampagneFacturationPaStatusService,
+  issueCampagneFacturationThroughPaService,
+  testCampagneFacturationThroughPaService,
 } from './campagne.service.ts';
 
 export { downloadQuoteDocumentService } from './quote.service.ts';
