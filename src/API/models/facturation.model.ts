@@ -64,12 +64,8 @@ export function getCampaignBillingSettings(campagne: Campagne | null): CampaignB
 
 export const computeTtcAmount = (htAmount: number | string, vatRate: number): number => parseNumericAmount(htAmount) * (1 + vatRate);
 
-export function computeFacturableHt(vente: Vente, settings: CampaignBillingSettings): number {
-  const articlesHt = parseNumericAmount(vente.montant_total);
-  const shippingHt = articlesHt >= settings.freeShippingThresholdHt || vente.livraison_offerte
-    ? 0
-    : settings.shippingFeeHt;
-  return articlesHt + shippingHt;
+export function computeFacturableHt(vente: Vente, _settings?: CampaignBillingSettings): number {
+  return parseNumericAmount(vente.montant_total);
 }
 
 export function computeFacturableLeadHt(lead: LeadClient): number {
