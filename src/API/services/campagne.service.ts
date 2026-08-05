@@ -96,21 +96,6 @@ export const transfererAgentService = async (
   }
 };
 
-export const downloadCampagneFacturationDocumentService = async (
-  idCampagne: number,
-  payload: { date_debut: string; date_fin: string }
-): Promise<Blob> => {
-  const response = await axios.post(`/campagnes/${idCampagne}/facturation/document`, payload, {
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    responseType: 'blob' as const,
-    withCredentials: true,
-  });
-
-  return response.data;
-};
-
 export const downloadCampagneFacturXDocumentService = async (
   idCampagne: number,
   payload: { date_debut: string; date_fin: string }

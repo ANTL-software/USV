@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  downloadCampagneFacturationDocumentService,
   downloadCampagneFacturXDocumentService,
   getCampagneFacturationPaStatusService,
   getLeadClientsService,
@@ -63,7 +62,6 @@ export function useFacturation() {
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
-  const [isGeneratingInvoice, setIsGeneratingInvoice] = useState(false);
   const [isGeneratingFacturX, setIsGeneratingFacturX] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
@@ -99,11 +97,9 @@ export function useFacturation() {
   const resolvedRecipientEmail = selectedRecipientEmail.trim();
   const canSendInvoiceEmail = canGenerateInvoice && !isSendingInvoiceEmail && isValidEmail(resolvedRecipientEmail);
   const canIssueInvoiceThroughPa = canGenerateInvoice
-    && selectedVariant === CAMPAIGN_VARIANTS.vente
     && previewTotals.totalHt > 0
     && !isIssuingPaInvoice;
   const canTestInvoiceThroughPa = canGenerateInvoice
-    && selectedVariant === CAMPAIGN_VARIANTS.vente
     && previewTotals.totalHt > 0
     && !isTestingPaInvoice;
 
@@ -178,25 +174,8 @@ export function useFacturation() {
     return () => { isCancelled = true; };
   }, [resolvedPeriod.end, resolvedPeriod.start, selectedCampagne]);
 
-  const generateInvoice = useCallback(async (): Promise<void> => {
-    if (!selectedCampagne || !canGenerateInvoice) return;
-    try {
-      setPreviewError(null);
-      setIsGeneratingInvoice(true);
-      const blob = await downloadCampagneFacturationDocumentService(selectedCampagne.id_campagne, {
-        date_debut: resolvedPeriod.start,
-        date_fin: resolvedPeriod.end,
-      });
-      triggerBlobDownload(blob, `facture_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
-    } catch (generationError) {
-      setPreviewError(generationError instanceof Error ? generationError.message : 'Impossible de générer la facture.');
-    } finally {
-      setIsGeneratingInvoice(false);
-    }
-  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
-
   const generateFacturX = useCallback(async (): Promise<void> => {
-    if (!selectedCampagne || !canGenerateInvoice || selectedVariant !== CAMPAIGN_VARIANTS.vente) return;
+    if (!selectedCampagne || !canGenerateInvoice) return;
     try {
       setPreviewError(null);
       setIsGeneratingFacturX(true);
@@ -210,7 +189,7 @@ export function useFacturation() {
     } finally {
       setIsGeneratingFacturX(false);
     }
-  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne, selectedVariant]);
+  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
 
   const issueInvoiceThroughPa = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canIssueInvoiceThroughPa) return;
@@ -369,12 +348,10 @@ export function useFacturation() {
     closeEmailModal,
     emailOptions,
     error,
-    generateInvoice,
     generateFacturX,
     getLeadAmounts,
     getVenteAmounts,
     isEmailModalOpen,
-    isGeneratingInvoice,
     isGeneratingFacturX,
     isIssuingPaInvoice,
     isTestingPaInvoice,

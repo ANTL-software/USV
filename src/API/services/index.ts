@@ -32,7 +32,6 @@ export {
   addAgentCampagneService,
   removeAgentCampagneService,
   transfererAgentService,
-  downloadCampagneFacturationDocumentService,
   downloadCampagneFacturXDocumentService,
   sendCampagneFacturationEmailService,
   getCampagneFacturationPaStatusService,

@@ -27,8 +27,7 @@ export function FacturationPreparation({ state }: FacturationPreparationProps): 
         <div className="facturationView__placeholder-actions">
           <Button style={state.canTestInvoiceThroughPa ? 'seaGreen' : 'grey'} onClick={() => { void state.testInvoiceThroughPa(); }} disabled={!state.canTestInvoiceThroughPa}>{state.isTestingPaInvoice ? 'Test...' : 'Créer un document test'}</Button>
           <Button style={state.canIssueInvoiceThroughPa ? 'gradient' : 'grey'} onClick={() => { void state.issueInvoiceThroughPa(); }} disabled={!state.canIssueInvoiceThroughPa}>{state.isIssuingPaInvoice ? 'Émission...' : state.paInvoice ? 'Facture réelle émise' : 'Émettre la facture réelle'}</Button>
-          <Button style={state.canGenerateInvoice ? 'gradient' : 'grey'} onClick={() => { void state.generateInvoice(); }} disabled={!state.canGenerateInvoice || state.isGeneratingInvoice}>{state.isGeneratingInvoice ? 'Génération...' : 'Télécharger la facture PDF'}</Button>
-          {state.selectedCampagne?.type_campagne === 'vente' && <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={() => { void state.generateFacturX(); }} disabled={!state.canGenerateInvoice || state.isGeneratingFacturX}>{state.isGeneratingFacturX ? 'Génération...' : 'Télécharger Factur-X (bêta)'}</Button>}
+          <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={() => { void state.generateFacturX(); }} disabled={!state.canGenerateInvoice || state.isGeneratingFacturX}>{state.isGeneratingFacturX ? 'Génération...' : 'Télécharger la facture (pdf format Factur-X)'}</Button>
           <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={state.openEmailModal} disabled={!state.canGenerateInvoice}>Envoyer la facture par email</Button>
         </div>
       </div>
