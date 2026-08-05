@@ -127,7 +127,7 @@ test('les écoutes préparent leurs libellés hors du tableau', () => {
   };
   assert.equal(getRecordingAgentLabel(recording), 'Léa MARTIN');
   assert.equal(getRecordingProspectLabel(recording), 'Alice Dupont');
-  assert.equal(getRecordingStatusLabel(recording), 'rdv pris');
+  assert.equal(getRecordingStatusLabel(recording), 'Commande à établir');
   assert.equal(getRecordingStatusClass(recording), 'qualiteEcoutes__badge-statut qualiteEcoutes__badge-statut--rdv_pris');
 });
 

@@ -1,14 +1,17 @@
 import type { Enregistrement, RecordingFilterOption } from '../types/index.ts';
+import { getStatutAppelLabel } from './formatters.ts';
 
 export const RECORDING_STATUS_OPTIONS: RecordingFilterOption[] = [
   { value: '', label: 'Tous les statuts' },
   { value: 'abouti', label: 'Abouti' },
   { value: 'non_abouti', label: 'Non abouti' },
-  { value: 'rdv_pris', label: 'Rendez-vous pris' },
+  { value: 'rendez_vous_pris', label: 'Rendez-vous pris' },
+  { value: 'rdv_pris', label: 'Commande à établir' },
   { value: 'vente_conclue', label: 'Vente conclue' },
   { value: 'refus_definitif', label: 'Refus définitif' },
   { value: 'repondeur', label: 'Répondeur' },
   { value: 'relance', label: 'Relance' },
+  { value: 'amd_repondeur_auto', label: 'Répondeur auto coupé' },
 ];
 
 export function formatRecordingDate(dateValue: string | null): string {
@@ -67,7 +70,7 @@ export function getRecordingProspectLabel(recording: Enregistrement): string {
 }
 
 export function getRecordingStatusLabel(recording: Enregistrement): string {
-  return recording.appel?.statut_appel?.replace(/_/g, ' ') || 'en cours';
+  return getStatutAppelLabel(recording.appel?.statut_appel || 'en_cours');
 }
 
 export function getRecordingStatusClass(recording: Enregistrement): string {
