@@ -3,6 +3,7 @@ import {
   deleteVenteService,
   getActiveFrigoAlertsService,
   getAgentsCampagneService,
+  getAllEmployesService,
   getLeadClientsService,
   restoreVenteService,
 } from '../API/services/index.ts';
@@ -76,6 +77,7 @@ export function useCommandesList() {
   const [localAgentId, setLocalAgentId] = useState<number | null>(filters.agent ?? null);
   const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
   const [campaignAgents, setCampaignAgents] = useState<CommandesSelectOption[]>([]);
+  const [allEmployes, setAllEmployes] = useState<CommandesSelectOption[]>([]);
   const [leadClients, setLeadClients] = useState<LeadClient[]>([]);
   const [leadPagination, setLeadPagination] = useState<{
     page: number;
@@ -286,6 +288,38 @@ export function useCommandesList() {
   ]);
 
   useEffect(() => {
+    let isCancelled = false;
+
+    const loadAllEmployes = async (): Promise<void> => {
+      try {
+        const employes = await getAllEmployesService();
+        if (isCancelled) {
+          return;
+        }
+
+        setAllEmployes(
+          employes
+            .filter((e) => e.actif)
+            .map((e) => ({
+              value: String(e.id_employe),
+              label: `${e.prenom ?? ''} ${(e.nom ?? '').toUpperCase()}`.trim(),
+            })),
+        );
+      } catch {
+        if (!isCancelled) {
+          setAllEmployes([]);
+        }
+      }
+    };
+
+    void loadAllEmployes();
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (!filters.campagne || !hasResolvedSelectedCampaign) {
       setCampaignAgents([]);
       return;
@@ -302,10 +336,10 @@ export function useCommandesList() {
 
         setCampaignAgents(
           agents
-            .filter((entry) => entry.agent)
+            .filter((entry) => Boolean(entry.agent && entry.agent.actif))
             .map((entry) => ({
               value: String(entry.agent?.id_employe),
-              label: `${entry.agent?.prenom ?? ''} ${entry.agent?.nom ?? ''}`.trim(),
+              label: `${entry.agent?.prenom ?? ''} ${(entry.agent?.nom ?? '').toUpperCase()}`.trim(),
             })),
         );
       } catch {
@@ -382,6 +416,12 @@ export function useCommandesList() {
     setLocalDateDebut(currentMonthBounds.start);
     setLocalDateFin(currentMonthBounds.end);
   }, [currentMonthBounds.end, currentMonthBounds.start, setFilters]);
+
+  useEffect(() => {
+    if (!filters.campagne && campagnes.length > 0) {
+      handleCampagneChange(campagnes[0].id_campagne);
+    }
+  }, [campagnes, filters.campagne, handleCampagneChange]);
 
   const handlePeriodPresetChange = useCallback((preset: CommandesPeriodPreset): void => {
     setPeriodPreset(preset);
@@ -475,10 +515,23 @@ export function useCommandesList() {
     { value: '', label: 'Tous les statuts' },
     ...STATUT_RENDEZ_VOUS_OPTIONS,
   ];
-  const agentOptions: CommandesSelectOption[] = [
-    { value: '', label: 'Tous les commerciaux' },
-    ...campaignAgents,
-  ];
+  const agentOptions: CommandesSelectOption[] = useMemo(() => {
+    const map = new Map<string, string>();
+    campaignAgents.forEach((a) => map.set(a.value, a.label));
+    allEmployes.forEach((e) => {
+      if (!map.has(e.value)) {
+        map.set(e.value, e.label);
+      }
+    });
+
+    const combined = Array.from(map.entries()).map(([value, label]) => ({ value, label }));
+    combined.sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }));
+
+    return [
+      { value: '', label: 'Tous les commerciaux' },
+      ...combined,
+    ];
+  }, [allEmployes, campaignAgents]);
   const statsValideesCount = stats?.validations?.count ?? 0;
   const statsValideesAmount = stats?.validations?.total_montant ?? 0;
   const statsEnAttenteCount = stats?.enAttente.count ?? 0;

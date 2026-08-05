@@ -36,8 +36,8 @@ export function CommandesFilters({ state }: CommandesFiltersProps): ReactElement
       /></div>}
 
       <div className="commandesList__filter-group"><label>Commercial</label><Select<CommandesSelectOption, false>
-        options={state.agentOptions} value={state.agentOptions.find(({ value }) => value === String(state.localAgentId ?? '')) ?? state.agentOptions[0]}
-        onChange={(option) => state.setLocalAgentId(option?.value ? Number(option.value) : null)} styles={commandesSelectStyles} placeholder="Tous les commerciaux" isSearchable={false}
+        options={state.agentOptions} value={state.agentOptions.find(({ value }) => value === (state.localAgentId !== null && state.localAgentId !== undefined ? String(state.localAgentId) : '')) ?? state.agentOptions[0]}
+        onChange={(option) => state.setLocalAgentId(option?.value ? Number(option.value) : null)} styles={commandesSelectStyles} placeholder="Tous les commerciaux" isSearchable
       /></div>
       <div className="commandesList__filter-group"><label>Période</label><Select<CommandesSelectOption, false>
         options={COMMANDES_PERIOD_OPTIONS} value={COMMANDES_PERIOD_OPTIONS.find(({ value }) => value === state.periodPreset)}
