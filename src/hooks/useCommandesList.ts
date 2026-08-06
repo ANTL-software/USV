@@ -2,8 +2,6 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import {
   deleteVenteService,
   getActiveFrigoAlertsService,
-  getAgentsCampagneService,
-  getAllEmployesService,
   getLeadClientsService,
   restoreVenteService,
 } from '../API/services/index.ts';
@@ -65,6 +63,7 @@ export function useCommandesList() {
     load,
     stats,
     resetFilters,
+    agents: saleAgents,
   } = venteContext;
   const currentMonthBounds = getMonthBounds(0);
   const previousMonthBounds = getMonthBounds(-1);
@@ -76,8 +75,7 @@ export function useCommandesList() {
   const [localDateFin, setLocalDateFin] = useState(filters.date_fin ?? currentMonthBounds.end);
   const [localAgentId, setLocalAgentId] = useState<number | null>(filters.agent ?? null);
   const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
-  const [campaignAgents, setCampaignAgents] = useState<CommandesSelectOption[]>([]);
-  const [allEmployes, setAllEmployes] = useState<CommandesSelectOption[]>([]);
+  const [leadAgents, setLeadAgents] = useState<Array<{ id_employe: number; prenom?: string; nom?: string }>>([]);
   const [leadClients, setLeadClients] = useState<LeadClient[]>([]);
   const [leadPagination, setLeadPagination] = useState<{
     page: number;
@@ -120,6 +118,7 @@ export function useCommandesList() {
       setLeadClients(result.leads);
       setLeadPagination(result.pagination);
       setLeadStats(result.stats);
+      setLeadAgents(result.agents ?? []);
     } catch (loadError) {
       const message = loadError instanceof Error
         ? loadError.message
@@ -128,6 +127,7 @@ export function useCommandesList() {
       setLeadClients([]);
       setLeadPagination(null);
       setLeadStats(DEFAULT_LEAD_STATS);
+      setLeadAgents([]);
     } finally {
       setLeadLoading(false);
     }
@@ -287,74 +287,7 @@ export function useCommandesList() {
     previousMonthBounds.start,
   ]);
 
-  useEffect(() => {
-    let isCancelled = false;
 
-    const loadAllEmployes = async (): Promise<void> => {
-      try {
-        const employes = await getAllEmployesService();
-        if (isCancelled) {
-          return;
-        }
-
-        setAllEmployes(
-          employes
-            .filter((e) => e.actif)
-            .map((e) => ({
-              value: String(e.id_employe),
-              label: `${e.prenom ?? ''} ${(e.nom ?? '').toUpperCase()}`.trim(),
-            })),
-        );
-      } catch {
-        if (!isCancelled) {
-          setAllEmployes([]);
-        }
-      }
-    };
-
-    void loadAllEmployes();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!filters.campagne || !hasResolvedSelectedCampaign) {
-      setCampaignAgents([]);
-      return;
-    }
-
-    let isCancelled = false;
-
-    const loadCampaignAgents = async (): Promise<void> => {
-      try {
-        const agents = await getAgentsCampagneService(filters.campagne as number);
-        if (isCancelled) {
-          return;
-        }
-
-        setCampaignAgents(
-          agents
-            .filter((entry) => Boolean(entry.agent && entry.agent.actif))
-            .map((entry) => ({
-              value: String(entry.agent?.id_employe),
-              label: `${entry.agent?.prenom ?? ''} ${(entry.agent?.nom ?? '').toUpperCase()}`.trim(),
-            })),
-        );
-      } catch {
-        if (!isCancelled) {
-          setCampaignAgents([]);
-        }
-      }
-    };
-
-    void loadCampaignAgents();
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [filters.campagne, hasResolvedSelectedCampaign]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -516,22 +449,18 @@ export function useCommandesList() {
     ...STATUT_RENDEZ_VOUS_OPTIONS,
   ];
   const agentOptions: CommandesSelectOption[] = useMemo(() => {
-    const map = new Map<string, string>();
-    campaignAgents.forEach((a) => map.set(a.value, a.label));
-    allEmployes.forEach((e) => {
-      if (!map.has(e.value)) {
-        map.set(e.value, e.label);
-      }
-    });
-
-    const combined = Array.from(map.entries()).map(([value, label]) => ({ value, label }));
-    combined.sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }));
+    const currentAgents = isLeadCampaign ? leadAgents : (saleAgents ?? []);
+    const options = currentAgents.map((agent) => ({
+      value: String(agent.id_employe),
+      label: `${agent.prenom ?? ''} ${(agent.nom ?? '').toUpperCase()}`.trim(),
+    }));
+    options.sort((a, b) => a.label.localeCompare(b.label, 'fr', { sensitivity: 'base' }));
 
     return [
       { value: '', label: 'Tous les commerciaux' },
-      ...combined,
+      ...options,
     ];
-  }, [allEmployes, campaignAgents]);
+  }, [isLeadCampaign, leadAgents, saleAgents]);
   const statsValideesCount = stats?.validations?.count ?? 0;
   const statsValideesAmount = stats?.validations?.total_montant ?? 0;
   const statsEnAttenteCount = stats?.enAttente.count ?? 0;

@@ -18,6 +18,7 @@ export interface VenteContextType {
   load: () => void;
   resetFilters: () => void;
   stats: VenteStats | null;
+  agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
 export const VenteContext = createContext<VenteContextType | undefined>(undefined);

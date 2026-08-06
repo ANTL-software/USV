@@ -14,6 +14,7 @@ interface ApiResponse<T> {
     totalPages: number;
   };
   stats?: LeadClientStats;
+  agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
 interface LeadClientsResponse {
@@ -25,6 +26,7 @@ interface LeadClientsResponse {
     totalPages: number;
   };
   stats: LeadClientStats;
+  agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
 const DEFAULT_LEAD_STATS: LeadClientStats = {
@@ -62,6 +64,7 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
         totalPages: 1,
       },
       stats: response.data.stats ?? DEFAULT_LEAD_STATS,
+      agents: response.data.agents,
     };
   }
 

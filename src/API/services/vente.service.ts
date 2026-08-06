@@ -28,6 +28,7 @@ interface ApiResponse<T> {
     totalPages: number;
   };
   stats?: VenteStats | RawVenteStat[] | OperationPeriodVenteStats;
+  agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
 interface VentesResponse {
@@ -38,7 +39,8 @@ interface VentesResponse {
     total: number;
     totalPages: number;
   };
-  stats?: VenteStats;
+  stats: VenteStats;
+  agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
 const EMPTY_VENTE_STATS: VenteStats = {
@@ -49,9 +51,9 @@ const EMPTY_VENTE_STATS: VenteStats = {
   total: { count: 0, total_montant: 0 },
 };
 
-function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | OperationPeriodVenteStats | undefined): VenteStats | undefined {
+function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | OperationPeriodVenteStats | undefined): VenteStats {
   if (!stats) {
-    return undefined;
+    return EMPTY_VENTE_STATS;
   }
 
   if (!Array.isArray(stats)) {
@@ -132,6 +134,7 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
         totalPages: 1,
       },
       stats: normalizeVenteStats(response.data.stats),
+      agents: response.data.agents,
     };
   }
 

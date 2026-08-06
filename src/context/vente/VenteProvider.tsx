@@ -36,6 +36,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
   const [ventes, setVentes] = useState<Vente[]>([]);
   const [pagination, setPagination] = useState<VenteContextType['pagination']>(null);
   const [stats, setStats] = useState<VenteContextType['stats']>(null);
+  const [agents, setAgents] = useState<Array<{ id_employe: number; prenom?: string; nom?: string }>>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [filters, setFiltersState] = useState<VenteListParams>(getDefaultFilters);
@@ -54,6 +55,7 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
       if (requestId !== latestRequestId.current) return;
       setVentes(result.ventes);
       setPagination(result.pagination);
+      setAgents(result.agents ?? []);
       setStats(result.stats ?? {
         validees: { count: 0, total_montant: 0 },
         enAttente: { count: 0, total_montant: 0 },
@@ -81,11 +83,12 @@ export const VenteProvider = ({ children }: VenteProviderProps) => {
     setVentes([]);
     setPagination(null);
     setStats(null);
+    setAgents([]);
     setError(null);
   }, []);
 
   return (
-    <VenteContext.Provider value={{ ventes, pagination, isLoading, error, filters, setFilters, load, resetFilters, stats }}>
+    <VenteContext.Provider value={{ ventes, pagination, isLoading, error, filters, setFilters, load, resetFilters, stats, agents }}>
       {children}
     </VenteContext.Provider>
   );
