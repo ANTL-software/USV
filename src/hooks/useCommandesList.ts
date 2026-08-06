@@ -352,7 +352,11 @@ export function useCommandesList() {
 
   useEffect(() => {
     if (!filters.campagne && campagnes.length > 0) {
-      handleCampagneChange(campagnes[0].id_campagne);
+      const defaultCampaign = campagnes.find((c) =>
+        c.nom_campagne.toLowerCase().includes('cigales'),
+      ) ?? campagnes[0];
+
+      handleCampagneChange(defaultCampaign.id_campagne);
     }
   }, [campagnes, filters.campagne, handleCampagneChange]);
 
