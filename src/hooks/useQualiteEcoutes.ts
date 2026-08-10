@@ -3,9 +3,11 @@ import {
   getAllCampagnesService,
   getAllEmployesService,
   getAllRecordingsService,
+  getRecordingOperationsConfigurationService,
   getRecordingStreamUrl,
+  updateRecordingOperationsConfigurationService,
 } from '../API/services/index.ts';
-import type { Enregistrement, EnregistrementFilters, RecordingFilterOption } from '../utils/types/index.ts';
+import type { Enregistrement, EnregistrementFilters, RecordingFilterOption, RecordingOperationsConfiguration } from '../utils/types/index.ts';
 
 const PAGE_SIZE = 10;
 
@@ -32,6 +34,22 @@ export function useQualiteEcoutes() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [activeRecording, setActiveRecording] = useState<Enregistrement | null>(null);
+  const [operationsConfiguration, setOperationsConfiguration] = useState<RecordingOperationsConfiguration | null>(null);
+  const [isUpdatingConfiguration, setIsUpdatingConfiguration] = useState(false);
+
+  const loadOperationsConfiguration = useCallback(async (): Promise<void> => {
+    try {
+      setOperationsConfiguration(await getRecordingOperationsConfigurationService());
+    } catch (configurationError) {
+      console.error('Erreur chargement configuration enregistrements :', configurationError);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadOperationsConfiguration();
+    const interval = window.setInterval(() => { void loadOperationsConfiguration(); }, 30000);
+    return () => window.clearInterval(interval);
+  }, [loadOperationsConfiguration]);
 
   useEffect(() => {
     let isCancelled = false;
@@ -165,6 +183,28 @@ export function useQualiteEcoutes() {
     setPage((currentPage) => Math.min(currentPage + 1, totalPages));
   }, [totalPages]);
 
+  const updateOperationsConfiguration = useCallback(async (
+    updates: { enabled?: boolean; answeringMachineEnabled?: boolean },
+  ): Promise<void> => {
+    setIsUpdatingConfiguration(true);
+    try {
+      const updated = await updateRecordingOperationsConfigurationService(updates);
+      setOperationsConfiguration((current) => current ? { ...current, ...updated } : current);
+    } catch (configurationError) {
+      setError(getErrorMessage(configurationError));
+    } finally {
+      setIsUpdatingConfiguration(false);
+    }
+  }, []);
+
+  const toggleRecordingEnabled = useCallback((enabled: boolean): void => {
+    void updateOperationsConfiguration({ enabled });
+  }, [updateOperationsConfiguration]);
+
+  const toggleAnsweringMachineRecording = useCallback((answeringMachineEnabled: boolean): void => {
+    void updateOperationsConfiguration({ answeringMachineEnabled });
+  }, [updateOperationsConfiguration]);
+
   return {
     activeRecording,
     agents,
@@ -177,11 +217,13 @@ export function useQualiteEcoutes() {
     error,
     getRecordingUrl: getRecordingStreamUrl,
     isLoading,
+    isUpdatingConfiguration,
     nextPage,
     page,
     previousPage,
     recherche,
     recordings,
+    operationsConfiguration,
     resetFilters,
     selectAgent,
     selectCampaign,
@@ -193,6 +235,8 @@ export function useQualiteEcoutes() {
     setRecherche,
     submitSearch,
     telephone,
+    toggleAnsweringMachineRecording,
+    toggleRecordingEnabled,
     totalCount,
     totalPages,
   };

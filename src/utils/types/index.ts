@@ -376,7 +376,10 @@ export type {
   Enregistrement,
   EnregistrementFilters,
   EnregistrementsApiResponse,
+  RecordingOperationsConfiguration,
   RecordingFilterOption,
+  RecordingStorageStatus,
+  UpdateRecordingOperationsConfiguration,
 } from './enregistrement.types.ts';
 
 export type {

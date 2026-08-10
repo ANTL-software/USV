@@ -177,6 +177,7 @@ export { ProjetsListHeader } from './projetsListHeader/index.ts';
 export { ProjetsListTable } from './projetsListTable/index.ts';
 export { QueuePreview } from './queuePreview/index.ts';
 export { QualiteEcoutesContent } from './qualiteEcoutesContent/index.ts';
+export { QualiteEcoutesConfiguration } from './qualiteEcoutesConfiguration/index.ts';
 export { QualiteEcoutesFilters } from './qualiteEcoutesFilters/index.ts';
 export { QualiteEcoutesHeader } from './qualiteEcoutesHeader/index.ts';
 export { QualiteEcoutesPlayer } from './qualiteEcoutesPlayer/index.ts';
