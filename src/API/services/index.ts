@@ -212,7 +212,9 @@ export {
 
 export {
   getAllRecordingsService,
+  getRecordingOperationsConfigurationService,
   getRecordingStreamUrl,
+  updateRecordingOperationsConfigurationService,
 } from './enregistrement.service.ts';
 
 export {

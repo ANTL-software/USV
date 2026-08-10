@@ -60,3 +60,22 @@ export interface EnregistrementsApiResponse {
     totalPages: number;
   };
 }
+
+export interface RecordingStorageStatus {
+  totalBytes: number;
+  availableBytes: number;
+  usedBytes: number;
+  usedPercentage: number;
+}
+
+export interface RecordingOperationsConfiguration {
+  enabled: boolean;
+  answeringMachineEnabled: boolean;
+  environmentLocked: boolean;
+  storage: RecordingStorageStatus;
+}
+
+export interface UpdateRecordingOperationsConfiguration {
+  enabled?: boolean;
+  answeringMachineEnabled?: boolean;
+}
