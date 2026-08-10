@@ -10,10 +10,11 @@ import {
   formatQualitePercent,
   formatQualiteProgpa,
   getQualiteMonthBounds,
+  getDefaultQualiteCampaignId,
   getQualitePresetRange,
   getQualiteRangeLabel,
 } from '../../src/utils/scripts/index.ts';
-import type { Campagne, Employe, ProgpaParCommercial, ProgpaParJour } from '../../src/utils/types/index.ts';
+import type { Campagne, ProgpaParCommercial, ProgpaParJour, SupervisionAgentOption } from '../../src/utils/types/index.ts';
 
 const niveaux = {
   niveau_0: 4,
@@ -85,30 +86,35 @@ test('les campagnes actives sont proposées en premier sans option multi-campagn
   ]);
 });
 
-test('la liste commerciale agrège rôle, rang et présence dans les statistiques', () => {
-  const employes: Employe[] = [
+test('Les Cigales est la campagne qualité par défaut même si une autre campagne la précède par ordre alphabétique', () => {
+  assert.equal(getDefaultQualiteCampaignId([
+    { value: '4', label: 'FGA' },
+    { value: '7', label: 'Les Cigales' },
+    { value: '10', label: 'MMA' },
+  ]), 7);
+  assert.equal(getDefaultQualiteCampaignId([{ value: '4', label: 'FGA' }]), 4);
+  assert.equal(getDefaultQualiteCampaignId([]), null);
+});
+
+test('la liste commerciale reprend exclusivement les commerciaux actifs affectés à la campagne', () => {
+  const employes: SupervisionAgentOption[] = [
     {
       id_employe: 1,
       identifiant: 'support-1',
       nom: 'Support',
       prenom: 'Zoé',
-      actif: true,
-      poste: { id_poste: 1, libelle_poste: 'Support', type_poste: 'support' },
     },
     {
       id_employe: 2,
       identifiant: 'commercial-2',
       nom: 'Vente',
       prenom: 'Alice',
-      actif: true,
-      poste: { id_poste: 2, libelle_poste: 'Conseillère', type_poste: 'commercial' },
     },
   ];
 
-  assert.deepEqual(buildQualiteCommercialOptions(employes, [commercialStats(1), commercialStats(4)]), [
+  assert.deepEqual(buildQualiteCommercialOptions(employes), [
     { value: '', label: 'Tous les commerciaux' },
     { value: '2', label: 'Alice VENTE (commercial-2)' },
-    { value: '4', label: 'Prénom 4 NOM 4 (commercial-4)' },
     { value: '1', label: 'Zoé SUPPORT (support-1)' },
   ]);
 });

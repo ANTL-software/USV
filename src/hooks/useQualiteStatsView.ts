@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useCampagnes } from './useCampagnes.ts';
-import { useEmployes } from './useEmployes.ts';
+import { useSupervisionAgents } from './useSupervisionFilters.ts';
 import { useQualiteProgpaStats } from './useQualiteProgpaStats.ts';
 import {
   QUALITE_PERIOD_OPTIONS,
@@ -9,6 +9,7 @@ import {
   buildQualiteCommercialOptions,
   buildQualiteDailyData,
   buildQualiteDistributionData,
+  getDefaultQualiteCampaignId,
   getQualitePresetRange,
   getQualiteRangeLabel,
 } from '../utils/scripts/index.ts';
@@ -23,12 +24,11 @@ interface AppliedQualiteFilters {
 
 export function useQualiteStatsView() {
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
-  const { employes, isLoading: employesLoading } = useEmployes();
   const defaultRange = useMemo(() => getQualitePresetRange('today'), []);
   const [periodPreset, setPeriodPreset] = useState<QualitePeriodPreset>('today');
   const [dateDebut, setDateDebutState] = useState(defaultRange.dateDebut);
   const [dateFin, setDateFinState] = useState(defaultRange.dateFin);
-  const [selectedCampagneId, setSelectedCampagneId] = useState<number | null>(null);
+  const [selectedCampagneId, setSelectedCampagneIdState] = useState<number | null>(null);
   const [selectedEmployeId, setSelectedEmployeId] = useState<number | null>(null);
   const [filterError, setFilterError] = useState<string | null>(null);
   const [appliedFilters, setAppliedFilters] = useState<AppliedQualiteFilters>({
@@ -38,9 +38,10 @@ export function useQualiteStatsView() {
   });
 
   const campaignOptions = useMemo(() => buildQualiteCampaignOptions(campagnes), [campagnes]);
-  const defaultCampaignId = campaignOptions[0] ? Number(campaignOptions[0].value) : null;
+  const defaultCampaignId = getDefaultQualiteCampaignId(campaignOptions);
   const draftCampaignId = selectedCampagneId ?? defaultCampaignId;
   const requestedCampaignId = appliedFilters.idCampagne ?? defaultCampaignId;
+  const { agents: campagneAgents, isLoading: employesLoading } = useSupervisionAgents(draftCampaignId);
 
   const { data, isLoading, error, reload } = useQualiteProgpaStats(
     requestedCampaignId,
@@ -50,8 +51,8 @@ export function useQualiteStatsView() {
   );
 
   const commercialOptions = useMemo(
-    () => buildQualiteCommercialOptions(employes, data?.par_commercial || []),
-    [data?.par_commercial, employes],
+    () => buildQualiteCommercialOptions(campagneAgents),
+    [campagneAgents],
   );
   const distributionData = useMemo(
     () => buildQualiteDistributionData(data?.etapes || [], data?.suivi_en_cours),
@@ -78,6 +79,11 @@ export function useQualiteStatsView() {
     setPeriodPreset('custom');
   };
 
+  const setSelectedCampagneId = (idCampagne: number | null): void => {
+    setSelectedCampagneIdState(idCampagne);
+    setSelectedEmployeId(null);
+  };
+
   const applyFilters = (): void => {
     if (!draftCampaignId) {
       setFilterError('Sélectionnez une campagne.');
@@ -101,7 +107,7 @@ export function useQualiteStatsView() {
     setPeriodPreset('today');
     setDateDebutState(range.dateDebut);
     setDateFinState(range.dateFin);
-    setSelectedCampagneId(null);
+    setSelectedCampagneId(defaultCampaignId);
     setSelectedEmployeId(null);
     setFilterError(null);
     setAppliedFilters({ idCampagne: defaultCampaignId, idEmploye: null, ...range });

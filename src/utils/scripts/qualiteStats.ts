@@ -1,4 +1,4 @@
-import type { Campagne, Employe, ProgpaEtape, ProgpaParCommercial, ProgpaParJour, ProgpaSuiviEnCours } from '../types/index.ts';
+import type { Campagne, ProgpaEtape, ProgpaParCommercial, ProgpaParJour, ProgpaSuiviEnCours, SupervisionAgentOption } from '../types/index.ts';
 
 export type QualitePeriodPreset = 'today' | 'current_month' | 'previous_month' | 'custom';
 
@@ -82,31 +82,23 @@ export function buildQualiteCampaignOptions(campagnes: Campagne[]): QualiteSelec
     }));
 }
 
+export function getDefaultQualiteCampaignId(campaignOptions: QualiteSelectOption[]): number | null {
+  const lesCigales = campaignOptions.find((option) => option.value === '7');
+  if (lesCigales) {
+    return 7;
+  }
+
+  return campaignOptions[0] ? Number(campaignOptions[0].value) : null;
+}
+
 export function buildQualiteCommercialOptions(
-  employes: Employe[],
-  statistiques: ProgpaParCommercial[],
+  employes: SupervisionAgentOption[],
 ): QualiteSelectOption[] {
-  const statsById = new Map(statistiques.map((item) => [item.id_employe, item]));
-  const employeOptions = employes
-    .filter((employe) => {
-      const posteLabel = employe.poste?.libelle_poste?.toLowerCase() || '';
-      return employe.poste?.type_poste === 'commercial'
-        || (employe.id_rang_commercial !== null && employe.id_rang_commercial !== undefined)
-        || ['sales', 'business developer', 'commercial', 'stagiaire'].some((label) => posteLabel.includes(label))
-        || statsById.has(employe.id_employe);
-    })
+  const commerciaux = employes
     .map((employe) => ({
       value: String(employe.id_employe),
       label: `${employe.prenom} ${employe.nom.toUpperCase()} (${employe.identifiant})`,
-    }));
-  const knownIds = new Set(employeOptions.map((option) => option.value));
-  const historicalOptions = statistiques
-    .filter((item) => !knownIds.has(String(item.id_employe)))
-    .map((item) => ({
-      value: String(item.id_employe),
-      label: `${item.prenom} ${item.nom.toUpperCase()} (${item.identifiant})`,
-    }));
-  const commerciaux = [...employeOptions, ...historicalOptions]
+    }))
     .sort((left, right) => left.label.localeCompare(right.label, 'fr'));
 
   return [

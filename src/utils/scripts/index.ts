@@ -373,6 +373,7 @@ export {
   formatQualiteDateLong,
   formatQualitePercent,
   formatQualiteProgpa,
+  getDefaultQualiteCampaignId,
   getQualitePresetRange,
   getQualiteStepColor,
   getQualiteMonthBounds,
