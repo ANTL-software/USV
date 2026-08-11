@@ -331,3 +331,9 @@ export {
   uploadAntlConfigurationLogoService,
   uploadAntlConfigurationRibService,
 } from './antlConfiguration.service.ts';
+
+export {
+  getTelephonyConfigurationService,
+  getTelephonyOperationsConfigurationService,
+  updateTelephonyProviderService,
+} from './telephony.service.ts';

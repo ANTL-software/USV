@@ -454,3 +454,11 @@ export type {
   TemplateStatus,
   Timeline,
 } from './devis.types.ts';
+
+export type {
+  TelephonyConfiguration,
+  TelephonyOperationsConfiguration,
+  TelephonyProvider,
+  TelephonyProviderReadiness,
+  UpdateTelephonyProvider,
+} from './telephony.types.ts';

@@ -18,6 +18,7 @@ import type {
   ProduitsImportModalViewModel,
   ProspectDetailViewModel,
   SignInFormViewModel,
+  TelephonyProviderConfigurationViewModel,
 } from '../../src/hooks/index.ts';
 import {
   BOOKING_HOUR_OPTIONS,
@@ -485,4 +486,51 @@ test('le panneau lead conserve qualification impression et emplacement documenta
   assert.match(html, /Réimprimer la fiche du rendez-vous/);
   assert.match(html, /Document du rendez-vous/);
   assert.match(html, /prochaine itération/);
+});
+
+test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête', async () => {
+  const TelephonyProviderSwitch = await loadComponent<{
+    viewModel: TelephonyProviderConfigurationViewModel;
+  }>(
+    '/src/views/components/telephonyProviderSwitch/TelephonyProviderSwitch.tsx',
+    'TelephonyProviderSwitch',
+  );
+  const viewModel: TelephonyProviderConfigurationViewModel = {
+    configuration: {
+      provider: 'twilio',
+      providers: {
+        twilio: { configured: true, missingVariables: [] },
+        asterisk: { configured: true, missingVariables: [] },
+      },
+      activeConfiguration: {
+        provider: 'twilio',
+        configured: true,
+        browserClientAvailable: true,
+        transport: { kind: 'twilio-sdk', webSocketUrl: null, sipDomain: null },
+        capabilities: {
+          outboundCalls: true,
+          incomingCalls: true,
+          supervisorWhisper: true,
+          answeringMachineDetection: true,
+          recording: true,
+        },
+      },
+      activationScope: 'new-browser-sessions',
+    },
+    error: null,
+    isAsteriskSelected: false,
+    isLoading: false,
+    isSwitchDisabled: false,
+    isUpdating: false,
+    reload: noopAsync,
+    selectProvider: noopAsync,
+    successMessage: null,
+  };
+  const html = renderToStaticMarkup(createElement(TelephonyProviderSwitch, { viewModel }));
+
+  assert.match(html, /Twilio/);
+  assert.match(html, /Asterisk \+ boxIP \/ Evenmedia/);
+  assert.match(html, /role="switch"/);
+  assert.match(html, /Navigateur et TURN prêts/);
+  assert.doesNotMatch(html, /\schecked=/);
 });
