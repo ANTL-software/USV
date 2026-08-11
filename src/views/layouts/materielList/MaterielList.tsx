@@ -14,6 +14,7 @@ import {
   MaterielFormModal,
   MaterielTable,
   SubNav,
+  TelephonyProviderSwitch,
 } from '../../components/index.ts';
 
 function MaterielList(): ReactElement {
@@ -32,6 +33,7 @@ function MaterielList(): ReactElement {
             <div><h1><IoLaptopOutline /> Matériel</h1><p className="materielList__subtitle">{viewModel.countLabel}</p></div>
             <Button style="gradient" onClick={viewModel.openCreate}><IoAdd /> Ajouter un matériel</Button>
           </div>
+          <TelephonyProviderSwitch viewModel={viewModel.telephony} />
           {viewModel.materielStore.error && <div className="materielList__error">{viewModel.materielStore.error}</div>}
           <MaterielTable viewModel={viewModel} />
         </div>

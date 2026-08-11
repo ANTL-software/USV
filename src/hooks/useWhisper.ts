@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { Device, Call } from '@twilio/voice-sdk';
 import { getRequest, postRequest } from '../API/APICalls';
+import { getTelephonyConfigurationService } from '../API/services/index.ts';
 import { UserContext } from '../context/user/index.ts';
 
 interface WhisperResponse {
@@ -183,6 +184,20 @@ export const useWhisper = () => {
     setIsMuted(true); // S'assurer qu'on commence MUTE par défaut
 
     try {
+      const telephonyConfiguration = await getTelephonyConfigurationService();
+
+      if (!telephonyConfiguration.configured) {
+        throw new Error(`Configuration ${telephonyConfiguration.provider} incomplète`);
+      }
+
+      if (!telephonyConfiguration.capabilities.supervisorWhisper) {
+        throw new Error(
+          telephonyConfiguration.provider === 'asterisk'
+            ? 'Le soufflé superviseur Asterisk n’est pas encore activé'
+            : 'Le soufflé superviseur est indisponible avec le fournisseur actif'
+        );
+      }
+
       // 1. Demander le token et la redirection de l'appel au backend Olympe
       console.log(`[WHISPER] Envoi POST /supervision/whisper pour l'appel #${idAppel}`);
       const response = await postRequest<{ id_appel: number }, WhisperResponse>('/supervision/whisper', {
