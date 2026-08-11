@@ -4,8 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useEmployes } from './useEmployes.ts';
 import { useMarques, useMateriel } from './useMateriel.ts';
-import { useTelephonyProviderConfiguration } from './useTelephonyProviderConfiguration.ts';
-import { useTelephonyTrunkConfiguration } from './useTelephonyTrunkConfiguration.ts';
+import { useUserContext } from './useUserContext.ts';
 import {
   EMPTY_MATERIEL_FORM,
   buildMaterielEmployeOptions,
@@ -15,6 +14,7 @@ import {
   buildMaterielTableRows,
   getActiveMaterielAffectation,
   getMaterielCountLabel,
+  hasAccessToSubsection,
 } from '../utils/scripts/index.ts';
 import type {
   MaterielFormState,
@@ -29,10 +29,9 @@ import type {
 export function useMaterielListView() {
   const navigate = useNavigate();
   const materielStore = useMateriel();
+  const { user } = useUserContext();
   const { employes } = useEmployes();
   const { marques } = useMarques();
-  const telephony = useTelephonyProviderConfiguration();
-  const telephonyTrunk = useTelephonyTrunkConfiguration();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<MaterielModalMode>('create');
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -59,6 +58,10 @@ export function useMaterielListView() {
 
   const navigateBack = useCallback((): void => {
     void navigate('/operations');
+  }, [navigate]);
+
+  const navigateToTelephony = useCallback((): void => {
+    void navigate('/operations/materiel/telephonie');
   }, [navigate]);
 
   const setFormField = useCallback(<Key extends keyof MaterielFormState>(
@@ -156,6 +159,7 @@ export function useMaterielListView() {
     closeAffectation,
     closeMaterielModal,
     closeRestitution,
+    canManageTelephony: hasAccessToSubsection(user, 'operations', 'telephonie'),
     countLabel: getMaterielCountLabel(tableRows.length),
     editingId,
     employeOptions,
@@ -173,6 +177,7 @@ export function useMaterielListView() {
     modalMode,
     modalOpen,
     navigateBack,
+    navigateToTelephony,
     openAffectation,
     openCreate,
     openEdit,
@@ -188,8 +193,6 @@ export function useMaterielListView() {
     setSelectedEmployeId,
     showPassword,
     tableRows,
-    telephony,
-    telephonyTrunk,
     togglePassword,
   };
 }

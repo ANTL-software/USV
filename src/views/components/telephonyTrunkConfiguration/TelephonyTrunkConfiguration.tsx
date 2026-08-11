@@ -36,8 +36,8 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
     && (form.distributionMode === 'credential_pool' || form.accounts.length === 0);
 
   return (
-    <section className="materielList__trunk" aria-label="Configuration du trunk Asterisk">
-      <div className="materielList__telephony-heading">
+    <section className="telephonyManagement__trunk" aria-label="Configuration du trunk Asterisk">
+      <div className="telephonyManagement__telephony-heading">
         <IoServerOutline />
         <div>
           <h2>Trunk opérateur et canaux partagés</h2>
@@ -45,25 +45,35 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
         </div>
       </div>
 
-      {viewModel.isLoading && <p className="materielList__telephony-loading">Chargement de la configuration trunk…</p>}
+      {viewModel.isLoading && <p className="telephonyManagement__telephony-loading">Chargement de la configuration trunk…</p>}
 
       {!viewModel.isLoading && (
         <>
-          <div className="materielList__trunk-statuses">
-            <span className={`materielList__trunk-status materielList__trunk-status--${configuration?.applyStatus || 'not_configured'}`}>
+          <div className="telephonyManagement__activation-steps" aria-label="Étapes d’activation">
+            <strong>Activation en trois étapes</strong>
+            <ol>
+              <li>Recopiez les paramètres communiqués par l’opérateur puis enregistrez-les.</li>
+              <li>Activez le trunk et appliquez-le : Asterisk contrôle réellement son enregistrement.</li>
+              <li>Lorsque l’état passe à « Appliqué », utilisez le switch Asterisk ci-dessus.</li>
+            </ol>
+            <p>Twilio reste actif jusqu’à la troisième étape. En cas d’échec, la configuration Asterisk précédente est restaurée automatiquement.</p>
+          </div>
+
+          <div className="telephonyManagement__trunk-statuses">
+            <span className={`telephonyManagement__trunk-status telephonyManagement__trunk-status--${configuration?.applyStatus || 'not_configured'}`}>
               {configuration?.applyStatus === 'applied' ? <IoCheckmarkCircleOutline /> : <IoWarningOutline />}
               {APPLY_STATUS_LABELS[configuration?.applyStatus || 'not_configured']}
             </span>
-            <span className={configuration?.runtime?.healthy ? 'materielList__trunk-status materielList__trunk-status--applied' : 'materielList__trunk-status'}>
+            <span className={configuration?.runtime?.healthy ? 'telephonyManagement__trunk-status telephonyManagement__trunk-status--applied' : 'telephonyManagement__trunk-status'}>
               <IoCloudDoneOutline />
               {configuration?.runtime?.message || 'État Asterisk indisponible'}
             </span>
-            <span className="materielList__trunk-status">
+            <span className="telephonyManagement__trunk-status">
               {configuration?.runtime?.activeChannels || 0} / {viewModel.totalChannels} canal/canaux occupé(s)
             </span>
           </div>
 
-          <div className="materielList__trunk-grid">
+          <div className="telephonyManagement__trunk-grid">
             <label>
               <span>Fournisseur</span>
               <select value={form.provider} onChange={(event) => viewModel.selectProvider(event.target.value as typeof form.provider)}>
@@ -86,6 +96,13 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
                 <option value="ip">Adresse IP autorisée</option>
               </select>
             </label>
+            {form.authMode === 'ip' && (
+              <div className="telephonyManagement__trunk-ip-help">
+                <strong>IP publique à faire autoriser par l’opérateur</strong>
+                <code>46.225.98.62</code>
+                <small>Cette autorisation est réalisée côté boxIP ou Evenmedia lors de la souscription. Aucun mot de passe SIP n’est ensuite nécessaire dans l’USV.</small>
+              </div>
+            )}
             <label>
               <span>Serveur SIP</span>
               <input value={form.sipServer} onChange={(event) => viewModel.updateField('sipServer', event.target.value)} placeholder="sip.operateur.fr" />
@@ -101,6 +118,7 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
             <label>
               <span>Numéro présenté</span>
               <input value={form.callerId} onChange={(event) => viewModel.updateField('callerId', event.target.value)} placeholder="+331…" />
+              <small>Utilisez un numéro fourni ou explicitement validé par votre opérateur.</small>
             </label>
             <label>
               <span>Contact entrant</span>
@@ -114,9 +132,21 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
             )}
           </div>
 
+          <div className="telephonyManagement__provider-guidance">
+            {form.provider === 'boxip' && (
+              <p><strong>boxIP :</strong> recopiez le serveur, le port, l’identifiant trunk, le mot de passe, le nombre de canaux et le numéro autorisé exactement comme indiqués dans votre espace client.</p>
+            )}
+            {form.provider === 'evenmedia' && (
+              <p><strong>Evenmedia :</strong> demandez une livraison compatible Asterisk en UDP / G.711 A-law, avec le registrar SIP, le mode d’authentification, le numéro présenté et le nombre de canaux.</p>
+            )}
+            {form.provider === 'custom' && (
+              <p><strong>Autre opérateur :</strong> cette configuration prend en charge SIP/UDP, G.711 A-law et une authentification par enregistrement ou adresse IP.</p>
+            )}
+          </div>
+
           {form.authMode === 'registration' && (
-            <div className="materielList__trunk-accounts">
-              <div className="materielList__trunk-subheading">
+            <div className="telephonyManagement__trunk-accounts">
+              <div className="telephonyManagement__trunk-subheading">
                 <div>
                   <strong><IoKeyOutline /> Comptes SIP mutualisés</strong>
                   <small>{viewModel.totalChannels} communication(s) simultanée(s) au total</small>
@@ -127,12 +157,12 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
               </div>
 
               {form.accounts.length === 0 && (
-                <p className="materielList__trunk-empty">Aucun credential pour le moment. Vous pouvez enregistrer le socle désactivé et ajouter le compte lors de la souscription.</p>
+                <p className="telephonyManagement__trunk-empty">Aucun credential pour le moment. Vous pouvez enregistrer le socle désactivé et ajouter le compte lors de la souscription.</p>
               )}
 
               {form.accounts.map((account, index) => (
-                <div className="materielList__trunk-account" key={account.id}>
-                  <span className="materielList__trunk-account-number">{index + 1}</span>
+                <div className="telephonyManagement__trunk-account" key={account.id}>
+                  <span className="telephonyManagement__trunk-account-number">{index + 1}</span>
                   <label>
                     <span>Libellé</span>
                     <input value={account.label} onChange={(event) => viewModel.updateAccount(account.id, 'label', event.target.value)} />
@@ -155,7 +185,7 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
                     <span>Canaux</span>
                     <input type="number" min={1} max={100} value={account.channelLimit} onChange={(event) => viewModel.updateAccount(account.id, 'channelLimit', Number(event.target.value))} />
                   </label>
-                  <button type="button" className="materielList__trunk-delete" aria-label={`Supprimer ${account.label}`} onClick={() => viewModel.removeAccount(account.id)}>
+                  <button type="button" className="telephonyManagement__trunk-delete" aria-label={`Supprimer ${account.label}`} onClick={() => viewModel.removeAccount(account.id)}>
                     <IoTrashOutline />
                   </button>
                 </div>
@@ -163,7 +193,7 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
             </div>
           )}
 
-          <label className="materielList__trunk-enable">
+          <label className="telephonyManagement__trunk-enable">
             <input type="checkbox" checked={form.enabled} onChange={(event) => viewModel.updateField('enabled', event.target.checked)} />
             <span>
               <strong>Activer le trunk lors de la prochaine application</strong>
@@ -172,24 +202,29 @@ export function TelephonyTrunkConfiguration({ viewModel }: TelephonyTrunkConfigu
           </label>
 
           {configuration?.lastError && (
-            <div className="materielList__telephony-feedback materielList__telephony-feedback--error">{configuration.lastError}</div>
+            <div className="telephonyManagement__telephony-feedback telephonyManagement__telephony-feedback--error">{configuration.lastError}</div>
           )}
-          {viewModel.error && <div className="materielList__telephony-feedback materielList__telephony-feedback--error">{viewModel.error}</div>}
-          {viewModel.successMessage && <div className="materielList__telephony-feedback materielList__telephony-feedback--success">{viewModel.successMessage}</div>}
+          {viewModel.validationMessage && viewModel.isDirty && (
+            <div className="telephonyManagement__telephony-feedback telephonyManagement__telephony-feedback--warning">
+              {viewModel.validationMessage}
+            </div>
+          )}
+          {viewModel.error && <div className="telephonyManagement__telephony-feedback telephonyManagement__telephony-feedback--error">{viewModel.error}</div>}
+          {viewModel.successMessage && <div className="telephonyManagement__telephony-feedback telephonyManagement__telephony-feedback--success">{viewModel.successMessage}</div>}
 
-          <div className="materielList__trunk-actions">
-            <button type="button" className="materielList__trunk-secondary" disabled={viewModel.isLoading || viewModel.isSaving || viewModel.isApplying} onClick={() => { void viewModel.load(); }}>
+          <div className="telephonyManagement__trunk-actions">
+            <button type="button" className="telephonyManagement__trunk-secondary" disabled={viewModel.isLoading || viewModel.isSaving || viewModel.isApplying} onClick={() => { void viewModel.load(); }}>
               <IoRefreshOutline /> Actualiser
             </button>
-            <button type="button" className="materielList__trunk-primary" disabled={!viewModel.isDirty || viewModel.isSaving || viewModel.isApplying} onClick={() => { void viewModel.save(); }}>
+            <button type="button" className="telephonyManagement__trunk-primary" disabled={!viewModel.isDirty || Boolean(viewModel.validationMessage) || viewModel.isSaving || viewModel.isApplying} onClick={() => { void viewModel.save(); }}>
               <IoSaveOutline /> {viewModel.isSaving ? 'Enregistrement…' : 'Enregistrer'}
             </button>
-            <button type="button" className="materielList__trunk-apply" disabled={viewModel.isDirty || viewModel.isSaving || viewModel.isApplying || configuration?.applyStatus === 'not_configured'} onClick={() => { void viewModel.apply(); }}>
+            <button type="button" className="telephonyManagement__trunk-apply" disabled={viewModel.isDirty || viewModel.isSaving || viewModel.isApplying || configuration?.applyStatus === 'not_configured'} onClick={() => { void viewModel.apply(); }}>
               <IoCloudDoneOutline /> {viewModel.isApplying ? 'Application…' : 'Appliquer à Asterisk'}
             </button>
           </div>
 
-          <div className="materielList__trunk-audit">
+          <div className="telephonyManagement__trunk-audit">
             <strong>Dernière application : {formatDateTime(configuration?.lastAppliedAt || null)}</strong>
             {(configuration?.events || []).slice(0, 5).map((event) => (
               <div key={event.id}>

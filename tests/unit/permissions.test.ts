@@ -111,6 +111,30 @@ test('les écrans de modification RH exigent la permission gestion des accès', 
   assert.equal(hasAccessToPath(gestionnaireRh, '/operations/postes/2'), true);
 });
 
+test('la téléphonie exige son droit dédié en plus du droit matériel', () => {
+  const materielOnly = createUser({
+    poste: {
+      id_poste: 12,
+      libelle_poste: 'Gestion matériel',
+      permissions: {
+        operations: { enabled: true, subsections: ['materiel'] },
+      },
+    },
+  });
+  const telephonyManager = createUser({
+    poste: {
+      ...materielOnly.poste!,
+      permissions: {
+        operations: { enabled: true, subsections: ['materiel', 'telephonie'] },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(materielOnly, '/operations/materiel'), true);
+  assert.equal(hasAccessToPath(materielOnly, '/operations/materiel/telephonie'), false);
+  assert.equal(hasAccessToPath(telephonyManager, '/operations/materiel/telephonie'), true);
+});
+
 test('les sous-applications commerciales exigent leur droit dédié', () => {
   const user = createUser({
     poste: {
@@ -192,6 +216,7 @@ test('la matrice des postes recense chaque carte de hub comme sous-application',
     'employes',
     'postes',
     'materiel',
+    'telephonie',
   ]);
 });
 

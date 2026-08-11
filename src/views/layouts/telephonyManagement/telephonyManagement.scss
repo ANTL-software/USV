@@ -1,0 +1,524 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+#telephonyManagement {
+  @include mixins.mainView;
+}
+#telephonyManagement main {
+  padding: 1.5em 1em;
+}
+#telephonyManagement .telephonyManagement__container {
+  @include mixins.centeredContainer(1300px);
+}
+#telephonyManagement .telephonyManagement__back {
+  margin-bottom: 1em;
+}
+#telephonyManagement .telephonyManagement__page-heading {
+  margin-bottom: 1.5rem;
+}
+#telephonyManagement .telephonyManagement__page-heading h1 {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  margin: 0 0 0.25em;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+#telephonyManagement .telephonyManagement__page-heading p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+}
+#telephonyManagement .telephonyManagement__telephony {
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+#telephonyManagement .telephonyManagement__telephony-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+#telephonyManagement .telephonyManagement__telephony-heading > svg {
+  flex: 0 0 auto;
+  margin-top: 0.1rem;
+  color: vars.$utilsPrimary;
+  font-size: 1.6rem;
+}
+#telephonyManagement .telephonyManagement__telephony-heading h2,
+#telephonyManagement .telephonyManagement__telephony-heading p {
+  margin: 0;
+}
+#telephonyManagement .telephonyManagement__telephony-heading h2 {
+  font-size: 1.1rem;
+}
+#telephonyManagement .telephonyManagement__telephony-heading p,
+#telephonyManagement .telephonyManagement__telephony-loading,
+#telephonyManagement .telephonyManagement__telephony-updating {
+  color: vars.$fontColorSecondary;
+  font-size: 0.85rem;
+}
+#telephonyManagement .telephonyManagement__provider-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: stretch;
+  gap: 1rem;
+}
+#telephonyManagement .telephonyManagement__provider-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 10px;
+  background: #f8fafc;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+#telephonyManagement .telephonyManagement__provider-card--active {
+  border-color: vars.$utilsPrimary;
+  background: #eff6ff;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.12);
+}
+#telephonyManagement .telephonyManagement__provider-card > span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+#telephonyManagement .telephonyManagement__provider-card > strong {
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+}
+#telephonyManagement .telephonyManagement__provider-card > small {
+  min-height: 2.5rem;
+  color: vars.$fontColorSecondary;
+  line-height: 1.4;
+}
+#telephonyManagement .telephonyManagement__provider-card > em {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: auto;
+  padding-top: 0.45rem;
+  font-size: 0.78rem;
+  font-style: normal;
+  font-weight: 600;
+}
+#telephonyManagement .telephonyManagement__provider-ready {
+  color: #15803d;
+}
+#telephonyManagement .telephonyManagement__provider-warning {
+  color: #b45309;
+}
+#telephonyManagement .telephonyManagement__provider-toggle {
+  display: grid;
+  grid-template-columns: auto 54px auto;
+  align-items: center;
+  align-self: center;
+  gap: 0.5rem;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+#telephonyManagement .telephonyManagement__provider-toggle input {
+  position: absolute;
+  opacity: 0;
+}
+#telephonyManagement .telephonyManagement__provider-toggle i {
+  position: relative;
+  width: 54px;
+  height: 28px;
+  border-radius: 999px;
+  background: #0ea5e9;
+  box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.1);
+  transition: background 0.2s ease;
+}
+#telephonyManagement .telephonyManagement__provider-toggle i::before {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 5px rgba(15, 23, 42, 0.25);
+  content: '';
+  transition: transform 0.2s ease;
+}
+#telephonyManagement .telephonyManagement__provider-toggle input:checked + i {
+  background: #16a34a;
+}
+#telephonyManagement .telephonyManagement__provider-toggle input:checked + i::before {
+  transform: translateX(26px);
+}
+#telephonyManagement .telephonyManagement__provider-toggle input:focus-visible + i {
+  outline: 3px solid rgba(37, 99, 235, 0.25);
+  outline-offset: 3px;
+}
+#telephonyManagement .telephonyManagement__provider-toggle input:disabled + i {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+#telephonyManagement .telephonyManagement__telephony-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82rem;
+}
+#telephonyManagement .telephonyManagement__telephony-notice p {
+  margin: 0;
+  line-height: 1.45;
+}
+#telephonyManagement .telephonyManagement__telephony-notice--warning {
+  background: #fff7ed;
+  color: #9a3412;
+}
+#telephonyManagement .telephonyManagement__telephony-notice--warning strong {
+  display: block;
+  margin-bottom: 0.2rem;
+}
+#telephonyManagement .telephonyManagement__telephony-feedback {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin: 0.85rem 0 0;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.84rem;
+}
+#telephonyManagement .telephonyManagement__telephony-feedback button {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: underline;
+}
+#telephonyManagement .telephonyManagement__telephony-feedback--error {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+#telephonyManagement .telephonyManagement__telephony-feedback--success {
+  background: #dcfce7;
+  color: #166534;
+}
+#telephonyManagement .telephonyManagement__trunk {
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+#telephonyManagement .telephonyManagement__trunk-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+#telephonyManagement .telephonyManagement__trunk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+#telephonyManagement .telephonyManagement__trunk-status--applied {
+  background: #dcfce7;
+  color: #166534;
+}
+#telephonyManagement .telephonyManagement__trunk-status--pending,
+#telephonyManagement .telephonyManagement__trunk-status--applying {
+  background: #fef3c7;
+  color: #92400e;
+}
+#telephonyManagement .telephonyManagement__trunk-status--failed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+#telephonyManagement .telephonyManagement__trunk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+#telephonyManagement .telephonyManagement__trunk-grid label,
+#telephonyManagement .telephonyManagement__trunk-account label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+#telephonyManagement .telephonyManagement__trunk-grid label > span,
+#telephonyManagement .telephonyManagement__trunk-account label > span {
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+#telephonyManagement .telephonyManagement__trunk-grid input,
+#telephonyManagement .telephonyManagement__trunk-grid select,
+#telephonyManagement .telephonyManagement__trunk-account input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+#telephonyManagement .telephonyManagement__trunk-grid input:focus,
+#telephonyManagement .telephonyManagement__trunk-grid select:focus,
+#telephonyManagement .telephonyManagement__trunk-account input:focus {
+  border-color: vars.$utilsPrimary;
+  outline: 3px solid rgba(37, 99, 235, 0.12);
+}
+#telephonyManagement .telephonyManagement__trunk-accounts {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+#telephonyManagement .telephonyManagement__trunk-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+#telephonyManagement .telephonyManagement__trunk-subheading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+#telephonyManagement .telephonyManagement__trunk-subheading strong {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+#telephonyManagement .telephonyManagement__trunk-subheading small {
+  color: vars.$fontColorSecondary;
+}
+#telephonyManagement .telephonyManagement__trunk-subheading button,
+#telephonyManagement .telephonyManagement__trunk-secondary,
+#telephonyManagement .telephonyManagement__trunk-primary,
+#telephonyManagement .telephonyManagement__trunk-apply {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 700;
+}
+#telephonyManagement .telephonyManagement__trunk-account {
+  display: grid;
+  grid-template-columns: 30px minmax(120px, 0.8fr) minmax(150px, 1fr) minmax(180px, 1fr) 90px 38px;
+  align-items: end;
+  gap: 0.65rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+#telephonyManagement .telephonyManagement__trunk-account-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+#telephonyManagement .telephonyManagement__trunk-delete {
+  display: grid;
+  width: 38px;
+  height: 40px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #fee2e2;
+  color: #b91c1c;
+  cursor: pointer;
+}
+#telephonyManagement .telephonyManagement__trunk-empty {
+  margin: 0;
+  padding: 0.8rem;
+  border-radius: 7px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.82rem;
+}
+#telephonyManagement .telephonyManagement__trunk-enable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+}
+#telephonyManagement .telephonyManagement__trunk-enable input {
+  margin-top: 0.15rem;
+}
+#telephonyManagement .telephonyManagement__trunk-enable span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+#telephonyManagement .telephonyManagement__trunk-enable small {
+  color: #9a3412;
+  line-height: 1.4;
+}
+#telephonyManagement .telephonyManagement__trunk-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+#telephonyManagement .telephonyManagement__trunk-primary {
+  border-color: vars.$utilsPrimary;
+  background: vars.$utilsPrimary;
+  color: #fff;
+}
+#telephonyManagement .telephonyManagement__trunk-apply {
+  border-color: #15803d;
+  background: #15803d;
+  color: #fff;
+}
+#telephonyManagement .telephonyManagement__trunk-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+#telephonyManagement .telephonyManagement__trunk-audit {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.78rem;
+}
+#telephonyManagement .telephonyManagement__trunk-audit > div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.7rem;
+}
+#telephonyManagement .telephonyManagement__trunk-audit time {
+  color: #64748b;
+}
+@media (max-width: vars.$tabletWidth) {
+  #telephonyManagement .telephonyManagement__provider-grid {
+    grid-template-columns: 1fr;
+  }
+  #telephonyManagement .telephonyManagement__provider-toggle {
+    justify-self: center;
+  }
+  #telephonyManagement .telephonyManagement__trunk-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  #telephonyManagement .telephonyManagement__trunk-account {
+    grid-template-columns: 30px 1fr 1fr;
+  }
+}
+@media (max-width: vars.$mobileWidth) {
+  #telephonyManagement .telephonyManagement__trunk-grid,
+  #telephonyManagement .telephonyManagement__trunk-account {
+    grid-template-columns: 1fr;
+  }
+  #telephonyManagement .telephonyManagement__trunk-subheading,
+  #telephonyManagement .telephonyManagement__trunk-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  #telephonyManagement .telephonyManagement__trunk-account-number {
+    display: none;
+  }
+  #telephonyManagement .telephonyManagement__trunk-audit > div {
+    grid-template-columns: 1fr;
+  }
+}
+#telephonyManagement .telephonyManagement__activation-steps {
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 0.84rem;
+}
+#telephonyManagement .telephonyManagement__activation-steps ol {
+  margin: 0.55rem 0;
+  padding-left: 1.25rem;
+}
+#telephonyManagement .telephonyManagement__activation-steps li {
+  margin: 0.25rem 0;
+}
+#telephonyManagement .telephonyManagement__activation-steps p {
+  margin: 0;
+  color: #475569;
+}
+#telephonyManagement .telephonyManagement__trunk-grid label > small {
+  color: vars.$fontColorSecondary;
+  font-size: 0.72rem;
+  line-height: 1.35;
+}
+#telephonyManagement .telephonyManagement__trunk-ip-help {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.2rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid #bfdbfe;
+  border-radius: 7px;
+  background: #eff6ff;
+  font-size: 0.75rem;
+}
+#telephonyManagement .telephonyManagement__trunk-ip-help code {
+  color: #1d4ed8;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+#telephonyManagement .telephonyManagement__trunk-ip-help small {
+  color: #475569;
+  line-height: 1.35;
+}
+#telephonyManagement .telephonyManagement__provider-guidance {
+  margin-top: 0.85rem;
+  padding: 0.7rem 0.85rem;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+#telephonyManagement .telephonyManagement__provider-guidance p {
+  margin: 0;
+}
+#telephonyManagement .telephonyManagement__telephony-feedback--warning {
+  background: #fef3c7;
+  color: #92400e;
+}

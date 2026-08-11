@@ -48,5 +48,6 @@ export { Qualite } from './qualite/index.ts';
 export { QualiteEcoutes } from './qualiteEcoutes/index.ts';
 export { QualiteStats } from './qualiteStats/index.ts';
 export { SupervisionView } from './supervision/index.ts';
+export { TelephonyManagement } from './telephonyManagement/index.ts';
 export { UpdateCourrier } from './updateCourrier/index.ts';
 export { VigieView } from './vigie/index.ts';

@@ -72,6 +72,7 @@ import {
   QualiteEcoutes as QualiteEcoutesWithAuth,
   QualiteStats as QualiteStatsWithAuth,
   SupervisionView as SupervisionViewWithAuth,
+  TelephonyManagement as TelephonyManagementWithAuth,
   TacheForm as TacheFormWithAuth,
   TachesKanban as TachesKanbanWithAuth,
   UpdateCourrier as UpdateCourrierWithAuth,
@@ -163,6 +164,7 @@ function App(): ReactElement {
         <Route path={"operations/postes/new"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/postes/:id"} element={<PosteFormWithAuth />}></Route>
         <Route path={"operations/materiel"} element={<MaterielListWithAuth />}></Route>
+        <Route path={"operations/materiel/telephonie"} element={<TelephonyManagementWithAuth />}></Route>
         <Route path={"operations/commandes"} element={<CommandesListWithAuth />}></Route>
         <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>

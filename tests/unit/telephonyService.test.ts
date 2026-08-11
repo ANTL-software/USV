@@ -4,6 +4,7 @@ import { pathToFileURL } from 'node:url';
 import test, { mock } from 'node:test';
 
 import type {
+  SaveTelephonyTrunkConfiguration,
   TelephonyOperationsConfiguration,
   TelephonyTrunkConfiguration,
   UpdateTelephonyProvider,
@@ -16,6 +17,12 @@ interface ApiResponse<T> {
 interface TelephonyApiPayload {
   success: boolean;
   data?: TelephonyOperationsConfiguration;
+  message?: string;
+}
+
+interface TelephonyTrunkApiPayload {
+  success: boolean;
+  data?: TelephonyTrunkConfiguration;
   message?: string;
 }
 
@@ -77,9 +84,16 @@ mock.module(apiModuleUrl, {
       requests.push({ method: 'GET', url });
       return { data: { success: true, data: storedConfiguration } };
     },
-    putRequest: async (url: string, payload: UpdateTelephonyProvider): Promise<ApiResponse<TelephonyApiPayload>> => {
+    putRequest: async (
+      url: string,
+      payload: UpdateTelephonyProvider | SaveTelephonyTrunkConfiguration,
+    ): Promise<ApiResponse<TelephonyApiPayload | TelephonyTrunkApiPayload>> => {
       requests.push({ method: 'PUT', url, payload });
-      storedConfiguration = createConfiguration(payload.provider);
+      if (url === '/telephony/trunk-configuration') {
+        return { data: { success: true, data: trunkConfiguration } };
+      }
+      const providerPayload = payload as UpdateTelephonyProvider;
+      storedConfiguration = createConfiguration(providerPayload.provider);
       return { data: { success: true, data: storedConfiguration } };
     },
     postRequest: async (url: string, payload: unknown): Promise<ApiResponse<{ success: boolean; data: TelephonyTrunkConfiguration }>> => {
@@ -119,5 +133,37 @@ test('l’application trunk utilise une mutation CSRF séparée', async () => {
     method: 'POST',
     url: '/telephony/trunk-configuration/apply',
     payload: {},
+  });
+});
+
+test('les credentials trunk sont enregistrés par la route dédiée', async () => {
+  const { saveTelephonyTrunkConfigurationService } = await import('../../src/API/services/telephony.service.ts');
+  const payload: SaveTelephonyTrunkConfiguration = {
+    provider: 'boxip',
+    distributionMode: 'single_account',
+    authMode: 'registration',
+    sipServer: '51.255.5.99',
+    sipPort: 5060,
+    fromDomain: '51.255.5.99',
+    callerId: '+33123456789',
+    contactUser: '33123456789',
+    maxChannels: 5,
+    enabled: true,
+    accounts: [{
+      id: 'boxip-main',
+      label: 'boxIP principal',
+      username: 'antl-boxip',
+      password: 'sip-secret',
+      channelLimit: 5,
+      enabled: true,
+    }],
+  };
+  const configuration = await saveTelephonyTrunkConfigurationService(payload);
+
+  assert.equal(configuration.applyStatus, 'pending');
+  assert.deepEqual(requests.at(-1), {
+    method: 'PUT',
+    url: '/telephony/trunk-configuration',
+    payload,
   });
 });

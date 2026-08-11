@@ -50,6 +50,8 @@ export { useTelephonyProviderConfiguration } from './useTelephonyProviderConfigu
 export type { TelephonyProviderConfigurationViewModel } from './useTelephonyProviderConfiguration.ts';
 export { useTelephonyTrunkConfiguration } from './useTelephonyTrunkConfiguration.ts';
 export type { TelephonyTrunkConfigurationViewModel } from './useTelephonyTrunkConfiguration.ts';
+export { useTelephonyManagementView } from './useTelephonyManagementView.ts';
+export type { TelephonyManagementViewModel } from './useTelephonyManagementView.ts';
 export { useBookingContext } from './useBookingContext.ts';
 export { useHeaderView } from './useHeaderView.ts';
 export type { HeaderViewModel } from './useHeaderView.ts';

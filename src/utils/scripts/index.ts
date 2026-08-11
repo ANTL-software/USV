@@ -603,3 +603,4 @@ export { buildHeaderMobileNavigation, buildSubNavigation, shouldRenderSubNavigat
 export type { NavigationGroup, NavigationIconKey, NavigationItem } from './navigationView.ts';
 export { createEmailComposerForm, getEmailComposerCopy, getEmailDefaultSubject, getEmailSendErrorMessage, validateEmailComposer } from './emailComposer.ts';
 export type { ProjectMemberOption } from './projetDetails.ts';
+export { getTelephonyTrunkValidationMessage } from './telephonyTrunk.ts';

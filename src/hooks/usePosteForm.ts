@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getPosteByIdService, createPosteService, updatePosteService } from '../API/services/index.ts';
 import type { PermissionRecord, Poste, TypePoste } from '../utils/types/index.ts';
+import { useUserContext } from './useUserContext.ts';
 
 interface PosteFormState {
   libelle_poste: string;
@@ -39,6 +40,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
     'employes',
     'postes',
     'materiel',
+    'telephonie',
   ],
   commercial: ['publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
   incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
@@ -62,6 +64,7 @@ const INITIAL_FORM: PosteFormState = {
 
 export function usePosteForm() {
   const navigate = useNavigate();
+  const { refreshUser } = useUserContext();
   const { id } = useParams<{ id: string }>();
   const isEdit = !!id;
 
@@ -126,6 +129,9 @@ export function usePosteForm() {
         if (QUALITY_SUBSECTIONS.includes(subsectionId) && !subsections.includes('qualite')) {
           subsections.push('qualite');
         }
+        if (subsectionId === 'telephonie' && !subsections.includes('materiel')) {
+          subsections.push('materiel');
+        }
       } else {
         subsections.splice(index, 1);
         if (subsectionId === 'qualite') {
@@ -133,6 +139,10 @@ export function usePosteForm() {
             const qualityIndex = subsections.indexOf(qualityPermission);
             if (qualityIndex !== -1) subsections.splice(qualityIndex, 1);
           });
+        }
+        if (subsectionId === 'materiel') {
+          const telephonyIndex = subsections.indexOf('telephonie');
+          if (telephonyIndex !== -1) subsections.splice(telephonyIndex, 1);
         }
       }
 
@@ -157,6 +167,7 @@ export function usePosteForm() {
       };
       if (isEdit) {
         await updatePosteService(Number(id), payload);
+        await refreshUser();
         setSuccess('Poste mis à jour avec succès.');
       } else {
         await createPosteService(payload);

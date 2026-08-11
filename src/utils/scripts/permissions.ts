@@ -53,6 +53,7 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
       { id: 'employes', name: 'Employés', path: '/operations/employes' },
       { id: 'postes', name: 'Postes & planning', path: '/operations/postes' },
       { id: 'materiel', name: 'Matériel', path: '/operations/materiel' },
+      { id: 'telephonie', name: 'Téléphonie', path: '/operations/materiel/telephonie' },
     ],
   },
   {
@@ -212,6 +213,10 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     if (cleanPath.startsWith('/operations/demandes-absence')) return hasAccessToSubsection(user, 'operations', 'demandes-absence');
     if (cleanPath.startsWith('/operations/employes')) return hasAccessToSubsection(user, 'operations', 'employes');
     if (cleanPath.startsWith('/operations/postes')) return hasAccessToSubsection(user, 'operations', 'postes');
+    if (cleanPath.startsWith('/operations/materiel/telephonie')) {
+      return hasAccessToSubsection(user, 'operations', 'materiel')
+        && hasAccessToSubsection(user, 'operations', 'telephonie');
+    }
     if (cleanPath.startsWith('/operations/materiel')) return hasAccessToSubsection(user, 'operations', 'materiel');
     return false;
   }

@@ -5,28 +5,18 @@ import {
   getTelephonyOperationsConfigurationService,
   saveTelephonyTrunkConfigurationService,
 } from '../API/services/index.ts';
-import { getErrorMessage } from '../utils/scripts/index.ts';
+import { getErrorMessage, getTelephonyTrunkValidationMessage } from '../utils/scripts/index.ts';
 import type {
   SaveTelephonyTrunkConfiguration,
   TelephonyTrunkAccount,
-  TelephonyTrunkAuthMode,
   TelephonyTrunkConfiguration,
   TelephonyTrunkDistributionMode,
+  TelephonyTrunkForm,
   TelephonyTrunkProvider,
 } from '../utils/types/index.ts';
 
-interface TelephonyTrunkForm {
-  provider: TelephonyTrunkProvider;
-  distributionMode: TelephonyTrunkDistributionMode;
-  authMode: TelephonyTrunkAuthMode;
-  sipServer: string;
-  sipPort: number;
-  fromDomain: string;
-  callerId: string;
-  contactUser: string;
-  maxChannels: number;
-  enabled: boolean;
-  accounts: TelephonyTrunkAccount[];
+interface UseTelephonyTrunkConfigurationOptions {
+  onApplied?: () => Promise<void>;
 }
 
 const EMPTY_FORM: TelephonyTrunkForm = {
@@ -89,7 +79,10 @@ const buildPayload = (form: TelephonyTrunkForm): SaveTelephonyTrunkConfiguration
   })),
 });
 
-export function useTelephonyTrunkConfiguration() {
+export function useTelephonyTrunkConfiguration(
+  options: UseTelephonyTrunkConfigurationOptions = {},
+) {
+  const { onApplied } = options;
   const [configuration, setConfiguration] = useState<TelephonyTrunkConfiguration | null>(null);
   const [form, setForm] = useState<TelephonyTrunkForm>(EMPTY_FORM);
   const [isLoading, setIsLoading] = useState(true);
@@ -185,6 +178,11 @@ export function useTelephonyTrunkConfiguration() {
   }, []);
 
   const save = useCallback(async (): Promise<void> => {
+    const validationMessage = getTelephonyTrunkValidationMessage(form);
+    if (validationMessage) {
+      setError(validationMessage);
+      return;
+    }
     setIsSaving(true);
     setError(null);
     setSuccessMessage(null);
@@ -217,6 +215,9 @@ export function useTelephonyTrunkConfiguration() {
       const applied = await applyTelephonyTrunkConfigurationService();
       setConfiguration(applied);
       setForm(buildForm(applied));
+      if (onApplied) {
+        await onApplied().catch(() => undefined);
+      }
       setSuccessMessage(applied.enabled ? 'Configuration appliquée et connexion SIP contrôlée.' : 'Trunk désactivé et port SIP refermé.');
     } catch (applyError) {
       setError(getErrorMessage(applyError, 'Impossible d’appliquer la configuration trunk'));
@@ -224,11 +225,12 @@ export function useTelephonyTrunkConfiguration() {
     } finally {
       setIsApplying(false);
     }
-  }, [form.enabled, isDirty, load]);
+  }, [form.enabled, isDirty, load, onApplied]);
 
   const totalChannels = form.authMode === 'registration' && form.accounts.length > 0
     ? form.accounts.filter((account) => account.enabled).reduce((total, account) => total + account.channelLimit, 0)
     : form.maxChannels;
+  const validationMessage = getTelephonyTrunkValidationMessage(form);
 
   return useMemo(() => ({
     addAccount,
@@ -249,6 +251,7 @@ export function useTelephonyTrunkConfiguration() {
     totalChannels,
     updateAccount,
     updateField,
+    validationMessage,
   }), [
     addAccount,
     apply,
@@ -268,6 +271,7 @@ export function useTelephonyTrunkConfiguration() {
     totalChannels,
     updateAccount,
     updateField,
+    validationMessage,
   ]);
 }
 

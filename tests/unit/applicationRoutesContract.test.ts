@@ -32,6 +32,7 @@ const EXPECTED_ROUTES = [
   'operations/postes/new',
   'operations/postes/:id',
   'operations/materiel',
+  'operations/materiel/telephonie',
   'operations/commandes',
   'operations/commandes/details/:id',
   'operations/qualite/signalements',

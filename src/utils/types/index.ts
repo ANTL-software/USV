@@ -473,6 +473,7 @@ export type {
   TelephonyTrunkConfiguration,
   TelephonyTrunkDistributionMode,
   TelephonyTrunkEvent,
+  TelephonyTrunkForm,
   TelephonyTrunkProvider,
   TelephonyTrunkRuntime,
   TelephonyTrunkRuntimeAccount,

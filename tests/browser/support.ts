@@ -49,6 +49,7 @@ export const ADMIN_USER = {
           'employes',
           'postes',
           'materiel',
+          'telephonie',
         ],
       },
       projets: { enabled: true },

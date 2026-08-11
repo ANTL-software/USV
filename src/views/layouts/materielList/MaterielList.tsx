@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { IoAdd, IoLaptopOutline } from 'react-icons/io5';
+import { IoAdd, IoCallOutline, IoLaptopOutline } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 
 import './materielList.scss';
@@ -14,8 +14,6 @@ import {
   MaterielFormModal,
   MaterielTable,
   SubNav,
-  TelephonyProviderSwitch,
-  TelephonyTrunkConfiguration,
 } from '../../components/index.ts';
 
 function MaterielList(): ReactElement {
@@ -32,10 +30,13 @@ function MaterielList(): ReactElement {
           </div>
           <div className="materielList__header">
             <div><h1><IoLaptopOutline /> Matériel</h1><p className="materielList__subtitle">{viewModel.countLabel}</p></div>
-            <Button style="gradient" onClick={viewModel.openCreate}><IoAdd /> Ajouter un matériel</Button>
+            <div className="materielList__header-actions">
+              {viewModel.canManageTelephony && (
+                <Button style="white" onClick={viewModel.navigateToTelephony}><IoCallOutline /> Gestion de la téléphonie</Button>
+              )}
+              <Button style="gradient" onClick={viewModel.openCreate}><IoAdd /> Ajouter un matériel</Button>
+            </div>
           </div>
-          <TelephonyProviderSwitch viewModel={viewModel.telephony} />
-          <TelephonyTrunkConfiguration viewModel={viewModel.telephonyTrunk} />
           {viewModel.materielStore.error && <div className="materielList__error">{viewModel.materielStore.error}</div>}
           <MaterielTable viewModel={viewModel} />
         </div>

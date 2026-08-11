@@ -158,3 +158,17 @@ export interface SaveTelephonyTrunkConfiguration {
   enabled: boolean;
   accounts: SaveTelephonyTrunkAccount[];
 }
+
+export interface TelephonyTrunkForm {
+  provider: TelephonyTrunkProvider;
+  distributionMode: TelephonyTrunkDistributionMode;
+  authMode: TelephonyTrunkAuthMode;
+  sipServer: string;
+  sipPort: number;
+  fromDomain: string;
+  callerId: string;
+  contactUser: string;
+  maxChannels: number;
+  enabled: boolean;
+  accounts: TelephonyTrunkAccount[];
+}

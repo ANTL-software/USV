@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const browserPort = Number.parseInt(process.env.USV_BROWSER_PORT ?? '5174', 10);
+const browserPort = Number.parseInt(process.env.USV_BROWSER_PORT ?? '5175', 10);
 const browserBaseUrl = `http://127.0.0.1:${browserPort}`;
 
 export default defineConfig({

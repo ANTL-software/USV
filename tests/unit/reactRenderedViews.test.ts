@@ -650,6 +650,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
     totalChannels: 5,
     updateAccount: noop,
     updateField: noop,
+    validationMessage: null,
   };
   const html = renderToStaticMarkup(createElement(TelephonyTrunkConfiguration, { viewModel }));
 
@@ -658,4 +659,5 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
   assert.match(html, /2 \/ 5 canal/);
   assert.match(html, /Mot de passe enregistré/);
   assert.match(html, /Configuration trunk appliquée/);
+  assert.match(html, /Activation en trois étapes/);
 });
