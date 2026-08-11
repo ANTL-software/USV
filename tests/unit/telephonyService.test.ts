@@ -5,6 +5,7 @@ import test, { mock } from 'node:test';
 
 import type {
   TelephonyOperationsConfiguration,
+  TelephonyTrunkConfiguration,
   UpdateTelephonyProvider,
 } from '../../src/utils/types/index.ts';
 
@@ -19,6 +20,26 @@ interface TelephonyApiPayload {
 }
 
 const requests: Array<{ method: string; payload?: unknown; url: string }> = [];
+
+const trunkConfiguration: TelephonyTrunkConfiguration = {
+  provider: 'boxip',
+  distributionMode: 'single_account',
+  authMode: 'registration',
+  sipServer: '51.255.5.99',
+  sipPort: 5060,
+  transport: 'udp',
+  fromDomain: '51.255.5.99',
+  callerId: '',
+  contactUser: '',
+  maxChannels: 5,
+  enabled: false,
+  applyStatus: 'pending',
+  lastAppliedAt: null,
+  lastError: null,
+  accounts: [],
+  runtime: null,
+  events: [],
+};
 
 const createConfiguration = (provider: 'twilio' | 'asterisk'): TelephonyOperationsConfiguration => ({
   provider,
@@ -43,7 +64,8 @@ const createConfiguration = (provider: 'twilio' | 'asterisk'): TelephonyOperatio
       recording: provider === 'twilio',
     },
   },
-  activationScope: 'new-browser-sessions',
+  trunkConfiguration,
+  activationScope: 'live-idle-sessions',
 });
 
 let storedConfiguration = createConfiguration('twilio');
@@ -59,6 +81,10 @@ mock.module(apiModuleUrl, {
       requests.push({ method: 'PUT', url, payload });
       storedConfiguration = createConfiguration(payload.provider);
       return { data: { success: true, data: storedConfiguration } };
+    },
+    postRequest: async (url: string, payload: unknown): Promise<ApiResponse<{ success: boolean; data: TelephonyTrunkConfiguration }>> => {
+      requests.push({ method: 'POST', url, payload });
+      return { data: { success: true, data: trunkConfiguration } };
     },
   },
 });
@@ -81,5 +107,17 @@ test('le switch persiste Asterisk via la route protégée', async () => {
     method: 'PUT',
     url: '/telephony/configuration',
     payload: { provider: 'asterisk' },
+  });
+});
+
+test('l’application trunk utilise une mutation CSRF séparée', async () => {
+  const { applyTelephonyTrunkConfigurationService } = await import('../../src/API/services/telephony.service.ts');
+  const configuration = await applyTelephonyTrunkConfigurationService();
+
+  assert.equal(configuration.provider, 'boxip');
+  assert.deepEqual(requests.at(-1), {
+    method: 'POST',
+    url: '/telephony/trunk-configuration/apply',
+    payload: {},
   });
 });

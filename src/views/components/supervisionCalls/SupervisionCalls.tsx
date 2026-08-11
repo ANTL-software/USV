@@ -24,6 +24,7 @@ export function SupervisionCalls({ viewModel }: SupervisionCallsProps): ReactEle
                 <th>Prospect</th>
                 <th>Téléphone</th>
                 <th>Origine</th>
+                <th>Transport</th>
                 <th>Qualification</th>
                 <th>Fin système</th>
                 <th>Bridge agent</th>
@@ -44,6 +45,7 @@ export function SupervisionCalls({ viewModel }: SupervisionCallsProps): ReactEle
                         {call.originLabel}
                       </span>
                     </td>
+                    <td>{call.providerLabel}</td>
                     <td>
                       <span className="origin-badge" style={{ backgroundColor: call.classificationColor }}>
                         {call.classificationLabel}
@@ -58,7 +60,7 @@ export function SupervisionCalls({ viewModel }: SupervisionCallsProps): ReactEle
                     <td className="calls-duration">{call.durationLabel}</td>
                     <td>
                       {call.whisperAvailability === 'unavailable' && (
-                        <span className="no-whisper-badge" title="Identifiant d'appel Twilio non disponible">
+                        <span className="no-whisper-badge" title={call.whisperUnavailableLabel}>
                           Non connectable
                         </span>
                       )}

@@ -145,6 +145,8 @@ test('les appels préparent classification origine durée et disponibilité whis
     createCall({ twilio_call_sid: undefined }),
     createCall({ id_appel: 11, origine_appel: 'rappel', call_classification: 'svi_detecte', twilio_call_sid: 'CA1' }),
     createCall({ id_appel: 12, twilio_call_sid: 'CA2', prospect_call_sid: 'CA3', ended_by_system: true, end_reason: 'amd_fax_auto' }),
+    createCall({ id_appel: 13, telephony_provider: 'asterisk', provider_call_id: 'ast_12345678' }),
+    createCall({ id_appel: 14, telephony_provider: 'asterisk', provider_call_id: 'ast_87654321', bridged_to_agent_at: '2026-08-11T10:00:00.000Z' }),
   ]);
 
   assert.equal(rows[0].whisperAvailability, 'unavailable');
@@ -154,6 +156,9 @@ test('les appels préparent classification origine durée et disponibilité whis
   assert.equal(rows[2].whisperAvailability, 'available');
   assert.equal(rows[2].systemEndLabel, 'amd_fax_auto');
   assert.equal(rows[2].durationLabel, '2:05');
+  assert.equal(rows[3].providerLabel, 'Asterisk');
+  assert.equal(rows[3].whisperAvailability, 'pending');
+  assert.equal(rows[4].whisperAvailability, 'available');
   assert.equal(formatSupervisionBridgeLabel(), 'Pas encore');
 });
 

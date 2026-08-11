@@ -456,9 +456,26 @@ export type {
 } from './devis.types.ts';
 
 export type {
+  AsteriskIceServer,
+  AsteriskSipSession,
+  AsteriskTelephonySession,
+  AsteriskWhisperSession,
   TelephonyConfiguration,
   TelephonyOperationsConfiguration,
   TelephonyProvider,
   TelephonyProviderReadiness,
   UpdateTelephonyProvider,
+  SaveTelephonyTrunkAccount,
+  SaveTelephonyTrunkConfiguration,
+  TelephonyTrunkAccount,
+  TelephonyTrunkApplyStatus,
+  TelephonyTrunkAuthMode,
+  TelephonyTrunkConfiguration,
+  TelephonyTrunkDistributionMode,
+  TelephonyTrunkEvent,
+  TelephonyTrunkProvider,
+  TelephonyTrunkRuntime,
+  TelephonyTrunkRuntimeAccount,
+  TwilioWhisperSession,
+  WhisperSession,
 } from './telephony.types.ts';

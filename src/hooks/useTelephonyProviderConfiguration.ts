@@ -11,8 +11,17 @@ import type {
 } from '../utils/types/index.ts';
 
 const getConfirmationMessage = (provider: TelephonyProvider): string => provider === 'asterisk'
-  ? 'Basculer les nouvelles sessions d’appel vers Asterisk ? Les agents devront recharger le Script. Les appels déjà en cours ne seront pas coupés.'
-  : 'Revenir à Twilio pour les nouvelles sessions d’appel ? Les agents devront recharger le Script.';
+  ? 'Basculer les sessions disponibles vers Asterisk ? Le Script appliquera le changement automatiquement. Les appels déjà en cours ne seront pas coupés.'
+  : 'Revenir à Twilio ? Le Script appliquera automatiquement le changement aux agents qui ne sont pas en appel.';
+
+const getAsteriskStatusLabel = (
+  readiness: TelephonyOperationsConfiguration['providers']['asterisk'] | undefined,
+): string => {
+  if (readiness?.trunkConfigured) return 'Navigateur, TURN et trunk prêts';
+  if (readiness?.simulationMode) return 'Pilote sans trunk prêt';
+  if (readiness?.browserConfigured) return 'Navigateur et TURN prêts, trunk absent';
+  return 'Configuration Asterisk incomplète';
+};
 
 export function useTelephonyProviderConfiguration() {
   const [configuration, setConfiguration] = useState<TelephonyOperationsConfiguration | null>(null);
@@ -55,8 +64,8 @@ export function useTelephonyProviderConfiguration() {
       setConfiguration(updatedConfiguration);
       setSuccessMessage(
         provider === 'asterisk'
-          ? 'Asterisk est sélectionné. Les agents doivent maintenant recharger le Script.'
-          : 'Twilio est sélectionné. Les agents doivent maintenant recharger le Script.',
+          ? 'Asterisk est sélectionné. Les agents disponibles basculeront automatiquement sous 15 secondes.'
+          : 'Twilio est sélectionné. Les agents disponibles basculeront automatiquement sous 15 secondes.',
       );
     } catch (updateError) {
       setError(getErrorMessage(updateError, 'Impossible de changer le fournisseur téléphonie'));
@@ -66,6 +75,14 @@ export function useTelephonyProviderConfiguration() {
   }, [configuration, isUpdating]);
 
   const isAsteriskSelected = configuration?.provider === 'asterisk';
+  const asteriskReadiness = configuration?.providers.asterisk;
+  const asteriskNoticeTitle = asteriskReadiness?.browserConfigured
+    ? 'Trunk opérateur non validé'
+    : 'Configuration Asterisk incomplète';
+  const asteriskNoticeMessage = asteriskReadiness?.browserConfigured
+    ? 'Le socle SIP/WSS/TURN est prêt, mais l’activation reste verrouillée jusqu’à la validation du trunk.'
+    : `Configuration API manquante : ${asteriskReadiness?.missingVariables.join(', ') || 'inconnue'}.`;
+  const asteriskStatusLabel = getAsteriskStatusLabel(asteriskReadiness);
   const isSwitchDisabled = isLoading
     || isUpdating
     || !configuration
@@ -73,6 +90,9 @@ export function useTelephonyProviderConfiguration() {
 
   return useMemo(() => ({
     configuration,
+    asteriskNoticeMessage,
+    asteriskNoticeTitle,
+    asteriskStatusLabel,
     error,
     isAsteriskSelected,
     isLoading,
@@ -83,6 +103,9 @@ export function useTelephonyProviderConfiguration() {
     successMessage,
   }), [
     configuration,
+    asteriskNoticeMessage,
+    asteriskNoticeTitle,
+    asteriskStatusLabel,
     error,
     isAsteriskSelected,
     isLoading,

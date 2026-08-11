@@ -65,12 +65,14 @@ export interface SupervisionCallRow {
   telephone: string;
   originLabel: string;
   originColor: string;
+  providerLabel: string;
   classificationLabel: string;
   classificationColor: string;
   systemEndLabel: string;
   bridgeLabel: string;
   durationLabel: string;
   whisperAvailability: SupervisionWhisperAvailability;
+  whisperUnavailableLabel: string;
 }
 
 export const SUPERVISION_QUEUE_STATUS_LABELS: Record<string, string> = {
@@ -318,11 +320,18 @@ export function buildSupervisionCallRows(calls: CallInProgress[]): SupervisionCa
   return calls.map((call) => {
     const origin = getSupervisionCallOrigin(call);
     const classification = getSupervisionCallClassification(call);
-    const whisperAvailability: SupervisionWhisperAvailability = !call.twilio_call_sid
-      ? 'unavailable'
-      : !call.prospect_call_sid
-        ? 'pending'
-        : 'available';
+    const isAsterisk = call.telephony_provider === 'asterisk';
+    const whisperAvailability: SupervisionWhisperAvailability = isAsterisk
+      ? !call.provider_call_id
+        ? 'unavailable'
+        : !call.bridged_to_agent_at
+          ? 'pending'
+          : 'available'
+      : !call.twilio_call_sid
+        ? 'unavailable'
+        : !call.prospect_call_sid
+          ? 'pending'
+          : 'available';
 
     return {
       id: call.id_appel,
@@ -331,12 +340,16 @@ export function buildSupervisionCallRows(calls: CallInProgress[]): SupervisionCa
       telephone: call.telephone,
       originLabel: origin.label,
       originColor: origin.color,
+      providerLabel: isAsterisk ? 'Asterisk' : 'Twilio',
       classificationLabel: classification.label,
       classificationColor: classification.color,
       systemEndLabel: call.ended_by_system ? call.end_reason || 'Auto' : 'Non',
       bridgeLabel: formatSupervisionBridgeLabel(call.bridged_to_agent_at),
       durationLabel: formatCallDuration(call.duree_secondes),
       whisperAvailability,
+      whisperUnavailableLabel: isAsterisk
+        ? 'Canal Asterisk non corrélé à cet appel'
+        : 'Identifiant d’appel Twilio non disponible',
     };
   });
 }

@@ -37,6 +37,8 @@ export interface CallInProgress {
   agent_prenom: string;
   duree_secondes: number;
   origine_appel: string;
+  telephony_provider?: 'twilio' | 'asterisk';
+  provider_call_id?: string | null;
   twilio_call_sid?: string;
   prospect_call_sid?: string;
   answered_by?: string | null;

@@ -15,6 +15,7 @@ import {
   MaterielTable,
   SubNav,
   TelephonyProviderSwitch,
+  TelephonyTrunkConfiguration,
 } from '../../components/index.ts';
 
 function MaterielList(): ReactElement {
@@ -34,6 +35,7 @@ function MaterielList(): ReactElement {
             <Button style="gradient" onClick={viewModel.openCreate}><IoAdd /> Ajouter un matériel</Button>
           </div>
           <TelephonyProviderSwitch viewModel={viewModel.telephony} />
+          <TelephonyTrunkConfiguration viewModel={viewModel.telephonyTrunk} />
           {viewModel.materielStore.error && <div className="materielList__error">{viewModel.materielStore.error}</div>}
           <MaterielTable viewModel={viewModel} />
         </div>

@@ -37,6 +37,8 @@ export interface Appel {
   statut_appel: StatutAppel;
   notes?: string | null;
   abouti: boolean;
+  telephony_provider?: 'twilio' | 'asterisk';
+  provider_call_id?: string | null;
   answered_by?: string | null;
   amd_mode?: string | null;
   amd_status?: string | null;

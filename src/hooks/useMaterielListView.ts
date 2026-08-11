@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEmployes } from './useEmployes.ts';
 import { useMarques, useMateriel } from './useMateriel.ts';
 import { useTelephonyProviderConfiguration } from './useTelephonyProviderConfiguration.ts';
+import { useTelephonyTrunkConfiguration } from './useTelephonyTrunkConfiguration.ts';
 import {
   EMPTY_MATERIEL_FORM,
   buildMaterielEmployeOptions,
@@ -31,6 +32,7 @@ export function useMaterielListView() {
   const { employes } = useEmployes();
   const { marques } = useMarques();
   const telephony = useTelephonyProviderConfiguration();
+  const telephonyTrunk = useTelephonyTrunkConfiguration();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalMode, setModalMode] = useState<MaterielModalMode>('create');
   const [editingId, setEditingId] = useState<number | null>(null);
@@ -187,6 +189,7 @@ export function useMaterielListView() {
     showPassword,
     tableRows,
     telephony,
+    telephonyTrunk,
     togglePassword,
   };
 }

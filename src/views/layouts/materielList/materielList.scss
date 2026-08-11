@@ -224,12 +224,251 @@
   background: #dcfce7;
   color: #166534;
 }
+#materielList .materielList__trunk {
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+#materielList .materielList__trunk-statuses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+#materielList .materielList__trunk-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.65rem;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+#materielList .materielList__trunk-status--applied {
+  background: #dcfce7;
+  color: #166534;
+}
+#materielList .materielList__trunk-status--pending,
+#materielList .materielList__trunk-status--applying {
+  background: #fef3c7;
+  color: #92400e;
+}
+#materielList .materielList__trunk-status--failed {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+#materielList .materielList__trunk-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+#materielList .materielList__trunk-grid label,
+#materielList .materielList__trunk-account label {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+#materielList .materielList__trunk-grid label > span,
+#materielList .materielList__trunk-account label > span {
+  color: #475569;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+#materielList .materielList__trunk-grid input,
+#materielList .materielList__trunk-grid select,
+#materielList .materielList__trunk-account input {
+  width: 100%;
+  min-height: 40px;
+  padding: 0.55rem 0.65rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+#materielList .materielList__trunk-grid input:focus,
+#materielList .materielList__trunk-grid select:focus,
+#materielList .materielList__trunk-account input:focus {
+  border-color: vars.$utilsPrimary;
+  outline: 3px solid rgba(37, 99, 235, 0.12);
+}
+#materielList .materielList__trunk-accounts {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+#materielList .materielList__trunk-subheading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+#materielList .materielList__trunk-subheading > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+#materielList .materielList__trunk-subheading strong {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+#materielList .materielList__trunk-subheading small {
+  color: vars.$fontColorSecondary;
+}
+#materielList .materielList__trunk-subheading button,
+#materielList .materielList__trunk-secondary,
+#materielList .materielList__trunk-primary,
+#materielList .materielList__trunk-apply {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  min-height: 38px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 7px;
+  background: #fff;
+  color: #334155;
+  cursor: pointer;
+  font-weight: 700;
+}
+#materielList .materielList__trunk-account {
+  display: grid;
+  grid-template-columns: 30px minmax(120px, 0.8fr) minmax(150px, 1fr) minmax(180px, 1fr) 90px 38px;
+  align-items: end;
+  gap: 0.65rem;
+  padding: 0.75rem 0;
+  border-top: 1px solid #e2e8f0;
+}
+#materielList .materielList__trunk-account-number {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  place-items: center;
+  border-radius: 50%;
+  background: #dbeafe;
+  color: #1d4ed8;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+#materielList .materielList__trunk-delete {
+  display: grid;
+  width: 38px;
+  height: 40px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #fee2e2;
+  color: #b91c1c;
+  cursor: pointer;
+}
+#materielList .materielList__trunk-empty {
+  margin: 0;
+  padding: 0.8rem;
+  border-radius: 7px;
+  background: #fff7ed;
+  color: #9a3412;
+  font-size: 0.82rem;
+}
+#materielList .materielList__trunk-enable {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.85rem;
+  border: 1px solid #fed7aa;
+  border-radius: 8px;
+  background: #fff7ed;
+}
+#materielList .materielList__trunk-enable input {
+  margin-top: 0.15rem;
+}
+#materielList .materielList__trunk-enable span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+#materielList .materielList__trunk-enable small {
+  color: #9a3412;
+  line-height: 1.4;
+}
+#materielList .materielList__trunk-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+#materielList .materielList__trunk-primary {
+  border-color: vars.$utilsPrimary;
+  background: vars.$utilsPrimary;
+  color: #fff;
+}
+#materielList .materielList__trunk-apply {
+  border-color: #15803d;
+  background: #15803d;
+  color: #fff;
+}
+#materielList .materielList__trunk-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+#materielList .materielList__trunk-audit {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  color: #475569;
+  font-size: 0.78rem;
+}
+#materielList .materielList__trunk-audit > div {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 0.7rem;
+}
+#materielList .materielList__trunk-audit time {
+  color: #64748b;
+}
 @media (max-width: vars.$tabletWidth) {
   #materielList .materielList__provider-grid {
     grid-template-columns: 1fr;
   }
   #materielList .materielList__provider-toggle {
     justify-self: center;
+  }
+  #materielList .materielList__trunk-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  #materielList .materielList__trunk-account {
+    grid-template-columns: 30px 1fr 1fr;
+  }
+}
+@media (max-width: vars.$mobileWidth) {
+  #materielList .materielList__trunk-grid,
+  #materielList .materielList__trunk-account {
+    grid-template-columns: 1fr;
+  }
+  #materielList .materielList__trunk-subheading,
+  #materielList .materielList__trunk-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  #materielList .materielList__trunk-account-number {
+    display: none;
+  }
+  #materielList .materielList__trunk-audit > div {
+    grid-template-columns: 1fr;
   }
 }
 #materielList .materielList__loading,

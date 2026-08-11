@@ -336,4 +336,9 @@ export {
   getTelephonyConfigurationService,
   getTelephonyOperationsConfigurationService,
   updateTelephonyProviderService,
+  applyTelephonyTrunkConfigurationService,
+  saveTelephonyTrunkConfigurationService,
 } from './telephony.service.ts';
+
+export type { AsteriskWhisperCallbacks, AsteriskWhisperClient } from './AsteriskWhisper.service.ts';
+export const loadAsteriskWhisperClient = () => import('./AsteriskWhisper.service.ts');

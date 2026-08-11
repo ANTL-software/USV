@@ -19,6 +19,7 @@ import type {
   ProspectDetailViewModel,
   SignInFormViewModel,
   TelephonyProviderConfigurationViewModel,
+  TelephonyTrunkConfigurationViewModel,
 } from '../../src/hooks/index.ts';
 import {
   BOOKING_HOUR_OPTIONS,
@@ -500,7 +501,13 @@ test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête
       provider: 'twilio',
       providers: {
         twilio: { configured: true, missingVariables: [] },
-        asterisk: { configured: true, missingVariables: [] },
+        asterisk: {
+          configured: true,
+          missingVariables: [],
+          browserConfigured: true,
+          trunkConfigured: true,
+          simulationMode: false,
+        },
       },
       activeConfiguration: {
         provider: 'twilio',
@@ -515,8 +522,30 @@ test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête
           recording: true,
         },
       },
-      activationScope: 'new-browser-sessions',
+      trunkConfiguration: {
+        provider: 'boxip',
+        distributionMode: 'single_account',
+        authMode: 'registration',
+        sipServer: '51.255.5.99',
+        sipPort: 5060,
+        transport: 'udp',
+        fromDomain: '51.255.5.99',
+        callerId: '',
+        contactUser: '',
+        maxChannels: 5,
+        enabled: true,
+        applyStatus: 'applied',
+        lastAppliedAt: null,
+        lastError: null,
+        accounts: [],
+        runtime: null,
+        events: [],
+      },
+      activationScope: 'live-idle-sessions',
     },
+    asteriskNoticeMessage: 'Le socle SIP/WSS/TURN est prêt.',
+    asteriskNoticeTitle: 'Trunk opérateur validé',
+    asteriskStatusLabel: 'Navigateur, TURN et trunk prêts',
     error: null,
     isAsteriskSelected: false,
     isLoading: false,
@@ -531,6 +560,102 @@ test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête
   assert.match(html, /Twilio/);
   assert.match(html, /Asterisk \+ boxIP \/ Evenmedia/);
   assert.match(html, /role="switch"/);
-  assert.match(html, /Navigateur et TURN prêts/);
+  assert.match(html, /Navigateur, TURN et trunk prêts/);
   assert.doesNotMatch(html, /\schecked=/);
+});
+
+test('la configuration trunk rend un compte mutualisé et son occupation dynamique', async () => {
+  const TelephonyTrunkConfiguration = await loadComponent<{
+    viewModel: TelephonyTrunkConfigurationViewModel;
+  }>(
+    '/src/views/components/telephonyTrunkConfiguration/TelephonyTrunkConfiguration.tsx',
+    'TelephonyTrunkConfiguration',
+  );
+  const account = {
+    id: 'boxip-main',
+    label: 'boxIP principal',
+    username: 'antl-boxip',
+    password: '',
+    channelLimit: 5,
+    priority: 1,
+    enabled: true,
+    hasPassword: true,
+  };
+  const configuration = {
+    provider: 'boxip' as const,
+    distributionMode: 'single_account' as const,
+    authMode: 'registration' as const,
+    sipServer: '51.255.5.99',
+    sipPort: 5060,
+    transport: 'udp' as const,
+    fromDomain: '51.255.5.99',
+    callerId: '+33123456789',
+    contactUser: '33123456789',
+    maxChannels: 5,
+    enabled: true,
+    applyStatus: 'applied' as const,
+    lastAppliedAt: '2026-08-11T12:00:00.000Z',
+    lastError: null,
+    accounts: [account],
+    runtime: {
+      available: true,
+      healthy: true,
+      activeChannels: 2,
+      message: 'Asterisk opérationnel',
+      accounts: [{
+        endpoint: 'trunk-1',
+        label: 'boxIP principal',
+        state: 'registered',
+        activeChannels: 2,
+        channelLimit: 5,
+      }],
+    },
+    events: [{
+      id: '1',
+      type: 'apply_succeeded' as const,
+      status: 'applied',
+      message: 'Configuration trunk appliquée',
+      employeeId: 7,
+      createdAt: '2026-08-11T12:00:00.000Z',
+    }],
+  };
+  const viewModel: TelephonyTrunkConfigurationViewModel = {
+    addAccount: noop,
+    apply: noopAsync,
+    configuration,
+    error: null,
+    form: {
+      provider: 'boxip',
+      distributionMode: 'single_account',
+      authMode: 'registration',
+      sipServer: '51.255.5.99',
+      sipPort: 5060,
+      fromDomain: '51.255.5.99',
+      callerId: '+33123456789',
+      contactUser: '33123456789',
+      maxChannels: 5,
+      enabled: true,
+      accounts: [account],
+    },
+    isApplying: false,
+    isDirty: false,
+    isLoading: false,
+    isSaving: false,
+    load: noopAsync,
+    removeAccount: noop,
+    save: noopAsync,
+    selectDistributionMode: noop,
+    selectProvider: noop,
+    successMessage: null,
+    totalChannels: 5,
+    updateAccount: noop,
+    updateField: noop,
+  };
+  const html = renderToStaticMarkup(createElement(TelephonyTrunkConfiguration, { viewModel }));
+
+  assert.match(html, /canaux partagés/);
+  assert.match(html, /premier canal libre/);
+  assert.match(html, /2 \/ 5 canal/);
+  assert.match(html, /Mot de passe enregistré/);
+  assert.match(html, /Configuration trunk appliquée/);
 });

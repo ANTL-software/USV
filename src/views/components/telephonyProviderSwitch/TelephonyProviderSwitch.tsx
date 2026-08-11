@@ -16,7 +16,7 @@ export function TelephonyProviderSwitch({ viewModel }: TelephonyProviderSwitchPr
         <IoCallOutline />
         <div>
           <h2>Téléphonie du centre d’appels</h2>
-          <p>Choisissez le moteur utilisé lors de la prochaine ouverture du Script vendeur.</p>
+          <p>Choisissez le moteur utilisé par le Script vendeur, avec reprise automatique des sessions disponibles.</p>
         </div>
       </div>
 
@@ -58,24 +58,24 @@ export function TelephonyProviderSwitch({ viewModel }: TelephonyProviderSwitchPr
               <small>WebRTC via SIP/WSS et média via TURN, puis sortie par le trunk choisi.</small>
               <em className={configuration.providers.asterisk.configured ? 'materielList__provider-ready' : 'materielList__provider-warning'}>
                 {configuration.providers.asterisk.configured ? <IoCheckmarkCircleOutline /> : <IoWarningOutline />}
-                {configuration.providers.asterisk.configured ? 'Navigateur et TURN prêts' : 'Variables Asterisk manquantes'}
+                {viewModel.asteriskStatusLabel}
               </em>
             </article>
           </div>
 
-          {!configuration.providers.asterisk.configured && (
+          {(!configuration.providers.asterisk.configured || configuration.providers.asterisk.simulationMode) && (
             <div className="materielList__telephony-notice materielList__telephony-notice--warning">
               <IoWarningOutline />
               <div>
-                <strong>Activation Asterisk verrouillée</strong>
-                <p>Configuration API manquante : {configuration.providers.asterisk.missingVariables.join(', ')}.</p>
+                <strong>{viewModel.asteriskNoticeTitle}</strong>
+                <p>{viewModel.asteriskNoticeMessage}</p>
               </div>
             </div>
           )}
 
           <div className="materielList__telephony-notice">
             <IoCallOutline />
-            <p>Le changement ne coupe aucun appel en cours. Il s’applique après recharge du Script. Le trunk boxIP ou Evenmedia reste configuré séparément sur le serveur Asterisk.</p>
+            <p>Le changement ne coupe aucun appel en cours. Il est repris automatiquement sous 15 secondes par les agents disponibles ; un agent en appel bascule après son raccrochage. Le trunk boxIP ou Evenmedia reste configuré séparément sur le serveur Asterisk.</p>
           </div>
         </>
       )}

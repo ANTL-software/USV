@@ -1,17 +1,15 @@
 import { useState, useEffect, useRef, useCallback, useContext } from 'react';
 import { Device, Call } from '@twilio/voice-sdk';
 import { getRequest, postRequest } from '../API/APICalls';
-import { getTelephonyConfigurationService } from '../API/services/index.ts';
+import { loadAsteriskWhisperClient } from '../API/services/index.ts';
+import type { AsteriskWhisperClient } from '../API/services/index.ts';
 import { UserContext } from '../context/user/index.ts';
+import type { WhisperSession } from '../utils/types/index.ts';
 
 interface WhisperResponse {
   success: boolean;
   message: string;
-  data: {
-    token: string;
-    conference_name: string;
-    call_sid_to_coach: string;
-  };
+  data: WhisperSession;
 }
 
 interface TwilioTokenResponse {
@@ -35,6 +33,9 @@ export const useWhisper = () => {
 
   const deviceRef = useRef<Device | null>(null);
   const callRef = useRef<Call | null>(null);
+  const asteriskClientRef = useRef<AsteriskWhisperClient | null>(null);
+  const activeProviderRef = useRef<'twilio' | 'asterisk' | null>(null);
+  const remoteAudioRef = useRef<HTMLAudioElement | null>(null);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const tokenRefreshPromiseRef = useRef<Promise<boolean> | null>(null);
   const recoveryPromiseRef = useRef<Promise<boolean> | null>(null);
@@ -81,6 +82,13 @@ export const useWhisper = () => {
       deviceRef.current.destroy();
       deviceRef.current = null;
     }
+
+    const asteriskClient = asteriskClientRef.current;
+    if (asteriskClient) {
+      asteriskClientRef.current = null;
+      void asteriskClient.disconnect();
+    }
+    activeProviderRef.current = null;
 
     setIsConnected(false);
     setIsConnecting(false);
@@ -184,27 +192,46 @@ export const useWhisper = () => {
     setIsMuted(true); // S'assurer qu'on commence MUTE par défaut
 
     try {
-      const telephonyConfiguration = await getTelephonyConfigurationService();
-
-      if (!telephonyConfiguration.configured) {
-        throw new Error(`Configuration ${telephonyConfiguration.provider} incomplète`);
-      }
-
-      if (!telephonyConfiguration.capabilities.supervisorWhisper) {
-        throw new Error(
-          telephonyConfiguration.provider === 'asterisk'
-            ? 'Le soufflé superviseur Asterisk n’est pas encore activé'
-            : 'Le soufflé superviseur est indisponible avec le fournisseur actif'
-        );
-      }
-
       // 1. Demander le token et la redirection de l'appel au backend Olympe
       console.log(`[WHISPER] Envoi POST /supervision/whisper pour l'appel #${idAppel}`);
       const response = await postRequest<{ id_appel: number }, WhisperResponse>('/supervision/whisper', {
         id_appel: idAppel
       });
 
-      const { token, conference_name, call_sid_to_coach } = response.data.data;
+      const coaching = response.data.data;
+
+      if (coaching.provider === 'asterisk') {
+        const { AsteriskWhisperClient } = await loadAsteriskWhisperClient();
+        const client = new AsteriskWhisperClient();
+        const remoteAudio = remoteAudioRef.current || new Audio();
+        remoteAudio.autoplay = true;
+        remoteAudioRef.current = remoteAudio;
+        asteriskClientRef.current = client;
+        activeProviderRef.current = 'asterisk';
+
+        await client.connect(coaching, remoteAudio, {
+          onConnected: () => {
+            console.log('✅ [WHISPER] Coaching Asterisk connecté');
+            setIsConnected(true);
+            setIsConnecting(false);
+            setIsMuted(true);
+            startTimer();
+          },
+          onDisconnected: () => {
+            console.log('📞 [WHISPER] Coaching Asterisk terminé');
+            disconnectWhisper();
+          },
+          onError: (connectionError) => {
+            console.error('❌ [WHISPER] Erreur Asterisk:', connectionError);
+            disconnectWhisper();
+            setError(`Erreur de coaching Asterisk : ${connectionError.message}`);
+          },
+        });
+        return;
+      }
+
+      const { token, conference_name, call_sid_to_coach } = coaching;
+      activeProviderRef.current = 'twilio';
 
       // 2. Initialiser le Twilio Device
       console.log('[WHISPER] Initialisation du Twilio Device superviseur');
@@ -285,6 +312,12 @@ export const useWhisper = () => {
 
     } catch (err: unknown) {
       console.error('[WHISPER] Échec initialisation soufflé:', err);
+      const asteriskClient = asteriskClientRef.current;
+      asteriskClientRef.current = null;
+      if (asteriskClient) {
+        await asteriskClient.disconnect();
+      }
+      activeProviderRef.current = null;
       const apiMessage = (
         typeof err === 'object' &&
         err !== null &&
@@ -306,9 +339,14 @@ export const useWhisper = () => {
   }, [disconnectWhisper, forceLogoutForTwilioFailure, getErrorMessage, isConnected, isConnecting, recoverDeviceRegistration, refreshDeviceToken, startTimer]);
 
   const toggleMute = useCallback(() => {
-    if (!callRef.current || !isConnected) return;
+    if (!isConnected) return;
     const nextMuteState = !isMuted;
-    callRef.current.mute(nextMuteState);
+    if (activeProviderRef.current === 'asterisk') {
+      asteriskClientRef.current?.setMuted(nextMuteState);
+    } else {
+      if (!callRef.current) return;
+      callRef.current.mute(nextMuteState);
+    }
     setIsMuted(nextMuteState);
     console.log(`[WHISPER] Superviseur ${nextMuteState ? 'MUTE (Écoute)' : 'UNMUTE (Soufflé)'}`);
   }, [isMuted, isConnected]);
@@ -317,8 +355,14 @@ export const useWhisper = () => {
   useEffect(() => {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      // Ne pas déconnecter silencieusement pour éviter de couper sans le vouloir si le state change,
-      // mais détruire pour éviter les fuites de listeners.
+      const asteriskClient = asteriskClientRef.current;
+      asteriskClientRef.current = null;
+      if (asteriskClient) void asteriskClient.disconnect();
+      if (deviceRef.current) {
+        deviceRef.current.removeAllListeners();
+        deviceRef.current.destroy();
+        deviceRef.current = null;
+      }
     };
   }, []);
 

@@ -48,6 +48,8 @@ export { useMaterielListView } from './useMaterielListView.ts';
 export type { MaterielListViewModel } from './useMaterielListView.ts';
 export { useTelephonyProviderConfiguration } from './useTelephonyProviderConfiguration.ts';
 export type { TelephonyProviderConfigurationViewModel } from './useTelephonyProviderConfiguration.ts';
+export { useTelephonyTrunkConfiguration } from './useTelephonyTrunkConfiguration.ts';
+export type { TelephonyTrunkConfigurationViewModel } from './useTelephonyTrunkConfiguration.ts';
 export { useBookingContext } from './useBookingContext.ts';
 export { useHeaderView } from './useHeaderView.ts';
 export type { HeaderViewModel } from './useHeaderView.ts';

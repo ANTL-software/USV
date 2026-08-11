@@ -1,7 +1,9 @@
-import { getRequest, putRequest } from '../APICalls.ts';
+import { getRequest, postRequest, putRequest } from '../APICalls.ts';
 import type {
+  SaveTelephonyTrunkConfiguration,
   TelephonyConfiguration,
   TelephonyOperationsConfiguration,
+  TelephonyTrunkConfiguration,
   UpdateTelephonyProvider,
 } from '../../utils/types/index.ts';
 
@@ -14,6 +16,12 @@ interface TelephonyConfigurationResponse {
 interface TelephonyOperationsConfigurationResponse {
   success: boolean;
   data?: TelephonyOperationsConfiguration;
+  message?: string;
+}
+
+interface TelephonyTrunkConfigurationResponse {
+  success: boolean;
+  data?: TelephonyTrunkConfiguration;
   message?: string;
 }
 
@@ -51,5 +59,31 @@ export const updateTelephonyProviderService = async (
     throw new Error(response.data.message || 'Impossible de mettre à jour le fournisseur téléphonie');
   }
 
+  return response.data.data;
+};
+
+export const saveTelephonyTrunkConfigurationService = async (
+  data: SaveTelephonyTrunkConfiguration,
+): Promise<TelephonyTrunkConfiguration> => {
+  const response = await putRequest<SaveTelephonyTrunkConfiguration, TelephonyTrunkConfigurationResponse>(
+    '/telephony/trunk-configuration',
+    data,
+  );
+
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.message || 'Impossible d’enregistrer la configuration trunk');
+  }
+  return response.data.data;
+};
+
+export const applyTelephonyTrunkConfigurationService = async (): Promise<TelephonyTrunkConfiguration> => {
+  const response = await postRequest<Record<string, never>, TelephonyTrunkConfigurationResponse>(
+    '/telephony/trunk-configuration/apply',
+    {},
+  );
+
+  if (!response.data.success || !response.data.data) {
+    throw new Error(response.data.message || 'Impossible d’appliquer la configuration trunk');
+  }
   return response.data.data;
 };

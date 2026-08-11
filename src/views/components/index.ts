@@ -110,6 +110,7 @@ export { MesTachesTask } from './mesTachesTask/index.ts';
 export { MaterielFormModal } from './materielFormModal/index.ts';
 export { MaterielAssignmentModals } from './materielAssignmentModals/index.ts';
 export { TelephonyProviderSwitch } from './telephonyProviderSwitch/index.ts';
+export { TelephonyTrunkConfiguration } from './telephonyTrunkConfiguration/index.ts';
 export { Modal } from './modal/index.ts';
 export { MonPlanningContent } from './monPlanningContent/index.ts';
 export { NotificationBadge } from './notificationBadge/index.ts';

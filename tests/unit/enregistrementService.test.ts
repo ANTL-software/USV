@@ -35,7 +35,14 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
           pagination: { total: 1, page: 1, totalPages: 1 }
         }
       };
-    }
+    },
+    putRequest: async (): Promise<AxiosLikeResponse<EnregistrementsApiResponse>> => ({
+      data: {
+        success: true,
+        data: [],
+        pagination: { total: 0, page: 1, totalPages: 0 },
+      },
+    }),
   }
 });
 
