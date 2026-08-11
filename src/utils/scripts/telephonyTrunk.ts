@@ -1,5 +1,7 @@
 import type { TelephonyTrunkForm } from '../types/index.ts';
 
+export const BOXIP_DEFAULT_CHANNELS = 20;
+
 export const getTelephonyTrunkValidationMessage = (form: TelephonyTrunkForm): string | null => {
   if (!form.sipServer.trim()) return 'Le serveur SIP est obligatoire.';
   if (!Number.isInteger(form.sipPort) || form.sipPort < 1 || form.sipPort > 65535) {

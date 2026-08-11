@@ -532,7 +532,7 @@ test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête
         fromDomain: '51.255.5.99',
         callerId: '',
         contactUser: '',
-        maxChannels: 5,
+        maxChannels: 20,
         enabled: true,
         applyStatus: 'applied',
         lastAppliedAt: null,
@@ -576,7 +576,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
     label: 'boxIP principal',
     username: 'antl-boxip',
     password: '',
-    channelLimit: 5,
+    channelLimit: 20,
     priority: 1,
     enabled: true,
     hasPassword: true,
@@ -591,7 +591,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
     fromDomain: '51.255.5.99',
     callerId: '+33123456789',
     contactUser: '33123456789',
-    maxChannels: 5,
+    maxChannels: 20,
     enabled: true,
     applyStatus: 'applied' as const,
     lastAppliedAt: '2026-08-11T12:00:00.000Z',
@@ -607,7 +607,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
         label: 'boxIP principal',
         state: 'registered',
         activeChannels: 2,
-        channelLimit: 5,
+        channelLimit: 20,
       }],
     },
     events: [{
@@ -633,7 +633,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
       fromDomain: '51.255.5.99',
       callerId: '+33123456789',
       contactUser: '33123456789',
-      maxChannels: 5,
+      maxChannels: 20,
       enabled: true,
       accounts: [account],
     },
@@ -647,7 +647,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
     selectDistributionMode: noop,
     selectProvider: noop,
     successMessage: null,
-    totalChannels: 5,
+    totalChannels: 20,
     updateAccount: noop,
     updateField: noop,
     validationMessage: null,
@@ -656,7 +656,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
 
   assert.match(html, /canaux partagés/);
   assert.match(html, /premier canal libre/);
-  assert.match(html, /2 \/ 5 canal/);
+  assert.match(html, /2 \/ 20 canal/);
   assert.match(html, /Mot de passe enregistré/);
   assert.match(html, /Configuration trunk appliquée/);
   assert.match(html, /Activation en trois étapes/);

@@ -5,7 +5,11 @@ import {
   getTelephonyOperationsConfigurationService,
   saveTelephonyTrunkConfigurationService,
 } from '../API/services/index.ts';
-import { getErrorMessage, getTelephonyTrunkValidationMessage } from '../utils/scripts/index.ts';
+import {
+  BOXIP_DEFAULT_CHANNELS,
+  getErrorMessage,
+  getTelephonyTrunkValidationMessage,
+} from '../utils/scripts/index.ts';
 import type {
   SaveTelephonyTrunkConfiguration,
   TelephonyTrunkAccount,
@@ -28,17 +32,17 @@ const EMPTY_FORM: TelephonyTrunkForm = {
   fromDomain: '51.255.5.99',
   callerId: '',
   contactUser: '',
-  maxChannels: 5,
+  maxChannels: BOXIP_DEFAULT_CHANNELS,
   enabled: false,
   accounts: [],
 };
 
-const createAccount = (index: number): TelephonyTrunkAccount => ({
+const createAccount = (index: number, channelLimit: number): TelephonyTrunkAccount => ({
   id: globalThis.crypto?.randomUUID?.() || `trunk-account-${Date.now()}-${index}`,
   label: `Compte ${index + 1}`,
   username: '',
   password: '',
-  channelLimit: 1,
+  channelLimit,
   priority: index + 1,
   enabled: true,
   hasPassword: false,
@@ -129,6 +133,7 @@ export function useTelephonyTrunkConfiguration(
           sipServer: '51.255.5.99',
           sipPort: 5060,
           fromDomain: '51.255.5.99',
+          maxChannels: BOXIP_DEFAULT_CHANNELS,
         }
       : { ...current, provider });
     setIsDirty(true);
@@ -149,7 +154,13 @@ export function useTelephonyTrunkConfiguration(
   const addAccount = useCallback((): void => {
     setForm((current) => ({
       ...current,
-      accounts: [...current.accounts, createAccount(current.accounts.length)],
+      accounts: [
+        ...current.accounts,
+        createAccount(
+          current.accounts.length,
+          current.distributionMode === 'single_account' ? current.maxChannels : 1,
+        ),
+      ],
     }));
     setIsDirty(true);
   }, []);

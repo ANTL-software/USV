@@ -25,7 +25,7 @@ const createTrunk = (
   fromDomain: '51.255.5.99',
   callerId: '',
   contactUser: '',
-  maxChannels: 5,
+  maxChannels: 20,
   enabled: false,
   applyStatus: 'not_configured',
   lastAppliedAt: null,
@@ -127,7 +127,7 @@ test('le parcours matériel vers trunk validé puis Asterisk fonctionne de bout 
             label: 'Compte 1',
             state: 'registered',
             activeChannels: 0,
-            channelLimit: 5,
+            channelLimit: 20,
           }],
           message: 'Tous les comptes SIP sont enregistrés',
         },
@@ -160,7 +160,7 @@ test('le parcours matériel vers trunk validé puis Asterisk fonctionne de bout 
   await page.getByLabel('Contact entrant').fill('33123456789');
   await page.getByLabel('Identifiant SIP').fill('antl-boxip');
   await page.getByLabel('Mot de passe', { exact: true }).fill('sip-secret');
-  await page.getByLabel('Canaux', { exact: true }).fill('5');
+  await expect(page.getByLabel('Canaux', { exact: true })).toHaveValue('20');
   await page.locator('.telephonyManagement__trunk-enable input').check();
 
   await page.getByRole('button', { name: 'Enregistrer' }).click();

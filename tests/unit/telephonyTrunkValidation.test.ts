@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 
 import {
+  BOXIP_DEFAULT_CHANNELS,
   getTelephonyTrunkValidationMessage,
 } from '../../src/utils/scripts/telephonyTrunk.ts';
 import type { TelephonyTrunkForm } from '../../src/utils/types/telephony.types.ts';
@@ -15,7 +16,7 @@ const createForm = (): TelephonyTrunkForm => ({
   fromDomain: '51.255.5.99',
   callerId: '',
   contactUser: '',
-  maxChannels: 5,
+  maxChannels: BOXIP_DEFAULT_CHANNELS,
   enabled: false,
   accounts: [],
 });
@@ -38,7 +39,7 @@ test('un trunk activé exige le numéro présenté et des credentials complets',
       label: 'boxIP principal',
       username: 'antl-boxip',
       password: '',
-      channelLimit: 5,
+      channelLimit: BOXIP_DEFAULT_CHANNELS,
       priority: 1,
       enabled: true,
       hasPassword: false,
@@ -63,7 +64,7 @@ test('un mot de passe déjà chiffré côté serveur reste valide sans être ré
       label: 'boxIP principal',
       username: 'antl-boxip',
       password: '',
-      channelLimit: 5,
+      channelLimit: BOXIP_DEFAULT_CHANNELS,
       priority: 1,
       enabled: true,
       hasPassword: true,
@@ -82,5 +83,9 @@ test('le mode IP exige uniquement une capacité valide une fois activé', () => 
     maxChannels: 0,
   };
   assert.match(getTelephonyTrunkValidationMessage(form) || '', /canaux simultanés/);
-  assert.equal(getTelephonyTrunkValidationMessage({ ...form, maxChannels: 5 }), null);
+  assert.equal(getTelephonyTrunkValidationMessage({ ...form, maxChannels: BOXIP_DEFAULT_CHANNELS }), null);
+});
+
+test('le profil boxIP est préparé avec les 20 canaux inclus', () => {
+  assert.equal(createForm().maxChannels, 20);
 });
