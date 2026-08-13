@@ -187,6 +187,7 @@ export {
   importProspectsService,
   getAllProspectsService,
   getProspectsCountService as getAllProspectsCountService,
+  getProspectSourcesService,
   getProspectByIdService,
   getProspectEnrichmentSnapshotService,
   previewProspectEnrichmentService,

@@ -118,6 +118,7 @@ export function useProspectInjection(campagneId: number | null) {
     isLoading,
     result: displayedResult,
     resultModalOpen,
+    setFilters,
     updateFilter,
   };
 }

@@ -7,6 +7,7 @@ import type {
   ProspectSignale,
   SignalementType,
   Prospect,
+  ProspectSourceCount,
   ProspectsApiResponse,
   ProspectFilters,
   ProspectUpdateData,
@@ -85,6 +86,14 @@ export const getProspectsCountService = async (
     return response.data.data.total;
   }
   throw new Error(response.data.message || 'Impossible de compter les prospects');
+};
+
+export const getProspectSourcesService = async (): Promise<ProspectSourceCount[]> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectSourceCount[]; message?: string }> = await getRequest('/prospects/sources');
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer les sources de prospects');
 };
 
 export const getProspectByIdService = async (id: number): Promise<Prospect> => {

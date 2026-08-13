@@ -595,7 +595,6 @@ export {
   PROSPECT_FALLBACK_AREA_OPTIONS,
   PROSPECT_RELATION_OPTIONS,
   PROSPECT_SIGNALEMENT_TYPE_OPTIONS,
-  PROSPECT_SOURCE_OPTIONS,
   PROSPECT_TYPE_OPTIONS,
 } from './prospectOperations.ts';
 export type { ProspectSelectOption } from './prospectOperations.ts';

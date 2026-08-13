@@ -24,13 +24,6 @@ export const PROSPECT_RELATION_OPTIONS: ProspectSelectOption[] = [
   { value: 'lead_genere', label: 'Lead généré' },
 ];
 
-export const PROSPECT_SOURCE_OPTIONS: ProspectSelectOption[] = [
-  { value: '', label: 'Tous' },
-  { value: 'import_csv', label: 'import_csv' },
-  { value: 'import_legacy', label: 'import_legacy' },
-  { value: 'manuel', label: 'manuel' },
-];
-
 export const PROSPECT_FALLBACK_AREA_OPTIONS: ProspectSelectOption[] = [
   { value: '', label: 'Aucune zone de repli' },
   { value: '75001', label: 'Paris (75000)' },

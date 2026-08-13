@@ -78,6 +78,11 @@ export interface InjectionFilters {
   code_postal_repli?: string;
 }
 
+export interface ProspectSourceCount {
+  source: string;
+  prospect_count: number;
+}
+
 export interface ProspectCampagneRow {
   id_prospection: number;
   id_prospect: number;

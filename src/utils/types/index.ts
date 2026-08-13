@@ -311,6 +311,7 @@ export type {
   QueueState,
   InjectionResult,
   InjectionFilters,
+  ProspectSourceCount,
   ProspectCampagneRow,
   CampaignAgentStats,
   GlobalStats,
