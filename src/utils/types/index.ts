@@ -31,6 +31,8 @@ export type {
   ApiResponse,
   CreateEmployeData,
   CreateEmployeResponse,
+  PartenaireExterne,
+  PartenaireExternePayload,
 } from './user.types.ts';
 
 export type {

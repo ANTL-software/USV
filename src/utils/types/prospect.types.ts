@@ -100,7 +100,8 @@ export interface Prospect {
   telephone_tertiaire_source?: string | null;
   nom_contact?: string | null;
   responsable?: string | null;
-  effectif?: number | null;
+  effectif?: string | number | null;
+  effectif_libelle?: string | null;
   effectif_enrichi?: string | number | null;
   effectif_enrichi_nature?: string | null;
   effectif_enrichi_perimetre?: string | null;
@@ -257,7 +258,8 @@ export interface ProspectEnrichmentSnapshot {
     code_naf: string | null;
     activite: string | null;
     activites_secondaires: Record<string, unknown> | null;
-    effectif: number | null;
+    effectif: string | number | null;
+    effectif_libelle: string | null;
     effectif_enrichi: string | number | null;
     effectif_enrichi_nature: string | null;
     effectif_enrichi_perimetre: string | null;

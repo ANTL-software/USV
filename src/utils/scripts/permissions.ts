@@ -116,9 +116,18 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   if (!user) return false;
   
   const cleanPath = '/' + path.split('/').filter(Boolean).join('/');
+
+  if (user.account_type === 'partenaire_externe') {
+    return cleanPath === '/partenaire/statistiques'
+      && user.permissions?.['statistiques-partenaire'] === true;
+  }
   
   if (cleanPath === '/home' || cleanPath === '/auth' || cleanPath === '/') {
     return true;
+  }
+
+  if (cleanPath.startsWith('/operations/partenaires-externes')) {
+    return hasAccessToSection(user, ACCESS_MANAGEMENT_PERMISSION);
   }
   
   if (cleanPath.startsWith('/mail')) {
@@ -232,6 +241,7 @@ export function getAllowedSections(user: Employe | null): string[] {
 
 export function getFirstAllowedPath(user: Employe | null): string {
   if (!user) return '/auth';
+  if (user.account_type === 'partenaire_externe') return '/partenaire/statistiques';
   
   if (hasAccessToSection(user, 'commerciaux')) return '/commerciaux';
   if (hasAccessToSection(user, 'operations')) return '/operations';

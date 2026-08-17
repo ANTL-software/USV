@@ -3,6 +3,7 @@ export {
   getCurrentUserService,
   logoutService,
 } from './auth.service.ts';
+export { createPartenaireExterneService, getPartenairesExternesService, updatePartenaireExterneService } from './partenaireExterne.service.ts';
 
 export {
   getAllEmployesService,

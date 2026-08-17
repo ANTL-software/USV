@@ -4,10 +4,12 @@ import { useNavigate } from 'react-router-dom';
 import { EMPLOYEE_FILTER_OPTIONS, filterEmployees } from '../utils/scripts/index.ts';
 import type { Employe, EmployeFilter } from '../utils/types/index.ts';
 import { useEmployes } from './useEmployes.ts';
+import { useUserContext } from './useUserContext.ts';
 
 export function useAgentsListView() {
   const navigate = useNavigate();
   const { deactivate, employes, error, isLoading } = useEmployes();
+  const { user } = useUserContext();
   const [filterValue, setFilterValue] = useState<EmployeFilter>(EMPLOYEE_FILTER_OPTIONS[0].value);
   const [hoveredAgent, setHoveredAgent] = useState<Employe | null>(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -34,6 +36,7 @@ export function useAgentsListView() {
   const moveTooltip = useCallback((event: ReactMouseEvent): void => setMousePosition({ x: event.clientX, y: event.clientY }), []);
   const navigateBack = useCallback((): void => { void navigate('/operations'); }, [navigate]);
   const navigateNewEmployee = useCallback((): void => { void navigate('/operations/employes/new'); }, [navigate]);
+  const navigateExternalPartners = useCallback((): void => { void navigate('/operations/partenaires-externes'); }, [navigate]);
   const navigateToDetails = useCallback((employeeId: number): void => { setOpenActionMenu(null); void navigate(`/operations/employes/details/${employeeId}`); }, [navigate]);
   const navigateToEdit = useCallback((employeeId: number): void => { setOpenActionMenu(null); void navigate(`/operations/employes/${employeeId}`); }, [navigate]);
   const deactivateEmployee = useCallback(async (employee: Employe): Promise<void> => {
@@ -43,6 +46,7 @@ export function useAgentsListView() {
 
   return {
     closeActionMenu,
+    canManageExternalPartners: user?.poste?.permissions?.['access-management']?.enabled === true,
     deactivateEmployee,
     error,
     filteredEmployees,
@@ -52,6 +56,7 @@ export function useAgentsListView() {
     moveTooltip,
     navigateBack,
     navigateNewEmployee,
+    navigateExternalPartners,
     navigateToDetails,
     navigateToEdit,
     openActionMenu,

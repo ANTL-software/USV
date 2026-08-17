@@ -1,5 +1,5 @@
 import type { ReactElement } from 'react';
-import { IoPersonAdd } from 'react-icons/io5';
+import { IoBusinessOutline, IoPersonAdd } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import type { SingleValue } from 'react-select';
@@ -19,6 +19,7 @@ export function AgentsListHeader({ viewModel }: AgentsListHeaderProps): ReactEle
         <div><h1>Employés</h1><p className="agentsList__subtitle">{count} employé{count !== 1 ? 's' : ''} affiché{count !== 1 ? 's' : ''}</p></div>
         <div className="agentsList__controls">
           <Select<EmployeeFilterOption> options={EMPLOYEE_FILTER_OPTIONS} value={viewModel.selectedFilter} onChange={(option: SingleValue<EmployeeFilterOption>) => option && viewModel.setFilterValue(option.value)} isSearchable={false} classNamePrefix="reactSelect" />
+          {viewModel.canManageExternalPartners && <Button style="white" onClick={viewModel.navigateExternalPartners}><IoBusinessOutline /> Partenaires externes</Button>}
           <Button style="gradient" onClick={viewModel.navigateNewEmployee}><IoPersonAdd /> Nouvel employé</Button>
         </div>
       </div>

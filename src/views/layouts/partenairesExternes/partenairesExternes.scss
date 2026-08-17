@@ -1,0 +1,23 @@
+.externalPartners { max-width: 1280px; margin: 2rem auto; padding: 0 1.5rem; color: #1f2937; }
+.externalPartners header { display: flex; justify-content: space-between; align-items: flex-start; margin: 1.5rem 0; }
+.externalPartners header h1 { margin: 0; }
+.externalPartners header p { color: #64748b; }
+.externalPartners__grid { display: grid; grid-template-columns: 1fr 1.1fr; gap: 1.5rem; }
+.externalPartners__list, .externalPartners__form { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; box-shadow: 0 4px 15px rgb(15 23 42 / 5%); }
+.externalPartners__list article { display: flex; justify-content: space-between; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid #e2e8f0; }
+.externalPartners__list article h2 { font-size: 1rem; margin: 0; }
+.externalPartners__list article p, .externalPartners__list article small { margin: .3rem 0; color: #64748b; }
+.externalPartners__form { display: grid; gap: .8rem; }
+.externalPartners__form h2 { margin: 0 0 .25rem; }
+.externalPartners__form label { display: grid; gap: .3rem; font-weight: 600; }
+.externalPartners__form input { border: 1px solid #cbd5e1; border-radius: 6px; padding: .65rem; font: inherit; }
+.externalPartners__form fieldset { border: 1px solid #e2e8f0; border-radius: 8px; padding: .7rem; display: grid; gap: .45rem; }
+.externalPartners__form legend { padding: 0 .3rem; font-weight: 700; }
+.externalPartners__row { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
+.externalPartners__check { display: flex !important; grid-template-columns: auto 1fr; align-items: center; font-weight: 400 !important; }
+.externalPartners__check input { width: auto; }
+.externalPartners__actions { display: flex; gap: .75rem; margin-top: .4rem; }
+.externalPartners__error, .externalPartners__success { padding: .75rem; border-radius: 6px; }
+.externalPartners__error { color: #b91c1c; background: #fef2f2; }
+.externalPartners__success { color: #166534; background: #f0fdf4; }
+@media (max-width: 850px) { .externalPartners__grid { grid-template-columns: 1fr; } }

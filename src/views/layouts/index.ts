@@ -33,6 +33,8 @@ export { ListeCourriers } from './listeCourriers/index.ts';
 export { MaterielList } from './materielList/index.ts';
 export { NouveauCourrier } from './nouveauCourrier/index.ts';
 export { PanierProduitsList } from './panierProduitsList/index.ts';
+export { PartenairesExternes } from './partenairesExternes/index.ts';
+export { PartenaireStatistiques } from './partenaireStatistiques/index.ts';
 export { PaniersList } from './paniersList/index.ts';
 export { PosteForm } from './posteForm/index.ts';
 export { PostesList } from './postesList/index.ts';

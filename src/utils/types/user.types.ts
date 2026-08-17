@@ -52,6 +52,36 @@ export interface Employe {
   departement?: Departement;
   photo_path?: string | null;
   photo_file_name?: string | null;
+  account_type?: 'employe' | 'partenaire_externe';
+  raison_sociale?: string;
+  permissions?: Record<string, boolean>;
+  id_campagnes_autorisees?: number[];
+}
+
+export interface PartenaireExterne {
+  id_partenaire_externe: number;
+  raison_sociale: string;
+  identifiant: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  permissions: Record<string, boolean>;
+  id_campagnes_autorisees: number[];
+  actif: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface PartenaireExternePayload {
+  raison_sociale: string;
+  identifiant: string;
+  nom: string;
+  prenom: string;
+  email: string;
+  password?: string;
+  permissions: Record<string, boolean>;
+  id_campagnes_autorisees: number[];
+  actif: boolean;
 }
 
 export type EmployeFilter = 'actifs' | 'inactifs' | 'tous';

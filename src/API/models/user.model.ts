@@ -21,6 +21,10 @@ export class UserModel implements Employe {
   departement?: Departement;
   photo_path?: string | null;
   photo_file_name?: string | null;
+  account_type?: 'employe' | 'partenaire_externe';
+  raison_sociale?: string;
+  permissions?: Record<string, boolean>;
+  id_campagnes_autorisees?: number[];
 
   constructor(data: Employe) {
     this.id_employe = data.id_employe;
@@ -41,6 +45,10 @@ export class UserModel implements Employe {
     this.departement = data.departement;
     this.photo_path = data.photo_path ?? null;
     this.photo_file_name = data.photo_file_name ?? null;
+    this.account_type = data.account_type;
+    this.raison_sociale = data.raison_sociale;
+    this.permissions = data.permissions;
+    this.id_campagnes_autorisees = data.id_campagnes_autorisees;
   }
 
   public get fullName(): string {
@@ -74,6 +82,10 @@ export class UserModel implements Employe {
       departement: this.departement,
       photo_path: this.photo_path,
       photo_file_name: this.photo_file_name,
+      account_type: this.account_type,
+      raison_sociale: this.raison_sociale,
+      permissions: this.permissions,
+      id_campagnes_autorisees: this.id_campagnes_autorisees,
     };
   }
 
