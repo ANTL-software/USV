@@ -165,6 +165,7 @@ export { ProspectEnrichmentPreview } from './prospectEnrichmentPreview/index.ts'
 export { ProspectEnrichmentSearch } from './prospectEnrichmentSearch/index.ts';
 export { ProspectWebsiteSignals } from './prospectWebsiteSignals/index.ts';
 export { PWAInstallButton } from './pwaInstallButton/index.ts';
+export { PartenaireStatisticsDashboard } from './partenaireStatisticsDashboard/index.ts';
 export { PWAStatus } from './pwaStatus/index.ts';
 export { ProjetDetailsContent } from './projetDetailsContent/index.ts';
 export { ProjetDetailsDashboard } from './projetDetailsDashboard/index.ts';

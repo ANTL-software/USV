@@ -1,8 +1,12 @@
+import './partenaireStatistiques.scss';
 import type { ReactElement } from 'react';
+import { usePartenaireStatistics } from '../../../hooks/index.ts';
 import { WithAuth } from '../../../utils/middleware/index.ts';
+import { BackToTop, Header, PartenaireStatisticsDashboard } from '../../components/index.ts';
 
 function PartenaireStatistiques(): ReactElement {
-  return <main className="externalPartners"><header><div><h1>Statistiques partenaire</h1><p>Votre espace de consultation est en préparation. Les données affichées seront strictement limitées aux campagnes qui vous sont autorisées.</p></div></header></main>;
+  const viewModel = usePartenaireStatistics();
+  return <div id="partnerStatistics"><Header /><PartenaireStatisticsDashboard viewModel={viewModel} /><BackToTop /></div>;
 }
 
 export default WithAuth(PartenaireStatistiques);

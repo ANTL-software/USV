@@ -36,6 +36,18 @@ export type {
 } from './user.types.ts';
 
 export type {
+  PartenaireStatistics,
+  PartenaireStatisticsCampaign,
+  PartenaireStatisticsContactabilityPoint,
+  PartenaireStatisticsDailyPoint,
+  PartenaireStatisticsFilters,
+  PartenaireStatisticsHourlyPoint,
+  PartenaireStatisticsPeriod,
+  PartenaireStatisticsPoint,
+  PartenaireStatisticsWeekdayPoint,
+} from './partenaireStatistics.types.ts';
+
+export type {
   StatutCampagne,
   Campagne,
   CreateCampagneData,

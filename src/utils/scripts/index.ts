@@ -606,3 +606,11 @@ export {
   BOXIP_DEFAULT_CHANNELS,
   getTelephonyTrunkValidationMessage,
 } from './telephonyTrunk.ts';
+export {
+  PARTNER_STATISTICS_PERIODS,
+  formatPartnerStatisticDate,
+  formatPartnerHourRange,
+  formatPartnerStatisticNumber,
+  formatPartnerStatisticPercent,
+  getPartnerWeekdayLabel,
+} from './partenaireStatistics.ts';

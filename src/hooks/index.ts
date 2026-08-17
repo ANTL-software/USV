@@ -187,6 +187,8 @@ export type {
   AbsenceManagementTab,
 } from './useAbsenceManagement.ts';
 export { useQueuePreview } from './useQueuePreview.ts';
+export { usePartenaireStatistics } from './usePartenaireStatistics.ts';
+export type { PartenaireStatisticsViewModel } from './usePartenaireStatistics.ts';
 export { useProspectEditor } from './useProspectEditor.ts';
 export { useProspectDetailView } from './useProspectDetailView.ts';
 export type { ProspectDetailViewModel } from './useProspectDetailView.ts';

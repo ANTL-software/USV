@@ -5,10 +5,10 @@ import { MdArrowBack, MdEdit, MdPersonAdd } from 'react-icons/md';
 import { getAllCampagnesService, createPartenaireExterneService, getPartenairesExternesService, updatePartenaireExterneService } from '../../../API/services/index.ts';
 import type { Campagne, PartenaireExterne, PartenaireExternePayload } from '../../../utils/types/index.ts';
 import { WithAuth } from '../../../utils/middleware/index.ts';
-import { Button } from '../../components/index.ts';
+import { Button, Header } from '../../components/index.ts';
 
 const initialForm = (): PartenaireExternePayload => ({
-  raison_sociale: '', identifiant: '', nom: '', prenom: '', email: '', password: '',
+  raison_sociale: '', nom: '', prenom: '', email: '', password: '',
   permissions: { 'statistiques-partenaire': true }, id_campagnes_autorisees: [], actif: true,
 });
 
@@ -57,7 +57,7 @@ function PartenairesExternes(): ReactElement {
     finally { setSaving(false); }
   };
 
-  return <main className="externalPartners">
+  return <div id="externalPartnersPage"><Header /><main className="externalPartners">
     <Button style="back" onClick={() => { window.history.back(); }}><MdArrowBack /> Retour</Button>
     <header><div><h1>Partenaires externes</h1><p>Comptes USV isolés des employés, du dialer et des données RH.</p></div><span>{partners.length} compte{partners.length > 1 ? 's' : ''}</span></header>
     {error && <p className="externalPartners__error">{error}</p>}
@@ -73,7 +73,6 @@ function PartenairesExternes(): ReactElement {
         <h2>{editingId ? 'Modifier le compte' : 'Créer un compte partenaire'}</h2>
         <label>Raison sociale<input required value={form.raison_sociale} onChange={(event) => setField('raison_sociale', event.target.value)} /></label>
         <div className="externalPartners__row"><label>Prénom<input required value={form.prenom} onChange={(event) => setField('prenom', event.target.value)} /></label><label>Nom<input required value={form.nom} onChange={(event) => setField('nom', event.target.value)} /></label></div>
-        <label>Identifiant<input required pattern="[a-z0-9._-]{3,64}" value={form.identifiant} onChange={(event) => setField('identifiant', event.target.value.toLowerCase())} /></label>
         <label>Email<input required type="email" value={form.email} onChange={(event) => setField('email', event.target.value)} /></label>
         <label>Mot de passe {editingId ? '(laisser vide pour conserver)' : ''}<input required={!editingId} type="password" value={form.password || ''} onChange={(event) => setField('password', event.target.value)} /></label>
         <fieldset><legend>Accès USV</legend><label className="externalPartners__check"><input type="checkbox" checked={form.permissions['statistiques-partenaire'] === true} onChange={(event) => setForm((current) => ({ ...current, permissions: { 'statistiques-partenaire': event.target.checked } }))} /> Statistiques partenaire</label></fieldset>
@@ -82,7 +81,7 @@ function PartenairesExternes(): ReactElement {
         <div className="externalPartners__actions"><Button style="gradient" type="submit" disabled={saving}><MdPersonAdd /> {saving ? 'Enregistrement…' : editingId ? 'Mettre à jour' : 'Créer le compte'}</Button>{editingId && <Button style="white" onClick={reset}>Annuler</Button>}</div>
       </form>
     </section>
-  </main>;
+  </main></div>;
 }
 
 export default WithAuth(PartenairesExternes);

@@ -61,7 +61,6 @@ export interface Employe {
 export interface PartenaireExterne {
   id_partenaire_externe: number;
   raison_sociale: string;
-  identifiant: string;
   nom: string;
   prenom: string;
   email: string;
@@ -74,7 +73,6 @@ export interface PartenaireExterne {
 
 export interface PartenaireExternePayload {
   raison_sociale: string;
-  identifiant: string;
   nom: string;
   prenom: string;
   email: string;

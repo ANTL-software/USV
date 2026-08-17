@@ -1,5 +1,5 @@
 import { getRequest, postRequest, putRequest } from '../APICalls.ts';
-import type { ApiResponse, PartenaireExterne, PartenaireExternePayload } from '../../utils/types/index.ts';
+import type { ApiResponse, PartenaireExterne, PartenaireExternePayload, PartenaireStatistics, PartenaireStatisticsFilters } from '../../utils/types/index.ts';
 
 export const getPartenairesExternesService = async (): Promise<PartenaireExterne[]> => {
   const response = await getRequest('/partenaires-externes') as { data: ApiResponse<PartenaireExterne[]> };
@@ -16,5 +16,13 @@ export const createPartenaireExterneService = async (payload: PartenaireExterneP
 export const updatePartenaireExterneService = async (id: number, payload: PartenaireExternePayload): Promise<PartenaireExterne> => {
   const response = await putRequest<PartenaireExternePayload, ApiResponse<PartenaireExterne>>(`/partenaires-externes/${id}`, payload);
   if (!response.data.success || !response.data.data) throw new Error(response.data.message || 'Impossible de mettre à jour le partenaire externe');
+  return response.data.data;
+};
+
+export const getPartenaireStatisticsService = async (filters: PartenaireStatisticsFilters): Promise<PartenaireStatistics> => {
+  const parameters = new URLSearchParams({ jours: filters.jours });
+  if (filters.id_campagne) parameters.set('id_campagne', String(filters.id_campagne));
+  const response = await getRequest(`/partenaires-externes/statistiques?${parameters.toString()}`) as { data: ApiResponse<PartenaireStatistics> };
+  if (!response.data.success || !response.data.data) throw new Error(response.data.message || 'Impossible de charger les statistiques partenaire');
   return response.data.data;
 };

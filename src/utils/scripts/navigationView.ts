@@ -1,7 +1,7 @@
 import type { Employe } from '../types/index.ts';
 import { getAllowedSections, hasAccessToSection, hasAccessToSubsection } from './permissions.ts';
 
-export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects';
+export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects' | 'statistics';
 
 export interface NavigationItem {
   active: boolean;
@@ -55,6 +55,19 @@ export function buildSubNavigation(user: Employe | null, pathname: string): Navi
 }
 
 export function buildHeaderMobileNavigation(user: Employe | null, pathname: string): NavigationGroup[] {
+  if (user?.account_type === 'partenaire_externe') {
+    return [{
+      id: 'partner',
+      title: 'Espace partenaire',
+      items: [{
+        active: pathname.startsWith('/partenaire/statistiques'),
+        icon: 'statistics',
+        id: 'partner-statistics',
+        label: 'Statistiques prospects',
+        path: '/partenaire/statistiques',
+      }],
+    }];
+  }
   const groups: NavigationGroup[] = [];
   if (getAllowedSections(user).length > 1) {
     groups.push({ id: 'home', items: [{ active: pathname === '/home', icon: 'home', id: 'home', label: 'Accueil', path: '/home' }] });
