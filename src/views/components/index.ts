@@ -41,6 +41,7 @@ export { CommandeDetailsSummary } from './commandeDetailsSummary/index.ts';
 export { CommandeDetailsHistories } from './commandeDetailsHistories/index.ts';
 export { CommandeDetailsActions } from './commandeDetailsActions/index.ts';
 export { CommandeVenteDetails } from './commandeVenteDetails/index.ts';
+export { CommercialDocumentsManager } from './commercialDocumentsManager/index.ts';
 export { CommandesContent } from './commandesContent/index.ts';
 export { CommandesFilters } from './commandesFilters/index.ts';
 export { CommandesLeadTable } from './commandesLeadTable/index.ts';

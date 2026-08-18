@@ -4,15 +4,32 @@ import type { StatutRendezVous } from '../../../utils/types/index.ts';
 import { STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
 import type { LeadClientDetailsPageViewModel } from '../../../hooks/index.ts';
 import { LEAD_QUALIFICATION_OPTIONS, getLeadQualificationButtonClass } from '../../../utils/scripts/index.ts';
-import { Button } from '../index.ts';
+import { Button, CommercialDocumentsManager } from '../index.ts';
 
 const qualificationIcons: Record<StatutRendezVous, ReactElement> = {
   planifie: <IoHourglass />, effectue: <IoCheckmarkCircle />, annule: <IoCloseCircle />, reporte: <IoCalendarClear />, non_honore: <IoPauseCircle />,
 };
 
-type LeadQualificationPanelProps = Pick<LeadClientDetailsPageViewModel, 'lead' | 'printLeadDocument' | 'statusUpdateLoading' | 'updateLeadStatus'>;
+type LeadQualificationPanelProps = Pick<LeadClientDetailsPageViewModel,
+  | 'deleteDocument'
+  | 'documentDragging'
+  | 'documentInputVersion'
+  | 'documentUploading'
+  | 'documents'
+  | 'documentsLoading'
+  | 'downloadDocument'
+  | 'handleDocumentDragLeave'
+  | 'handleDocumentDragOver'
+  | 'handleDocumentDrop'
+  | 'handleDocumentFileSelect'
+  | 'lead'
+  | 'printLeadDocument'
+  | 'statusUpdateLoading'
+  | 'updateLeadStatus'
+>;
 
-export function LeadQualificationPanel({ lead, printLeadDocument, statusUpdateLoading, updateLeadStatus }: LeadQualificationPanelProps): ReactElement | null {
+export function LeadQualificationPanel(props: LeadQualificationPanelProps): ReactElement | null {
+  const { lead, printLeadDocument, statusUpdateLoading, updateLeadStatus } = props;
   if (!lead) return null;
   return (
     <aside className="commandeDetails__right">
@@ -31,10 +48,7 @@ export function LeadQualificationPanel({ lead, printLeadDocument, statusUpdateLo
         <div className="aside-actions-list"><Button style="gradient" onClick={printLeadDocument} className="action-btn-aside"><IoPrint /><span>Réimprimer la fiche du rendez-vous</span></Button></div>
         <div className="aside-divider" />
         <h4>Document du rendez-vous</h4>
-        <div className="upload-zone-disabled">
-          <IoInformationCircle className="info-icon" />
-          <p>L&apos;upload d&apos;un document lié sera activé dans une prochaine itération.</p>
-        </div>
+        <CommercialDocumentsManager {...props} inputId={`lead-document-input-${lead.id_lead}`} uploadLabel="Uploader la fiche du rendez-vous" />
       </div>
     </aside>
   );

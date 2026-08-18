@@ -48,6 +48,11 @@ export type {
 } from './partenaireStatistics.types.ts';
 
 export type {
+  CommercialDocument,
+  CommercialDocumentTarget,
+} from './commercialDocument.types.ts';
+
+export type {
   StatutCampagne,
   Campagne,
   CreateCampagneData,

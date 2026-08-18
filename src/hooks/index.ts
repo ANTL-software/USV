@@ -91,6 +91,7 @@ export { useAlertesHistoryPage } from './useAlertesHistoryPage.ts';
 export type { AlertesHistoryPageViewModel } from './useAlertesHistoryPage.ts';
 export { useSupervisionAgents, useEmployeGraphiques } from './useSupervisionFilters.ts';
 export { useCommandeDetails } from './useCommandeDetails.ts';
+export { useCommercialDocuments } from './useCommercialDocuments.ts';
 export { useCommandeDetailsRoute } from './useCommandeDetailsRoute.ts';
 export { useCommandesList } from './useCommandesList.ts';
 export type { CommandesListState, CommandesSelectOption } from './useCommandesList.ts';

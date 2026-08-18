@@ -544,6 +544,12 @@
   font-size: 0.85em;
   flex-shrink: 0;
 }
+#commandeDetails .commercial-document-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+}
+#commandeDetails .signed-doc-item .doc-download-btn,
 #commandeDetails .signed-doc-item .doc-delete-btn {
   background: none;
   border: none;
@@ -554,6 +560,12 @@
   padding: 0.25em;
   border-radius: 4px;
   transition: background 0.15s ease;
+}
+#commandeDetails .signed-doc-item .doc-download-btn {
+  color: vars.$utilsPrimary;
+}
+#commandeDetails .signed-doc-item .doc-download-btn:hover {
+  background: rgba(124, 58, 237, 0.08);
 }
 #commandeDetails .signed-doc-item .doc-delete-btn:hover {
   background: rgba(239, 68, 68, 0.08);

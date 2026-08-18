@@ -2,19 +2,14 @@ import type { ReactElement } from 'react';
 import {
   IoCheckmarkCircle,
   IoCloseCircle,
-  IoCloudUpload,
-  IoDocumentText,
   IoHourglass,
-  IoInformationCircle,
   IoPauseCircle,
   IoPrint,
-  IoTrash,
 } from 'react-icons/io5';
 
 import type { useCommandeDetails } from '../../../hooks/index.ts';
-import { formatFileSize } from '../../../utils/scripts/index.ts';
 import type { StatutVente } from '../../../utils/types/index.ts';
-import { Button } from '../index.ts';
+import { Button, CommercialDocumentsManager } from '../index.ts';
 
 type CommandeDetailsViewModel = ReturnType<typeof useCommandeDetails>;
 
@@ -76,55 +71,13 @@ export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProp
         <div className="aside-divider" />
         <h4>Bon de commande signé</h4>
 
-        {commande.statut_vente === 'validee' ? (
-          <>
-            <input
-              key={viewModel.fileInputVersion}
-              type="file"
-              id="signed-order-input"
-              onChange={viewModel.handleFileSelect}
-              hidden
-              accept=".pdf,image/*"
-            />
-            <label
-              htmlFor="signed-order-input"
-              className={`upload-zone ${viewModel.dragging ? 'dragging' : ''}`}
-              onDragOver={viewModel.handleDragOver}
-              onDragLeave={viewModel.handleDragLeave}
-              onDrop={viewModel.handleDrop}
-            >
-              {viewModel.uploadProgress !== null ? (
-                <div className="upload-progress-container">
-                  <div className="progress-bar" style={{ width: `${viewModel.uploadProgress}%` }} />
-                  <span>Téléchargement... {viewModel.uploadProgress}%</span>
-                </div>
-              ) : (
-                <>
-                  <IoCloudUpload className="upload-icon" />
-                  <p className="upload-title">Uploader le bon signé</p>
-                  <span className="upload-hint">Glissez un fichier ou cliquez ici (PDF, JPG, PNG)</span>
-                </>
-              )}
-            </label>
-          </>
-        ) : (
-          <div className="upload-zone-disabled">
-            <IoInformationCircle className="info-icon" />
-            <p>L'upload du bon signé est activé uniquement lorsque la commande est <strong>Validée</strong>.</p>
-          </div>
-        )}
-
-        {viewModel.mockDocs.length > 0 && (
-          <div className="signed-docs-list">
-            <h5>Fichiers liés :</h5>
-            {viewModel.mockDocs.map((document) => (
-              <div key={document.id} className="signed-doc-item">
-                <div className="doc-info"><IoDocumentText className="doc-icon" /><span className="doc-name" title={document.name}>{document.name}</span><span className="doc-size">({formatFileSize(document.size)})</span></div>
-                <button className="doc-delete-btn" title="Supprimer" onClick={() => { void viewModel.deleteMockDocument(document.id); }} type="button"><IoTrash /></button>
-              </div>
-            ))}
-          </div>
-        )}
+        <CommercialDocumentsManager
+          {...viewModel}
+          disabled={commande.statut_vente !== 'validee'}
+          disabledMessage="L’upload du bon signé est activé uniquement lorsque la commande est validée."
+          inputId={`signed-order-input-${commande.id_vente}`}
+          uploadLabel="Uploader le bon signé"
+        />
       </div>
     </aside>
   );

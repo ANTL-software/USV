@@ -14,9 +14,11 @@ import {
 } from '../utils/types/index.ts';
 import { isLeadClientRendezVous } from '../utils/scripts/index.ts';
 import { useAlert } from './useAlert.ts';
+import { useCommercialDocuments } from './useCommercialDocuments.ts';
 
 export function useLeadClientDetails(idLead: number) {
   const { showError, showSuccess } = useAlert();
+  const commercialDocuments = useCommercialDocuments('leads', idLead);
   const [lead, setLead] = useState<LeadClient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -131,6 +133,7 @@ export function useLeadClientDetails(idLead: number) {
   }, [lead]);
 
   return {
+    ...commercialDocuments,
     appels,
     appelsError,
     appelsLoading,

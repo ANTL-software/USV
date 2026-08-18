@@ -306,6 +306,13 @@ export { graphiquesService } from './graphiques.service.ts';
 export { qualiteService } from './qualite.service.ts';
 
 export {
+  deleteCommercialDocumentService,
+  getCommercialDocumentDownloadUrl,
+  getCommercialDocumentsService,
+  uploadCommercialDocumentService,
+} from './commercialDocument.service.ts';
+
+export {
   deleteCampagneLogoService,
   uploadCampagneLogoService,
 } from './campagneLogo.service.ts';

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import type { ChangeEvent, DragEvent } from 'react';
 import {
   getProspectAppelsService,
   getProspectVentesService,
@@ -24,16 +23,11 @@ import {
   getCommandeProspectName,
   getCommandeStatusPresentation,
 } from '../utils/scripts/index.ts';
-
-interface MockSignedDoc {
-  id: string;
-  name: string;
-  size: number;
-  uploadedAt: string;
-}
+import { useCommercialDocuments } from './useCommercialDocuments.ts';
 
 export function useCommandeDetails(idVente: number) {
   const { refreshNotifications } = useNotifications();
+  const commercialDocuments = useCommercialDocuments('ventes', idVente);
   const [commande, setCommande] = useState<VenteComplete | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -48,10 +42,6 @@ export function useCommandeDetails(idVente: number) {
   const [ventesLoading, setVentesLoading] = useState(false);
   const [ventesError, setVentesError] = useState<string | null>(null);
   const [expandedVenteId, setExpandedVenteId] = useState<number | null>(null);
-  const [mockDocs, setMockDocs] = useState<MockSignedDoc[]>([]);
-  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
-  const [dragging, setDragging] = useState(false);
-  const [fileInputVersion, setFileInputVersion] = useState(0);
 
   const loadCommande = useCallback(async (): Promise<void> => {
     if (Number.isNaN(idVente)) {
@@ -167,60 +157,6 @@ export function useCommandeDetails(idVente: number) {
     if (commande) window.open(getVenteDocumentUrl(commande.id_vente), '_blank');
   }, [commande]);
 
-  const simulateUpload = (fileName: string, fileSize: number): void => {
-    setUploadProgress(0);
-    let progress = 0;
-    const interval = window.setInterval(() => {
-      progress += 20;
-      setUploadProgress(progress);
-      if (progress >= 100) {
-        window.clearInterval(interval);
-        const newDocument: MockSignedDoc = {
-          id: crypto.randomUUID(),
-          name: fileName,
-          size: fileSize,
-          uploadedAt: new Date().toISOString(),
-        };
-        setMockDocs((documents) => [...documents, newDocument]);
-        setUploadProgress(null);
-        setFileInputVersion((current) => current + 1);
-        void showSuccess('Le bon de commande signé a été simulé avec succès.', 'Upload réussi');
-      }
-    }, 150);
-  };
-
-  const handleDragOver = (event: DragEvent<HTMLElement>): void => {
-    event.preventDefault();
-    if (commande?.statut_vente === 'validee') setDragging(true);
-  };
-
-  const handleDragLeave = (): void => setDragging(false);
-
-  const handleDrop = (event: DragEvent<HTMLElement>): void => {
-    event.preventDefault();
-    setDragging(false);
-    if (commande?.statut_vente !== 'validee') return;
-    const file = event.dataTransfer.files[0];
-    if (!file) return;
-    if (file.type === 'application/pdf' || file.type.startsWith('image/')) {
-      simulateUpload(file.name, file.size);
-    } else {
-      void showError('Format non supporté. Veuillez déposer un fichier PDF ou une Image.');
-    }
-  };
-
-  const handleFileSelect = (event: ChangeEvent<HTMLInputElement>): void => {
-    if (commande?.statut_vente !== 'validee') return;
-    const file = event.target.files?.[0];
-    if (file) simulateUpload(file.name, file.size);
-  };
-
-  const deleteMockDocument = async (documentId: string): Promise<void> => {
-    if (!await confirm('Voulez-vous supprimer ce document signé ?', 'Suppression de document')) return;
-    setMockDocs((documents) => documents.filter((document) => document.id !== documentId));
-    await showSuccess('Document supprimé.');
-  };
-
   const prospectName = useMemo(() => getCommandeProspectName(commande), [commande]);
   const agentName = useMemo(() => getCommandeAgentName(commande), [commande]);
   const totals = useMemo(() => computeCommandeTotals(commande), [commande]);
@@ -251,20 +187,11 @@ export function useCommandeDetails(idVente: number) {
     ventesError,
     expandedVenteId,
     setExpandedVenteId,
-    mockDocs,
-    uploadProgress,
-    dragging,
-    setDragging,
-    fileInputVersion,
+    ...commercialDocuments,
     loadAppels,
     changeStatus,
     snoozeFrigoReminder,
     printDocument,
-    handleDragOver,
-    handleDragLeave,
-    handleDrop,
-    handleFileSelect,
-    deleteMockDocument,
     prospectName,
     agentName,
     totals,
