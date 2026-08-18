@@ -1,7 +1,7 @@
 import { useEffect, ReactElement, ComponentType } from "react";
 import { useNavigate, NavigateFunction, useLocation } from "react-router-dom";
 import { useUserContext } from '../../hooks/index.ts';
-import { getAllowedSections, getFirstAllowedPath, hasAccessToPath } from '../scripts/index.ts';
+import { getFirstAllowedPath, hasAccessToPath } from '../scripts/index.ts';
 
 export default function WithAuth<P extends object>(
   WrappedComponent: ComponentType<P>,
@@ -22,10 +22,8 @@ export default function WithAuth<P extends object>(
             const redirectPath = getFirstAllowedPath(user);
             navigate(redirectPath);
           } else if (currentPath === '/home' || currentPath === '/') {
-            const allowed = getAllowedSections(user);
-            if (allowed.length === 1) {
-              navigate(`/${allowed[0]}`);
-            }
+            const redirectPath = getFirstAllowedPath(user);
+            if (redirectPath !== '/home') navigate(redirectPath);
           }
         }
       }

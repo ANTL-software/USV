@@ -95,8 +95,20 @@ test('le partenaire accède au portail et uniquement à ses modules explicites',
   assert.equal(hasAccessToPath(partner, '/partenaire/documents'), true);
   assert.equal(hasAccessToPath(partner, '/partenaire/statistiques'), false);
   assert.equal(hasAccessToPath(partner, '/operations/commandes'), false);
-  assert.equal(getFirstAllowedPath(partner), '/partenaire');
+  assert.equal(getFirstAllowedPath(partner), '/partenaire/documents');
   assert.deepEqual(getPartnerModules(partner).map(({ id }) => id), ['documents']);
+});
+
+test('le partenaire multi-vues arrive sur le portail de choix', () => {
+  const partner = createUser({
+    account_type: 'partenaire_externe',
+    permissions: {
+      'documents-partenaire': true,
+      'statistiques-partenaire': true,
+    },
+  });
+
+  assert.equal(getFirstAllowedPath(partner), '/partenaire');
 });
 
 test('les écrans de modification RH exigent la permission gestion des accès', () => {
@@ -238,11 +250,11 @@ test('la matrice des postes recense chaque carte de hub comme sous-application',
   ]);
 });
 
-test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
-  const user = createUser({
+test('un employé multi-modules, dont le CTO, arrive sur le home', () => {
+  const cto = createUser({
     poste: {
       id_poste: 5,
-      libelle_poste: 'Office Manager',
+      libelle_poste: 'CTO',
       permissions: {
         mail: { enabled: true },
         booking: { enabled: true },
@@ -255,9 +267,37 @@ test('getAllowedSections et getFirstAllowedPath restent cohérents', () => {
     },
   });
 
-  assert.deepEqual(getAllowedSections(user), ['mail', 'booking', 'operations', 'commercial', 'incidents', 'commerciaux', 'projets']);
-  assert.equal(getFirstAllowedPath(user), '/commerciaux');
+  assert.deepEqual(getAllowedSections(cto), ['mail', 'booking', 'operations', 'commercial', 'incidents', 'commerciaux', 'projets']);
+  assert.equal(getFirstAllowedPath(cto), '/home');
   assert.equal(getFirstAllowedPath(null), '/auth');
+});
+
+test('un employé mono-module arrive sur le hub si plusieurs vues sont autorisées', () => {
+  const operations = createUser({
+    poste: {
+      id_poste: 51,
+      libelle_poste: 'Opérations',
+      permissions: {
+        operations: { enabled: true, subsections: ['commandes', 'prospects'] },
+      },
+    },
+  });
+
+  assert.equal(getFirstAllowedPath(operations), '/operations');
+});
+
+test('un employé avec une seule vue autorisée arrive directement sur cette vue', () => {
+  const planningOnly = createUser({
+    poste: {
+      id_poste: 52,
+      libelle_poste: 'Planning commercial',
+      permissions: {
+        commerciaux: { enabled: true, subsections: ['mon_planning'] },
+      },
+    },
+  });
+
+  assert.equal(getFirstAllowedPath(planningOnly), '/commerciaux/mon_planning');
 });
 
 test('les accès incidents suivent les modules du menu parent', () => {

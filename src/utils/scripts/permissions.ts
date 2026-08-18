@@ -273,15 +273,24 @@ export function getAllowedSections(user: Employe | null): string[] {
 
 export function getFirstAllowedPath(user: Employe | null): string {
   if (!user) return '/auth';
-  if (user.account_type === 'partenaire_externe') return '/partenaire';
-  
-  if (hasAccessToSection(user, 'commerciaux')) return '/commerciaux';
-  if (hasAccessToSection(user, 'operations')) return '/operations';
-  if (hasAccessToSection(user, 'commercial')) return '/commercial';
-  if (hasAccessToSection(user, 'incidents')) return '/incidents';
-  if (hasAccessToSection(user, 'mail')) return '/mail';
-  if (hasAccessToSection(user, 'booking')) return '/booking';
-  if (hasAccessToSection(user, 'projets')) return '/projets';
-  
-  return '/home';
+  if (user.account_type === 'partenaire_externe') {
+    const partnerModules = getPartnerModules(user);
+    return partnerModules.length === 1 ? partnerModules[0].path : '/partenaire';
+  }
+
+  const allowedSectionIds = getAllowedSections(user);
+  if (allowedSectionIds.length !== 1) return '/home';
+
+  const section = SECTIONS_CONFIG.find(({ id }) => id === allowedSectionIds[0]);
+  if (!section) return '/home';
+
+  const allowedSubsectionPaths = [...new Set(
+    section.subsections
+      .map(({ path }) => path)
+      .filter((path) => hasAccessToPath(user, path)),
+  )];
+
+  return allowedSubsectionPaths.length === 1
+    ? allowedSubsectionPaths[0]
+    : section.path;
 }
