@@ -53,6 +53,17 @@ export type {
 } from './commercialDocument.types.ts';
 
 export type {
+  PartenaireDocumentCampaign,
+  PartenaireDocumentDossier,
+  PartenaireDocumentDossierType,
+  PartenaireDocumentFile,
+  PartenaireDocumentsFilters,
+  PartenaireDocumentsPagination,
+  PartenaireDocumentsPeriod,
+  PartenaireDocumentsResponse,
+} from './partenaireDocuments.types.ts';
+
+export type {
   StatutCampagne,
   Campagne,
   CreateCampagneData,

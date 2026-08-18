@@ -25,7 +25,7 @@ export function useHeaderView(): HeaderViewModel {
   const { logout, user } = useUserContext();
   const isAuthRoute = pathname === '/auth';
   return {
-    brandPath: isAuthRoute ? '/auth' : user?.account_type === 'partenaire_externe' ? '/partenaire/statistiques' : '/home',
+    brandPath: isAuthRoute ? '/auth' : user?.account_type === 'partenaire_externe' ? '/partenaire' : '/home',
     greeting: getSalutation(getGreetingName(user?.prenom)),
     hasUser: Boolean(user),
     isAuthRoute,

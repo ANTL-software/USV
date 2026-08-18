@@ -37,13 +37,17 @@ export {
 } from './formatters.ts';
 export {
   ACCESS_MANAGEMENT_PERMISSION,
+  PARTNER_DOCUMENTS_PERMISSION,
+  PARTNER_STATISTICS_PERMISSION,
   SECTIONS_CONFIG,
   getAllowedSections,
   getFirstAllowedPath,
+  getPartnerModules,
   hasAccessToSection,
   hasAccessToSubsection,
   hasAccessToPath,
 } from './permissions.ts';
+export type { PartnerModuleAccess } from './permissions.ts';
 export {
   getLegacyOptoutLabel,
   getProspectCampaignStatusHeading,

@@ -4,6 +4,7 @@ import test from 'node:test';
 import {
   getAllowedSections,
   getFirstAllowedPath,
+  getPartnerModules,
   hasAccessToPath,
   hasAccessToSection,
   hasAccessToSubsection,
@@ -79,6 +80,23 @@ test('hasAccessToPath applique le module sélectionné dans le menu parent', () 
   assert.equal(hasAccessToPath(user, '/produits'), true);
   assert.equal(hasAccessToPath(user, '/operations/postes'), false);
   assert.equal(hasAccessToPath(user, '/commercial'), false);
+});
+
+test('le partenaire accède au portail et uniquement à ses modules explicites', () => {
+  const partner = createUser({
+    account_type: 'partenaire_externe',
+    permissions: {
+      'documents-partenaire': true,
+      'statistiques-partenaire': false,
+    },
+  });
+
+  assert.equal(hasAccessToPath(partner, '/partenaire'), true);
+  assert.equal(hasAccessToPath(partner, '/partenaire/documents'), true);
+  assert.equal(hasAccessToPath(partner, '/partenaire/statistiques'), false);
+  assert.equal(hasAccessToPath(partner, '/operations/commandes'), false);
+  assert.equal(getFirstAllowedPath(partner), '/partenaire');
+  assert.deepEqual(getPartnerModules(partner).map(({ id }) => id), ['documents']);
 });
 
 test('les écrans de modification RH exigent la permission gestion des accès', () => {

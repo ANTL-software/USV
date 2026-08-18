@@ -1,7 +1,7 @@
 import type { Employe } from '../types/index.ts';
-import { getAllowedSections, hasAccessToSection, hasAccessToSubsection } from './permissions.ts';
+import { getAllowedSections, getPartnerModules, hasAccessToSection, hasAccessToSubsection } from './permissions.ts';
 
-export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects' | 'statistics';
+export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'documents' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects' | 'statistics';
 
 export interface NavigationItem {
   active: boolean;
@@ -56,16 +56,26 @@ export function buildSubNavigation(user: Employe | null, pathname: string): Navi
 
 export function buildHeaderMobileNavigation(user: Employe | null, pathname: string): NavigationGroup[] {
   if (user?.account_type === 'partenaire_externe') {
+    const moduleItems: NavigationItem[] = getPartnerModules(user).map((module) => ({
+      active: pathname.startsWith(module.path),
+      icon: module.id === 'documents' ? 'documents' : 'statistics',
+      id: `partner-${module.id}`,
+      label: module.label,
+      path: module.path,
+    }));
     return [{
       id: 'partner',
       title: 'Espace partenaire',
-      items: [{
-        active: pathname.startsWith('/partenaire/statistiques'),
-        icon: 'statistics',
-        id: 'partner-statistics',
-        label: 'Statistiques prospects',
-        path: '/partenaire/statistiques',
-      }],
+      items: [
+        {
+          active: pathname === '/partenaire',
+          icon: 'home',
+          id: 'partner-home',
+          label: 'Accueil partenaire',
+          path: '/partenaire',
+        },
+        ...moduleItems,
+      ],
     }];
   }
   const groups: NavigationGroup[] = [];

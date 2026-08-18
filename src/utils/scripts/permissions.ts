@@ -1,6 +1,38 @@
 import type { Employe } from '../types/index.ts';
 
 export const ACCESS_MANAGEMENT_PERMISSION = 'access-management';
+export const PARTNER_STATISTICS_PERMISSION = 'statistiques-partenaire';
+export const PARTNER_DOCUMENTS_PERMISSION = 'documents-partenaire';
+
+export interface PartnerModuleAccess {
+  description: string;
+  id: 'documents' | 'statistiques';
+  label: string;
+  path: string;
+  permission: string;
+}
+
+const PARTNER_MODULES: PartnerModuleAccess[] = [
+  {
+    description: 'Consulter les horaires de décroché, les répondeurs et la joignabilité des campagnes.',
+    id: 'statistiques',
+    label: 'Statistiques de prospection',
+    path: '/partenaire/statistiques',
+    permission: PARTNER_STATISTICS_PERMISSION,
+  },
+  {
+    description: 'Retrouver les bons de commande et les fiches de rendez-vous des dossiers validés.',
+    id: 'documents',
+    label: 'Documents commerciaux',
+    path: '/partenaire/documents',
+    permission: PARTNER_DOCUMENTS_PERMISSION,
+  },
+];
+
+export function getPartnerModules(user: Employe | null): PartnerModuleAccess[] {
+  if (user?.account_type !== 'partenaire_externe') return [];
+  return PARTNER_MODULES.filter(({ permission }) => user.permissions?.[permission] === true);
+}
 
 export interface SubsectionConfig {
   id: string;
@@ -118,8 +150,8 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   const cleanPath = '/' + path.split('/').filter(Boolean).join('/');
 
   if (user.account_type === 'partenaire_externe') {
-    return cleanPath === '/partenaire/statistiques'
-      && user.permissions?.['statistiques-partenaire'] === true;
+    if (cleanPath === '/partenaire') return true;
+    return getPartnerModules(user).some(({ path: modulePath }) => cleanPath === modulePath);
   }
   
   if (cleanPath === '/home' || cleanPath === '/auth' || cleanPath === '/') {
@@ -241,7 +273,7 @@ export function getAllowedSections(user: Employe | null): string[] {
 
 export function getFirstAllowedPath(user: Employe | null): string {
   if (!user) return '/auth';
-  if (user.account_type === 'partenaire_externe') return '/partenaire/statistiques';
+  if (user.account_type === 'partenaire_externe') return '/partenaire';
   
   if (hasAccessToSection(user, 'commerciaux')) return '/commerciaux';
   if (hasAccessToSection(user, 'operations')) return '/operations';

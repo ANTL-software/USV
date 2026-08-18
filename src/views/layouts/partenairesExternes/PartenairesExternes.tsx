@@ -4,12 +4,13 @@ import type { FormEvent, ReactElement } from 'react';
 import { MdArrowBack, MdEdit, MdPersonAdd } from 'react-icons/md';
 import { getAllCampagnesService, createPartenaireExterneService, getPartenairesExternesService, updatePartenaireExterneService } from '../../../API/services/index.ts';
 import type { Campagne, PartenaireExterne, PartenaireExternePayload } from '../../../utils/types/index.ts';
+import { PARTNER_DOCUMENTS_PERMISSION, PARTNER_STATISTICS_PERMISSION } from '../../../utils/scripts/index.ts';
 import { WithAuth } from '../../../utils/middleware/index.ts';
 import { Button, Header } from '../../components/index.ts';
 
 const initialForm = (): PartenaireExternePayload => ({
   raison_sociale: '', nom: '', prenom: '', email: '', password: '',
-  permissions: { 'statistiques-partenaire': true }, id_campagnes_autorisees: [], actif: true,
+  permissions: { [PARTNER_STATISTICS_PERMISSION]: true, [PARTNER_DOCUMENTS_PERMISSION]: false }, id_campagnes_autorisees: [], actif: true,
 });
 
 function PartenairesExternes(): ReactElement {
@@ -75,7 +76,10 @@ function PartenairesExternes(): ReactElement {
         <div className="externalPartners__row"><label>Prénom<input required value={form.prenom} onChange={(event) => setField('prenom', event.target.value)} /></label><label>Nom<input required value={form.nom} onChange={(event) => setField('nom', event.target.value)} /></label></div>
         <label>Email<input required type="email" value={form.email} onChange={(event) => setField('email', event.target.value)} /></label>
         <label>Mot de passe {editingId ? '(laisser vide pour conserver)' : ''}<input required={!editingId} type="password" value={form.password || ''} onChange={(event) => setField('password', event.target.value)} /></label>
-        <fieldset><legend>Accès USV</legend><label className="externalPartners__check"><input type="checkbox" checked={form.permissions['statistiques-partenaire'] === true} onChange={(event) => setForm((current) => ({ ...current, permissions: { 'statistiques-partenaire': event.target.checked } }))} /> Statistiques partenaire</label></fieldset>
+        <fieldset><legend>Accès USV</legend>
+          <label className="externalPartners__check"><input type="checkbox" checked={form.permissions[PARTNER_STATISTICS_PERMISSION] === true} onChange={(event) => setForm((current) => ({ ...current, permissions: { ...current.permissions, [PARTNER_STATISTICS_PERMISSION]: event.target.checked } }))} /> Statistiques partenaire</label>
+          <label className="externalPartners__check"><input type="checkbox" checked={form.permissions[PARTNER_DOCUMENTS_PERMISSION] === true} onChange={(event) => setForm((current) => ({ ...current, permissions: { ...current.permissions, [PARTNER_DOCUMENTS_PERMISSION]: event.target.checked } }))} /> Bons de commande et fiches de rendez-vous</label>
+        </fieldset>
         <fieldset><legend>Campagnes autorisées</legend>{campaigns.map((campaign) => <label className="externalPartners__check" key={campaign.id_campagne}><input type="checkbox" checked={form.id_campagnes_autorisees.includes(campaign.id_campagne)} onChange={() => toggleCampaign(campaign.id_campagne)} /> {campaign.nom_campagne}</label>)}</fieldset>
         <label className="externalPartners__check"><input type="checkbox" checked={form.actif} onChange={(event) => setField('actif', event.target.checked)} /> Compte actif</label>
         <div className="externalPartners__actions"><Button style="gradient" type="submit" disabled={saving}><MdPersonAdd /> {saving ? 'Enregistrement…' : editingId ? 'Mettre à jour' : 'Créer le compte'}</Button>{editingId && <Button style="white" onClick={reset}>Annuler</Button>}</div>

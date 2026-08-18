@@ -62,6 +62,25 @@ test('le menu Header respecte les modules autorisés', () => {
   assert.equal(groups.find(({ id }) => id === 'operations')?.items[0]?.label, 'Gestion opérationnelle');
 });
 
+test('le menu partenaire contient le portail et seulement les vues autorisées', () => {
+  const partner: Employe = {
+    actif: true,
+    account_type: 'partenaire_externe',
+    id_employe: 0,
+    identifiant: 'partenaire',
+    nom: 'Gournay',
+    permissions: {
+      'documents-partenaire': true,
+      'statistiques-partenaire': true,
+    },
+    prenom: 'François',
+  };
+  const groups = buildHeaderMobileNavigation(partner, '/partenaire/documents');
+  const items = groups[0]?.items ?? [];
+  assert.deepEqual(items.map(({ id }) => id), ['partner-home', 'partner-statistiques', 'partner-documents']);
+  assert.equal(items.find(({ id }) => id === 'partner-documents')?.active, true);
+});
+
 test('la composition email centralise les valeurs initiales et la validation', () => {
   const initial = createEmailComposerForm(courrier, false, 0);
   assert.equal(initial.subject, 'Courrier: courrier-client.pdf');

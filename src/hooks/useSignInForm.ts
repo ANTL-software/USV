@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import type { FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { handleAuthError } from '../utils/scripts/index.ts';
+import { getFirstAllowedPath, handleAuthError } from '../utils/scripts/index.ts';
 import { useUserContext } from './useUserContext.ts';
 
 export function useSignInForm() {
@@ -11,7 +11,7 @@ export function useSignInForm() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  useEffect(() => { if (user) void navigate('/home'); }, [navigate, user]);
+  useEffect(() => { if (user) void navigate(getFirstAllowedPath(user)); }, [navigate, user]);
   const submit = useCallback(async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     setError('');

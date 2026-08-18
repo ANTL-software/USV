@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 import { IoCallOutline, IoCheckmarkCircleOutline, IoPeopleOutline, IoRefresh, IoTimeOutline } from 'react-icons/io5';
+import { MdArrowBack } from 'react-icons/md';
 import {
   Bar,
   CartesianGrid,
@@ -28,7 +29,7 @@ import { Button } from '../button/index.ts';
 
 const COLORS = ['#7c3aed', '#a78bfa', '#c4b5fd', '#ddd6fe'];
 
-interface DashboardProps { viewModel: PartenaireStatisticsViewModel; }
+interface DashboardProps { navigateBack: () => void; viewModel: PartenaireStatisticsViewModel; }
 interface PanelProps { children: ReactNode; description?: string; title: string; }
 interface MetricProps { detail?: string; icon?: ReactNode; label: string; tone?: 'blue' | 'green' | 'orange' | 'purple' | 'red' | 'teal'; value: string; }
 
@@ -49,12 +50,13 @@ function OutcomesPie({ data }: { data: PartenaireStatisticsPoint[] }): ReactElem
   return <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={data} dataKey="valeur" nameKey="label" innerRadius={55} outerRadius={88} paddingAngle={2}>{data.map((point, index) => <Cell key={`${point.label}-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend verticalAlign="bottom" height={42} /></PieChart></ResponsiveContainer></div>;
 }
 
-function PartenaireStatisticsDashboard({ viewModel }: DashboardProps): ReactElement {
+function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardProps): ReactElement {
   const { data, error, loading, period, refresh, selectCampaign, selectPeriod, selectedCampaignId } = viewModel;
+  const backButton = <div className="partnerStats__back"><Button style="back" onClick={navigateBack}><MdArrowBack /> Retour</Button></div>;
 
-  if (loading && !data) return <main className="partnerStats"><div className="partnerStats__loading">Chargement des indicateurs de joignabilité…</div></main>;
-  if (error && !data) return <main className="partnerStats"><div className="partnerStats__error"><p>{error}</p><Button style="gradient" onClick={refresh}><IoRefresh /> Réessayer</Button></div></main>;
-  if (!data) return <main className="partnerStats"><EmptyChart message="Aucune statistique disponible." /></main>;
+  if (loading && !data) return <main className="partnerStats">{backButton}<div className="partnerStats__loading">Chargement des indicateurs de joignabilité…</div></main>;
+  if (error && !data) return <main className="partnerStats">{backButton}<div className="partnerStats__error"><p>{error}</p><Button style="gradient" onClick={refresh}><IoRefresh /> Réessayer</Button></div></main>;
+  if (!data) return <main className="partnerStats">{backButton}<EmptyChart message="Aucune statistique disponible." /></main>;
 
   const hourly = data.joignabilite.par_horaire.map((point) => ({ ...point, label: `${point.heure} h` }));
   const weekdays = data.joignabilite.par_jour.map((point) => ({ ...point, label: getPartnerWeekdayLabel(point.jour) }));
@@ -64,6 +66,7 @@ function PartenaireStatisticsDashboard({ viewModel }: DashboardProps): ReactElem
   }));
 
   return <main className="partnerStats">
+    {backButton}
     <section className="partnerStats__hero">
       <div><p className="partnerStats__eyebrow">Analyse de joignabilité</p><h1>{data.campagne.nom_campagne}</h1><p>Repérez les créneaux où les prospects décrochent le plus et la part des répondeurs pour ajuster les horaires d’appel.</p></div>
       <div className="partnerStats__updated"><span>Dernière actualisation</span><strong>{formatPartnerStatisticDate(data.generated_at)}</strong><Button style="white" onClick={refresh} disabled={loading}><IoRefresh /> Actualiser</Button></div>

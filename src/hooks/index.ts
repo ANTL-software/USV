@@ -190,6 +190,10 @@ export type {
 export { useQueuePreview } from './useQueuePreview.ts';
 export { usePartenaireStatistics } from './usePartenaireStatistics.ts';
 export type { PartenaireStatisticsViewModel } from './usePartenaireStatistics.ts';
+export { usePartenaireDocuments } from './usePartenaireDocuments.ts';
+export type { PartenaireDocumentsViewModel } from './usePartenaireDocuments.ts';
+export { usePartenairePortal } from './usePartenairePortal.ts';
+export type { PartenairePortalViewModel } from './usePartenairePortal.ts';
 export { useProspectEditor } from './useProspectEditor.ts';
 export { useProspectDetailView } from './useProspectDetailView.ts';
 export type { ProspectDetailViewModel } from './useProspectDetailView.ts';

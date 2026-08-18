@@ -2,7 +2,7 @@ import './header.scss';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { IoAdd, IoAlertCircleOutline, IoCalendar, IoCallOutline, IoFolder, IoHome, IoList, IoPeopleCircle, IoReceiptOutline, IoStatsChartOutline } from 'react-icons/io5';
+import { IoAdd, IoAlertCircleOutline, IoCalendar, IoCallOutline, IoDocumentTextOutline, IoFolder, IoHome, IoList, IoPeopleCircle, IoReceiptOutline, IoStatsChartOutline } from 'react-icons/io5';
 import { LuLogOut } from 'react-icons/lu';
 import antlLogo from '../../../assets/antlLogo.png';
 import { useHeaderView } from '../../../hooks/index.ts';
@@ -22,6 +22,7 @@ function NavigationIcon({ icon }: { icon: NavigationIconKey }): ReactElement {
   if (icon === 'booking') return <IoCalendar className="mobileNavIcon" />;
   if (icon === 'commercial') return <IoReceiptOutline className="mobileNavIcon" />;
   if (icon === 'commerciaux') return <IoPeopleCircle className="mobileNavIcon" />;
+  if (icon === 'documents') return <IoDocumentTextOutline className="mobileNavIcon" />;
   if (icon === 'incidents') return <IoAlertCircleOutline className="mobileNavIcon" />;
   if (icon === 'list') return <IoList className="mobileNavIcon" />;
   if (icon === 'operations') return <IoCallOutline className="mobileNavIcon" />;
