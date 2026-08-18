@@ -1,4 +1,10 @@
-import type { LeadClient, LeadClientStats, Vente } from '../types/index.ts';
+import type {
+  LeadClient,
+  LeadClientStats,
+  StatutRendezVous,
+  StatutVente,
+  Vente,
+} from '../types/index.ts';
 
 export type CommandesPeriodPreset = 'current_month' | 'previous_month' | 'custom';
 export type CommandesViewMode = 'actives' | 'corbeille';
@@ -24,6 +30,98 @@ export interface CommandesSummaryCard {
 export interface DateBounds {
   start: string;
   end: string;
+}
+
+export interface CommandesListSnapshot {
+  agentId: number | null;
+  campagneId: number;
+  dateDebut: string;
+  dateFin: string;
+  leadStatus: StatutRendezVous | '';
+  page: number;
+  periodPreset: CommandesPeriodPreset;
+  saleStatus: StatutVente | '';
+  vueMode: CommandesViewMode;
+}
+
+export interface CommandesListNavigationState {
+  commandesList: CommandesListSnapshot;
+}
+
+const SALE_STATUSES: ReadonlySet<string> = new Set(['', 'en_attente', 'validee', 'annulee', 'frigo']);
+const LEAD_STATUSES: ReadonlySet<string> = new Set(['', 'planifie', 'effectue', 'annule', 'reporte', 'non_honore']);
+const PERIOD_PRESETS: ReadonlySet<string> = new Set(['current_month', 'previous_month', 'custom']);
+const VIEW_MODES: ReadonlySet<string> = new Set(['actives', 'corbeille']);
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function isOptionalPositiveInteger(value: unknown): value is number | null {
+  return value === null || (typeof value === 'number' && Number.isInteger(value) && value > 0);
+}
+
+export function createCommandesListNavigationState(
+  snapshot: CommandesListSnapshot,
+): CommandesListNavigationState {
+  return { commandesList: snapshot };
+}
+
+export function readCommandesListNavigationState(
+  value: unknown,
+): CommandesListNavigationState | null {
+  if (!isRecord(value) || !isRecord(value.commandesList)) {
+    return null;
+  }
+
+  const snapshot = value.commandesList;
+  const {
+    agentId,
+    campagneId,
+    dateDebut,
+    dateFin,
+    leadStatus,
+    page,
+    periodPreset,
+    saleStatus,
+    vueMode,
+  } = snapshot;
+
+  if (
+    typeof campagneId !== 'number'
+    || !Number.isInteger(campagneId)
+    || campagneId <= 0
+    || !isOptionalPositiveInteger(agentId)
+    || typeof dateDebut !== 'string'
+    || typeof dateFin !== 'string'
+    || typeof leadStatus !== 'string'
+    || !LEAD_STATUSES.has(leadStatus)
+    || typeof page !== 'number'
+    || !Number.isInteger(page)
+    || page <= 0
+    || typeof periodPreset !== 'string'
+    || !PERIOD_PRESETS.has(periodPreset)
+    || typeof saleStatus !== 'string'
+    || !SALE_STATUSES.has(saleStatus)
+    || typeof vueMode !== 'string'
+    || !VIEW_MODES.has(vueMode)
+  ) {
+    return null;
+  }
+
+  return {
+    commandesList: {
+      agentId,
+      campagneId,
+      dateDebut,
+      dateFin,
+      leadStatus: leadStatus as StatutRendezVous | '',
+      page,
+      periodPreset: periodPreset as CommandesPeriodPreset,
+      saleStatus: saleStatus as StatutVente | '',
+      vueMode: vueMode as CommandesViewMode,
+    },
+  };
 }
 
 export function formatMontant(montant: string): string {

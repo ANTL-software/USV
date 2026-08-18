@@ -6,6 +6,7 @@ import {
   buildLeadCommandesSummary,
   buildPlanningSlotsByDay,
   buildSaleCommandesSummary,
+  createCommandesListNavigationState,
   formatAbsencePeriod,
   formatEmployeeDocumentDate,
   formatFileSizeInKilobytes,
@@ -14,6 +15,7 @@ import {
   isDateAfterPeriod,
   isDateBeforePeriod,
   isFrigoReminderDue,
+  readCommandesListNavigationState,
 } from '../../src/utils/scripts/index.ts';
 import type { AbsenceRequest, PlanningCreneau, Vente } from '../../src/utils/types/index.ts';
 
@@ -91,6 +93,26 @@ test('une commande frigo n’est signalée qu’à partir de sa relance planifi�
   assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T08:59:59.000Z')), false);
   assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T09:00:00.000Z')), true);
   assert.equal(isFrigoReminderDue({ ...vente, statut_vente: 'validee' }, new Date('2026-06-01T09:00:00.000Z')), false);
+});
+
+test('le retour depuis un détail conserve les filtres et la page de la liste commandes', () => {
+  const navigationState = createCommandesListNavigationState({
+    agentId: 9,
+    campagneId: 8,
+    dateDebut: '2026-07-01',
+    dateFin: '2026-07-31',
+    leadStatus: 'effectue',
+    page: 4,
+    periodPreset: 'previous_month',
+    saleStatus: '',
+    vueMode: 'actives',
+  });
+
+  assert.deepEqual(readCommandesListNavigationState(navigationState), navigationState);
+  assert.equal(readCommandesListNavigationState({
+    commandesList: { ...navigationState.commandesList, page: 0 },
+  }), null);
+  assert.equal(readCommandesListNavigationState({ commandesList: { campagneId: 8 } }), null);
 });
 
 test('une absence en jours expose période retour et libellés normalisés', () => {

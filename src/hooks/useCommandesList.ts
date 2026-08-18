@@ -13,6 +13,7 @@ import {
   getMonthBounds,
   normalizeCampaignVariant,
 } from '../utils/scripts/index.ts';
+import type { CommandesListSnapshot } from '../utils/scripts/index.ts';
 import { confirm, showError, showSuccess } from '../utils/services/index.ts';
 import {
   STATUT_RENDEZ_VOUS_OPTIONS,
@@ -45,7 +46,7 @@ const DEFAULT_LEAD_STATS: LeadClientStats = {
 
 const PAGE_LIMIT = 20;
 
-export function useCommandesList() {
+export function useCommandesList(initialSnapshot: CommandesListSnapshot | null = null) {
   const venteContext = useContext(VenteContext);
   const { campagnes } = useCampagnes();
 
@@ -68,13 +69,14 @@ export function useCommandesList() {
   const currentMonthBounds = getMonthBounds(0);
   const previousMonthBounds = getMonthBounds(-1);
 
-  const [localStatut, setLocalStatut] = useState<StatutVente | ''>(filters.statut ?? '');
-  const [localLeadStatut, setLocalLeadStatut] = useState<StatutRendezVous | ''>('');
-  const [periodPreset, setPeriodPreset] = useState<CommandesPeriodPreset>('current_month');
-  const [localDateDebut, setLocalDateDebut] = useState(filters.date_debut ?? currentMonthBounds.start);
-  const [localDateFin, setLocalDateFin] = useState(filters.date_fin ?? currentMonthBounds.end);
-  const [localAgentId, setLocalAgentId] = useState<number | null>(filters.agent ?? null);
-  const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>('actives');
+  const [localStatut, setLocalStatut] = useState<StatutVente | ''>(initialSnapshot?.saleStatus ?? filters.statut ?? '');
+  const [localLeadStatut, setLocalLeadStatut] = useState<StatutRendezVous | ''>(initialSnapshot?.leadStatus ?? '');
+  const [periodPreset, setPeriodPreset] = useState<CommandesPeriodPreset>(initialSnapshot?.periodPreset ?? 'current_month');
+  const [localDateDebut, setLocalDateDebut] = useState(initialSnapshot?.dateDebut ?? filters.date_debut ?? currentMonthBounds.start);
+  const [localDateFin, setLocalDateFin] = useState(initialSnapshot?.dateFin ?? filters.date_fin ?? currentMonthBounds.end);
+  const [localAgentId, setLocalAgentId] = useState<number | null>(initialSnapshot?.agentId ?? filters.agent ?? null);
+  const [vueMode, setVueMode] = useState<'actives' | 'corbeille'>(initialSnapshot?.vueMode ?? 'actives');
+  const [isListInitialized, setIsListInitialized] = useState(false);
   const [leadAgents, setLeadAgents] = useState<Array<{ id_employe: number; prenom?: string; nom?: string }>>([]);
   const [leadClients, setLeadClients] = useState<LeadClient[]>([]);
   const [leadPagination, setLeadPagination] = useState<{
@@ -86,7 +88,15 @@ export function useCommandesList() {
   const [leadStats, setLeadStats] = useState<LeadClientStats>(DEFAULT_LEAD_STATS);
   const [leadLoading, setLeadLoading] = useState(false);
   const [leadError, setLeadError] = useState<string | null>(null);
-  const [leadFilters, setLeadFilters] = useState<LeadClientListParams>({ page: 1, limit: PAGE_LIMIT });
+  const [leadFilters, setLeadFilters] = useState<LeadClientListParams>(() => ({
+    agent: initialSnapshot?.agentId ?? undefined,
+    date_debut: initialSnapshot?.dateDebut,
+    date_field: 'emission_or_qualification',
+    date_fin: initialSnapshot?.dateFin,
+    limit: PAGE_LIMIT,
+    page: initialSnapshot?.page ?? 1,
+    statut: initialSnapshot?.leadStatus || undefined,
+  }));
   const [frigoAlertCampaignIds, setFrigoAlertCampaignIds] = useState<Set<number>>(new Set());
 
   const selectedCampagne = campagnes.find((campagne) => campagne.id_campagne === filters.campagne);
@@ -203,7 +213,7 @@ export function useCommandesList() {
   }, [load]);
 
   useEffect(() => {
-    if (!filters.campagne || !hasResolvedSelectedCampaign || isLeadCampaign) {
+    if (!isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || isLeadCampaign) {
       return;
     }
 
@@ -219,16 +229,17 @@ export function useCommandesList() {
     filters.soft_deleted,
     hasResolvedSelectedCampaign,
     isLeadCampaign,
+    isListInitialized,
     load,
   ]);
 
   useEffect(() => {
-    if (!filters.campagne || !hasResolvedSelectedCampaign || !isLeadCampaign) {
+    if (!isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || !isLeadCampaign) {
       return;
     }
 
     void loadLeadClients(filters.campagne, leadFilters);
-  }, [filters.campagne, hasResolvedSelectedCampaign, isLeadCampaign, leadFilters, loadLeadClients]);
+  }, [filters.campagne, hasResolvedSelectedCampaign, isLeadCampaign, isListInitialized, leadFilters, loadLeadClients]);
 
   useEffect(() => {
     if (isLeadCampaign && vueMode !== 'actives') {
@@ -237,6 +248,10 @@ export function useCommandesList() {
   }, [isLeadCampaign, vueMode]);
 
   useEffect(() => {
+    if (!isListInitialized) {
+      return;
+    }
+
     if (isLeadCampaign) {
       setLocalLeadStatut(leadFilters.statut ?? '');
       setLocalAgentId(leadFilters.agent ?? null);
@@ -255,6 +270,7 @@ export function useCommandesList() {
     filters.date_fin,
     filters.statut,
     isLeadCampaign,
+    isListInitialized,
     leadFilters.agent,
     leadFilters.date_debut,
     leadFilters.date_fin,
@@ -351,14 +367,58 @@ export function useCommandesList() {
   }, [currentMonthBounds.end, currentMonthBounds.start, setFilters]);
 
   useEffect(() => {
-    if (!filters.campagne && campagnes.length > 0) {
-      const defaultCampaign = campagnes.find((c) =>
-        c.nom_campagne.toLowerCase().includes('cigales'),
-      ) ?? campagnes[0];
-
-      handleCampagneChange(defaultCampaign.id_campagne);
+    if (isListInitialized || campagnes.length === 0) {
+      return;
     }
-  }, [campagnes, filters.campagne, handleCampagneChange]);
+
+    const restoredCampaign = initialSnapshot
+      ? campagnes.find((campagne) => campagne.id_campagne === initialSnapshot.campagneId)
+      : undefined;
+
+    if (!restoredCampaign || !initialSnapshot) {
+      const defaultCampaign = campagnes.find((campagne) =>
+        campagne.nom_campagne.toLowerCase().includes('cigales'),
+      ) ?? campagnes[0];
+      handleCampagneChange(defaultCampaign.id_campagne);
+      setIsListInitialized(true);
+      return;
+    }
+
+    const restoredIsLeadCampaign = normalizeCampaignVariant(restoredCampaign.type_campagne)
+      === CAMPAIGN_VARIANTS.lead_b2b;
+    const restoredViewMode = restoredIsLeadCampaign ? 'actives' : initialSnapshot.vueMode;
+
+    setFilters({
+      agent: initialSnapshot.agentId ?? undefined,
+      campagne: initialSnapshot.campagneId,
+      date_debut: initialSnapshot.dateDebut || undefined,
+      date_field: 'emission_or_acceptation',
+      date_fin: initialSnapshot.dateFin || undefined,
+      limit: PAGE_LIMIT,
+      page: restoredIsLeadCampaign ? 1 : initialSnapshot.page,
+      soft_deleted: restoredViewMode === 'corbeille',
+      statut: restoredIsLeadCampaign || restoredViewMode === 'corbeille'
+        ? undefined
+        : initialSnapshot.saleStatus || undefined,
+    });
+    setLeadFilters({
+      agent: initialSnapshot.agentId ?? undefined,
+      date_debut: initialSnapshot.dateDebut || undefined,
+      date_field: 'emission_or_qualification',
+      date_fin: initialSnapshot.dateFin || undefined,
+      limit: PAGE_LIMIT,
+      page: restoredIsLeadCampaign ? initialSnapshot.page : 1,
+      statut: restoredIsLeadCampaign ? initialSnapshot.leadStatus || undefined : undefined,
+    });
+    setVueMode(restoredViewMode);
+    setPeriodPreset(initialSnapshot.periodPreset);
+    setLocalStatut(initialSnapshot.saleStatus);
+    setLocalLeadStatut(initialSnapshot.leadStatus);
+    setLocalAgentId(initialSnapshot.agentId);
+    setLocalDateDebut(initialSnapshot.dateDebut);
+    setLocalDateFin(initialSnapshot.dateFin);
+    setIsListInitialized(true);
+  }, [campagnes, handleCampagneChange, initialSnapshot, isListInitialized, setFilters]);
 
   const handlePeriodPresetChange = useCallback((preset: CommandesPeriodPreset): void => {
     setPeriodPreset(preset);
@@ -387,12 +447,17 @@ export function useCommandesList() {
   const hasCampaignSelection = Boolean(filters.campagne);
 
   useEffect(() => {
-    if (!hasCampaignSelection) {
+    if (!isListInitialized || !hasCampaignSelection) {
       return;
     }
 
     if (isLeadCampaign) {
       setLeadFilters((previous) => {
+        const criteriaChanged = previous.statut !== (localLeadStatut || undefined)
+          || previous.agent !== (localAgentId ?? undefined)
+          || previous.date_debut !== (localDateDebut || undefined)
+          || previous.date_fin !== (localDateFin || undefined)
+          || previous.date_field !== 'emission_or_qualification';
         const nextFilters: LeadClientListParams = {
           ...previous,
           statut: localLeadStatut || undefined,
@@ -400,7 +465,7 @@ export function useCommandesList() {
           date_debut: localDateDebut || undefined,
           date_fin: localDateFin || undefined,
           date_field: 'emission_or_qualification',
-          page: 1,
+          page: criteriaChanged ? 1 : previous.page,
         };
 
         if (
@@ -419,19 +484,41 @@ export function useCommandesList() {
       return;
     }
 
+    const nextStatut = isCorbeille ? undefined : (localStatut || undefined);
+    const nextAgent = localAgentId ?? undefined;
+    const nextDateDebut = localDateDebut || undefined;
+    const nextDateFin = localDateFin || undefined;
+    const criteriaChanged = filters.statut !== nextStatut
+      || filters.agent !== nextAgent
+      || filters.date_debut !== nextDateDebut
+      || filters.date_fin !== nextDateFin
+      || filters.date_field !== 'emission_or_acceptation'
+      || filters.soft_deleted !== isCorbeille;
+
+    if (!criteriaChanged) {
+      return;
+    }
+
     setFilters({
-      statut: isCorbeille ? undefined : (localStatut || undefined),
-      agent: localAgentId ?? undefined,
-      date_debut: localDateDebut || undefined,
-      date_fin: localDateFin || undefined,
+      agent: nextAgent,
+      date_debut: nextDateDebut,
       date_field: 'emission_or_acceptation',
-      soft_deleted: isCorbeille,
+      date_fin: nextDateFin,
       page: 1,
+      soft_deleted: isCorbeille,
+      statut: nextStatut,
     });
   }, [
+    filters.agent,
+    filters.date_debut,
+    filters.date_field,
+    filters.date_fin,
+    filters.soft_deleted,
+    filters.statut,
     hasCampaignSelection,
     isCorbeille,
     isLeadCampaign,
+    isListInitialized,
     localAgentId,
     localDateDebut,
     localDateFin,

@@ -11,6 +11,7 @@ export {
   COMMANDES_VIEW_OPTIONS,
   buildLeadCommandesSummary,
   buildSaleCommandesSummary,
+  createCommandesListNavigationState,
   formatDate as formatCommandesDate,
   formatLeadSlot,
   formatMontant,
@@ -21,10 +22,18 @@ export {
   isDateAfterPeriod,
   isDateBeforePeriod,
   isFrigoReminderDue,
+  readCommandesListNavigationState,
   getVenteAgentName,
   getVenteProspectName,
 } from './commandesList.ts';
-export type { CommandesPeriodPreset, CommandesSummaryCard, CommandesViewMode, DateBounds } from './commandesList.ts';
+export type {
+  CommandesListNavigationState,
+  CommandesListSnapshot,
+  CommandesPeriodPreset,
+  CommandesSummaryCard,
+  CommandesViewMode,
+  DateBounds,
+} from './commandesList.ts';
 export {
   formatCallDuration,
   formatDate,

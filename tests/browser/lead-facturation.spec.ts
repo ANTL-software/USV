@@ -2,6 +2,7 @@ import { expect, test } from '@playwright/test';
 
 import {
   apiSuccess,
+  BOOKING_EMPLOYEE,
   fulfillJson,
   installApiRoute,
   SALES_CAMPAIGN,
@@ -65,6 +66,13 @@ const sale = {
   prospect: { id_prospect: 42, nom: 'Durand', raison_sociale: 'Durand Conseil' },
 };
 
+const MMA_CAMPAIGN = {
+  ...SALES_CAMPAIGN,
+  id_campagne: 8,
+  nom_campagne: 'MMA',
+  type_campagne: 'lead_b2b' as const,
+};
+
 test('le détail lead et la facturation gardent leurs workflows navigateur', async ({ page }) => {
   const unhandledRequests: string[] = [];
   let leadStatusPayload: { statut: string } | null = null;
@@ -73,6 +81,11 @@ test('le détail lead et la facturation gardent leurs workflows navigateur', asy
   await installApiRoute(page, async (route, request) => {
     if (request.method === 'GET' && request.path === `/leads/${lead.id_lead}`) {
       await fulfillJson(route, apiSuccess(lead));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/documents-commerciaux/leads/${lead.id_lead}`) {
+      await fulfillJson(route, apiSuccess([]));
       return true;
     }
 
@@ -121,6 +134,11 @@ test('le détail lead et la facturation gardent leurs workflows navigateur', asy
       return true;
     }
 
+    if (request.method === 'GET' && request.path === `/campagnes/${SALES_CAMPAIGN.id_campagne}/facturation/pa`) {
+      await fulfillJson(route, apiSuccess(null));
+      return true;
+    }
+
     return false;
   }, unhandledRequests);
 
@@ -154,5 +172,142 @@ test('le détail lead et la facturation gardent leurs workflows navigateur', asy
   expect(invoiceEmailPayload?.date_debut).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   expect(invoiceEmailPayload?.date_fin).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   await expect(invoiceModal).toBeHidden();
+  expect(unhandledRequests).toEqual([]);
+});
+
+test('le retour des détails restaure filtres et pagination des commandes vente et MMA', async ({ page }) => {
+  const unhandledRequests: string[] = [];
+  let latestLeadListSearch = '';
+  let latestSaleListSearch = '';
+
+  await installApiRoute(page, async (route, request) => {
+    if (request.method === 'GET' && request.path === '/campagnes') {
+      await fulfillJson(route, apiSuccess([SALES_CAMPAIGN, MMA_CAMPAIGN]));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === '/leads/operations') {
+      latestLeadListSearch = request.search;
+      const currentPage = Number(new URLSearchParams(request.search).get('page') ?? 1);
+      await fulfillJson(route, {
+        ...apiSuccess([{ ...lead, statut: 'effectue' as const }]),
+        agents: [BOOKING_EMPLOYEE],
+        pagination: { page: currentPage, limit: 20, total: 41, totalPages: 3 },
+        stats: { total: 41, planifies: 10, effectues: 20, annules: 3, reportes: 5, nonHonores: 3 },
+      });
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === '/ventes') {
+      latestSaleListSearch = request.search;
+      const currentPage = Number(new URLSearchParams(request.search).get('page') ?? 1);
+      await fulfillJson(route, {
+        ...apiSuccess([sale]),
+        agents: [BOOKING_EMPLOYEE],
+        pagination: { page: currentPage, limit: 20, total: 41, totalPages: 3 },
+        stats: {
+          validees: { count: 41, total_montant: 20500 },
+          enAttente: { count: 0, total_montant: 0 },
+          annulees: { count: 0, total_montant: 0 },
+          frigo: { count: 0, total_montant: 0 },
+          total: { count: 41, total_montant: 20500 },
+        },
+      });
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/leads/${lead.id_lead}`) {
+      await fulfillJson(route, apiSuccess({ ...lead, statut: 'effectue' as const }));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/ventes/${sale.id_vente}`) {
+      await fulfillJson(route, apiSuccess({ ...sale, details: [] }));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/prospects/${lead.id_prospect}/appels`) {
+      await fulfillJson(route, {
+        ...apiSuccess([]),
+        pagination: { page: 1, limit: 5, total: 0, totalPages: 1 },
+      });
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/leads/prospect/${lead.id_prospect}`) {
+      await fulfillJson(route, apiSuccess([{ ...lead, statut: 'effectue' as const }]));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === `/prospects/${sale.id_prospect}/ventes`) {
+      await fulfillJson(route, {
+        ...apiSuccess([{ ...sale, details: [] }]),
+        pagination: { page: 1, limit: 100, total: 1, totalPages: 1 },
+      });
+      return true;
+    }
+
+    if (
+      request.method === 'GET'
+      && (request.path === `/documents-commerciaux/leads/${lead.id_lead}`
+        || request.path === `/documents-commerciaux/ventes/${sale.id_vente}`)
+    ) {
+      await fulfillJson(route, apiSuccess([]));
+      return true;
+    }
+
+    return false;
+  }, unhandledRequests);
+
+  const selectFilterOption = async (filterLabel: string, optionLabel: string): Promise<void> => {
+    const filter = page.locator('.commandesList__filter-group').filter({ hasText: filterLabel }).first();
+    await filter.getByRole('combobox').locator('..').click();
+    await page.getByRole('option', { name: optionLabel, exact: true }).click();
+  };
+
+  await page.goto('/operations/commandes');
+  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+
+  await selectFilterOption('Campagne', 'MMA');
+  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  await selectFilterOption('Statut', 'Effectué');
+  await selectFilterOption('Commercial', 'Alice AGENT');
+  await selectFilterOption('Période', 'Mois précédent');
+  await page.getByRole('button', { name: 'Suivant' }).click();
+  await expect(page.getByText('Page 2 / 3', { exact: true })).toBeVisible();
+  await page.getByText('L-00501', { exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Rendez-vous client L-00501' })).toBeVisible();
+  await page.getByRole('button', { name: 'Retour', exact: true }).click();
+
+  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  await expect(page.locator('.commandesList__filter-group--campaign')).toContainText('MMA');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Statut' }).first()).toContainText('Effectué');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Commercial' }).first()).toContainText('Alice AGENT');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Période' }).first()).toContainText('Mois précédent');
+  await expect(page.getByText('Page 2 / 3', { exact: true })).toBeVisible();
+  await expect.poll(() => new URLSearchParams(latestLeadListSearch).get('page')).toBe('2');
+  await expect.poll(() => new URLSearchParams(latestLeadListSearch).get('statut')).toBe('effectue');
+  await expect.poll(() => new URLSearchParams(latestLeadListSearch).get('agent')).toBe('9');
+
+  await selectFilterOption('Campagne', 'Les Cigales');
+  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+  await selectFilterOption('Statut', 'Validée');
+  await selectFilterOption('Commercial', 'Alice AGENT');
+  await selectFilterOption('Période', 'Mois précédent');
+  await page.getByRole('button', { name: 'Suivant' }).click();
+  await expect(page.getByText('Page 2 / 3', { exact: true })).toBeVisible();
+  await page.getByText('#701', { exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Commande #701' })).toBeVisible();
+  await page.getByRole('button', { name: 'Retour', exact: true }).click();
+
+  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+  await expect(page.locator('.commandesList__filter-group--campaign')).toContainText('Les Cigales');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Statut' }).first()).toContainText('Validée');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Commercial' }).first()).toContainText('Alice AGENT');
+  await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Période' }).first()).toContainText('Mois précédent');
+  await expect(page.getByText('Page 2 / 3', { exact: true })).toBeVisible();
+  await expect.poll(() => new URLSearchParams(latestSaleListSearch).get('page')).toBe('2');
+  await expect.poll(() => new URLSearchParams(latestSaleListSearch).get('statut')).toBe('validee');
+  await expect.poll(() => new URLSearchParams(latestSaleListSearch).get('agent')).toBe('9');
   expect(unhandledRequests).toEqual([]);
 });
