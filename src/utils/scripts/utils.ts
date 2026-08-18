@@ -5,6 +5,24 @@ export const isOnProduction = (): boolean => {
   return !(isDev && isDevPort);
 };
 
+export function formatPersonDisplayName(
+  civilite?: string | null,
+  prenom?: string | null,
+  nom?: string | null,
+): string {
+  const normalizedFirstName = prenom?.trim().toLocaleLowerCase('fr-FR').replace(
+    /(^|[\s-])\p{L}/gu,
+    (letter) => letter.toLocaleUpperCase('fr-FR'),
+  );
+  const parts = [
+    civilite?.trim(),
+    normalizedFirstName,
+    nom?.trim().toLocaleUpperCase('fr-FR'),
+  ].filter((value): value is string => Boolean(value));
+
+  return parts.join(' ') || '—';
+}
+
 export const isLoopbackApiUrl = (apiUrl: string): boolean => {
   try {
     return new Set(['localhost', '127.0.0.1', '::1', '[::1]']).has(new URL(apiUrl).hostname);

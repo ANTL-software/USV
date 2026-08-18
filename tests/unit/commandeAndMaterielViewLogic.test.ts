@@ -93,7 +93,7 @@ test('les totaux de commande appliquent frais de port et livraison offerte', () 
 
 test('les informations client et adresses ont des fallbacks déterministes', () => {
   const commande = createCommande();
-  assert.equal(getCommandeProspectName(commande), 'Mme DUPONT Alice');
+  assert.equal(getCommandeProspectName(commande), 'Mme Alice DUPONT');
   assert.equal(getCommandePaymentLabel(commande), 'Virement');
   assert.deepEqual(getCommandeBillingAddress(commande).lines, ['1 rue de Paris', '75001 Paris', 'France']);
   assert.deepEqual(getCommandeDeliveryAddress(commande).lines, ['Identique à la facturation']);

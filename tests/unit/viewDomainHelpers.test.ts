@@ -11,6 +11,7 @@ import {
   formatEnrichmentPayload,
   formatLeadProspectAddress,
   formatLeadProspectLabel,
+  getLeadInterlocuteur,
   getEmailSignalStrength,
   getLeadQualificationButtonClass,
   getPageSignalStrength,
@@ -54,7 +55,7 @@ function createLead(overrides: Partial<LeadClient> = {}): LeadClient {
   };
 }
 
-test('les helpers lead utilisent les snapshots avant les données prospect', () => {
+test('les helpers lead conservent l’identité du PDF et les snapshots de coordonnées', () => {
   const lead = createLead({
     interlocuteur_nom: 'Décideur figé',
     telephone_contact_snapshot: '0611111111',
@@ -62,7 +63,8 @@ test('les helpers lead utilisent les snapshots avant les données prospect', () 
   });
 
   assert.equal(formatLeadProspectLabel(lead), 'Entreprise Test');
-  assert.equal(resolveLeadContactName(lead), 'Décideur figé');
+  assert.equal(resolveLeadContactName(lead), 'Alice DUPONT');
+  assert.equal(getLeadInterlocuteur(lead), 'Alice DUPONT');
   assert.equal(resolveLeadContactPhone(lead), '0611111111');
   assert.equal(resolveLeadContactEmail(lead), 'decision@client.fr');
   assert.equal(formatLeadProspectAddress(lead), '1 rue de Paris, 75001 Paris, France');

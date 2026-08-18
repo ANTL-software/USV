@@ -9,6 +9,7 @@ import type {
   VenteComplete,
   VenteDetail,
 } from '../types/index.ts';
+import { formatPersonDisplayName } from './utils.ts';
 import {
   formatDateShort,
   formatDurationFromSeconds,
@@ -84,11 +85,11 @@ export function formatCommandeDateTime(value?: string): string {
 
 export function getCommandeProspectName(commande: VenteComplete | null): string {
   if (!commande?.prospect) return '—';
-  return [
+  return formatPersonDisplayName(
     commande.prospect.civilite,
-    commande.prospect.nom?.toUpperCase(),
     commande.prospect.prenom,
-  ].filter((value): value is string => Boolean(value)).join(' ');
+    commande.prospect.nom,
+  );
 }
 
 export function getCommandeAgentName(commande: VenteComplete | null): string {

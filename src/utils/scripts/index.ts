@@ -65,6 +65,7 @@ export {
 } from './prospectStatus.ts';
 export {
   formatPhoneNumber,
+  formatPersonDisplayName,
   getApiBaseUrl,
   getAntlConfigurationRibUrl,
   getCampagneLogoUrl,

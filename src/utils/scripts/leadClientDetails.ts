@@ -48,10 +48,12 @@ export function formatLeadAgentLabel(lead: LeadClient): string {
 }
 
 export function resolveLeadContactName(lead: LeadClient): string {
-  return lead.interlocuteur_nom
-    ?? lead.prospect?.decisionnaire_nom
-    ?? lead.prospect?.nom_contact
-    ?? '—';
+  const prospect = lead.prospect;
+  const fullName = [prospect?.prenom, prospect?.nom]
+    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
+    .join(' ');
+
+  return fullName || prospect?.nom_contact || '—';
 }
 
 export function resolveLeadContactRole(lead: LeadClient): string {
