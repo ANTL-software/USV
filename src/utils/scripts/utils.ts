@@ -161,12 +161,12 @@ export function getSalutation(prenom?: string, _heure?: number, _jour?: number):
 
   if (h < 5)  return `Vous êtes couché·e très tard${p} !`;
   if (h < 9)  return `Belle matinée${p}, on attaque !`;
-  if (h < 12) {
+  if (h < 11) {
     if (jour === 1) return `Belle semaine en perspective${p} !`;
     if (jour === 4) return `Dernier grand jour de la semaine${p}, on y va !`;
     return `Bonjour${p} !`;
   }
-  if (h < 14) return `Bon appétit${p} !`;
+  if (h < 13) return `Bon appétit${p} !`;
   if (h < 18) {
     if (jour === 4) return `Le weekend approche${p}, plus que quelques appels !`;
     return `Bon après-midi${p} !`;
