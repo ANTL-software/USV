@@ -90,11 +90,14 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                   />
                   {postes.find(p => String(p.id_poste) === form.id_poste)?.type_poste === 'commercial' && (
                     <div className="agentForm__field" style={{ marginTop: '0.75em' }}>
-                      <label htmlFor="id_rang_commercial">Rang commercial</label>
+                      <label htmlFor="id_rang_commercial">Rang commercial (Niveau de prime)</label>
                       <Select
                         inputId="id_rang_commercial"
-                        options={rangs.map(r => ({ value: String(r.id_rang), label: r.libelle }))}
-                        value={form.id_rang_commercial ? { value: form.id_rang_commercial, label: rangs.find(r => String(r.id_rang) === form.id_rang_commercial)?.libelle ?? '' } : null}
+                        options={[
+                          { value: '', label: 'Aucun' },
+                          ...rangs.map(r => ({ value: String(r.id_rang), label: r.libelle }))
+                        ]}
+                        value={form.id_rang_commercial ? { value: form.id_rang_commercial, label: rangs.find(r => String(r.id_rang) === form.id_rang_commercial)?.libelle ?? '' } : { value: '', label: 'Aucun' }}
                         onChange={opt => setForm(prev => ({ ...prev, id_rang_commercial: opt ? opt.value : '' }))}
                         isDisabled={isLoading}
                         isClearable

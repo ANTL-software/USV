@@ -50,6 +50,7 @@ export interface Employe {
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
+  rangCommercial?: RangCommercial | null;
   photo_path?: string | null;
   photo_file_name?: string | null;
   account_type?: 'employe' | 'partenaire_externe';
@@ -105,7 +106,7 @@ export interface CreateEmployeData {
   telephone?: string;
   date_embauche?: string;
   id_poste?: number;
-  id_rang_commercial?: number;
+  id_rang_commercial?: number | null;
   couleur?: string;
 }
 
