@@ -56,6 +56,19 @@ export interface Employe {
   raison_sociale?: string;
   permissions?: Record<string, boolean>;
   id_campagnes_autorisees?: number[];
+  appels_script_bloques: boolean;
+  motif_blocage_appels_script?: string | null;
+  appels_script_bloques_at?: string | null;
+  appels_script_bloques_jusqu_au?: string | null;
+  appels_script_bloques_par?: number | null;
+}
+
+export type ScriptCallBlockMode = 'manual' | 'scheduled';
+
+export interface UpdateEmployeScriptCallAccessPayload {
+  bloque: boolean;
+  motif?: string;
+  bloque_jusqu_au?: string | null;
 }
 
 export interface PartenaireExterne {

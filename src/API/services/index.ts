@@ -16,6 +16,7 @@ export {
   getAllEmployesService,
   getEmployeByIdService,
   updateEmployeService,
+  updateEmployeScriptCallAccessService,
   deleteEmployeService,
   createEmployeService,
   getRangsCommerciauxService,

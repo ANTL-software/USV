@@ -6,6 +6,7 @@ import { WithAuth } from '../../../utils/middleware/index.ts';
 import { useEmployeeDetailsView } from '../../../hooks/index.ts';
 import {
   AgentDetailsSidebar,
+  AgentCallBlockModal,
   AgentDocumentsTable,
   AgentDocumentUploadModal,
   AgentDocumentViewerModal,
@@ -40,6 +41,7 @@ function AgentDetails(): ReactElement {
       </main>
 
       <AgentPlanningModal {...viewModel} />
+      <AgentCallBlockModal {...viewModel} />
       <AgentDocumentUploadModal {...viewModel} />
       <AgentDocumentViewerModal {...viewModel} />
       <BackToTop />

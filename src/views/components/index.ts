@@ -4,6 +4,7 @@ export { AlerteHistoryRow } from './alerteHistoryRow/index.ts';
 export { AlertesConfigContent } from './alertesConfigContent/index.ts';
 export { AlertesHistoryContent } from './alertesHistoryContent/index.ts';
 export { AgentDetailsSidebar } from './agentDetailsSidebar/index.ts';
+export { AgentCallBlockModal } from './agentCallBlockModal/index.ts';
 export { AgentDocumentsTable } from './agentDocumentsTable/index.ts';
 export { AgentFormContent } from './agentFormContent/index.ts';
 export { AgentDocumentUploadModal } from './agentDocumentUploadModal/index.ts';

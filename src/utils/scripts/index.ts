@@ -542,8 +542,10 @@ export {
 export type { AbsenceRequestView } from './absenceManagement.ts';
 export {
   buildPlanningSlotsByDay,
+  formatDateTimeLocalValue,
   formatEmployeeDocumentDate,
   formatFileSizeInKilobytes,
+  formatScriptCallBlockUntil,
 } from './employeeDetails.ts';
 export type { PlanningSlotView } from './employeeDetails.ts';
 export {

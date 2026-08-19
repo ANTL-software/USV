@@ -253,6 +253,66 @@
   color: vars.$fontColorSecondary;
   padding-left: 0.25em;
 }
+#agentDetails .agentDetails__call-access {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.75em 1em;
+  border: 1px solid rgba(vars.$successColor, 0.35);
+  border-radius: 8px;
+  background: rgba(vars.$successColor, 0.08);
+  color: vars.$fontColorPrimary;
+  cursor: pointer;
+  text-align: left;
+}
+#agentDetails .agentDetails__call-access:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+#agentDetails .agentDetails__call-access--blocked {
+  border-color: rgba(vars.$errorColor, 0.4);
+  background: rgba(vars.$errorColor, 0.08);
+}
+#agentDetails .agentDetails__call-access--blocked .agentDetails__action-icon,
+#agentDetails .agentDetails__call-access--blocked .agentDetails__call-access-state {
+  color: vars.$errorColor;
+}
+#agentDetails .agentDetails__call-access-toggle {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 3.8rem;
+  height: 1.8rem;
+  padding: 0 0.45rem;
+  border-radius: 999px;
+  background: vars.$successColor;
+  color: white;
+  font-size: 0.65rem;
+}
+#agentDetails .agentDetails__call-access-knob {
+  position: absolute;
+  left: 0.2rem;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+#agentDetails .agentDetails__call-access--blocked .agentDetails__call-access-toggle {
+  justify-content: flex-start;
+  background: vars.$errorColor;
+}
+#agentDetails .agentDetails__call-access--blocked .agentDetails__call-access-knob {
+  left: auto;
+  right: 0.2rem;
+}
+#agentDetails .agentDetails__call-access-state {
+  display: flex;
+  color: vars.$successColor;
+}
 #agentDetails .agentDetails__planning-modal {
   display: flex;
   flex-direction: column;

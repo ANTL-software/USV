@@ -1,9 +1,10 @@
 import type { ReactElement } from 'react';
 import { useRef } from 'react';
-import { IoCalendar, IoCloudUpload, IoDocumentText, IoPencil } from 'react-icons/io5';
+import { IoCalendar, IoCall, IoCloudUpload, IoDocumentText, IoLockClosed, IoLockOpen, IoPencil } from 'react-icons/io5';
 import { MdDelete, MdDownload } from 'react-icons/md';
 import type { EmployeeDetailsViewModel } from '../../../hooks/index.ts';
 import { getEmployePhotoUrl } from '../../../utils/scripts/index.ts';
+import { formatScriptCallBlockUntil } from '../../../utils/scripts/index.ts';
 import { Button } from '../index.ts';
 
 type AgentDetailsSidebarProps = Pick<
@@ -14,6 +15,9 @@ type AgentDetailsSidebarProps = Pick<
   | 'handlePhotoDelete'
   | 'handlePhotoFileChange'
   | 'isPhotoUploading'
+  | 'canManageScriptCallAccess'
+  | 'isUpdatingScriptCallAccess'
+  | 'handleToggleScriptCallAccess'
   | 'openPlanningModal'
   | 'photoError'
 >;
@@ -44,9 +48,16 @@ export function AgentDetailsSidebar({
   handlePhotoDelete,
   handlePhotoFileChange,
   isPhotoUploading,
+  canManageScriptCallAccess,
+  isUpdatingScriptCallAccess,
+  handleToggleScriptCallAccess,
   openPlanningModal,
   photoError,
 }: AgentDetailsSidebarProps): ReactElement {
+  const formattedAutomaticUnlock = formatScriptCallBlockUntil(
+    currentEmploye?.appels_script_bloques_jusqu_au,
+  );
+
   const photoInputRef = useRef<HTMLInputElement>(null);
   const openPhotoPicker = (): void => photoInputRef.current?.click();
 
@@ -106,6 +117,37 @@ export function AgentDetailsSidebar({
       <section className="agentDetails__actions-section">
         <h2>Actions</h2>
         <div className="agentDetails__actions-list">
+          {canManageScriptCallAccess && (
+            <div className="agentDetails__action-item agentDetails__action-item--call-access">
+              <button
+                type="button"
+                className={`agentDetails__call-access${currentEmploye?.appels_script_bloques ? ' agentDetails__call-access--blocked' : ''}`}
+                onClick={() => { void handleToggleScriptCallAccess(); }}
+                disabled={!currentEmploye || isUpdatingScriptCallAccess}
+                role="switch"
+                aria-checked={!currentEmploye?.appels_script_bloques}
+              >
+                <span className="agentDetails__action-icon">
+                  {currentEmploye?.appels_script_bloques ? <IoLockClosed /> : <IoCall />}
+                </span>
+                <span className="agentDetails__action-label">
+                  {currentEmploye?.appels_script_bloques ? 'Débloquer les appels' : 'Bloquer les appels'}
+                </span>
+                <span className="agentDetails__call-access-toggle" aria-hidden="true">
+                  <span className="agentDetails__call-access-knob" />
+                  <strong>{currentEmploye?.appels_script_bloques ? 'OFF' : 'ON'}</strong>
+                </span>
+                <span className="agentDetails__call-access-state" aria-hidden="true">
+                  {currentEmploye?.appels_script_bloques ? <IoLockClosed /> : <IoLockOpen />}
+                </span>
+              </button>
+              <p className="agentDetails__action-description">
+                {currentEmploye?.appels_script_bloques
+                  ? `Production verrouillée${formattedAutomaticUnlock ? ` jusqu’au ${formattedAutomaticUnlock}` : ' sans échéance automatique'}.`
+                  : 'Le commercial peut passer des appels dans le Script.'}
+              </p>
+            </div>
+          )}
           <AgentAction
             label="Ajouter un document"
             icon={<IoDocumentText />}

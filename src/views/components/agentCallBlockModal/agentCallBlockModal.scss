@@ -1,0 +1,111 @@
+@use "../../../utils/styles/variables" as vars;
+
+.agentCallBlockModal {
+  display: grid;
+  gap: 1.25rem;
+}
+.agentCallBlockModal__warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid rgba(vars.$warningColor, 0.35);
+  border-radius: 10px;
+  background: rgba(vars.$warningColor, 0.08);
+  color: vars.$fontColorPrimary;
+}
+.agentCallBlockModal__warning svg {
+  flex: 0 0 auto;
+  margin-top: 0.15rem;
+  color: vars.$warningColor;
+  font-size: 1.35rem;
+}
+.agentCallBlockModal__warning p {
+  margin: 0;
+  line-height: 1.5;
+}
+.agentCallBlockModal__field {
+  display: grid;
+  gap: 0.45rem;
+  color: vars.$fontColorPrimary;
+  font-weight: 600;
+}
+.agentCallBlockModal__field span {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.agentCallBlockModal__field textarea,
+.agentCallBlockModal__field input {
+  width: 100%;
+  padding: 0.8rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  background: white;
+  color: vars.$fontColorPrimary;
+  font: inherit;
+  font-weight: 400;
+}
+.agentCallBlockModal__field textarea:focus,
+.agentCallBlockModal__field input:focus {
+  outline: 2px solid rgba(vars.$utilsPrimary, 0.25);
+  border-color: vars.$utilsPrimary;
+}
+.agentCallBlockModal__field small {
+  justify-self: end;
+  color: vars.$fontColorSecondary;
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+.agentCallBlockModal__duration {
+  display: grid;
+  gap: 0.65rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.agentCallBlockModal__duration legend {
+  margin-bottom: 0.55rem;
+  color: vars.$fontColorPrimary;
+  font-weight: 600;
+}
+.agentCallBlockModal__duration-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.85rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.agentCallBlockModal__duration-option input {
+  margin-top: 0.2rem;
+  accent-color: vars.$utilsPrimary;
+}
+.agentCallBlockModal__duration-option span {
+  display: grid;
+  gap: 0.2rem;
+}
+.agentCallBlockModal__duration-option small {
+  color: vars.$fontColorSecondary;
+}
+.agentCallBlockModal__error {
+  margin: 0;
+  padding: 0.75rem;
+  border-radius: 8px;
+  background: rgba(vars.$errorColor, 0.1);
+  color: vars.$errorColor;
+}
+.agentCallBlockModal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+@media (max-width: vars.$mobileWidth) {
+  .agentCallBlockModal__actions {
+    flex-direction: column-reverse;
+  }
+  .agentCallBlockModal__actions button {
+    width: 100%;
+  }
+}

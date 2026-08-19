@@ -40,3 +40,18 @@ export function formatEmployeeDocumentDate(value: string): string {
 export function formatFileSizeInKilobytes(size: number): string {
   return `${Math.round(size / 1024)} Ko`;
 }
+
+export function formatDateTimeLocalValue(date: Date): string {
+  const offsetDate = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
+  return offsetDate.toISOString().slice(0, 16);
+}
+
+export function formatScriptCallBlockUntil(value: string | null | undefined): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleString('fr-FR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+  });
+}

@@ -33,6 +33,8 @@ export type {
   CreateEmployeResponse,
   PartenaireExterne,
   PartenaireExternePayload,
+  ScriptCallBlockMode,
+  UpdateEmployeScriptCallAccessPayload,
 } from './user.types.ts';
 
 export type {

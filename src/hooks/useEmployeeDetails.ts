@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import { useEmployes } from './useEmployes';
+import { useUserContext } from './useUserContext.ts';
 import { useAlert } from '../context/alert/index.ts';
 
 // Services
@@ -10,6 +11,7 @@ import {
   deleteDocumentService,
   downloadDocumentService,
   generateDocumentViewUrlService,
+  updateEmployeScriptCallAccessService,
 } from '../API/services/index.ts';
 import {
   getPlanningsService,
@@ -21,7 +23,8 @@ import {
 import { DocumentModel } from '../API/models/index.ts';
 // Types
 import { PdfModalState } from '../utils/types/index.ts';
-import type { Planning, PlanningAssignation } from '../utils/types/index.ts';
+import type { Planning, PlanningAssignation, ScriptCallBlockMode } from '../utils/types/index.ts';
+import { formatDateTimeLocalValue, formatScriptCallBlockUntil } from '../utils/scripts/index.ts';
 import {
   uploadEmployePhotoService,
   deleteEmployePhotoService,
@@ -35,7 +38,9 @@ import {
 export const useEmployeeDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { showConfirm, showSuccess, showError } = useAlert();
+  const { user } = useUserContext();
   const { employes, isLoading: employesLoading, load: reloadEmployes } = useEmployes();
+  const canManageScriptCallAccess = user?.poste?.permissions?.['access-management']?.enabled === true;
 
   // State pour la photo de l'employé
   const [isPhotoUploading, setIsPhotoUploading] = useState<boolean>(false);
@@ -60,6 +65,12 @@ export const useEmployeeDetails = () => {
   const [planningError, setPlanningError] = useState<string | null>(null);
   const [currentPlanningAssignation, setCurrentPlanningAssignation] = useState<PlanningAssignation | null>(null);
   const [isAssigningPlanning, setIsAssigningPlanning] = useState<boolean>(false);
+  const [isScriptCallBlockModalOpen, setIsScriptCallBlockModalOpen] = useState<boolean>(false);
+  const [scriptCallBlockReason, setScriptCallBlockReason] = useState<string>('');
+  const [scriptCallBlockMode, setScriptCallBlockMode] = useState<ScriptCallBlockMode>('manual');
+  const [scriptCallBlockUntil, setScriptCallBlockUntil] = useState<string>('');
+  const [scriptCallBlockError, setScriptCallBlockError] = useState<string | null>(null);
+  const [isUpdatingScriptCallAccess, setIsUpdatingScriptCallAccess] = useState<boolean>(false);
 
   // State pour la modale de visualisation PDF/Image (comme courrier)
   const [pdfModal, setPdfModal] = useState<PdfModalState>({
@@ -83,6 +94,139 @@ export const useEmployeeDetails = () => {
     if (!currentEmploye) return 'Détails de l\'employé';
     return `Détails de l'employé #${currentEmploye.id_employe} – ${currentEmploye.prenom} ${currentEmploye.nom}`;
   }, [currentEmploye]);
+
+  const scriptCallBlockMinDateTime = formatDateTimeLocalValue(new Date(Date.now() + 60_000));
+
+  useEffect(() => {
+    const blockedUntil = currentEmploye?.appels_script_bloques_jusqu_au;
+    if (!currentEmploye?.appels_script_bloques || !blockedUntil) return;
+
+    const delay = new Date(blockedUntil).getTime() - Date.now();
+    if (delay <= 0) {
+      void reloadEmployes();
+      return;
+    }
+
+    const timeoutId = window.setTimeout(
+      () => { void reloadEmployes(); },
+      Math.min(delay + 250, 2_147_483_647),
+    );
+    return () => window.clearTimeout(timeoutId);
+  }, [
+    currentEmploye?.appels_script_bloques,
+    currentEmploye?.appels_script_bloques_jusqu_au,
+    reloadEmployes,
+  ]);
+
+  const openScriptCallBlockModal = useCallback((): void => {
+    setScriptCallBlockReason('');
+    setScriptCallBlockMode('manual');
+    setScriptCallBlockUntil('');
+    setScriptCallBlockError(null);
+    setIsScriptCallBlockModalOpen(true);
+  }, []);
+
+  const closeScriptCallBlockModal = useCallback((): void => {
+    if (isUpdatingScriptCallAccess) return;
+    setIsScriptCallBlockModalOpen(false);
+    setScriptCallBlockError(null);
+  }, [isUpdatingScriptCallAccess]);
+
+  const handleScriptCallBlockModeChange = useCallback((mode: ScriptCallBlockMode): void => {
+    setScriptCallBlockMode(mode);
+    setScriptCallBlockError(null);
+    if (mode === 'scheduled' && !scriptCallBlockUntil) {
+      setScriptCallBlockUntil(formatDateTimeLocalValue(new Date(Date.now() + 2 * 60 * 60 * 1000)));
+    }
+  }, [scriptCallBlockUntil]);
+
+  const submitScriptCallBlock = useCallback(async (): Promise<void> => {
+    if (!currentEmploye) return;
+
+    const reason = scriptCallBlockReason.trim();
+    if (reason.length < 3) {
+      setScriptCallBlockError('Le motif doit contenir au moins 3 caractères.');
+      return;
+    }
+
+    let blockedUntil: string | null = null;
+    if (scriptCallBlockMode === 'scheduled') {
+      const parsedUntil = new Date(scriptCallBlockUntil);
+      if (!scriptCallBlockUntil || Number.isNaN(parsedUntil.getTime()) || parsedUntil.getTime() <= Date.now()) {
+        setScriptCallBlockError('Choisissez une date et une heure de déblocage futures.');
+        return;
+      }
+      blockedUntil = parsedUntil.toISOString();
+    }
+
+    setIsUpdatingScriptCallAccess(true);
+    setScriptCallBlockError(null);
+    try {
+      await updateEmployeScriptCallAccessService(currentEmploye.id_employe, {
+        bloque: true,
+        motif: reason,
+        bloque_jusqu_au: blockedUntil,
+      });
+      await reloadEmployes();
+      setIsScriptCallBlockModalOpen(false);
+      const successMessage = blockedUntil
+        ? `Les appels sont bloqués jusqu'au ${formatScriptCallBlockUntil(blockedUntil)}.`
+        : 'Les appels sont bloqués jusqu’à un déblocage manuel.';
+      await showSuccess(successMessage, 'Production verrouillée');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Impossible de bloquer les appels Script';
+      setScriptCallBlockError(message);
+      await showError(message, 'Erreur de blocage');
+    } finally {
+      setIsUpdatingScriptCallAccess(false);
+    }
+  }, [
+    currentEmploye,
+    reloadEmployes,
+    scriptCallBlockMode,
+    scriptCallBlockReason,
+    scriptCallBlockUntil,
+    showError,
+    showSuccess,
+  ]);
+
+  const handleToggleScriptCallAccess = useCallback(async (): Promise<void> => {
+    if (!currentEmploye) return;
+    if (!currentEmploye.appels_script_bloques) {
+      openScriptCallBlockModal();
+      return;
+    }
+
+    const automaticUnlock = formatScriptCallBlockUntil(currentEmploye.appels_script_bloques_jusqu_au);
+    const confirmed = await showConfirm(
+      automaticUnlock
+        ? `Le blocage devait prendre fin automatiquement le ${automaticUnlock}. Voulez-vous autoriser la reprise des appels dès maintenant ?`
+        : 'Voulez-vous autoriser immédiatement ce commercial à reprendre les appels dans le Script ?',
+      'Débloquer les appels',
+      'Débloquer maintenant',
+      'Annuler',
+    );
+    if (!confirmed) return;
+
+    setIsUpdatingScriptCallAccess(true);
+    try {
+      await updateEmployeScriptCallAccessService(currentEmploye.id_employe, { bloque: false });
+      await reloadEmployes();
+      await showSuccess('Le commercial peut reprendre les appels dans le Script.', 'Production déverrouillée');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Impossible de débloquer les appels Script';
+      await showError(message, 'Erreur de déblocage');
+    } finally {
+      setIsUpdatingScriptCallAccess(false);
+    }
+  }, [
+    currentEmploye,
+    openScriptCallBlockModal,
+    reloadEmployes,
+    showConfirm,
+    showError,
+    showSuccess,
+  ]);
 
   // Charger les documents de l'employé via service
   const fetchDocuments = useCallback(async () => {
@@ -397,6 +541,7 @@ export const useEmployeeDetails = () => {
     currentEmploye,
     pageTitle,
     employesLoading,
+    canManageScriptCallAccess,
 
     // Documents
     documents,
@@ -418,6 +563,13 @@ export const useEmployeeDetails = () => {
     planningError,
     currentPlanningAssignation,
     isAssigningPlanning,
+    isScriptCallBlockModalOpen,
+    scriptCallBlockReason,
+    scriptCallBlockMode,
+    scriptCallBlockUntil,
+    scriptCallBlockError,
+    scriptCallBlockMinDateTime,
+    isUpdatingScriptCallAccess,
     fileInputRef,
 
     // Modal PDF/Image
@@ -426,6 +578,8 @@ export const useEmployeeDetails = () => {
     // Setters
     setFileName,
     setSelectedFile,
+    setScriptCallBlockReason,
+    setScriptCallBlockUntil,
 
     // Photo
     isPhotoUploading,
@@ -449,6 +603,10 @@ export const useEmployeeDetails = () => {
     handleViewDocument,
     closePdfModal,
     handleExportData,
+    handleToggleScriptCallAccess,
+    handleScriptCallBlockModeChange,
+    closeScriptCallBlockModal,
+    submitScriptCallBlock,
   };
 };
 

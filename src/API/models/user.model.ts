@@ -25,6 +25,11 @@ export class UserModel implements Employe {
   raison_sociale?: string;
   permissions?: Record<string, boolean>;
   id_campagnes_autorisees?: number[];
+  appels_script_bloques: boolean;
+  motif_blocage_appels_script?: string | null;
+  appels_script_bloques_at?: string | null;
+  appels_script_bloques_jusqu_au?: string | null;
+  appels_script_bloques_par?: number | null;
 
   constructor(data: Employe) {
     this.id_employe = data.id_employe;
@@ -49,6 +54,11 @@ export class UserModel implements Employe {
     this.raison_sociale = data.raison_sociale;
     this.permissions = data.permissions;
     this.id_campagnes_autorisees = data.id_campagnes_autorisees;
+    this.appels_script_bloques = data.appels_script_bloques ?? false;
+    this.motif_blocage_appels_script = data.motif_blocage_appels_script ?? null;
+    this.appels_script_bloques_at = data.appels_script_bloques_at ?? null;
+    this.appels_script_bloques_jusqu_au = data.appels_script_bloques_jusqu_au ?? null;
+    this.appels_script_bloques_par = data.appels_script_bloques_par ?? null;
   }
 
   public get fullName(): string {
@@ -86,6 +96,11 @@ export class UserModel implements Employe {
       raison_sociale: this.raison_sociale,
       permissions: this.permissions,
       id_campagnes_autorisees: this.id_campagnes_autorisees,
+      appels_script_bloques: this.appels_script_bloques,
+      motif_blocage_appels_script: this.motif_blocage_appels_script,
+      appels_script_bloques_at: this.appels_script_bloques_at,
+      appels_script_bloques_jusqu_au: this.appels_script_bloques_jusqu_au,
+      appels_script_bloques_par: this.appels_script_bloques_par,
     };
   }
 

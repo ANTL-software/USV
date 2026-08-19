@@ -6,7 +6,7 @@ import { ReactElement, ReactNode, useId } from "react";
 import type { MouseEvent } from "react";
 import { MdClose } from "react-icons/md";
 
-type ModalVariant = "default" | "document";
+type ModalVariant = "default" | "document" | "confirm";
 
 interface IModalProps {
   isVisible: boolean;

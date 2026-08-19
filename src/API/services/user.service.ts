@@ -1,7 +1,7 @@
 import { getRequest, postRequest, patchRequest, deleteRequest, postFormDataRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import { UserModel } from '../models/index.ts';
-import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse } from '../../utils/types/index.ts';
+import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse, UpdateEmployeScriptCallAccessPayload } from '../../utils/types/index.ts';
 
 export const getAllEmployesService = async (): Promise<UserModel[]> => {
   const response: AxiosResponse<ApiResponse<{ employes: Employe[] }>> = await getRequest('/employes');
@@ -28,6 +28,20 @@ export const updateEmployeService = async (
     return UserModel.fromJSON(response.data.data);
   }
   throw new Error(response.data.message || 'Impossible de mettre à jour l\'employé');
+};
+
+export const updateEmployeScriptCallAccessService = async (
+  id: number,
+  payload: UpdateEmployeScriptCallAccessPayload,
+): Promise<UserModel> => {
+  const response: AxiosResponse<ApiResponse<Employe>> = await patchRequest(
+    `/employes/${id}/script-call-access`,
+    payload,
+  );
+  if (response.data.success && response.data.data) {
+    return UserModel.fromJSON(response.data.data);
+  }
+  throw new Error(response.data.message || "Impossible de mettre à jour l'accès aux appels Script");
 };
 
 export const deleteEmployeService = async (id: number): Promise<void> => {
