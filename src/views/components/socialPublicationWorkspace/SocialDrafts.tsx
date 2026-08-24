@@ -11,7 +11,7 @@ import {
   MdRefresh,
   MdSend,
 } from 'react-icons/md';
-import type { SocialPublicationState } from '../../../hooks/index.ts';
+import { useAlert, type SocialPublicationState } from '../../../hooks/index.ts';
 import type { SocialEditorialDraft, SocialPlatform } from '../../../utils/types/index.ts';
 import { Button } from '../index.ts';
 import {
@@ -27,6 +27,26 @@ interface DraftFeedback {
   error: boolean;
   message: string;
 }
+
+interface ApiErrorPayload {
+  message?: unknown;
+}
+
+interface ApiRequestError {
+  response?: {
+    data?: ApiErrorPayload;
+  };
+  message?: string;
+}
+
+const getActionErrorMessage = (error: unknown): string => {
+  if (typeof error === 'object' && error !== null && 'response' in error) {
+    const requestError = error as ApiRequestError;
+    if (typeof requestError.response?.data?.message === 'string') return requestError.response.data.message;
+    if (typeof requestError.message === 'string') return requestError.message;
+  }
+  return error instanceof Error ? error.message : 'Action impossible.';
+};
 
 function SocialDraftDetails({ draft }: { draft: SocialEditorialDraft }): ReactElement {
   return (
@@ -58,6 +78,7 @@ function SocialDraftDetails({ draft }: { draft: SocialEditorialDraft }): ReactEl
 }
 
 export function SocialDrafts({ state }: { state: SocialPublicationState }): ReactElement {
+  const { showConfirm, showError, showSuccess } = useAlert();
   const [scheduleValues, setScheduleValues] = useState<Record<string, string>>({});
   const [feedback, setFeedback] = useState<Record<string, DraftFeedback>>({});
   const [busyDraftId, setBusyDraftId] = useState<string | null>(null);
@@ -80,21 +101,24 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
     try {
       await action();
       setFeedback((current) => ({ ...current, [draftId]: { error: false, message: success } }));
+      void showSuccess(success, 'Publications réseaux sociaux');
     } catch (error: unknown) {
+      const message = getActionErrorMessage(error);
       setFeedback((current) => ({
         ...current,
-        [draftId]: { error: true, message: error instanceof Error ? error.message : 'Action impossible.' },
+        [draftId]: { error: true, message },
       }));
+      void showError(message, 'Action impossible');
     } finally {
       setBusyDraftId(null);
     }
   };
 
-  const schedule = (draft: SocialEditorialDraft, reschedule: boolean) => {
+  const schedule = async (draft: SocialEditorialDraft, reschedule: boolean) => {
     const draftId = draft.id_brouillon_reseau_social;
     const value = scheduleValues[draftId] ?? '';
-    if (reschedule && !window.confirm('Confirmer la modification de l’horaire ?')) return;
-    void perform(
+    if (reschedule && !await showConfirm('Confirmer la modification de l’horaire de publication ?', 'Modifier l’horaire', 'Modifier', 'Conserver')) return;
+    await perform(
       draftId,
       () => reschedule
         ? state.rescheduleDraft(draftId, localDateTimeToIso(value))
@@ -103,27 +127,45 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
     );
   };
 
-  const cancel = (draft: SocialEditorialDraft, label: string) => {
-    if (!window.confirm(`Annuler ${label} ? Le brouillon restera dans le registre interne.`)) return;
-    void perform(
+  const cancel = async (draft: SocialEditorialDraft, label: string) => {
+    const confirmed = await showConfirm(
+      `Annuler ${label} ? Le brouillon restera dans le registre interne.`,
+      'Confirmer l’annulation',
+      'Annuler le brouillon',
+      'Conserver',
+    );
+    if (!confirmed) return;
+    await perform(
       draft.id_brouillon_reseau_social,
       () => state.cancelDraft(draft.id_brouillon_reseau_social),
       'Brouillon annulé et conservé dans le registre.',
     );
   };
 
-  const retryFailed = (draft: SocialEditorialDraft) => {
-    if (!window.confirm(`Relancer immédiatement la publication de « ${draft.sujet} » ?`)) return;
-    void perform(
+  const retryFailed = async (draft: SocialEditorialDraft) => {
+    const confirmed = await showConfirm(
+      `Relancer immédiatement la publication de « ${draft.sujet} » sur les réseaux encore en échec ?`,
+      'Retenter la publication',
+      'Publier maintenant',
+      'Annuler',
+    );
+    if (!confirmed) return;
+    await perform(
       draft.id_brouillon_reseau_social,
       () => state.retryFailedDraft(draft.id_brouillon_reseau_social),
       'Nouvelle tentative de publication lancée.',
     );
   };
 
-  const deleteFailed = (draft: SocialEditorialDraft) => {
-    if (!window.confirm(`Supprimer définitivement le brouillon en échec « ${draft.sujet} » ? Cette action est irréversible.`)) return;
-    void perform(
+  const deleteFailed = async (draft: SocialEditorialDraft) => {
+    const confirmed = await showConfirm(
+      `Supprimer définitivement le brouillon en échec « ${draft.sujet} » et ses packages associés ? Cette action est irréversible.`,
+      'Supprimer le brouillon',
+      'Supprimer définitivement',
+      'Conserver',
+    );
+    if (!confirmed) return;
+    await perform(
       draft.id_brouillon_reseau_social,
       () => state.deleteFailedDraft(draft.id_brouillon_reseau_social),
       'Brouillon supprimé.',
@@ -150,7 +192,7 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
         {state.drafts.map((draft) => {
           const draftId = draft.id_brouillon_reseau_social;
           const isBusy = busyDraftId === draftId;
-          const packagePlatforms = draft.plateformes.filter((platform: SocialPlatform) => ['facebook', 'linkedin'].includes(platform));
+          const packagePlatforms = draft.plateformes.filter((platform: SocialPlatform) => ['facebook', 'instagram', 'linkedin'].includes(platform));
           return (
             <article className="socialPublicationView__draft" key={draftId}>
               <div className="socialPublicationView__draft-header">
@@ -198,7 +240,7 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
                       onChange={(event) => setScheduleValues((current) => ({ ...current, [draftId]: event.target.value }))}
                       disabled={isBusy}
                     />
-                    <Button style="gradient" disabled={isBusy} onClick={() => schedule(draft, false)}>
+                    <Button style="gradient" disabled={isBusy} onClick={() => void schedule(draft, false)}>
                       <MdOutlineSchedule />
                       Programmer
                     </Button>
@@ -213,11 +255,11 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
                       onChange={(event) => setScheduleValues((current) => ({ ...current, [draftId]: event.target.value }))}
                       disabled={isBusy}
                     />
-                    <Button style="white" disabled={isBusy} onClick={() => schedule(draft, true)}>
+                    <Button style="white" disabled={isBusy} onClick={() => void schedule(draft, true)}>
                       <MdOutlineSchedule />
                       Modifier l’horaire
                     </Button>
-                    <Button style="red" disabled={isBusy} onClick={() => cancel(draft, 'la programmation')}>
+                    <Button style="red" disabled={isBusy} onClick={() => void cancel(draft, 'la programmation')}>
                       <MdCancel />
                       Annuler la programmation
                     </Button>
@@ -225,11 +267,11 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
                 )}
                 {draft.statut === 'echec_publication' && (
                   <>
-                    <Button style="gradient" disabled={isBusy} onClick={() => retryFailed(draft)}>
+                    <Button style="gradient" disabled={isBusy} onClick={() => void retryFailed(draft)}>
                       <MdSend />
                       Publier maintenant
                     </Button>
-                    <Button style="red" disabled={isBusy} onClick={() => deleteFailed(draft)}>
+                    <Button style="red" disabled={isBusy} onClick={() => void deleteFailed(draft)}>
                       <MdDeleteOutline />
                       Supprimer le brouillon
                     </Button>
@@ -248,7 +290,7 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
                   </Button>
                 )}
                 {draft.statut === 'brouillon' && (
-                  <Button style="red" disabled={isBusy} onClick={() => cancel(draft, 'ce brouillon')}>
+                  <Button style="red" disabled={isBusy} onClick={() => void cancel(draft, 'ce brouillon')}>
                     <MdCancel />
                     Annuler le brouillon
                   </Button>
