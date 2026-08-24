@@ -7,7 +7,7 @@
   padding: 1.5em 1em;
 }
 #materielList .materielList__container {
-  @include mixins.centeredContainer(1300px);
+  @include mixins.centeredContainer(1440px);
 }
 #materielList .materielList__back {
   margin-bottom: 1em;
