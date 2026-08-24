@@ -5,8 +5,10 @@ import {
   getSocialDraftsService,
   getSocialPublicationStatusService,
   getSocialVisualsService,
+  deleteFailedSocialDraftService,
   prepareSocialDraftPackagesService,
   rescheduleSocialDraftService,
+  retryFailedSocialDraftService,
   scheduleSocialDraftService,
   validateSocialDraftService,
   verifySocialDraftReadinessService,
@@ -99,6 +101,16 @@ export function useSocialPublication() {
     await refresh();
   }, [refresh]);
 
+  const retryFailedDraft = useCallback(async (id: string) => {
+    await retryFailedSocialDraftService(id);
+    await refresh();
+  }, [refresh]);
+
+  const deleteFailedDraft = useCallback(async (id: string) => {
+    await deleteFailedSocialDraftService(id);
+    await refresh();
+  }, [refresh]);
+
   const preparePackages = useCallback(async (id: string) => {
     await prepareSocialDraftPackagesService(id);
     await refresh();
@@ -121,6 +133,8 @@ export function useSocialPublication() {
     scheduleDraft,
     rescheduleDraft,
     cancelDraft,
+    retryFailedDraft,
+    deleteFailedDraft,
     preparePackages,
   };
 }

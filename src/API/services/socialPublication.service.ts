@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import { getRequest, postRequest } from '../APICalls.ts';
+import { deleteRequest, getRequest, postRequest } from '../APICalls.ts';
 import type {
   SocialDraftInput,
   SocialEditorialDraft,
@@ -104,6 +104,23 @@ export const cancelSocialDraftService = async (id: string): Promise<SocialEditor
       {},
     ),
     'Annulation impossible.',
+  )
+);
+
+export const retryFailedSocialDraftService = async (id: string): Promise<SocialEditorialDraft> => (
+  unwrap(
+    await postRequest<Record<string, never>, ApiResponse<SocialEditorialDraft>>(
+      `/publications-reseaux-sociaux/drafts/${id}/retry-publish`,
+      {},
+    ),
+    'Nouvelle tentative impossible.',
+  )
+);
+
+export const deleteFailedSocialDraftService = async (id: string): Promise<{ deleted: boolean; id: string }> => (
+  unwrap(
+    await deleteRequest(`/publications-reseaux-sociaux/drafts/${id}`),
+    'Suppression impossible.',
   )
 );
 

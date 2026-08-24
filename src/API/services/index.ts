@@ -61,6 +61,8 @@ export {
   scheduleSocialDraftService,
   rescheduleSocialDraftService,
   cancelSocialDraftService,
+  retryFailedSocialDraftService,
+  deleteFailedSocialDraftService,
   prepareSocialDraftPackagesService,
 } from './socialPublication.service.ts';
 

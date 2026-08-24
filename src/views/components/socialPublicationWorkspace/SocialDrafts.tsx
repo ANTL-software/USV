@@ -2,12 +2,14 @@ import { useEffect, useState, type ReactElement } from 'react';
 import {
   MdCancel,
   MdCheckCircleOutline,
+  MdDeleteOutline,
   MdFactCheck,
   MdInventory2,
   MdOpenInNew,
   MdOutlineImage,
   MdOutlineSchedule,
   MdRefresh,
+  MdSend,
 } from 'react-icons/md';
 import type { SocialPublicationState } from '../../../hooks/index.ts';
 import type { SocialEditorialDraft, SocialPlatform } from '../../../utils/types/index.ts';
@@ -110,6 +112,24 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
     );
   };
 
+  const retryFailed = (draft: SocialEditorialDraft) => {
+    if (!window.confirm(`Relancer immédiatement la publication de « ${draft.sujet} » ?`)) return;
+    void perform(
+      draft.id_brouillon_reseau_social,
+      () => state.retryFailedDraft(draft.id_brouillon_reseau_social),
+      'Nouvelle tentative de publication lancée.',
+    );
+  };
+
+  const deleteFailed = (draft: SocialEditorialDraft) => {
+    if (!window.confirm(`Supprimer définitivement le brouillon en échec « ${draft.sujet} » ? Cette action est irréversible.`)) return;
+    void perform(
+      draft.id_brouillon_reseau_social,
+      () => state.deleteFailedDraft(draft.id_brouillon_reseau_social),
+      'Brouillon supprimé.',
+    );
+  };
+
   return (
     <section className="socialPublicationView__panel">
       <div className="socialPublicationView__panel-header socialPublicationView__panel-header--actions">
@@ -200,6 +220,18 @@ export function SocialDrafts({ state }: { state: SocialPublicationState }): Reac
                     <Button style="red" disabled={isBusy} onClick={() => cancel(draft, 'la programmation')}>
                       <MdCancel />
                       Annuler la programmation
+                    </Button>
+                  </>
+                )}
+                {draft.statut === 'echec_publication' && (
+                  <>
+                    <Button style="gradient" disabled={isBusy} onClick={() => retryFailed(draft)}>
+                      <MdSend />
+                      Publier maintenant
+                    </Button>
+                    <Button style="red" disabled={isBusy} onClick={() => deleteFailed(draft)}>
+                      <MdDeleteOutline />
+                      Supprimer le brouillon
                     </Button>
                   </>
                 )}
