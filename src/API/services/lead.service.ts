@@ -116,6 +116,22 @@ export const updateLeadClientStatusService = async (
   throw new Error(response.data.message || 'Impossible de mettre à jour le statut du rendez-vous client');
 };
 
+export const updateLeadClientNotesService = async (
+  idLead: number,
+  notes: string
+): Promise<LeadClient> => {
+  const response: AxiosResponse<ApiResponse<LeadClient>> = await patchRequest(
+    `/leads/${idLead}/notes`,
+    { notes }
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || 'Impossible de mettre à jour les notes du rendez-vous client');
+};
+
 export const getLeadClientDocumentUrl = (idLead: number): string => {
   return `${getApiBaseUrl()}/leads/${idLead}/document.pdf`;
 };

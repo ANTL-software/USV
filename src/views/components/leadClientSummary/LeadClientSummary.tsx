@@ -1,5 +1,5 @@
-import type { ReactElement } from 'react';
-import { IoBusiness, IoInformationCircle, IoPerson } from 'react-icons/io5';
+import { useState, type FormEvent, type ReactElement } from 'react';
+import { IoBusiness, IoCheckmark, IoClose, IoInformationCircle, IoPencil, IoPerson } from 'react-icons/io5';
 import type { LeadClient } from '../../../utils/types/index.ts';
 import {
   formatLeadAgentLabel,
@@ -12,9 +12,34 @@ import {
   resolveLeadContactRole,
 } from '../../../utils/scripts/index.ts';
 
-interface LeadClientSummaryProps { lead: LeadClient }
+interface LeadClientSummaryProps {
+  lead: LeadClient;
+  notesUpdateLoading: boolean;
+  onUpdateNotes: (notes: string) => Promise<boolean>;
+}
 
-export function LeadClientSummary({ lead }: LeadClientSummaryProps): ReactElement {
+export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes }: LeadClientSummaryProps): ReactElement {
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [notesDraft, setNotesDraft] = useState(lead.notes ?? '');
+
+  const submitNotes = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
+    event.preventDefault();
+    const hasUpdated = await onUpdateNotes(notesDraft);
+    if (hasUpdated) {
+      setIsEditingNotes(false);
+    }
+  };
+
+  const cancelNotesEdition = (): void => {
+    setNotesDraft(lead.notes ?? '');
+    setIsEditingNotes(false);
+  };
+
+  const startNotesEdition = (): void => {
+    setNotesDraft(lead.notes ?? '');
+    setIsEditingNotes(true);
+  };
+
   return (
     <>
       <section className="details-section card-style">
@@ -37,7 +62,17 @@ export function LeadClientSummary({ lead }: LeadClientSummaryProps): ReactElemen
           <div className="grid-item"><span className="grid-label">Campagne</span><span className="grid-value">{lead.campagne?.nom_campagne ?? '—'}</span></div>
           <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>
           <div className="grid-item full-width"><span className="grid-label">Motif</span><span className="grid-value">{lead.motif ?? '—'}</span></div>
-          {lead.notes && <div className="grid-item full-width"><span className="grid-label">Notes du rendez-vous</span><p className="notes-text">{lead.notes}</p></div>}
+          <div className="grid-item full-width">
+            <div className="leadClientDetails__notes-label"><span className="grid-label">Notes du rendez-vous</span><button type="button" className="leadClientDetails__notes-edit" onClick={startNotesEdition} title="Modifier les notes" aria-label="Modifier les notes du rendez-vous"><IoPencil /></button></div>
+            {isEditingNotes ? (
+              <form className="leadClientDetails__notes-form" onSubmit={(event) => { void submitNotes(event); }}>
+                <textarea value={notesDraft} onChange={(event) => setNotesDraft(event.target.value)} maxLength={10000} autoFocus disabled={notesUpdateLoading} aria-label="Notes du rendez-vous" />
+                <div className="leadClientDetails__notes-actions"><button type="button" onClick={cancelNotesEdition} disabled={notesUpdateLoading}><IoClose /> Annuler</button><button type="submit" disabled={notesUpdateLoading}><IoCheckmark /> {notesUpdateLoading ? 'Enregistrement…' : 'Enregistrer'}</button></div>
+              </form>
+            ) : (
+              <p className="notes-text">{lead.notes || 'Aucune note renseignée.'}</p>
+            )}
+          </div>
           {lead.derniere_note_closing && <div className="grid-item full-width"><span className="grid-label">Dernière note de closing (campagne)</span><p className="notes-text">{lead.derniere_note_closing}</p></div>}
         </div>
       </section>

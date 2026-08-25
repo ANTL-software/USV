@@ -4,6 +4,7 @@ import {
   getLeadClientDocumentUrl,
   getLeadClientsByProspectService,
   getProspectAppelsService,
+  updateLeadClientNotesService,
   updateLeadClientStatusService,
 } from '../API/services/index.ts';
 import {
@@ -32,6 +33,7 @@ export function useLeadClientDetails(idLead: number) {
   const [leadHistoryLoading, setLeadHistoryLoading] = useState(false);
   const [leadHistoryError, setLeadHistoryError] = useState<string | null>(null);
   const [statusUpdateLoading, setStatusUpdateLoading] = useState<StatutRendezVous | null>(null);
+  const [notesUpdateLoading, setNotesUpdateLoading] = useState(false);
 
   const loadLead = useCallback(async (): Promise<void> => {
     if (!Number.isInteger(idLead) || idLead <= 0) {
@@ -126,6 +128,25 @@ export function useLeadClientDetails(idLead: number) {
     }
   }, [lead, showError, showSuccess, statusUpdateLoading]);
 
+  const updateLeadNotes = useCallback(async (notes: string): Promise<boolean> => {
+    if (!lead || notesUpdateLoading) {
+      return false;
+    }
+
+    try {
+      setNotesUpdateLoading(true);
+      const updatedLead = await updateLeadClientNotesService(lead.id_lead, notes);
+      setLead(updatedLead);
+      await showSuccess('Notes du rendez-vous client mises à jour.');
+      return true;
+    } catch (updateError) {
+      await showError(updateError instanceof Error ? updateError.message : 'Erreur lors de la mise à jour des notes');
+      return false;
+    } finally {
+      setNotesUpdateLoading(false);
+    }
+  }, [lead, notesUpdateLoading, showError, showSuccess]);
+
   const printLeadDocument = useCallback((): void => {
     if (lead) {
       window.open(getLeadClientDocumentUrl(lead.id_lead), '_blank', 'noopener,noreferrer');
@@ -147,8 +168,10 @@ export function useLeadClientDetails(idLead: number) {
     leadHistoryLoading,
     loadAppels,
     loading,
+    notesUpdateLoading,
     printLeadDocument,
     statusUpdateLoading,
+    updateLeadNotes,
     updateLeadStatus,
   };
 }

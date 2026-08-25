@@ -180,6 +180,7 @@ export {
   getLeadClientDocumentUrl,
   getLeadClientsByProspectService,
   getLeadClientsService,
+  updateLeadClientNotesService,
   updateLeadClientStatusService,
 } from './lead.service.ts';
 

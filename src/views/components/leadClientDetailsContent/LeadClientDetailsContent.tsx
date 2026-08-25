@@ -23,7 +23,7 @@ export function LeadClientDetailsContent({ viewModel }: LeadClientDetailsContent
         <span className={getLeadStatusBadgeClass(lead.statut)}>{STATUT_RENDEZ_VOUS_LABELS[lead.statut]}</span>
       </div>
       <div className="commandeDetails__content">
-        <div className="commandeDetails__left"><LeadClientSummary lead={lead} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>
+        <div className="commandeDetails__left"><LeadClientSummary lead={lead} notesUpdateLoading={viewModel.notesUpdateLoading} onUpdateNotes={viewModel.updateLeadNotes} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>
         <LeadQualificationPanel {...viewModel} />
       </div>
     </div></main>
