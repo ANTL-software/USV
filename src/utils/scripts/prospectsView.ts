@@ -87,6 +87,7 @@ export const getProspectResponderBadgeClass = (responderCount: number): string =
 };
 
 const QUEUE_BLOCK_REASON_LABELS: Record<QueueBlockReason, string> = {
+  repondeur: 'Répondeur — délai de 7 jours',
   repondeur_3: '3 répondeurs consécutifs',
   siege: 'Siège',
   fax: 'Fax',

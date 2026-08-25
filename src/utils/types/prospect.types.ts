@@ -2,7 +2,7 @@ export type TypeProspect = 'Particulier' | 'Entreprise';
 export type StatutProspect = 'nouveau' | 'contacte' | 'interesse' | 'rappel' | 'non_interesse' | 'vente_conclue';
 export type EnrichissementStatut = 'a_faire' | 'en_cours' | 'enrichi' | 'a_verifier' | 'ignore';
 export type StatutRelationCommercialeCampagne = 'prospect' | 'client' | 'lead_genere';
-export type QueueBlockReason = 'repondeur_3' | 'siege' | 'fax' | 'college_lycee_ete';
+export type QueueBlockReason = 'repondeur' | 'repondeur_3' | 'siege' | 'fax' | 'college_lycee_ete';
 
 export interface RelationCommercialeCampagne {
   id_relation?: number;
