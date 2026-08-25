@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@twilio/voice-sdk": "^2.18.3",
+    "@vercel/analytics": "^2.0.1",
     "aos": "^2.3.4",
     "axios": "^1.18.1",
     "date-fns": "^4.1.0",

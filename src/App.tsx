@@ -4,6 +4,7 @@ import 'aos/dist/aos.css';
 
 // types
 import { ReactElement, useEffect } from "react";
+import { Analytics } from "@vercel/analytics/react";
 
 // utils
 import { logEnvironmentInfo, testEnvironmentConfig } from "./utils/scripts/index.ts";
@@ -211,6 +212,8 @@ function App(): ReactElement {
         <Route path={"projets/:id"} element={<ProjetDetailsWithAuth />}></Route>
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
+
+      <Analytics />
 
       {/* Notification hors ligne globale */}
       <div className="offline-notice">
