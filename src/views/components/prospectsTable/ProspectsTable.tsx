@@ -4,8 +4,9 @@ import type { Prospect } from '../../../utils/types/index.ts';
 import {
   formatProspectDate,
   formatProspectDateTime,
+  formatProspectQueueBlockReason,
   getProspectAssignedAgent,
-  getProspectAttemptsBadgeClass,
+  getProspectResponderBadgeClass,
   getProspectDisplayName,
   getProspectLocation,
   getProspectRelationBadgeClass,
@@ -42,8 +43,10 @@ function ProspectRow({ campaignMode, onSelect, prospect }: ProspectRowProps): Re
       ) : <span className="badge badge--prospect">Prospect</span>}</td>
       {campaignMode && <td><span className={`badge ${getProspectStatusBadgeClass(prospect.statut_prospect_campagne)}`}>{(prospect.statut_prospect_campagne || 'nouveau').replace(/_/g, ' ')}</span></td>}
       {campaignMode && <td><span className={`badge ${getProspectQueueStatusBadgeClass(prospect.statut_file || prospect.statut_campagne)}`}>{(prospect.statut_file || prospect.statut_campagne || 'en_attente').replace(/_/g, ' ')}</span></td>}
-      {campaignMode && <td className="prospectsView__center"><span className={`badge ${getProspectAttemptsBadgeClass(prospect.nb_tentatives || 0)}`}>{prospect.nb_tentatives ?? 0} / {prospect.max_tentatives ?? 5}</span></td>}
+      {campaignMode && <td className="prospectsView__center"><span className={`badge ${getProspectResponderBadgeClass(prospect.nb_tentatives || 0)}`}>{prospect.nb_tentatives ?? 0} / 3</span></td>}
       {campaignMode && <td className="prospectsView__date">{formatProspectDateTime(prospect.derniere_tentative)}</td>}
+      {campaignMode && <td>{formatProspectQueueBlockReason(prospect.motif_blocage_queue_actuel || prospect.motif_dernier_blocage_queue)}</td>}
+      {campaignMode && <td className="prospectsView__date">{formatProspectDateTime(prospect.date_eligibilite_queue)}</td>}
       <td>{getProspectAssignedAgent(prospect)}</td>
       {campaignMode && <td className="prospectsView__date">{formatProspectDate(prospect.date_injection)}</td>}
       {!campaignMode && <td><span className={`badge ${getProspectTypeBadgeClass(prospect.type_prospect)}`}>{prospect.type_prospect}</span></td>}
@@ -64,7 +67,7 @@ export function ProspectsTable({ viewModel }: ProspectsTableProps): ReactElement
     <div className="prospectsView__table-wrapper">
       <table className="prospectsView__table">
         <thead><tr>
-          <th className="prospectsView__center">ID</th><th>Nom</th><th>Téléphone</th>{!campaignMode && <th>Email</th>}<th>Ville</th>{!campaignMode && <th>Pays</th>}<th>{campaignMode ? 'Statut global' : 'Statut'}</th><th>Relation commerciale</th>{campaignMode && <th>Statut campagne</th>}{campaignMode && <th>État file</th>}{campaignMode && <th className="prospectsView__center">Tentatives</th>}{campaignMode && <th>Dernier appel</th>}<th>Agent assigné</th>{campaignMode && <th>Date injection</th>}{!campaignMode && <th>Type</th>}{!campaignMode && <th>Activité</th>}{!campaignMode && <th>Date création</th>}
+          <th className="prospectsView__center">ID</th><th>Nom</th><th>Téléphone</th>{!campaignMode && <th>Email</th>}<th>Ville</th>{!campaignMode && <th>Pays</th>}<th>{campaignMode ? 'Statut global' : 'Statut'}</th><th>Relation commerciale</th>{campaignMode && <th>Statut campagne</th>}{campaignMode && <th>État file</th>}{campaignMode && <th className="prospectsView__center">Répondeurs</th>}{campaignMode && <th>Dernier répondeur</th>}{campaignMode && <th>Dernier blocage</th>}{campaignMode && <th>Éligible à partir du</th>}<th>Agent assigné</th>{campaignMode && <th>Date injection</th>}{!campaignMode && <th>Type</th>}{!campaignMode && <th>Activité</th>}{!campaignMode && <th>Date création</th>}
         </tr></thead>
         <tbody>{viewModel.prospects.map((prospect) => <ProspectRow key={prospect.id_prospect} campaignMode={campaignMode} prospect={prospect} onSelect={viewModel.setSelectedProspect} />)}</tbody>
       </table>

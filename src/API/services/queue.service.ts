@@ -1,6 +1,6 @@
 import { getRequest, postRequest, deleteRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
-import type { QueueState, InjectionResult, InjectionFilters, ProspectCampagneRow, GlobalStats } from '../../utils/types/index.ts';
+import type { QueueState, InjectionResult, InjectionFilters, ProspectCampagneRow, GlobalStats, ProspectsCount } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -31,12 +31,11 @@ export const getGlobalStatsService = async (): Promise<GlobalStats> => {
 
 export const injectProspectsService = async (
   idCampagne: number,
-  filters: InjectionFilters,
-  maxTentatives?: number
+  filters: InjectionFilters
 ): Promise<InjectionResult> => {
   const response: AxiosResponse<ApiResponse<InjectionResult>> = await postRequest(
     `/campagnes/${idCampagne}/inject`,
-    { filters, max_tentatives: maxTentatives }
+    { filters }
   );
   if (response.data.success && response.data.data) {
     return response.data.data;
@@ -95,12 +94,6 @@ export const purgeProspectsService = async (
   }
   throw new Error(response.data.message || 'Erreur lors de la purge');
 };
-
-export interface ProspectsCount {
-  fixe: number;
-  mobile: number;
-  total: number;
-}
 
 export const getProspectsCountService = async (
   idCampagne: number

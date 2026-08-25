@@ -241,6 +241,7 @@ export {
 export type {
   TypeProspect,
   StatutProspect,
+  QueueBlockReason,
   ImportProspectRow,
   ImportError,
   ImportResult,
@@ -345,6 +346,7 @@ export type {
   InjectionFilters,
   ProspectSourceCount,
   ProspectCampagneRow,
+  ProspectsCount,
   CampaignAgentStats,
   GlobalStats,
   SupervisionAgentOption,

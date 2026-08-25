@@ -1,3 +1,5 @@
+import type { QueueBlockReason } from './prospect.types.ts';
+
 export type StatutProspection =
   | 'en_attente'
   | 'assigne'
@@ -91,8 +93,11 @@ export interface ProspectCampagneRow {
   statut_prospect_campagne?: string | null;
   statut_file?: StatutProspection;
   nb_tentatives: number;
-  max_tentatives: number;
   derniere_tentative: string | null;
+  date_eligibilite_queue: string | null;
+  motif_dernier_blocage_queue: Exclude<QueueBlockReason, 'college_lycee_ete'> | null;
+  motif_blocage_queue_actuel?: QueueBlockReason | null;
+  est_college_lycee?: boolean;
   id_agent_assigne: number | null;
   agentAssignee?: {
     id_employe: number;
@@ -135,6 +140,13 @@ export interface ProspectCampagneRow {
     created_at: string;
     updated_at: string;
   };
+}
+
+export interface ProspectsCount {
+  fixe: number;
+  mobile: number;
+  total: number;
+  college_lycee: number;
 }
 
 export interface CampaignAgentStats {

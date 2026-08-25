@@ -23,9 +23,9 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
     return phone;
   };
 
-  const getTentativesColorClass = (attempts: number) => {
-    if (attempts === 0) return 'attempts-badge--zero';
-    if (attempts <= 2) return 'attempts-badge--low';
+  const getResponderColorClass = (responderCount: number) => {
+    if (responderCount === 0) return 'attempts-badge--zero';
+    if (responderCount <= 2) return 'attempts-badge--low';
     return 'attempts-badge--high';
   };
 
@@ -65,13 +65,13 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
         <div className="queue-preview__empty">
           <p>Aucune fiche prête à être appelée dans la file d'attente pour cette campagne.</p>
           <span className="queue-preview__empty-hint">
-            (Vérifiez que des fiches sont injectées et que le délai de rappel de 24h est respecté)
+            (Vérifiez que des fiches sont injectées et qu&apos;aucun blocage temporaire ne s&apos;applique)
           </span>
         </div>
       ) : (
         <div className="queue-preview__grid">
           {items.map(({ row, prospect }, index) => {
-            const isPrioritaire = row.nb_tentatives === 0;
+            const hasResponderStreak = row.nb_tentatives > 0;
             return (
               <div
                 key={row.id_prospection}
@@ -89,14 +89,12 @@ export function QueuePreview({ idCampagne, onOpenProspect, refreshKey = 0 }: Que
                     <code>{formatObfuscatedPhone(row.prospect.telephone)}</code>
                   </div>
                   <div className="queue-preview-card__meta">
-                    <span className={`attempts-badge ${getTentativesColorClass(row.nb_tentatives)}`}>
-                      {row.nb_tentatives} / {row.max_tentatives} appels
+                    <span className={`attempts-badge ${getResponderColorClass(row.nb_tentatives)}`}>
+                      {row.nb_tentatives} / 3 répondeurs
                     </span>
-                    {isPrioritaire ? (
-                      <span className="priority-tag priority-tag--new">Nouveau</span>
-                    ) : (
-                      <span className="priority-tag priority-tag--retry">Relance</span>
-                    )}
+                    {hasResponderStreak
+                      ? <span className="priority-tag priority-tag--retry">Série en cours</span>
+                      : <span className="priority-tag priority-tag--new">Aucun répondeur</span>}
                   </div>
                 </div>
                 <div className="queue-preview-card__actions">

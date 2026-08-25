@@ -15,8 +15,11 @@ export function mapProspectCampagneRowToProspect(row: ProspectCampagneRow): Pros
     statut_prospect_campagne: (row.statut_prospect_campagne ?? null) as Prospect['statut_prospect_campagne'],
     statut_file: row.statut_file ?? row.statut,
     nb_tentatives: row.nb_tentatives,
-    max_tentatives: row.max_tentatives,
     derniere_tentative: row.derniere_tentative,
+    date_eligibilite_queue: row.date_eligibilite_queue,
+    motif_dernier_blocage_queue: row.motif_dernier_blocage_queue,
+    motif_blocage_queue_actuel: row.motif_blocage_queue_actuel,
+    est_college_lycee: row.est_college_lycee,
     id_agent_assigne: row.id_agent_assigne,
     agent_assigne: row.agentAssignee ? {
       id_employe: row.agentAssignee.id_employe,

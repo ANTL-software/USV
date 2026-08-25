@@ -3,9 +3,10 @@ import {
   getAllProspectsCountService,
   getAllProspectsService,
   getProspectsCampagneService,
+  getQueueProspectsCountService,
   purgeProspectsService,
 } from '../API/services/index.ts';
-import type { Campagne, Prospect, ProspectFilters } from '../utils/types/index.ts';
+import type { Campagne, Prospect, ProspectFilters, ProspectsCount } from '../utils/types/index.ts';
 import { mapProspectCampagneRowToProspect } from '../API/models/index.ts';
 import { useAlert } from './useAlert.ts';
 
@@ -13,6 +14,7 @@ export interface UseProspectsReturn {
   prospects: Prospect[];
   pagination: { page: number; limit: number; total: number; totalPages: number } | null;
   totalProspectsDb: number | null;
+  campaignCounts: ProspectsCount | null;
   isLoading: boolean;
   error: string | null;
   campagnes: Campagne[];
@@ -34,6 +36,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const [prospects, setProspects] = useState<Prospect[]>([]);
   const [pagination, setPagination] = useState<{ page: number; limit: number; total: number | null; totalPages: number | null } | null>(null);
   const [totalProspectsDb, setTotalProspectsDb] = useState<number | null>(null);
+  const [campaignCounts, setCampaignCounts] = useState<ProspectsCount | null>(null);
   const [filteredProspectsTotal, setFilteredProspectsTotal] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +92,28 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   useEffect(() => {
     load();
   }, [load, refreshKey]);
+
+  useEffect(() => {
+    if (!selectedCampagne) {
+      setCampaignCounts(null);
+      return;
+    }
+
+    let cancelled = false;
+    setCampaignCounts(null);
+
+    const loadCampaignCounts = async (): Promise<void> => {
+      try {
+        const counts = await getQueueProspectsCountService(selectedCampagne.id_campagne);
+        if (!cancelled) setCampaignCounts(counts);
+      } catch {
+        if (!cancelled) setCampaignCounts(null);
+      }
+    };
+
+    void loadCampaignCounts();
+    return () => { cancelled = true; };
+  }, [selectedCampagne, refreshKey]);
 
   useEffect(() => {
     if (selectedCampagne) {
@@ -195,6 +220,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     prospects,
     pagination: resolvedPagination,
     totalProspectsDb,
+    campaignCounts,
     isLoading,
     error,
     campagnes,

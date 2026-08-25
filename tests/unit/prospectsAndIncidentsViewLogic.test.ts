@@ -16,8 +16,9 @@ import {
   getIncidentTimelineVisibility,
   getIncidentsToQualify,
   getOpenIncidents,
+  formatProspectQueueBlockReason,
   getProspectAssignedAgent,
-  getProspectAttemptsBadgeClass,
+  getProspectResponderBadgeClass,
   getProspectDisplayName,
   getProspectLocation,
   getProspectRelationBadgeClass,
@@ -138,9 +139,11 @@ test('les présentations de prospect sont centralisées et campagne compatibles'
   assert.equal(getProspectAssignedAgent(prospect), 'MARTIN Léa');
   assert.equal(getProspectStatusBadgeClass('vente_conclue'), 'badge--vente_conclue');
   assert.equal(getProspectQueueStatusBadgeClass(prospect.statut_file), 'badge--en_cours');
-  assert.equal(getProspectAttemptsBadgeClass(0), 'badge--interesse');
-  assert.equal(getProspectAttemptsBadgeClass(2), 'badge--rappel');
-  assert.equal(getProspectAttemptsBadgeClass(3), 'badge--non_interesse');
+  assert.equal(getProspectResponderBadgeClass(0), 'badge--interesse');
+  assert.equal(getProspectResponderBadgeClass(2), 'badge--rappel');
+  assert.equal(getProspectResponderBadgeClass(3), 'badge--non_interesse');
+  assert.equal(formatProspectQueueBlockReason('repondeur_3'), '3 répondeurs consécutifs');
+  assert.equal(formatProspectQueueBlockReason('college_lycee_ete'), 'Collège / lycée (juillet-août)');
   assert.equal(getProspectPhoneTypeBadgeClass('mobile'), 'badge--mobile');
   assert.equal(getProspectTypeBadgeClass('Entreprise'), 'badge--entreprise');
   assert.equal(getProspectRelationBadgeClass(prospect.relation_commerciale_campagne), 'badge--client');

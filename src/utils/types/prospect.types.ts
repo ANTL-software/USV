@@ -2,6 +2,7 @@ export type TypeProspect = 'Particulier' | 'Entreprise';
 export type StatutProspect = 'nouveau' | 'contacte' | 'interesse' | 'rappel' | 'non_interesse' | 'vente_conclue';
 export type EnrichissementStatut = 'a_faire' | 'en_cours' | 'enrichi' | 'a_verifier' | 'ignore';
 export type StatutRelationCommercialeCampagne = 'prospect' | 'client' | 'lead_genere';
+export type QueueBlockReason = 'repondeur_3' | 'siege' | 'fax' | 'college_lycee_ete';
 
 export interface RelationCommercialeCampagne {
   id_relation?: number;
@@ -185,8 +186,11 @@ export interface Prospect {
   statut_prospect_campagne?: StatutProspect | null;
   statut_file?: 'en_attente' | 'assigne' | 'en_cours' | 'traite' | 'rappeler' | 'refuse';
   nb_tentatives?: number;
-  max_tentatives?: number;
   derniere_tentative?: string | null;
+  date_eligibilite_queue?: string | null;
+  motif_dernier_blocage_queue?: Exclude<QueueBlockReason, 'college_lycee_ete'> | null;
+  motif_blocage_queue_actuel?: QueueBlockReason | null;
+  est_college_lycee?: boolean;
   id_agent_assigne?: number | null;
   agent_assigne?: {
     id_employe: number;

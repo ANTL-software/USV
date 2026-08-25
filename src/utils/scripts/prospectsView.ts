@@ -1,4 +1,4 @@
-import type { Campagne, Prospect, StatutProspect, TypeProspect } from '../types/index.ts';
+import type { Campagne, Prospect, QueueBlockReason, StatutProspect, TypeProspect } from '../types/index.ts';
 
 export interface ProspectCampagneOption {
   value: Campagne | null;
@@ -25,7 +25,9 @@ export interface ProspectDetailPresentation {
   createdAt: string;
   duplicateSince: string | null;
   injectedAt: string | null;
-  lastAttemptAt: string | null;
+  lastResponderAt: string | null;
+  queueBlockReason: string | null;
+  queueEligibilityAt: string | null;
   optoutLabel: string;
   optoutSince: string | null;
   showGlobalAlerts: boolean;
@@ -78,11 +80,22 @@ export const getProspectQueueStatusBadgeClass = (
   statut: Prospect['statut_file'] | Prospect['statut_campagne'] | null | undefined,
 ): string => (statut ? QUEUE_STATUS_BADGE_CLASSES[statut] ?? '' : '');
 
-export const getProspectAttemptsBadgeClass = (attempts: number): string => {
-  if (attempts === 0) return 'badge--interesse';
-  if (attempts <= 2) return 'badge--rappel';
+export const getProspectResponderBadgeClass = (responderCount: number): string => {
+  if (responderCount === 0) return 'badge--interesse';
+  if (responderCount <= 2) return 'badge--rappel';
   return 'badge--non_interesse';
 };
+
+const QUEUE_BLOCK_REASON_LABELS: Record<QueueBlockReason, string> = {
+  repondeur_3: '3 répondeurs consécutifs',
+  siege: 'Siège',
+  fax: 'Fax',
+  college_lycee_ete: 'Collège / lycée (juillet-août)',
+};
+
+export const formatProspectQueueBlockReason = (reason?: QueueBlockReason | null): string => (
+  reason ? QUEUE_BLOCK_REASON_LABELS[reason] : '—'
+);
 
 export const getProspectRelationBadgeClass = (relation: Prospect['relation_commerciale_campagne']): string => {
   switch (relation?.statut_relation) {
@@ -144,7 +157,11 @@ export function buildProspectDetailPresentation(prospect: Prospect): ProspectDet
     createdAt: formatProspectDate(prospect.created_at),
     duplicateSince: prospect.doublon_date ? formatProspectDate(prospect.doublon_date) : null,
     injectedAt: prospect.date_injection ? formatProspectDate(prospect.date_injection) : null,
-    lastAttemptAt: prospect.derniere_tentative ? formatProspectDateTime(prospect.derniere_tentative) : null,
+    lastResponderAt: prospect.derniere_tentative ? formatProspectDateTime(prospect.derniere_tentative) : null,
+    queueBlockReason: prospect.motif_blocage_queue_actuel || prospect.motif_dernier_blocage_queue
+      ? formatProspectQueueBlockReason(prospect.motif_blocage_queue_actuel || prospect.motif_dernier_blocage_queue)
+      : null,
+    queueEligibilityAt: prospect.date_eligibilite_queue ? formatProspectDateTime(prospect.date_eligibilite_queue) : null,
     optoutLabel: 'Opt-out global (legacy)',
     optoutSince: prospect.optout_date ? formatProspectDate(prospect.optout_date) : null,
     showGlobalAlerts: Boolean(prospect.est_doublon || prospect.blacklist || prospect.optout),

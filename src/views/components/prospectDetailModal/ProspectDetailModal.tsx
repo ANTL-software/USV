@@ -295,18 +295,30 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
                 </span>
               </div>
               <div className="detailRow">
-                <span className="detailLabel">Tentatives d'appel</span>
+                <span className="detailLabel">Répondeurs consécutifs</span>
                 <span className="detailValue">
-                  <code>{prospect.nb_tentatives ?? 0}</code> / <code>{prospect.max_tentatives ?? 5}</code>
+                  <code>{prospect.nb_tentatives ?? 0}</code> / <code>3</code>
                 </span>
               </div>
-              {presentation.lastAttemptAt && (
+              {presentation.lastResponderAt && (
                 <div className="detailRow">
-                  <span className="detailLabel">Dernier appel</span>
+                  <span className="detailLabel">Dernier répondeur</span>
                   <span className="detailValue">
                     <IoCalendarOutline />
-                    {presentation.lastAttemptAt}
+                    {presentation.lastResponderAt}
                   </span>
+                </div>
+              )}
+              {presentation.queueBlockReason && (
+                <div className="detailRow">
+                  <span className="detailLabel">Dernier blocage</span>
+                  <span className="detailValue">{presentation.queueBlockReason}</span>
+                </div>
+              )}
+              {presentation.queueEligibilityAt && (
+                <div className="detailRow">
+                  <span className="detailLabel">Éligible dans la file à partir du</span>
+                  <span className="detailValue"><IoCalendarOutline />{presentation.queueEligibilityAt}</span>
                 </div>
               )}
               <div className="detailRow">

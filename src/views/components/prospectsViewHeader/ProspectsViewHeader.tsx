@@ -15,6 +15,7 @@ export function ProspectsViewHeader({ viewModel }: ProspectsViewHeaderProps): Re
         <div className="prospectsView__title-section">
           <h1>Prospects</h1>
           {!viewModel.selectedCampagne && viewModel.totalProspectsDb !== null && <span className="prospectsView__total-pill">Total en base: {viewModel.totalProspectsDb.toLocaleString('fr-FR')}</span>}
+          {viewModel.selectedCampagne && viewModel.campaignCounts && <span className="prospectsView__total-pill">Collèges / lycées : {viewModel.campaignCounts.college_lycee.toLocaleString('fr-FR')}</span>}
           <Button style="grey" onClick={viewModel.navigateToEnrichment}><span>Enrichissement de donnée Prospect</span></Button>
           {viewModel.selectedCampagne && (
             <>
