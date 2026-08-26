@@ -6,6 +6,13 @@ import './homeKpiCards.scss';
 
 interface HomeKpiCardsProps {
   kpisState: HomeKpisState;
+  access?: {
+    kpiCommandes?: boolean;
+    kpiCommerciaux?: boolean;
+    kpiIncidents?: boolean;
+    kpiProjets?: boolean;
+    kpiBooking?: boolean;
+  };
 }
 
 interface SparklineProps {
@@ -36,10 +43,16 @@ function MiniSparkline({ data, color }: SparklineProps): ReactElement {
   );
 }
 
-export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
+export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactElement | null {
   const { kpis, isLoading } = kpisState;
 
-  const cards = [
+  const canViewCommandes = access ? Boolean(access.kpiCommandes) : true;
+  const canViewCommerciaux = access ? Boolean(access.kpiCommerciaux) : true;
+  const canViewIncidents = access ? Boolean(access.kpiIncidents) : true;
+  const canViewProjets = access ? Boolean(access.kpiProjets) : true;
+  const canViewBooking = access ? Boolean(access.kpiBooking) : true;
+
+  const allCards = [
     {
       id: 'commandes',
       label: 'Commandes validées',
@@ -47,6 +60,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.commandesValidees?.trend ?? [],
       color: '#7c3aed',
       isAmount: false,
+      visible: canViewCommandes,
     },
     {
       id: 'ca',
@@ -55,6 +69,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.caMoisVentes?.trend ?? [],
       color: '#8b5cf6',
       isAmount: true,
+      visible: canViewCommandes,
     },
     {
       id: 'rdv',
@@ -63,6 +78,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.rdvClientsPlanifies?.trend ?? [],
       color: '#a78bfa',
       isAmount: false,
+      visible: canViewCommandes,
     },
     {
       id: 'commerciaux',
@@ -71,6 +87,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.commerciauxActifsJour?.trend ?? [],
       color: '#10b981',
       isAmount: false,
+      visible: canViewCommerciaux,
     },
     {
       id: 'incidents',
@@ -79,6 +96,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.incidentsOuverts?.trend ?? [],
       color: '#ef4444',
       isAmount: false,
+      visible: canViewIncidents,
     },
     {
       id: 'projets',
@@ -87,6 +105,7 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.projetsEnCours?.trend ?? [],
       color: '#0284c7',
       isAmount: false,
+      visible: canViewProjets,
     },
     {
       id: 'rdv-agenda',
@@ -95,14 +114,21 @@ export function HomeKpiCards({ kpisState }: HomeKpiCardsProps): ReactElement {
       trend: kpis?.rdvAgendaJour?.trend ?? [],
       color: '#f59e0b',
       isAmount: false,
+      visible: canViewBooking,
     },
   ];
+
+  const visibleCards = allCards.filter((card) => card.visible);
+
+  if (visibleCards.length === 0) {
+    return null;
+  }
 
   return (
     <section id="homeKpiCards" aria-label="Aperçu global et KPI clés">
       <h2 className="homeKpiCards__title">Aperçu Global et KPI Clés</h2>
       <div className="homeKpiCards__grid">
-        {cards.map((card) => (
+        {visibleCards.map((card) => (
           <article
             key={card.id}
             className={`homeKpiCards__card ${card.isAmount ? 'homeKpiCards__card--amount' : ''}`}

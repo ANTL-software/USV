@@ -12,17 +12,28 @@ interface HomeContentProps {
 export function HomeContent({ viewModel }: HomeContentProps): ReactElement {
   const { access, kpis, navigateTo, vigie } = viewModel;
 
+  const hasAnyKpiAccess = Boolean(
+    access.kpiCommandes
+    || access.kpiCommerciaux
+    || access.kpiIncidents
+    || access.kpiProjets
+    || access.kpiBooking
+  );
+
   return (
     <div id="home" className="homeContainer">
       <Header />
       <SubNav />
       <main>
         <div className="homeContainer__body">
-          <div className="homeContainer__kpi-section">
-            <HomeKpiCards kpisState={kpis} />
-          </div>
-
-          <hr className="homeContainer__divider-horizontal" />
+          {hasAnyKpiAccess && (
+            <>
+              <div className="homeContainer__kpi-section">
+                <HomeKpiCards kpisState={kpis} access={access} />
+              </div>
+              <hr className="homeContainer__divider-horizontal" />
+            </>
+          )}
 
           <div className={`homeContainer__main-layout ${!access.vigie ? 'homeContainer__main-layout--full' : ''}`}>
             <div className="homeContainer__subapps-column">
