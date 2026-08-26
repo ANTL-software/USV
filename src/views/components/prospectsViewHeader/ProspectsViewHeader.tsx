@@ -15,7 +15,26 @@ export function ProspectsViewHeader({ viewModel }: ProspectsViewHeaderProps): Re
         <div className="prospectsView__title-section">
           <h1>Prospects</h1>
           {!viewModel.selectedCampagne && viewModel.totalProspectsDb !== null && <span className="prospectsView__total-pill">Total en base: {viewModel.totalProspectsDb.toLocaleString('fr-FR')}</span>}
-          {viewModel.selectedCampagne && viewModel.campaignCounts && <span className="prospectsView__total-pill">Collèges / lycées : {viewModel.campaignCounts.college_lycee.toLocaleString('fr-FR')}</span>}
+          {viewModel.selectedCampagne && viewModel.campaignCounts && (
+            <>
+              {viewModel.campaignCounts.en_attente_neuves !== undefined && (
+                <span className="prospectsView__total-pill prospectsView__total-pill-virgin" title="Fiches en attente jamais appelées sur cette campagne">
+                  Fiches neuves : {viewModel.campaignCounts.en_attente_neuves.toLocaleString('fr-FR')}
+                </span>
+              )}
+              {viewModel.campaignCounts.en_attente_recyclees !== undefined && (
+                <span className="prospectsView__total-pill prospectsView__total-pill-recycled" title="Fiches en attente déjà appelées au moins une fois">
+                  Recyclées : {viewModel.campaignCounts.en_attente_recyclees.toLocaleString('fr-FR')}
+                </span>
+              )}
+              {viewModel.campaignCounts.en_attente_bloquees !== undefined && viewModel.campaignCounts.en_attente_bloquees > 0 && (
+                <span className="prospectsView__total-pill prospectsView__total-pill-blocked" title="Fiches en attente actuellement en pause (cooldown répondeur / non abouti / siège / fax / été)">
+                  En pause : {viewModel.campaignCounts.en_attente_bloquees.toLocaleString('fr-FR')}
+                </span>
+              )}
+              <span className="prospectsView__total-pill">Collèges / lycées : {viewModel.campaignCounts.college_lycee.toLocaleString('fr-FR')}</span>
+            </>
+          )}
           <Button style="grey" onClick={viewModel.navigateToEnrichment}><span>Enrichissement de donnée Prospect</span></Button>
           {viewModel.selectedCampagne && (
             <>

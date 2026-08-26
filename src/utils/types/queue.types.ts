@@ -147,6 +147,12 @@ export interface ProspectsCount {
   mobile: number;
   total: number;
   college_lycee: number;
+  en_attente?: number;
+  en_attente_neuves?: number;
+  en_attente_recyclees?: number;
+  en_attente_bloquees?: number;
+  traite?: number;
+  rappeler?: number;
 }
 
 export interface CampaignAgentStats {

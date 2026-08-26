@@ -43,6 +43,21 @@
   font-weight: 600;
   white-space: nowrap;
 }
+#prospectsView .prospectsView__total-pill-virgin {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+#prospectsView .prospectsView__total-pill-recycled {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  color: #7e22ce;
+}
+#prospectsView .prospectsView__total-pill-blocked {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  color: #c2410c;
+}
 #prospectsView .prospectsView__filters {
   display: flex;
   align-items: center;
