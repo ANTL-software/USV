@@ -254,6 +254,17 @@
 #qualiteEcoutes .qualiteEcoutes__table {
   /* Badges */
 }
+#qualiteEcoutes .qualiteEcoutes__table .qualiteEcoutes__call-id {
+  font-family: monospace;
+  font-weight: 600;
+  color: vars.$fontColorPrimary;
+  background-color: rgba(vars.$utilsPrimary, 0.08);
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  display: inline-block;
+  white-space: nowrap;
+}
 #qualiteEcoutes .qualiteEcoutes__table .qualiteEcoutes__badge-campagne {
   background-color: #e9ecef;
   color: #495057;

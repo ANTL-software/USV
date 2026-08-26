@@ -25,7 +25,7 @@ export function QualiteEcoutesFilters({ viewModel }: QualiteEcoutesFiltersProps)
           <div className="qualiteEcoutes__filter-col">
             <label htmlFor="recording-search">Recherche globale</label>
             <div className="qualiteEcoutes__search-input-wrapper">
-              <input id="recording-search" type="text" placeholder="Nom, entreprise, téléphone, ID prospect..." value={viewModel.recherche} onChange={(event) => viewModel.setRecherche(event.target.value)} />
+              <input id="recording-search" type="text" placeholder="Nom, entreprise, téléphone, ID appel, ID prospect..." value={viewModel.recherche} onChange={(event) => viewModel.setRecherche(event.target.value)} />
               <button type="submit" aria-label="Rechercher"><MdSearch /></button>
             </div>
           </div>
