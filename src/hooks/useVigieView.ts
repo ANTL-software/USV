@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   cancelVigieActionService,
   createVigieActionService,
@@ -43,6 +43,16 @@ export function useVigieView() {
   const campaignOptions = useMemo<SelectOption<number>[]>(() => campagnes
     .filter((campagne: Campagne) => campagne.statut === 'active')
     .map((campagne: Campagne) => ({ value: campagne.id_campagne, label: campagne.nom_campagne })), [campagnes]);
+
+  // Sélection automatique de la campagne "Les Cigales" (ou première active) dès que les campagnes sont chargées
+  useEffect(() => {
+    if (selectedCampaignId === null && campaignOptions.length > 0) {
+      const cigalesOption = campaignOptions.find((option) =>
+        option.value === 7 || option.label.toLowerCase().includes('cigale')
+      );
+      setSelectedCampaignId(cigalesOption ? cigalesOption.value : campaignOptions[0].value);
+    }
+  }, [campaignOptions, selectedCampaignId]);
 
   const agentOptions = useMemo<SelectOption<number>[]>(() => campaignAgents
     .filter((affectation) => affectation.agent)

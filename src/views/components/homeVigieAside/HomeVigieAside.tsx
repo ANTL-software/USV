@@ -44,7 +44,7 @@ export function HomeVigieAside({ vigieState, onNavigate }: HomeVigieAsideProps):
   useEffect(() => {
     if (!selectedCampaignId && campaignOptions.length > 0) {
       const cigalesCampaign = campaignOptions.find((option) =>
-        option.label.toLowerCase().includes('cigale')
+        option.value === 7 || option.label.toLowerCase().includes('cigale')
       );
       const defaultId = cigalesCampaign ? cigalesCampaign.value : campaignOptions[0].value;
       selectCampaign(defaultId);
