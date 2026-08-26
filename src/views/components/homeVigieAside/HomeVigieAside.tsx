@@ -40,10 +40,14 @@ export function HomeVigieAside({ vigieState, onNavigate }: HomeVigieAsideProps):
     }
   }, [period, setPeriod]);
 
-  // Sélection automatique de la première campagne active si aucune n'est sélectionnée
+  // Sélection automatique de "Les Cigales" par défaut si active, sinon la première campagne active
   useEffect(() => {
     if (!selectedCampaignId && campaignOptions.length > 0) {
-      selectCampaign(campaignOptions[0].value);
+      const cigalesCampaign = campaignOptions.find((option) =>
+        option.label.toLowerCase().includes('cigale')
+      );
+      const defaultId = cigalesCampaign ? cigalesCampaign.value : campaignOptions[0].value;
+      selectCampaign(defaultId);
     }
   }, [campaignOptions, selectCampaign, selectedCampaignId]);
 
