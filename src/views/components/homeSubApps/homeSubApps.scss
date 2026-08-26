@@ -1,0 +1,176 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#homeSubApps {
+  width: 100%;
+
+  .homeSubApps__grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.85em;
+  }
+}
+
+@media (min-width: vars.$tabletWidth) {
+  #homeSubApps {
+    .homeSubApps__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1em;
+    }
+  }
+}
+
+#homeSubApps .homeSubApps__card {
+  @include mixins.card(14px, light);
+  padding: 0;
+  background: vars.$whiteBackground;
+  display: flex;
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform vars.$transitionMedium, box-shadow vars.$transitionMedium, border-color vars.$transitionMedium;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+
+  .homeSubApps__bg {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.4s ease, opacity 0.4s ease;
+    filter: saturate(1.15);
+    opacity: 0.85;
+  }
+
+  .homeSubApps__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.96) 0%,
+      rgba(255, 255, 255, 0.88) 45%,
+      rgba(255, 255, 255, 0.65) 100%
+    );
+    transition: background 0.4s ease;
+  }
+
+  .homeSubApps__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 1.1em;
+    padding: 1.1em 1.25em;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .homeSubApps__icon-wrapper {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    color: vars.$utilsPrimary;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.55rem;
+    flex-shrink: 0;
+    backdrop-filter: blur(4px);
+    transition: background vars.$transitionMedium, color vars.$transitionMedium, transform vars.$transitionMedium;
+  }
+
+  .homeSubApps__info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2em;
+    flex: 1;
+    min-width: 0;
+
+    h3 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: vars.$fontColorPrimary;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+
+    p {
+      font-size: 0.82rem;
+      color: vars.$fontColorSecondary;
+      margin: 0;
+      line-height: 1.35;
+      white-space: normal;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .homeSubApps__tag {
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 0.2em 0.55em;
+    border-radius: 999px;
+    background: rgba(124, 58, 237, 0.12);
+    color: vars.$utilsPrimary;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+#homeSubApps .homeSubApps__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(124, 58, 237, 0.15);
+  border-color: rgba(124, 58, 237, 0.35);
+}
+
+#homeSubApps .homeSubApps__card:hover .homeSubApps__bg {
+  transform: scale(1.06);
+}
+
+#homeSubApps .homeSubApps__card:hover .homeSubApps__overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.8) 45%,
+    rgba(255, 255, 255, 0.5) 100%
+  );
+}
+
+#homeSubApps .homeSubApps__card:hover .homeSubApps__icon-wrapper {
+  background: vars.$utilsPrimary;
+  color: vars.$whiteBackground;
+  transform: scale(1.05);
+}
+
+#homeSubApps .homeSubApps__card--disabled {
+  cursor: default;
+  opacity: 0.88;
+}
+
+#homeSubApps .homeSubApps__card--disabled:hover {
+  transform: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+#homeSubApps .homeSubApps__card--disabled:hover .homeSubApps__bg {
+  transform: none;
+}
+
+#homeSubApps .homeSubApps__card--disabled:hover .homeSubApps__overlay {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.96) 0%,
+    rgba(255, 255, 255, 0.88) 45%,
+    rgba(255, 255, 255, 0.65) 100%
+  );
+}
+
+#homeSubApps .homeSubApps__card--disabled:hover .homeSubApps__icon-wrapper {
+  background: rgba(255, 255, 255, 0.92);
+  color: vars.$utilsPrimary;
+  transform: none;
+}

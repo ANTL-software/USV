@@ -199,6 +199,8 @@ export { useProspectDetailView } from './useProspectDetailView.ts';
 export type { ProspectDetailViewModel } from './useProspectDetailView.ts';
 export { useHomePage } from './useHomePage.ts';
 export type { HomePageViewModel } from './useHomePage.ts';
+export { useHomeKpis } from './useHomeKpis.ts';
+export type { HomeKpisState } from './useHomeKpis.ts';
 export { useCampagnesListPage } from './useCampagnesListPage.ts';
 export type { CampagnesListPageViewModel } from './useCampagnesListPage.ts';
 export { useMonPlanningPage } from './useMonPlanningPage.ts';

@@ -515,3 +515,11 @@ export type {
   TwilioWhisperSession,
   WhisperSession,
 } from './telephony.types.ts';
+
+export type {
+  SparklinePoint,
+  KpiMetric,
+  HomeKpiData,
+  HomeKpiResponse,
+} from './homeKpi.types.ts';
+

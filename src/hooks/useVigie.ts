@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import {
   getVigieActionsService,
   getVigieSnapshotService
@@ -22,6 +22,16 @@ export function useVigie(idCampagne: number | null, range: VigieDateRange): UseV
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [actionsError, setActionsError] = useState<string | null>(null);
+  const currentCampaignRef = useRef<number | null>(idCampagne);
+
+  // Garder la référence à jour pour éviter les courses de requêtes
+  useEffect(() => {
+    currentCampaignRef.current = idCampagne;
+    setSnapshot(null);
+    setActions([]);
+    setError(null);
+    setActionsError(null);
+  }, [idCampagne]);
 
   const refresh = useCallback(async (): Promise<void> => {
     if (!idCampagne) {
@@ -38,6 +48,12 @@ export function useVigie(idCampagne: number | null, range: VigieDateRange): UseV
         getVigieSnapshotService(idCampagne, range),
         getVigieActionsService(idCampagne)
       ]);
+
+      // Vérifier que la campagne n'a pas changé entre temps
+      if (currentCampaignRef.current !== idCampagne) {
+        return;
+      }
+
       if (snapshotResult.status === 'rejected') throw snapshotResult.reason;
       setSnapshot(snapshotResult.value);
       if (actionsResult.status === 'fulfilled') {
@@ -49,11 +65,15 @@ export function useVigie(idCampagne: number | null, range: VigieDateRange): UseV
           : 'Impossible de charger le journal de vigie');
       }
     } catch (requestError: unknown) {
-      setError(requestError instanceof Error ? requestError.message : 'Impossible de charger les données de la vigie');
+      if (currentCampaignRef.current === idCampagne) {
+        setError(requestError instanceof Error ? requestError.message : 'Impossible de charger les données de la vigie');
+      }
     } finally {
-      setIsLoading(false);
+      if (currentCampaignRef.current === idCampagne) {
+        setIsLoading(false);
+      }
     }
-  }, [idCampagne, range]);
+  }, [idCampagne, range.dateDebut, range.dateFin]);
 
   useEffect(() => {
     void refresh();

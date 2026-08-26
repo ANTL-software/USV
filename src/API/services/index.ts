@@ -240,6 +240,7 @@ export {
 } from './alerte.service.ts';
 
 export {
+  getHomeKpisService,
   getSupervisionAgentsService,
   getEmployeGraphiquesService,
 } from './supervision.service.ts';

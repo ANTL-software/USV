@@ -1,6 +1,6 @@
 import type { AxiosResponse } from 'axios';
 import { getRequest } from '../APICalls.ts';
-import type { AllGraphiquesStats, SupervisionAgentOption } from '../../utils/types/index.ts';
+import type { AllGraphiquesStats, HomeKpiData, SupervisionAgentOption } from '../../utils/types/index.ts';
 
 interface ApiResponse<T> {
   success: boolean;
@@ -14,6 +14,11 @@ function readData<T>(response: AxiosResponse<ApiResponse<T>>, fallbackMessage: s
   }
 
   throw new Error(response.data.message || fallbackMessage);
+}
+
+export async function getHomeKpisService(): Promise<HomeKpiData> {
+  const response = await getRequest('/supervision/home-kpis') as AxiosResponse<ApiResponse<HomeKpiData>>;
+  return readData(response, 'Impossible de charger les indicateurs de la page d’accueil');
 }
 
 export async function getSupervisionAgentsService(
