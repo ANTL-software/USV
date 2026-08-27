@@ -21,6 +21,7 @@ const INITIAL_PERMISSIONS: PermissionRecord = {
   incidents: { enabled: false, subsections: [] },
   commerciaux: { enabled: false, subsections: [] },
   projets: { enabled: false },
+  documentation: { enabled: false, subsections: [] },
   'access-management': { enabled: false },
 };
 
@@ -46,6 +47,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
   incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
   mail: ['mail_new', 'mail_list', 'mail_convert'],
   commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
+  documentation: ['documentation-consultation'],
 };
 const QUALITY_SUBSECTIONS = [
   'qualite-signalements',

@@ -127,6 +127,15 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
     path: '/projets',
     subsections: [],
   }
+  , {
+    id: 'documentation',
+    name: 'Documentation',
+    path: '/documentation',
+    subsections: [
+      { id: 'documentation-consultation', name: 'Consulter la documentation', path: '/documentation' },
+      { id: 'documentation-publication', name: 'Publier une documentation', path: '/documentation' },
+    ],
+  }
 ];
 
 export function hasAccessToSection(user: Employe | null, sectionId: string): boolean {
@@ -156,6 +165,11 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   
   if (cleanPath === '/home' || cleanPath === '/auth' || cleanPath === '/') {
     return true;
+  }
+
+  if (cleanPath.startsWith('/documentation')) {
+    if (!hasAccessToSection(user, 'documentation')) return false;
+    return hasAccessToSubsection(user, 'documentation', 'documentation-consultation');
   }
 
   if (cleanPath.startsWith('/operations/partenaires-externes')) {
@@ -267,7 +281,7 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
 
 export function getAllowedSections(user: Employe | null): string[] {
   if (!user) return [];
-  const sections = ['mail', 'booking', 'operations', 'commercial', 'incidents', 'commerciaux', 'projets'];
+  const sections = ['mail', 'booking', 'operations', 'commercial', 'incidents', 'commerciaux', 'projets', 'documentation'];
   return sections.filter(sec => hasAccessToSection(user, sec));
 }
 

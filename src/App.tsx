@@ -40,6 +40,7 @@ import {
   ConvertisseurImage as ConvertisseurImageWithAuth,
   Courriers as CourriersWithAuth,
   Devis as DevisWithAuth,
+  Documentation as DocumentationWithAuth,
   Facturation as FacturationWithAuth,
   SocialPublications as SocialPublicationsWithAuth,
   SocialPublicationHistory as SocialPublicationHistoryWithAuth,
@@ -136,6 +137,7 @@ function App(): ReactElement {
         <Route path="/" element={<Navigate to="/auth" />}></Route>
         <Route path={"auth"} element={<AuthPage />}></Route>
         <Route path={"home"} element={<HomeWithAuth />}></Route>
+        <Route path={"documentation"} element={<DocumentationWithAuth />}></Route>
         <Route path={"mail"} element={<CourriersWithAuth />}></Route>
         <Route path={"mail/list"} element={<ListeCourriersWithAuth />}></Route>
         <Route path={"mail/new"} element={<NouveauCourrierWithAuth />}></Route>

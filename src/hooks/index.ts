@@ -9,6 +9,8 @@ export { useSignInForm } from './useSignInForm.ts';
 export type { SignInFormViewModel } from './useSignInForm.ts';
 export { useEmployes } from './useEmployes.ts';
 export { usePostes } from './usePostes.ts';
+export { useDocumentationPage } from './useDocumentationPage.ts';
+export type { DocumentationPageViewModel } from './useDocumentationPage.ts';
 export { usePostesListView } from './usePostesListView.ts';
 export type { PostesListViewModel } from './usePostesListView.ts';
 export { usePosteForm } from './usePosteForm.ts';

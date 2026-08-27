@@ -35,6 +35,7 @@ const SECTION_DEFINITIONS: NavigationDefinition[] = [
   { id: 'incidents', label: 'Gestion des incidents', path: '/incidents', icon: 'incidents', sectionId: 'incidents' },
   { id: 'commerciaux', label: 'Gestion commerciaux', path: '/commerciaux', icon: 'commerciaux', sectionId: 'commerciaux' },
   { id: 'projets', label: 'Gestion de projets', path: '/projets', icon: 'projects', sectionId: 'projets' },
+  { id: 'documentation', label: 'Documentation', path: '/documentation', icon: 'documents', sectionId: 'documentation' },
 ];
 
 function isPathActive(definition: NavigationDefinition, pathname: string): boolean {

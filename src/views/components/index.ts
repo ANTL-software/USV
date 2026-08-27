@@ -123,6 +123,7 @@ export { NouveauCourrierUpload } from './nouveauCourrierUpload/index.ts';
 export { NotesDirectionContent } from './notesDirectionContent/index.ts';
 export { NouveauCourrierFields } from './nouveauCourrierFields/index.ts';
 export { DocumentViewerModal } from './documentViewerModal/index.ts';
+export { DocumentationContent } from './documentationContent/index.ts';
 export type { DocumentViewerModalProps } from './documentViewerModal/index.ts';
 export { DocumentViewerToolbar } from './documentViewerToolbar/index.ts';
 export { PanierMultiValue, PanierOption } from './panierSelect/index.ts';

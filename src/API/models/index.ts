@@ -8,6 +8,8 @@ export { BookingModel } from './booking.model.ts';
 export { ProspectModel, mapProspectCampagneRowToProspect } from './prospect.model.ts';
 export { NoteDirectionModel } from './noteDirection.model.ts';
 export type { NoteDirectionData } from './noteDirection.model.ts';
+export { DocumentationModel } from './documentation.model.ts';
+export type { DocumentationData } from './documentation.model.ts';
 export {
   buildFallbackVenteStats,
   buildResolvedBillingProfile,

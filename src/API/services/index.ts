@@ -49,6 +49,8 @@ export {
 } from './campagne.service.ts';
 
 export { downloadQuoteDocumentService } from './quote.service.ts';
+export { getDocumentationService, getDocumentationViewUrlService, uploadDocumentationService } from './documentation.service.ts';
+export type { DocumentationFilters } from './documentation.service.ts';
 export {
   getSocialPublicationStatusService,
   getSocialVisualsService,

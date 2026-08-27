@@ -18,6 +18,7 @@ export function useHomePage() {
     mail: hasAccessToSection(user, 'mail'),
     operations: hasAccessToSection(user, 'operations'),
     projets: hasAccessToSection(user, 'projets'),
+    documentation: hasAccessToSubsection(user, 'documentation', 'documentation-consultation'),
     vigie: hasAccessToSubsection(user, 'operations', 'vigie'),
     // Droits pour l'affichage conditionnel des cartes KPI
     kpiCommandes: hasAccessToSubsection(user, 'operations', 'commandes'),

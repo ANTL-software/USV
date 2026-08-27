@@ -1,6 +1,6 @@
 import './subNav.scss';
 import type { ReactElement } from 'react';
-import { IoAlertCircleOutline, IoCalendar, IoCallOutline, IoFolder, IoHome, IoMail, IoPeopleCircle, IoReceiptOutline } from 'react-icons/io5';
+import { IoAlertCircleOutline, IoCalendar, IoCallOutline, IoDocumentTextOutline, IoFolder, IoHome, IoMail, IoPeopleCircle, IoReceiptOutline } from 'react-icons/io5';
 import { useOptionalNotifications, useSubNavView } from '../../../hooks/index.ts';
 import type { SubNavViewModel } from '../../../hooks/index.ts';
 import type { NavigationIconKey } from '../../../utils/scripts/index.ts';
@@ -9,6 +9,7 @@ function NavigationIcon({ icon }: { icon: NavigationIconKey }): ReactElement {
   if (icon === 'booking') return <IoCalendar />;
   if (icon === 'commercial') return <IoReceiptOutline />;
   if (icon === 'commerciaux') return <IoPeopleCircle />;
+  if (icon === 'documents') return <IoDocumentTextOutline />;
   if (icon === 'incidents') return <IoAlertCircleOutline />;
   if (icon === 'mail') return <IoMail />;
   if (icon === 'operations') return <IoCallOutline />;

@@ -29,6 +29,7 @@ interface HomeSubAppsProps {
     mail: boolean;
     operations: boolean;
     projets: boolean;
+    documentation: boolean;
   };
   onNavigate: (path: string) => void;
 }
@@ -223,11 +224,10 @@ export function HomeSubApps({ access, onNavigate }: HomeSubAppsProps): ReactElem
           </a>
         )}
 
-        <a
-          href="#documentation"
-          className="homeSubApps__card homeSubApps__card--disabled"
-          onClick={(e) => handleClick(e, '#', true)}
-          aria-disabled="true"
+        {access.documentation && <a
+          href="/documentation"
+          className="homeSubApps__card"
+          onClick={(e) => handleClick(e, '/documentation')}
         >
           <div
             className="homeSubApps__bg"
@@ -239,14 +239,11 @@ export function HomeSubApps({ access, onNavigate }: HomeSubAppsProps): ReactElem
               <IoBookOutline />
             </div>
             <div className="homeSubApps__info">
-              <h3>
-                Documentation
-                <span className="homeSubApps__tag">Bientôt</span>
-              </h3>
+              <h3>Documentation</h3>
               <p>Guides d’utilisation, procédures métier et base de connaissances</p>
             </div>
           </div>
-        </a>
+        </a>}
       </div>
     </section>
   );

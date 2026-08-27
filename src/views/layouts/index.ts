@@ -17,6 +17,7 @@ export { Commerciaux, MonPlanning, NotesDirection } from './commerciaux/index.ts
 export { ConvertisseurImage } from './convertisseurImage/index.ts';
 export { Courriers } from './courriers/index.ts';
 export { Devis } from './devis/index.ts';
+export { Documentation } from './documentation/index.ts';
 export { Facturation } from './facturation/index.ts';
 export { SocialPublications } from './socialPublications/index.ts';
 export { SocialPublicationHistory } from './socialPublicationHistory/index.ts';
