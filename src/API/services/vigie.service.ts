@@ -17,11 +17,13 @@ interface ApiResponse<T> {
 
 export const getVigieSnapshotService = async (
   idCampagne: number,
-  range: VigieDateRange
+  range: VigieDateRange,
+  options?: { light?: boolean }
 ): Promise<VigieSnapshot> => {
   const response = await getRequest(`/supervision/vigie/${idCampagne}`, {
     date_debut: range.dateDebut,
-    date_fin: range.dateFin
+    date_fin: range.dateFin,
+    ...(options?.light ? { light: 'true' } : {}),
   }) as AxiosResponse<ApiResponse<VigieSnapshot>>;
   if (response.data.success && response.data.data) return response.data.data;
   throw new Error(response.data.message || 'Impossible de charger les données de la vigie');

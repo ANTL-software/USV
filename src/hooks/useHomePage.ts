@@ -8,7 +8,7 @@ export function useHomePage() {
   const navigate = useNavigate();
   const { user } = useUserContext();
   const kpis = useHomeKpis();
-  const vigie = useVigieView();
+  const vigie = useVigieView({ light: true });
 
   const access = {
     booking: hasAccessToSection(user, 'booking'),

@@ -13,7 +13,6 @@ import type {
   VigieSegmentDimension,
 } from '../utils/types/index.ts';
 import {
-  buildVigieDateRange,
   getTopVigieContactHours,
   type SelectOption,
   type VigieActionMessageTone,
@@ -22,7 +21,11 @@ import {
 import { useCampagneAgents, useCampagnes } from './useCampagnes.ts';
 import { useVigie } from './useVigie.ts';
 
-export function useVigieView() {
+export interface UseVigieViewOptions {
+  light?: boolean;
+}
+
+export function useVigieView(options?: UseVigieViewOptions) {
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   const [period, setPeriod] = useState<VigiePeriodKey>('today');
@@ -36,9 +39,14 @@ export function useVigieView() {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionMessageTone, setActionMessageTone] = useState<VigieActionMessageTone>('info');
   const [pendingAction, setPendingAction] = useState<string | null>(null);
-  const range = useMemo(() => buildVigieDateRange(period), [period]);
-  const { snapshot, actions, isLoading, error, actionsError, refresh } = useVigie(selectedCampaignId, range);
-  const { agents: campaignAgents, isLoading: campaignAgentsLoading } = useCampagneAgents(selectedCampaignId);
+  const { snapshot, actions, isLoading, error, actionsError, refresh } = useVigie(
+    selectedCampaignId,
+    period,
+    options
+  );
+  const { agents: campaignAgents, isLoading: campaignAgentsLoading } = useCampagneAgents(
+    options?.light ? null : selectedCampaignId
+  );
 
   const campaignOptions = useMemo<SelectOption<number>[]>(() => campagnes
     .filter((campagne: Campagne) => campagne.statut === 'active')
@@ -62,10 +70,10 @@ export function useVigieView() {
     })), [campaignAgents]);
 
   const selectedSegments = useMemo(() => snapshot?.segments
-    .filter((segment) => segment.dimension === segmentDimension) || [], [snapshot, segmentDimension]);
+    ?.filter((segment) => segment.dimension === segmentDimension) || [], [snapshot, segmentDimension]);
 
-  const selectedCandidates = useMemo(() => snapshot?.scoring.candidats
-    .filter((candidate) => selectedProspectIds.includes(candidate.id_prospect)) || [], [snapshot, selectedProspectIds]);
+  const selectedCandidates = useMemo(() => snapshot?.scoring?.candidats
+    ?.filter((candidate) => selectedProspectIds.includes(candidate.id_prospect)) || [], [snapshot, selectedProspectIds]);
 
   const validatedRecommendationKeys = useMemo(() => new Set(actions
     .filter((action) => action.type_action === 'validation_recommandation' && action.statut !== 'annulee')
