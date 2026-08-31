@@ -32,8 +32,8 @@ const emailSelectStyles: StylesConfig<EmailSelectOption, false> = {
     flexWrap: 'nowrap',
     overflow: 'hidden',
   }),
-  input: (provided) => ({
-    ...(baseEmailSelectStyles.input?.(provided) ?? provided),
+  input: (provided, state) => ({
+    ...(baseEmailSelectStyles.input?.(provided, state) ?? provided),
     margin: 0,
     padding: 0,
   }),
@@ -41,8 +41,8 @@ const emailSelectStyles: StylesConfig<EmailSelectOption, false> = {
     ...(baseEmailSelectStyles.placeholder?.(provided, state) ?? provided),
     margin: '0',
   }),
-  singleValue: (provided) => ({
-    ...(baseEmailSelectStyles.singleValue?.(provided) ?? provided),
+  singleValue: (provided, state) => ({
+    ...(baseEmailSelectStyles.singleValue?.(provided, state) ?? provided),
     whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
@@ -53,13 +53,13 @@ const emailSelectStyles: StylesConfig<EmailSelectOption, false> = {
     ...(baseEmailSelectStyles.indicatorsContainer?.(provided, state) ?? provided),
     height: '40px',
   }),
-  menuPortal: (provided) => ({
-    ...(baseEmailSelectStyles.menuPortal?.(provided) ?? provided),
+  menuPortal: (provided, state) => ({
+    ...(baseEmailSelectStyles.menuPortal?.(provided, state) ?? provided),
     zIndex: 9999,
   }),
   menu: (provided, state) => ({
     ...(baseEmailSelectStyles.menu?.(provided, state) ?? provided),
-    zIndex: 1600,
+    zIndex: 9999,
   }),
 };
 
