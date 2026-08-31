@@ -1,8 +1,11 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
 #prospectImport {
-  min-height: 100vh;
+  @include mixins.mainView;
 }
 #prospectImport main {
-  padding: 2rem;
+  padding: 1.5em 1em;
 }
 #prospectImport .prospectImport__container {
   max-width: 960px;

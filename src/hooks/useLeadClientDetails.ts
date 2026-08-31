@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getLeadClientByIdService,
   getLeadClientDocumentUrl,
   getLeadClientsByProspectService,
   getProspectAppelsService,
+  sendLeadClientEmailService,
   updateLeadClientNotesService,
   updateLeadClientStatusService,
 } from '../API/services/index.ts';
@@ -15,11 +16,9 @@ import {
 } from '../utils/types/index.ts';
 import { isLeadClientRendezVous } from '../utils/scripts/index.ts';
 import { useAlert } from './useAlert.ts';
-import { useCommercialDocuments } from './useCommercialDocuments.ts';
 
 export function useLeadClientDetails(idLead: number) {
   const { showError, showSuccess } = useAlert();
-  const commercialDocuments = useCommercialDocuments('leads', idLead);
   const [lead, setLead] = useState<LeadClient | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +33,14 @@ export function useLeadClientDetails(idLead: number) {
   const [leadHistoryError, setLeadHistoryError] = useState<string | null>(null);
   const [statusUpdateLoading, setStatusUpdateLoading] = useState<StatutRendezVous | null>(null);
   const [notesUpdateLoading, setNotesUpdateLoading] = useState(false);
+
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const loadLead = useCallback(async (): Promise<void> => {
     if (!Number.isInteger(idLead) || idLead <= 0) {
@@ -153,15 +160,102 @@ export function useLeadClientDetails(idLead: number) {
     }
   }, [lead]);
 
+  const defaultEmailMessage = useMemo(() => {
+    if (lead?.campagne?.message_envoi_commande) {
+      return lead.campagne.message_envoi_commande;
+    }
+    return `Cher Monsieur QUENTIN,\n Vous trouverez ci-joint un nouveau rendez-vous.\nMerci de bien vouloir le confirmer avec le prospect.\n\nCordialement,`;
+  }, [lead?.campagne?.message_envoi_commande]);
+
+  const senderNameOptions = useMemo(() => {
+    const defaultName = lead?.campagne?.nom_expediteur_envoi_commande?.trim() || 'Sonia HADID';
+    return [{ value: defaultName, label: defaultName }];
+  }, [lead?.campagne?.nom_expediteur_envoi_commande]);
+
+  const emailOptions = useMemo(() => {
+    const email = lead?.campagne?.email_envoi_commande?.trim();
+    if (!email) return [];
+    return [{ value: email, label: email }];
+  }, [lead?.campagne?.email_envoi_commande]);
+
+  const senderEmailOptions = useMemo(() => {
+    const defaultAddress = 's.hadid@antl.fr';
+    const campaignAddress = lead?.campagne?.email_expediteur_envoi_commande?.trim();
+    const options: Array<{ value: string; label: string }> = [];
+
+    if (campaignAddress) {
+      options.push({ value: campaignAddress, label: campaignAddress });
+    }
+    if (!campaignAddress || defaultAddress.toLowerCase() !== campaignAddress.toLowerCase()) {
+      if (!options.some((opt) => opt.value.toLowerCase() === defaultAddress.toLowerCase())) {
+        options.push({ value: defaultAddress, label: defaultAddress });
+      }
+    }
+
+    return options;
+  }, [lead?.campagne?.email_expediteur_envoi_commande]);
+
+  const openEmailModal = useCallback((): void => {
+    const initialRecipient = lead?.campagne?.email_envoi_commande?.trim() || '';
+    const initialSenderName = lead?.campagne?.nom_expediteur_envoi_commande?.trim() || 'Sonia HADID';
+    const initialSenderEmail = lead?.campagne?.email_expediteur_envoi_commande?.trim() || 's.hadid@antl.fr';
+
+    const fileReference = lead?.id_lead ? `L-${String(lead.id_lead).padStart(5, '0')}` : '';
+    const baseSubject = lead?.campagne?.objet_envoi_commande?.trim() || 'Rendez-vous client';
+    const initialSubject = fileReference ? `${baseSubject} - ${fileReference}` : baseSubject;
+
+    setSelectedRecipientEmail(initialRecipient);
+    setSenderName(initialSenderName);
+    setSenderEmail(initialSenderEmail);
+    setEmailSubject(initialSubject);
+    setEmailMessage(defaultEmailMessage);
+    setIsEmailModalOpen(true);
+  }, [defaultEmailMessage, lead?.campagne?.email_envoi_commande, lead?.campagne?.email_expediteur_envoi_commande, lead?.campagne?.nom_expediteur_envoi_commande, lead?.campagne?.objet_envoi_commande, lead?.id_lead]);
+
+  const closeEmailModal = useCallback((): void => {
+    if (!isSendingEmail) {
+      setIsEmailModalOpen(false);
+    }
+  }, [isSendingEmail]);
+
+  const sendLeadEmail = useCallback(async (): Promise<void> => {
+    if (!lead || !selectedRecipientEmail.trim() || !emailMessage.trim() || isSendingEmail) return;
+
+    setIsSendingEmail(true);
+    try {
+      await sendLeadClientEmailService(lead.id_lead, {
+        recipient_email: selectedRecipientEmail.trim(),
+        message: emailMessage.trim(),
+        subject: emailSubject.trim() || undefined,
+        sender_name: senderName.trim() || undefined,
+        sender_email: senderEmail.trim() || undefined,
+      });
+      await showSuccess(`Fiche rendez-vous envoyée par email à ${selectedRecipientEmail.trim()}.`, 'Email envoyé');
+      setIsEmailModalOpen(false);
+      await loadLead();
+    } catch (requestError) {
+      console.error(requestError);
+      await showError(requestError instanceof Error ? requestError.message : "Impossible d'envoyer l'email");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  }, [emailMessage, emailSubject, isSendingEmail, lead, loadLead, selectedRecipientEmail, senderEmail, senderName, showError, showSuccess]);
+
   return {
-    ...commercialDocuments,
     appels,
     appelsError,
     appelsLoading,
     appelsPage,
     appelsTotal,
     appelsTotalPages,
+    closeEmailModal,
+    defaultEmailMessage,
+    emailMessage,
+    emailOptions,
+    emailSubject,
     error,
+    isEmailModalOpen,
+    isSendingEmail,
     lead,
     leadHistory,
     leadHistoryError,
@@ -169,7 +263,19 @@ export function useLeadClientDetails(idLead: number) {
     loadAppels,
     loading,
     notesUpdateLoading,
+    openEmailModal,
     printLeadDocument,
+    selectedRecipientEmail,
+    senderEmail,
+    senderEmailOptions,
+    senderName,
+    setSenderName,
+    senderNameOptions,
+    sendLeadEmail,
+    setEmailMessage,
+    setEmailSubject,
+    setSelectedRecipientEmail,
+    setSenderEmail,
     statusUpdateLoading,
     updateLeadNotes,
     updateLeadStatus,

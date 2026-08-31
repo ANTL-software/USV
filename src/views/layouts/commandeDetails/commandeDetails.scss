@@ -902,3 +902,265 @@
 #commandeDetails .vente-history-products-table table tbody tr:last-child td {
   border-bottom: none;
 }
+
+#commandeDetails .aside-email-dispatch {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: 1px dashed vars.$borderColor;
+}
+
+#commandeDetails .signed-order-sent-status {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+#commandeDetails .sent-status-header {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #166534;
+}
+
+#commandeDetails .sent-status-icon {
+  font-size: 1.1rem;
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+#commandeDetails .sent-status-title {
+  line-height: 1.2;
+}
+
+#commandeDetails .sent-status-details {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #15803d;
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+#commandeDetails .action-btn-aside--email {
+  width: 100%;
+}
+
+.signedOrderEmailModal__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1500;
+  padding: 1rem;
+}
+
+.signedOrderEmailModal__card {
+  background: white;
+  width: 100%;
+  max-width: 620px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.signedOrderEmailModal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid vars.$borderColor;
+
+  h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: vars.$fontColorPrimary;
+    margin: 0;
+
+    svg {
+      color: vars.$utilsPrimary;
+      font-size: 1.3rem;
+    }
+  }
+
+  p {
+    font-size: 0.85rem;
+    color: vars.$fontColorSecondary;
+    margin: 0.35rem 0 0 0;
+  }
+}
+
+.signedOrderEmailModal__close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: vars.$fontColorSecondary;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.signedOrderEmailModal__close-btn:hover:not(:disabled) {
+  background: vars.$greyBackground;
+  color: vars.$fontColorPrimary;
+}
+
+.signedOrderEmailModal__close-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.signedOrderEmailModal__body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.signedOrderEmailModal__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.signedOrderEmailModal__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  .field-label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: vars.$fontColorPrimary;
+  }
+}
+
+.signedOrderEmailModal__input {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.signedOrderEmailModal__input:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px color.adjust(vars.$utilsPrimary, $alpha: -0.85);
+}
+
+.signedOrderEmailModal__input:disabled {
+  background: vars.$greyBackground;
+  cursor: not-allowed;
+}
+
+.signedOrderEmailModal__textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  color: vars.$fontColorPrimary;
+  line-height: 1.5;
+  resize: vertical;
+  background: white;
+  transition: border-color 0.2s;
+}
+
+.signedOrderEmailModal__textarea:focus {
+  outline: none;
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 3px color.adjust(vars.$utilsPrimary, $alpha: -0.85);
+}
+
+.signedOrderEmailModal__textarea:disabled {
+  background: vars.$greyBackground;
+  cursor: not-allowed;
+}
+
+.signedOrderEmailModal__attachments-box {
+  background: #f8fafc;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  .field-label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: vars.$fontColorSecondary;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+}
+
+.signedOrderEmailModal__attachments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.signedOrderEmailModal__attachment-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: vars.$fontColorPrimary;
+
+  .attachment-icon {
+    color: vars.$utilsPrimary;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .attachment-name {
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .attachment-size {
+    color: vars.$fontColorSecondary;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+}
+
+.signedOrderEmailModal__actions {
+  padding: 1rem 1.5rem 1.25rem;
+  border-top: 1px solid vars.$borderColor;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  background: #f8fafc;
+  border-radius: 0 0 12px 12px;
+}
+

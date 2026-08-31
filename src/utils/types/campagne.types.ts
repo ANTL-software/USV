@@ -43,6 +43,11 @@ export interface Campagne {
   tva?: string | null;
   email_contact?: string | null;
   email_bon_commande?: string | null;
+  email_envoi_commande?: string | null;
+  nom_expediteur_envoi_commande?: string | null;
+  email_expediteur_envoi_commande?: string | null;
+  objet_envoi_commande?: string | null;
+  message_envoi_commande?: string | null;
   adresse?: string | null;
   ville?: string | null;
   telephone?: string | null;
@@ -69,6 +74,11 @@ export interface CreateCampagneData {
   tva?: string;
   email_contact?: string;
   email_bon_commande?: string;
+  email_envoi_commande?: string;
+  nom_expediteur_envoi_commande?: string;
+  email_expediteur_envoi_commande?: string;
+  objet_envoi_commande?: string;
+  message_envoi_commande?: string;
   adresse?: string;
   ville?: string;
   telephone?: string;
@@ -95,6 +105,11 @@ export interface UpdateCampagneData {
   tva?: string;
   email_contact?: string;
   email_bon_commande?: string;
+  email_envoi_commande?: string;
+  nom_expediteur_envoi_commande?: string;
+  email_expediteur_envoi_commande?: string;
+  objet_envoi_commande?: string;
+  message_envoi_commande?: string;
   adresse?: string;
   ville?: string;
   telephone?: string;

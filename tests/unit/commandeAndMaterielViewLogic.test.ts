@@ -208,3 +208,28 @@ test('les options employés excluent les inactifs et les compteurs sont accordé
   assert.equal(getMaterielCountLabel(1), '1 machine enregistrée');
   assert.equal(getMaterielCountLabel(2), '2 machines enregistrées');
 });
+
+test('les emails de campagne et messages par défaut sont bien structurés sur la commande', () => {
+  const commande = createCommande({
+    campagne: {
+      id_campagne: 7,
+      nom_campagne: 'Les Cigales',
+      type_campagne: 'vente',
+      email_contact: 'contact@cigales.fr',
+      email_bon_commande: 'commandes@cigales.fr',
+      email_envoi_commande: 'bruno@cigales.fr',
+      nom_expediteur_envoi_commande: 'Sonia HADID',
+      email_expediteur_envoi_commande: 'sonia@antl.fr',
+      objet_envoi_commande: 'Bon de commande signé',
+      message_envoi_commande: 'Bruno,\nVeuillez trouver ci-joint un nouveau bon de commande.',
+    },
+  });
+
+  assert.equal(commande.campagne?.type_campagne, 'vente');
+  assert.equal(commande.campagne?.email_envoi_commande, 'bruno@cigales.fr');
+  assert.equal(commande.campagne?.nom_expediteur_envoi_commande, 'Sonia HADID');
+  assert.equal(commande.campagne?.email_expediteur_envoi_commande, 'sonia@antl.fr');
+  assert.equal(commande.campagne?.objet_envoi_commande, 'Bon de commande signé');
+  assert.equal(commande.campagne?.message_envoi_commande?.includes('Bruno'), true);
+});
+

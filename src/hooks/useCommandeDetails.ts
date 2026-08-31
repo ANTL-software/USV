@@ -4,6 +4,7 @@ import {
   getProspectVentesService,
   getVenteByIdService,
   getVenteDocumentUrl,
+  sendSignedOrderEmailService,
   snoozeFrigoReminderService,
   updateVenteStatutService,
 } from '../API/services/index.ts';
@@ -42,6 +43,13 @@ export function useCommandeDetails(idVente: number) {
   const [ventesLoading, setVentesLoading] = useState(false);
   const [ventesError, setVentesError] = useState<string | null>(null);
   const [expandedVenteId, setExpandedVenteId] = useState<number | null>(null);
+  const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
+  const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
+  const [senderName, setSenderName] = useState('');
+  const [senderEmail, setSenderEmail] = useState('');
+  const [emailSubject, setEmailSubject] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
+  const [isSendingEmail, setIsSendingEmail] = useState(false);
 
   const loadCommande = useCallback(async (): Promise<void> => {
     if (Number.isNaN(idVente)) {
@@ -157,6 +165,88 @@ export function useCommandeDetails(idVente: number) {
     if (commande) window.open(getVenteDocumentUrl(commande.id_vente), '_blank');
   }, [commande]);
 
+
+  const defaultEmailMessage = useMemo(() => {
+    if (commande?.campagne?.message_envoi_commande) {
+      return commande.campagne.message_envoi_commande;
+    }
+    return `Bruno,\nVeuillez trouver ci-joint un nouveau bon de commande.\nVous en souhaitant bonne réception.\n \nSonia HADID\n07 61 14 57 62`;
+  }, [commande?.campagne?.message_envoi_commande]);
+
+  const senderNameOptions = useMemo(() => {
+    const defaultName = commande?.campagne?.nom_expediteur_envoi_commande?.trim() || 'Sonia HADID';
+    return [{ value: defaultName, label: defaultName }];
+  }, [commande?.campagne?.nom_expediteur_envoi_commande]);
+
+  const emailOptions = useMemo(() => {
+    const email = commande?.campagne?.email_envoi_commande?.trim();
+    if (!email) return [];
+    return [{ value: email, label: email }];
+  }, [commande?.campagne?.email_envoi_commande]);
+
+  const senderEmailOptions = useMemo(() => {
+    const defaultAddress = 's.hadid@antl.fr';
+    const campaignAddress = commande?.campagne?.email_expediteur_envoi_commande?.trim();
+    const options: Array<{ value: string; label: string }> = [];
+
+    if (campaignAddress) {
+      options.push({ value: campaignAddress, label: campaignAddress });
+    }
+    if (!campaignAddress || defaultAddress.toLowerCase() !== campaignAddress.toLowerCase()) {
+      if (!options.some((opt) => opt.value.toLowerCase() === defaultAddress.toLowerCase())) {
+        options.push({ value: defaultAddress, label: defaultAddress });
+      }
+    }
+
+    return options;
+  }, [commande?.campagne?.email_expediteur_envoi_commande]);
+
+  const openEmailModal = useCallback((): void => {
+    const initialRecipient = commande?.campagne?.email_envoi_commande?.trim() || '';
+    const initialSenderName = commande?.campagne?.nom_expediteur_envoi_commande?.trim() || 'Sonia HADID';
+    const initialSenderEmail = commande?.campagne?.email_expediteur_envoi_commande?.trim() || 's.hadid@antl.fr';
+
+    const ref = commande?.reference_doc || (commande?.id_vente ? String(600000 + commande.id_vente).padStart(7, '0') : '');
+    const baseSubject = commande?.campagne?.objet_envoi_commande?.trim() || 'Bon de commande signé';
+    const initialSubject = ref ? `${baseSubject} - ${ref}` : baseSubject;
+
+    setSelectedRecipientEmail(initialRecipient);
+    setSenderName(initialSenderName);
+    setSenderEmail(initialSenderEmail);
+    setEmailSubject(initialSubject);
+    setEmailMessage(defaultEmailMessage);
+    setIsEmailModalOpen(true);
+  }, [commande?.campagne?.email_envoi_commande, commande?.campagne?.email_expediteur_envoi_commande, commande?.campagne?.nom_expediteur_envoi_commande, commande?.campagne?.objet_envoi_commande, commande?.id_vente, commande?.reference_doc, defaultEmailMessage]);
+
+  const closeEmailModal = useCallback((): void => {
+    if (!isSendingEmail) {
+      setIsEmailModalOpen(false);
+    }
+  }, [isSendingEmail]);
+
+  const sendSignedOrderEmail = useCallback(async (): Promise<void> => {
+    if (!commande || !selectedRecipientEmail.trim() || !emailMessage.trim() || isSendingEmail) return;
+
+    setIsSendingEmail(true);
+    try {
+      await sendSignedOrderEmailService(commande.id_vente, {
+        recipient_email: selectedRecipientEmail.trim(),
+        message: emailMessage.trim(),
+        subject: emailSubject.trim() || undefined,
+        sender_name: senderName.trim() || undefined,
+        sender_email: senderEmail.trim() || undefined,
+      });
+      await showSuccess(`Bon de commande envoyé par email à ${selectedRecipientEmail.trim()}.`, 'Email envoyé');
+      setIsEmailModalOpen(false);
+      await loadCommande();
+    } catch (requestError) {
+      console.error(requestError);
+      await showError(requestError instanceof Error ? requestError.message : "Impossible d'envoyer l'email");
+    } finally {
+      setIsSendingEmail(false);
+    }
+  }, [commande, emailMessage, emailSubject, isSendingEmail, loadCommande, selectedRecipientEmail, senderEmail, senderName]);
+
   const prospectName = useMemo(() => getCommandeProspectName(commande), [commande]);
   const agentName = useMemo(() => getCommandeAgentName(commande), [commande]);
   const totals = useMemo(() => computeCommandeTotals(commande), [commande]);
@@ -202,5 +292,23 @@ export function useCommandeDetails(idVente: number) {
     deliveryAddress,
     paymentLabel,
     statusPresentation,
+    isEmailModalOpen,
+    selectedRecipientEmail,
+    setSelectedRecipientEmail,
+    senderName,
+    setSenderName,
+    senderNameOptions,
+    senderEmail,
+    setSenderEmail,
+    senderEmailOptions,
+    emailSubject,
+    setEmailSubject,
+    emailMessage,
+    setEmailMessage,
+    isSendingEmail,
+    emailOptions,
+    openEmailModal,
+    closeEmailModal,
+    sendSignedOrderEmail,
   };
 }

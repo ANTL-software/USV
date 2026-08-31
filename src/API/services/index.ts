@@ -158,6 +158,7 @@ export {
   getVenteDocumentUrl,
   deleteVenteService,
   restoreVenteService,
+  sendSignedOrderEmailService,
 } from './vente.service.ts';
 
 export {
@@ -182,9 +183,11 @@ export {
   getLeadClientDocumentUrl,
   getLeadClientsByProspectService,
   getLeadClientsService,
+  sendLeadClientEmailService,
   updateLeadClientNotesService,
   updateLeadClientStatusService,
 } from './lead.service.ts';
+export type { SendLeadEmailPayload } from './lead.service.ts';
 
 export {
   getQueueStateService,

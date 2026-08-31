@@ -8,6 +8,7 @@ import {
   CommandeDetailsActions,
   CommandeDetailsHistories,
   CommandeDetailsSummary,
+  CommandeSignedOrderEmailModal,
   Header,
   Loader,
   SubNav,
@@ -74,6 +75,7 @@ export function CommandeVenteDetails({ idVente, onBack }: CommandeVenteDetailsPr
           </div>
         </div>
       </main>
+      <CommandeSignedOrderEmailModal viewModel={viewModel} />
       <BackToTop />
     </div>
   );

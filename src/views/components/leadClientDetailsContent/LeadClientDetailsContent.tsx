@@ -3,7 +3,15 @@ import { IoArrowBack } from 'react-icons/io5';
 import type { LeadClientDetailsPageViewModel } from '../../../hooks/index.ts';
 import { STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
 import { formatLeadClientReference, getLeadStatusBadgeClass } from '../../../utils/scripts/index.ts';
-import { Button, LeadAppointmentsHistory, LeadCallsHistory, LeadClientSummary, LeadQualificationPanel, Loader } from '../index.ts';
+import {
+  Button,
+  LeadAppointmentsHistory,
+  LeadCallsHistory,
+  LeadClientEmailModal,
+  LeadClientSummary,
+  LeadQualificationPanel,
+  Loader
+} from '../index.ts';
 
 interface LeadClientDetailsContentProps { viewModel: LeadClientDetailsPageViewModel }
 
@@ -26,6 +34,7 @@ export function LeadClientDetailsContent({ viewModel }: LeadClientDetailsContent
         <div className="commandeDetails__left"><LeadClientSummary lead={lead} notesUpdateLoading={viewModel.notesUpdateLoading} onUpdateNotes={viewModel.updateLeadNotes} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>
         <LeadQualificationPanel {...viewModel} />
       </div>
+      <LeadClientEmailModal viewModel={viewModel} />
     </div></main>
   );
 }

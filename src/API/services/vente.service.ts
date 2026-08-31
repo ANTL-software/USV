@@ -203,3 +203,21 @@ export const restoreVenteService = async (idVente: number): Promise<void> => {
     throw new Error(response.data.message || 'Impossible de restaurer la vente');
   }
 };
+
+export const sendSignedOrderEmailService = async (
+  idVente: number,
+  payload: {
+    recipient_email: string;
+    message: string;
+    subject?: string;
+    sender_name?: string;
+    sender_email?: string;
+  },
+): Promise<void> => {
+  const url = `/ventes/${idVente}/send-signed-order`;
+  const response: AxiosResponse<ApiResponse<unknown>> = await postRequest(url, payload);
+
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Impossible d’envoyer le bon de commande par email');
+  }
+};

@@ -21,11 +21,20 @@ export interface VenteAgent {
   id_employe: number;
   nom: string;
   prenom: string;
+  email?: string | null;
 }
 
 export interface VenteCampagne {
   id_campagne: number;
   nom_campagne: string;
+  type_campagne?: string | null;
+  email_contact?: string | null;
+  email_bon_commande?: string | null;
+  email_envoi_commande?: string | null;
+  nom_expediteur_envoi_commande?: string | null;
+  email_expediteur_envoi_commande?: string | null;
+  objet_envoi_commande?: string | null;
+  message_envoi_commande?: string | null;
 }
 
 export interface Vente {
@@ -36,6 +45,9 @@ export interface Vente {
   date_vente: string;
   date_acceptation?: string | null;
   frigo_rappel_at?: string | null;
+  bon_commande_signe_envoye_at?: string | null;
+  bon_commande_signe_envoye_a?: string | null;
+  bon_commande_signe_envoye_par?: number | null;
   montant_total: string;
   statut_vente: StatutVente;
   mode_paiement?: ModePaiement;

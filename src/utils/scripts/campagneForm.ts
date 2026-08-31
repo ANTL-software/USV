@@ -21,6 +21,11 @@ export interface CampagneFormState {
   tva: string;
   email_contact: string;
   email_bon_commande: string;
+  email_envoi_commande: string;
+  nom_expediteur_envoi_commande: string;
+  email_expediteur_envoi_commande: string;
+  objet_envoi_commande: string;
+  message_envoi_commande: string;
   adresse: string;
   ville: string;
   telephone: string;
@@ -64,6 +69,11 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   tva: '',
   email_contact: '',
   email_bon_commande: '',
+  email_envoi_commande: '',
+  nom_expediteur_envoi_commande: '',
+  email_expediteur_envoi_commande: '',
+  objet_envoi_commande: '',
+  message_envoi_commande: '',
   adresse: '',
   ville: '',
   telephone: '',
@@ -123,6 +133,11 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     tva: campagne.tva || '',
     email_contact: campagne.email_contact || '',
     email_bon_commande: campagne.email_bon_commande || '',
+    email_envoi_commande: campagne.email_envoi_commande || '',
+    nom_expediteur_envoi_commande: campagne.nom_expediteur_envoi_commande || '',
+    email_expediteur_envoi_commande: campagne.email_expediteur_envoi_commande || '',
+    objet_envoi_commande: campagne.objet_envoi_commande || '',
+    message_envoi_commande: campagne.message_envoi_commande || '',
     adresse: campagne.adresse || '',
     ville: campagne.ville || '',
     telephone: campagne.telephone || '',
@@ -199,6 +214,11 @@ export function buildCampagnePayload(form: CampagneFormState): CreateCampagneDat
     tva: form.tva || undefined,
     email_contact: form.email_contact || undefined,
     email_bon_commande: form.email_bon_commande || undefined,
+    email_envoi_commande: form.email_envoi_commande || undefined,
+    nom_expediteur_envoi_commande: form.nom_expediteur_envoi_commande || undefined,
+    email_expediteur_envoi_commande: form.email_expediteur_envoi_commande || undefined,
+    objet_envoi_commande: form.objet_envoi_commande || undefined,
+    message_envoi_commande: form.message_envoi_commande || undefined,
     adresse: form.adresse || undefined,
     ville: form.ville || undefined,
     telephone: form.telephone || undefined,

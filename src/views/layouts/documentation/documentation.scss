@@ -1,41 +1,227 @@
+@use "../../../utils/styles/mixins" as mixins;
 @use "../../../utils/styles/variables" as vars;
 
 #documentation {
-  main { padding: 2rem 1rem 4rem; }
-  .documentation__container { max-width: 1440px; margin: 0 auto; }
-  .documentation__back { margin-bottom: 1.5rem; }
-  .documentation__header { display: flex; gap: 1.5rem; align-items: flex-end; justify-content: space-between; margin-bottom: 1.5rem; }
-  .documentation__header h1 { margin: 0; color: vars.$utilsDark; font-size: clamp(2rem, 4vw, 2.8rem); }
-  .documentation__header p { margin: .4rem 0 0; color: vars.$fontColorSecondary; }
-  .documentation__eyebrow { color: vars.$utilsPrimary !important; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; font-size: .75rem; }
-  .documentation__filters { display: grid; grid-template-columns: minmax(260px, 2fr) repeat(4, minmax(130px, 1fr)); gap: .8rem; padding: 1rem; border: 1px solid rgba(124, 58, 237, .14); border-radius: 14px; background: vars.$whiteBackground; margin-bottom: 1rem; }
-  .documentation__filters input, .documentation__filters select, .documentation__form-grid input, .documentation__form-grid textarea { width: 100%; padding: .72rem .8rem; border: 1px solid #d9d5e8; border-radius: 8px; color: vars.$fontColorPrimary; background: #fff; }
-  .documentation__search { position: relative; }
-  .documentation__search svg { position: absolute; left: .8rem; top: .76rem; color: vars.$utilsPrimary; }
-  .documentation__search input { padding-left: 2.3rem; }
-  .documentation__table-card { overflow-x: auto; border: 1px solid rgba(124, 58, 237, .14); border-radius: 14px; background: vars.$whiteBackground; }
-  table { width: 100%; border-collapse: collapse; }
-  th { padding: .95rem 1rem; text-align: left; font-size: .77rem; color: vars.$fontColorSecondary; text-transform: uppercase; letter-spacing: .04em; background: #faf9ff; }
-  td { padding: 1rem; border-top: 1px solid #eeeaf7; vertical-align: top; color: vars.$fontColorSecondary; }
-  td strong { display: block; color: vars.$fontColorPrimary; }
-  td span { display: block; margin-top: .3rem; max-width: 430px; font-size: .88rem; }
-  .documentation__tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .55rem; }
-  .documentation__tags em { padding: .2rem .45rem; border-radius: 999px; color: vars.$utilsDark; background: #ede9fe; font-size: .72rem; font-style: normal; }
-  .documentation__view { border: 0; border-radius: 8px; padding: .5rem; cursor: pointer; color: #fff; background: vars.$utilsPrimary; }
-  .documentation__empty { padding: 3rem; text-align: center; color: vars.$fontColorSecondary; }
-  .documentation__empty svg { font-size: 2rem; color: vars.$utilsPrimary; }
-  .documentation__error { padding: .8rem 1rem; border-radius: 8px; color: #991b1b; background: #fef2f2; }
-  .documentation__upload { min-width: min(680px, 82vw); }
-  .documentation__upload > p { color: vars.$fontColorSecondary; }
-  .documentation__form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-  .documentation__form-grid label { display: grid; gap: .4rem; color: vars.$fontColorPrimary; font-weight: 600; font-size: .88rem; }
-  .documentation__full { grid-column: 1 / -1; }
-  .documentation__form-grid small { color: vars.$utilsDark; }
-  .documentation__upload-actions { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.5rem; }
-  @media (max-width: vars.$tabletWidth) {
-    .documentation__header { align-items: flex-start; flex-direction: column; }
-    .documentation__filters { grid-template-columns: 1fr 1fr; }
-    .documentation__search { grid-column: 1 / -1; }
+  @include mixins.mainView;
+}
+
+#documentation main {
+  padding: 1.5em 1em;
+}
+
+#documentation .documentation__container {
+  @include mixins.centeredContainer(1440px);
+}
+
+#documentation .documentation__back {
+  margin-bottom: 1.5rem;
+}
+
+#documentation .documentation__header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+#documentation .documentation__header h1 {
+  margin: 0;
+  color: vars.$utilsDark;
+  font-size: clamp(2rem, 4vw, 2.8rem);
+}
+
+#documentation .documentation__header p {
+  margin: .4rem 0 0;
+  color: vars.$fontColorSecondary;
+}
+
+#documentation .documentation__eyebrow {
+  color: vars.$utilsPrimary !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  font-size: .75rem;
+}
+
+#documentation .documentation__filters {
+  display: grid;
+  grid-template-columns: minmax(260px, 2fr) repeat(4, minmax(130px, 1fr));
+  gap: .8rem;
+  padding: 1rem;
+  border: 1px solid rgba(124, 58, 237, .14);
+  border-radius: 14px;
+  background: vars.$whiteBackground;
+  margin-bottom: 1rem;
+}
+
+#documentation .documentation__filters input,
+#documentation .documentation__filters select,
+#documentation .documentation__form-grid input,
+#documentation .documentation__form-grid textarea {
+  width: 100%;
+  padding: .72rem .8rem;
+  border: 1px solid #d9d5e8;
+  border-radius: 8px;
+  color: vars.$fontColorPrimary;
+  background: #fff;
+}
+
+#documentation .documentation__search {
+  position: relative;
+}
+
+#documentation .documentation__search svg {
+  position: absolute;
+  left: .8rem;
+  top: .76rem;
+  color: vars.$utilsPrimary;
+}
+
+#documentation .documentation__search input {
+  padding-left: 2.3rem;
+}
+
+#documentation .documentation__table-card {
+  overflow-x: auto;
+  border: 1px solid rgba(124, 58, 237, .14);
+  border-radius: 14px;
+  background: vars.$whiteBackground;
+}
+
+#documentation table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#documentation th {
+  padding: .95rem 1rem;
+  text-align: left;
+  font-size: .77rem;
+  color: vars.$fontColorSecondary;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  background: #faf9ff;
+}
+
+#documentation td {
+  padding: 1rem;
+  border-top: 1px solid #eeeaf7;
+  vertical-align: top;
+  color: vars.$fontColorSecondary;
+}
+
+#documentation td strong {
+  display: block;
+  color: vars.$fontColorPrimary;
+}
+
+#documentation td span {
+  display: block;
+  margin-top: .3rem;
+  max-width: 430px;
+  font-size: .88rem;
+}
+
+#documentation .documentation__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .3rem;
+  margin-top: .55rem;
+}
+
+#documentation .documentation__tags em {
+  padding: .2rem .45rem;
+  border-radius: 999px;
+  color: vars.$utilsDark;
+  background: #ede9fe;
+  font-size: .72rem;
+  font-style: normal;
+}
+
+#documentation .documentation__view {
+  border: 0;
+  border-radius: 8px;
+  padding: .5rem;
+  cursor: pointer;
+  color: #fff;
+  background: vars.$utilsPrimary;
+}
+
+#documentation .documentation__empty {
+  padding: 3rem;
+  text-align: center;
+  color: vars.$fontColorSecondary;
+}
+
+#documentation .documentation__empty svg {
+  font-size: 2rem;
+  color: vars.$utilsPrimary;
+}
+
+#documentation .documentation__error {
+  padding: .8rem 1rem;
+  border-radius: 8px;
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+#documentation .documentation__upload {
+  min-width: min(680px, 82vw);
+}
+
+#documentation .documentation__upload > p {
+  color: vars.$fontColorSecondary;
+}
+
+#documentation .documentation__form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+#documentation .documentation__form-grid label {
+  display: grid;
+  gap: .4rem;
+  color: vars.$fontColorPrimary;
+  font-weight: 600;
+  font-size: .88rem;
+}
+
+#documentation .documentation__full {
+  grid-column: 1 / -1;
+}
+
+#documentation .documentation__form-grid small {
+  color: vars.$utilsDark;
+}
+
+#documentation .documentation__upload-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: .75rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: vars.$tabletWidth) {
+  #documentation .documentation__header {
+    align-items: flex-start;
+    flex-direction: column;
   }
-  @media (max-width: vars.$mobileWidth) { .documentation__filters, .documentation__form-grid { grid-template-columns: 1fr; } .documentation__upload { min-width: 0; } }
+  #documentation .documentation__filters {
+    grid-template-columns: 1fr 1fr;
+  }
+  #documentation .documentation__search {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: vars.$mobileWidth) {
+  #documentation .documentation__filters,
+  #documentation .documentation__form-grid {
+    grid-template-columns: 1fr;
+  }
+  #documentation .documentation__upload {
+    min-width: 0;
+  }
 }

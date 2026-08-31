@@ -453,9 +453,10 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
   assert.match(previewHtml, /Éditer le devis/);
 });
 
-test('le panneau lead conserve qualification impression et emplacement documentaire', async () => {
+test('le panneau lead conserve qualification réimpression et bouton d envoi email', async () => {
   interface LeadQualificationPanelProps {
     lead: LeadClient | null;
+    openEmailModal: () => void;
     printLeadDocument: () => void;
     statusUpdateLoading: StatutRendezVous | null;
     updateLeadStatus: (statut: StatutRendezVous) => Promise<void>;
@@ -469,15 +470,21 @@ test('le panneau lead conserve qualification impression et emplacement documenta
     date_rdv: '2026-07-20',
     heure_rdv: '09:00:00',
     id_agent: 4,
-    id_campagne: 2,
+    id_campagne: 10,
     id_lead: 9,
     id_prospect: 12,
     motif: 'Rendez-vous client MMA',
+    entreprise_plus_de_cinq_salaries: false,
     statut: 'planifie',
     updated_at: '2026-07-15T10:00:00.000Z',
+    campagne: {
+      id_campagne: 10,
+      nom_campagne: 'MMA',
+    },
   };
   const html = renderToStaticMarkup(createElement(LeadQualificationPanel, {
     lead,
+    openEmailModal: noop,
     printLeadDocument: noop,
     statusUpdateLoading: null,
     updateLeadStatus: noopAsync,
@@ -485,8 +492,7 @@ test('le panneau lead conserve qualification impression et emplacement documenta
 
   assert.match(html, /Qualification/);
   assert.match(html, /Réimprimer la fiche du rendez-vous/);
-  assert.match(html, /Document du rendez-vous/);
-  assert.match(html, /prochaine itération/);
+  assert.match(html, /Envoyer par mail à MMA/);
 });
 
 test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête', async () => {

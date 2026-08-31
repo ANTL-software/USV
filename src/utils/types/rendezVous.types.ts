@@ -38,6 +38,22 @@ export interface RendezVousCampagne {
   id_campagne: number;
   nom_campagne: string;
   type_campagne?: CampaignVariant | null;
+  logo_path?: string | null;
+  logo_file_name?: string | null;
+  siret?: string | null;
+  tva?: string | null;
+  email_contact?: string | null;
+  email_bon_commande?: string | null;
+  email_envoi_commande?: string | null;
+  nom_expediteur_envoi_commande?: string | null;
+  email_expediteur_envoi_commande?: string | null;
+  objet_envoi_commande?: string | null;
+  message_envoi_commande?: string | null;
+  adresse?: string | null;
+  ville?: string | null;
+  telephone?: string | null;
+  pays?: string | null;
+  code_postal_maison_mere?: string | null;
 }
 
 export interface RendezVousAppelSource {
@@ -75,6 +91,9 @@ export type LeadClient = Omit<RendezVousItem, 'id_rendez_vous'> & {
   id_lead: number;
   id_appel?: number | null;
   entreprise_plus_de_cinq_salaries: boolean;
+  fiche_envoyee_at?: string | null;
+  fiche_envoyee_a?: string | null;
+  fiche_envoyee_par?: number | null;
 };
 
 export interface LeadClientListParams {

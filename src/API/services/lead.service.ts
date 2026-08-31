@@ -1,5 +1,5 @@
 import type { AxiosResponse } from 'axios';
-import { getRequest, patchRequest } from '../APICalls.ts';
+import { getRequest, patchRequest, postRequest } from '../APICalls.ts';
 import { getApiBaseUrl } from '../../utils/scripts/index.ts';
 import type { LeadClient, LeadClientListParams, LeadClientStats } from '../../utils/types/index.ts';
 
@@ -135,3 +135,28 @@ export const updateLeadClientNotesService = async (
 export const getLeadClientDocumentUrl = (idLead: number): string => {
   return `${getApiBaseUrl()}/leads/${idLead}/document.pdf`;
 };
+
+export interface SendLeadEmailPayload {
+  recipient_email: string;
+  message: string;
+  subject?: string;
+  sender_name?: string;
+  sender_email?: string;
+}
+
+export const sendLeadClientEmailService = async (
+  idLead: number,
+  payload: SendLeadEmailPayload
+): Promise<{ success: boolean; messageId?: string; recipientEmail: string; fiche_envoyee_at?: string; fiche_envoyee_a?: string }> => {
+  const response: AxiosResponse<ApiResponse<{ success: boolean; messageId?: string; recipientEmail: string; fiche_envoyee_at?: string; fiche_envoyee_a?: string }>> = await postRequest(
+    `/leads/${idLead}/send-email`,
+    payload
+  );
+
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+
+  throw new Error(response.data.message || "Impossible d'envoyer la fiche rendez-vous par email");
+};
+

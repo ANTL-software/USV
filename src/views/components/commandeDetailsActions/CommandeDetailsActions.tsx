@@ -3,11 +3,13 @@ import {
   IoCheckmarkCircle,
   IoCloseCircle,
   IoHourglass,
+  IoMailOutline,
   IoPauseCircle,
   IoPrint,
 } from 'react-icons/io5';
 
 import type { useCommandeDetails } from '../../../hooks/index.ts';
+import { formatCommandeDateTime, normalizeCampaignVariant } from '../../../utils/scripts/index.ts';
 import type { StatutVente } from '../../../utils/types/index.ts';
 import { Button, CommercialDocumentsManager } from '../index.ts';
 
@@ -30,8 +32,13 @@ const STATUS_ACTIONS: Array<{
 ];
 
 export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProps): ReactElement {
-  const { commande } = viewModel;
+  const { commande, documents, openEmailModal } = viewModel;
   if (!commande) return <></>;
+
+  const isVenteCampaign = normalizeCampaignVariant(commande.campagne?.type_campagne) === 'vente';
+  const hasSignedDocuments = documents.length > 0;
+  const showEmailDispatchButton = isVenteCampaign && hasSignedDocuments;
+  const campagneNom = commande.campagne?.nom_campagne || 'la campagne';
 
   return (
     <aside className="commandeDetails__right">
@@ -78,6 +85,32 @@ export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProp
           inputId={`signed-order-input-${commande.id_vente}`}
           uploadLabel="Uploader le bon signé"
         />
+
+        {showEmailDispatchButton && (
+          <div className="aside-email-dispatch">
+            {commande.bon_commande_signe_envoye_at && (
+              <div className="signed-order-sent-status">
+                <div className="sent-status-header">
+                  <IoCheckmarkCircle className="sent-status-icon" />
+                  <span className="sent-status-title">Bon signé envoyé par email</span>
+                </div>
+                <p className="sent-status-details">
+                  Le {formatCommandeDateTime(commande.bon_commande_signe_envoye_at)}
+                  {commande.bon_commande_signe_envoye_a ? ` à ${commande.bon_commande_signe_envoye_a}` : ''}
+                </p>
+              </div>
+            )}
+            <Button
+              style={commande.bon_commande_signe_envoye_at ? 'grey' : 'gradient'}
+              onClick={openEmailModal}
+              className="action-btn-aside action-btn-aside--email"
+              type="button"
+            >
+              <IoMailOutline />
+              <span>{commande.bon_commande_signe_envoye_at ? 'Renvoyer par mail à ' : 'Envoyer par mail à '}{campagneNom}</span>
+            </Button>
+          </div>
+        )}
       </div>
     </aside>
   );
