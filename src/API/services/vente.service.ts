@@ -51,6 +51,8 @@ const EMPTY_VENTE_STATS: VenteStats = {
   total: { count: 0, total_montant: 0 },
 };
 
+const BILLING_PAGE_SIZE = 100;
+
 function normalizeVenteStats(stats: VenteStats | RawVenteStat[] | OperationPeriodVenteStats | undefined): VenteStats {
   if (!stats) {
     return EMPTY_VENTE_STATS;
@@ -139,6 +141,26 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
   }
 
   throw new Error(response.data.message || 'Impossible de récupérer les ventes');
+};
+
+export const getAllVentesService = async (params?: VenteListParams): Promise<VentesResponse> => {
+  const firstPage = await getVentesService({ ...params, page: 1, limit: BILLING_PAGE_SIZE });
+  const ventes = [...firstPage.ventes];
+
+  for (let page = 2; page <= firstPage.pagination.totalPages; page += 1) {
+    const response = await getVentesService({ ...params, page, limit: BILLING_PAGE_SIZE });
+    ventes.push(...response.ventes);
+  }
+
+  return {
+    ...firstPage,
+    ventes,
+    pagination: {
+      ...firstPage.pagination,
+      page: 1,
+      limit: ventes.length,
+    },
+  };
 };
 
 export const getVenteByIdService = async (idVente: number): Promise<VenteComplete> => {

@@ -15,6 +15,8 @@ const parseNumericAmount = (value: number | string): number => {
   return Number.isNaN(numericAmount) ? 0 : numericAmount;
 };
 
+const roundCurrency = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
+
 export const MMA_SMALL_COMPANY_LEAD_PRICE_HT = 75;
 export const MMA_LARGE_COMPANY_LEAD_PRICE_HT = 150;
 
@@ -74,12 +76,26 @@ export function computeFacturableLeadHt(lead: LeadClient): number {
     : MMA_SMALL_COMPANY_LEAD_PRICE_HT;
 }
 
-export function computePreviewTotals(preview: BillingPreview | null, settings: CampaignBillingSettings): BillingAmounts {
-  if (!preview) return { totalHt: 0, totalTtc: 0 };
-  const totalHt = preview.source === 'ventes'
+export function computePreviewTotals(
+  preview: BillingPreview | null,
+  settings: CampaignBillingSettings,
+  commissionRate: number | null = null,
+): BillingAmounts {
+  if (!preview) return { assietteHt: 0, totalHt: 0, totalTtc: 0 };
+
+  const assietteHt = roundCurrency(preview.source === 'ventes'
     ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente, settings), 0)
-    : preview.rows.reduce((sum, lead) => sum + computeFacturableLeadHt(lead), 0);
-  return { totalHt, totalTtc: computeTtcAmount(totalHt, settings.vatRate) };
+    : preview.rows.reduce((sum, lead) => sum + computeFacturableLeadHt(lead), 0));
+  const commissionMultiplier = preview.source === 'ventes' && commissionRate !== null && commissionRate > 0
+    ? commissionRate / 100
+    : 1;
+  const unroundedTotalHt = assietteHt * commissionMultiplier;
+
+  return {
+    assietteHt,
+    totalHt: roundCurrency(unroundedTotalHt),
+    totalTtc: roundCurrency(unroundedTotalHt * (1 + settings.vatRate)),
+  };
 }
 
 export function buildFallbackVenteStats(ventes: Vente[]): VenteStats {

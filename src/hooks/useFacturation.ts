@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   downloadCampagneFacturXDocumentService,
+  getAllLeadClientsService,
+  getAllVentesService,
   getCampagneFacturationPaStatusService,
-  getLeadClientsService,
-  getVentesService,
   issueCampagneFacturationThroughPaService,
   sendCampagneFacturationEmailService,
   testCampagneFacturationThroughPaService,
@@ -89,7 +89,10 @@ export function useFacturation() {
     return currentMonthBounds;
   }, [currentMonthBounds, customDateEnd, customDateStart, periodPreset, previousMonthBounds]);
 
-  const previewTotals = useMemo(() => computePreviewTotals(preview, billingSettings), [billingSettings, preview]);
+  const previewTotals = useMemo(
+    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null),
+    [billingSettings, preview, selectedCampagne?.taux_commission_facturation],
+  );
   const emailOptions = useMemo<InvoiceEmailOption[]>(
     () => buildInvoiceEmailOptions(selectedCampagne),
     [selectedCampagne],
@@ -111,24 +114,20 @@ export function useFacturation() {
         setPreviewLoading(true);
         setPreviewError(null);
         if (selectedVariant === CAMPAIGN_VARIANTS.lead_b2b) {
-          const response = await getLeadClientsService({
+          const response = await getAllLeadClientsService({
             campagne: selectedCampagne.id_campagne,
             date_debut: resolvedPeriod.start,
             date_fin: resolvedPeriod.end,
-            date_field: 'completion',
-            page: 1,
-            limit: 6,
+            date_field: 'emission',
           });
           if (!isCancelled) setPreview({ source: 'leads', rows: response.leads, stats: response.stats ?? DEFAULT_LEAD_STATS });
         } else {
-          const response = await getVentesService({
+          const response = await getAllVentesService({
             campagne: selectedCampagne.id_campagne,
             statut: 'validee',
             date_debut: resolvedPeriod.start,
             date_fin: resolvedPeriod.end,
             date_field: 'acceptation',
-            page: 1,
-            limit: 6,
           });
           if (!isCancelled) setPreview({ source: 'ventes', rows: response.ventes, stats: response.stats ?? buildFallbackVenteStats(response.ventes) });
         }
@@ -313,20 +312,26 @@ export function useFacturation() {
     if (!preview) return cards;
     return preview.source === 'ventes'
       ? [...cards,
-        { label: 'Commandes validées', value: String(preview.stats.total.count), tone: 'primary' },
-        { label: 'CA validé', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }]
+        { label: 'Commandes validées', value: String(preview.rows.length), tone: 'primary' },
+        { label: 'Assiette ventes HT', value: formatBillingCurrency(previewTotals.assietteHt), tone: 'primary' },
+        { label: 'Montant facturé HT', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }]
       : [...cards,
-        { label: 'RDV facturables', value: String(preview.stats.total), tone: 'primary' },
-        { label: 'CA facturable', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }];
-  }, [missingRequiredFields.length, preview, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
+        { label: 'RDV facturables', value: String(preview.rows.length), tone: 'primary' },
+        { label: 'Montant facturé HT', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }];
+  }, [missingRequiredFields.length, preview, previewTotals.assietteHt, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
 
   const getVenteAmounts = useCallback((vente: Vente) => {
-    const totalHt = computeFacturableHt(vente, billingSettings);
-    return { totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
-  }, [billingSettings]);
+    const assietteHt = computeFacturableHt(vente, billingSettings);
+    const rawCommissionRate = Number(selectedCampagne?.taux_commission_facturation ?? 0);
+    const commissionMultiplier = Number.isFinite(rawCommissionRate) && rawCommissionRate > 0
+      ? rawCommissionRate / 100
+      : 1;
+    const totalHt = assietteHt * commissionMultiplier;
+    return { assietteHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
+  }, [billingSettings, selectedCampagne?.taux_commission_facturation]);
   const getLeadAmounts = useCallback((lead: LeadClient) => {
     const totalHt = computeFacturableLeadHt(lead);
-    return { totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
+    return { assietteHt: totalHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
   }, [billingSettings.vatRate]);
 
   const setDateStart = useCallback((value: string): void => {

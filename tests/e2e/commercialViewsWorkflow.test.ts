@@ -168,7 +168,7 @@ test('les views commerciales chargent et qualifient séparément ventes et leads
   assert.deepEqual(computePreviewTotals(
     { source: 'ventes', rows: ventesResult.ventes, stats },
     { vatRate: 0.2, shippingFeeHt: 30, freeShippingThresholdHt: 300 },
-  ), { totalHt: 130, totalTtc: 156 });
+  ), { assietteHt: 100, totalHt: 100, totalTtc: 120 });
 
   const validatedSale = await updateVenteStatutService(10, 'validee', 'Virement');
   const completedLead = await updateLeadClientStatusService(20, 'effectue');

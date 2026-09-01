@@ -38,6 +38,8 @@ const DEFAULT_LEAD_STATS: LeadClientStats = {
   nonHonores: 0,
 };
 
+const BILLING_PAGE_SIZE = 100;
+
 export const getLeadClientsService = async (params?: LeadClientListParams): Promise<LeadClientsResponse> => {
   const queryParams = new URLSearchParams();
   if (params?.campagne) queryParams.set('campagne', String(params.campagne));
@@ -69,6 +71,26 @@ export const getLeadClientsService = async (params?: LeadClientListParams): Prom
   }
 
   throw new Error(response.data.message || 'Impossible de récupérer les rendez-vous client');
+};
+
+export const getAllLeadClientsService = async (params?: LeadClientListParams): Promise<LeadClientsResponse> => {
+  const firstPage = await getLeadClientsService({ ...params, page: 1, limit: BILLING_PAGE_SIZE });
+  const leads = [...firstPage.leads];
+
+  for (let page = 2; page <= firstPage.pagination.totalPages; page += 1) {
+    const response = await getLeadClientsService({ ...params, page, limit: BILLING_PAGE_SIZE });
+    leads.push(...response.leads);
+  }
+
+  return {
+    ...firstPage,
+    leads,
+    pagination: {
+      ...firstPage.pagination,
+      page: 1,
+      limit: leads.length,
+    },
+  };
 };
 
 export const getLeadClientByIdService = async (idLead: number): Promise<LeadClient> => {
@@ -159,4 +181,3 @@ export const sendLeadClientEmailService = async (
 
   throw new Error(response.data.message || "Impossible d'envoyer la fiche rendez-vous par email");
 };
-

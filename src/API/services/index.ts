@@ -150,6 +150,7 @@ export {
 } from './booking.service.ts';
 
 export {
+  getAllVentesService,
   getVentesService,
   getVenteByIdService,
   updateVenteStatutService,
@@ -179,6 +180,7 @@ export {
 } from './panier.service.ts';
 
 export {
+  getAllLeadClientsService,
   getLeadClientByIdService,
   getLeadClientDocumentUrl,
   getLeadClientsByProspectService,

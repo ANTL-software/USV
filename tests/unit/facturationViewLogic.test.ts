@@ -66,20 +66,21 @@ test('la facturation applique les réglages par défaut et ceux de campagne', ()
   });
 });
 
-test('les totaux HT et TTC tiennent compte du franco et de la livraison offerte', () => {
+test('les totaux de facturation distinguent assiette, commission et TTC', () => {
   const settings = { vatRate: 0.2, shippingFeeHt: 30, freeShippingThresholdHt: 300 };
-  assert.equal(computeFacturableHt(createVente(), settings), 130);
+  assert.equal(computeFacturableHt(createVente(), settings), 100);
   assert.equal(computeFacturableHt(createVente({ livraison_offerte: true }), settings), 100);
   assert.equal(computeFacturableHt(createVente({ montant_total: '300' }), settings), 300);
-  assert.equal(computeTtcAmount(130, 0.2), 156);
+  assert.equal(computeTtcAmount(100, 0.2), 120);
 
   const rows = [createVente(), createVente({ id_vente: 2, montant_total: '300' })];
   const stats = buildFallbackVenteStats(rows);
-  assert.deepEqual(computePreviewTotals({ source: 'ventes', rows, stats }, settings), {
-    totalHt: 430,
-    totalTtc: 516,
+  assert.deepEqual(computePreviewTotals({ source: 'ventes', rows, stats }, settings, 45), {
+    assietteHt: 400,
+    totalHt: 180,
+    totalTtc: 216,
   });
-  assert.deepEqual(computePreviewTotals(null, settings), { totalHt: 0, totalTtc: 0 });
+  assert.deepEqual(computePreviewTotals(null, settings), { assietteHt: 0, totalHt: 0, totalTtc: 0 });
 });
 
 test('le fallback de statistiques conserve chaque statut et le total global', () => {

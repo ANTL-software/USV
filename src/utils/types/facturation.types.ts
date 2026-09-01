@@ -46,6 +46,7 @@ export interface BillingPeriod {
 }
 
 export interface BillingAmounts {
+  assietteHt: number;
   totalHt: number;
   totalTtc: number;
 }
