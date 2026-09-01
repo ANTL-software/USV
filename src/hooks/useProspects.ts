@@ -30,6 +30,7 @@ export interface UseProspectsReturn {
 }
 
 const PROSPECTS_PER_PAGE = 25;
+const PROSPECT_SEARCH_DEBOUNCE_MS = 350;
 
 export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const { showConfirm, showError, showSuccess } = useAlert();
@@ -43,8 +44,17 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [refreshKey, setRefreshKey] = useState(0);
   const [isPurging, setIsPurging] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, PROSPECT_SEARCH_DEBOUNCE_MS);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [search]);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -55,7 +65,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
         const result = await getProspectsCampagneService(selectedCampagne.id_campagne, {
           page: currentPage,
           limit: PROSPECTS_PER_PAGE,
-          search: search || undefined,
+          search: debouncedSearch || undefined,
         });
         const mappedProspects = result.data.map(mapProspectCampagneRowToProspect);
         setProspects(mappedProspects);
@@ -64,8 +74,9 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
         const filters: ProspectFilters = {
           page: currentPage,
           limit: PROSPECTS_PER_PAGE,
-          search: search || undefined,
+          search: debouncedSearch || undefined,
           include_total: false,
+          fast_search: Boolean(debouncedSearch),
         };
         const result = await getAllProspectsService(filters);
         const mappedData = result.data.map(p => ({
@@ -87,7 +98,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     } finally {
       setIsLoading(false);
     }
-  }, [selectedCampagne, currentPage, search]);
+  }, [selectedCampagne, currentPage, debouncedSearch]);
 
   useEffect(() => {
     load();
@@ -116,7 +127,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   }, [selectedCampagne, refreshKey]);
 
   useEffect(() => {
-    if (selectedCampagne) {
+    if (selectedCampagne || debouncedSearch) {
       setFilteredProspectsTotal(null);
       return;
     }
@@ -127,12 +138,10 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
     const loadTotalProspects = async () => {
       try {
-        const total = await getAllProspectsCountService({ search: search || undefined });
+        const total = await getAllProspectsCountService();
         if (!cancelled) {
           setFilteredProspectsTotal(total);
-          if (!search) {
-            setTotalProspectsDb(total);
-          }
+          setTotalProspectsDb(total);
         }
       } catch {
         if (!cancelled) {
@@ -146,7 +155,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     return () => {
       cancelled = true;
     };
-  }, [selectedCampagne, search, refreshKey]);
+  }, [debouncedSearch, selectedCampagne, refreshKey]);
 
   const resolvedPagination: UseProspectsReturn['pagination'] = selectedCampagne
     ? pagination && pagination.total !== null && pagination.totalPages !== null

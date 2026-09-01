@@ -72,6 +72,7 @@ export {
   getEmployePhotoUrl,
   getGreetingName,
   getSalutation,
+  getSalutationRefreshDelay,
   getErrorMessage,
   isLoopbackApiUrl,
   isTestEnvironment,
@@ -79,6 +80,7 @@ export {
   sanitizePhoneNumber,
   toLocalIsoDate,
 } from './utils.ts';
+export type { SalutationAudience } from './utils.ts';
 export { testEnvironmentConfig } from './testEnvironment.ts';
 export {
   handleCourrierUploadError,

@@ -38,7 +38,7 @@ export function useQueuePreview(idCampagne: number, refreshKey: number) {
             row,
             prospect: mapProspectCampagneRowToProspect(row),
           })));
-          setTotal(result.pagination.total);
+          setTotal(result.pagination.total ?? result.data.length);
         }
       } catch (requestError) {
         if (isCurrent) setError(getErrorMessage(requestError, 'Erreur de chargement de la file'));

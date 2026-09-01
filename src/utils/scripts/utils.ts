@@ -143,10 +143,17 @@ export function getGreetingName(prenom?: string): string | undefined {
   return prenom;
 }
 
+export type SalutationAudience = 'commercial' | 'employe' | 'partenaire_externe';
+
 /**
  * Retourne un message d'accueil contextuel selon l'heure, le jour et le prénom.
  */
-export function getSalutation(prenom?: string, _heure?: number, _jour?: number): string {
+export function getSalutation(
+  prenom?: string,
+  _heure?: number,
+  _jour?: number,
+  audience: SalutationAudience = 'employe',
+): string {
   const now  = new Date();
   const h    = _heure !== undefined ? _heure : now.getHours();
   const jour = _jour  !== undefined ? _jour  : now.getDay();
@@ -154,9 +161,15 @@ export function getSalutation(prenom?: string, _heure?: number, _jour?: number):
   const date = now.getDate();
   const p    = prenom ? ` ${prenom}` : "";
 
-  // Bon anniversaire Sonia le 11 mai
-  if (mois === 4 && date === 11) {
+  // Bon anniversaire Sonia le 11 mai, sans interférer avec les autres comptes.
+  if (mois === 4 && date === 11 && prenom?.trim().toLocaleLowerCase('fr-FR') === 'sonia') {
     return "Bon anniversaire Sonia !";
+  }
+
+  if (audience === 'partenaire_externe') {
+    if (h < 12) return `Bonjour${p}, bienvenue dans votre espace partenaire.`;
+    if (h < 18) return `Bon après-midi${p}, bienvenue dans votre espace partenaire.`;
+    return `Bonsoir${p}, bienvenue dans votre espace partenaire.`;
   }
 
   if (h < 5)  return `Vous êtes couché·e très tard${p} !`;
@@ -168,11 +181,33 @@ export function getSalutation(prenom?: string, _heure?: number, _jour?: number):
   }
   if (h < 13) return `Bon appétit${p} !`;
   if (h < 18) {
-    if (jour === 4) return `Le weekend approche${p}, plus que quelques appels !`;
+    if (jour === 4) {
+      return audience === 'commercial'
+        ? `Le weekend approche${p}, plus que quelques appels !`
+        : `Le weekend approche${p}, la journée avance bien !`;
+    }
     return `Bon après-midi${p} !`;
   }
   if (h < 21) return `Bonne soirée${p} !`;
   return `Encore au bureau${p} ? Rentrez vous reposer !`;
+}
+
+/**
+ * Planifie le prochain rendu du message au seul moment où son contenu peut changer.
+ */
+export function getSalutationRefreshDelay(now: Date = new Date()): number {
+  const transitionHours = [5, 9, 11, 12, 13, 18, 21];
+  const nextTransition = new Date(now);
+  const nextHour = transitionHours.find((hour) => hour > now.getHours());
+
+  if (nextHour === undefined) {
+    nextTransition.setDate(now.getDate() + 1);
+    nextTransition.setHours(5, 0, 0, 0);
+  } else {
+    nextTransition.setHours(nextHour, 0, 0, 0);
+  }
+
+  return Math.max(1_000, nextTransition.getTime() - now.getTime() + 50);
 }
 
 /**

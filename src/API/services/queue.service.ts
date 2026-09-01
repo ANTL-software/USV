@@ -10,7 +10,7 @@ interface ApiResponse<T> {
 
 interface PaginatedResponse<T> {
   data: T[];
-  pagination: { page: number; limit: number; total: number; totalPages: number };
+  pagination: { page: number; limit: number; total: number | null; totalPages: number | null };
 }
 
 export const getQueueStateService = async (idCampagne: number): Promise<QueueState> => {
@@ -77,7 +77,12 @@ export const getProspectsCampagneService = async (
   if (response.data.success && response.data.data) {
     return {
       data: response.data.data,
-      pagination: (response.data as unknown as Record<string, unknown>).pagination as { page: number; limit: number; total: number; totalPages: number }
+      pagination: (response.data as unknown as Record<string, unknown>).pagination as {
+        page: number;
+        limit: number;
+        total: number | null;
+        totalPages: number | null;
+      }
     };
   }
   throw new Error(response.data.message || 'Impossible de récupérer les prospects');

@@ -2,10 +2,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import {
   buildHeaderMobileNavigation,
   getGreetingName,
-  getSalutation,
   isTestEnvironment,
 } from '../utils/scripts/index.ts';
 import type { NavigationGroup } from '../utils/scripts/index.ts';
+import { useDynamicGreeting } from './useDynamicGreeting.ts';
 import { useUserContext } from './useUserContext.ts';
 
 export interface HeaderViewModel {
@@ -24,9 +24,15 @@ export function useHeaderView(): HeaderViewModel {
   const navigate = useNavigate();
   const { logout, user } = useUserContext();
   const isAuthRoute = pathname === '/auth';
+  const audience = user?.account_type === 'partenaire_externe'
+    ? 'partenaire_externe'
+    : user?.poste?.type_poste === 'commercial'
+      ? 'commercial'
+      : 'employe';
+  const greeting = useDynamicGreeting({ audience, prenom: getGreetingName(user?.prenom) });
   return {
     brandPath: isAuthRoute ? '/auth' : user?.account_type === 'partenaire_externe' ? '/partenaire' : '/home',
-    greeting: getSalutation(getGreetingName(user?.prenom)),
+    greeting,
     hasUser: Boolean(user),
     isAuthRoute,
     logout,

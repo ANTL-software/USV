@@ -57,6 +57,7 @@ export type { TelephonyManagementViewModel } from './useTelephonyManagementView.
 export { useBookingContext } from './useBookingContext.ts';
 export { useHeaderView } from './useHeaderView.ts';
 export type { HeaderViewModel } from './useHeaderView.ts';
+export { useDynamicGreeting } from './useDynamicGreeting.ts';
 export { useSubNavView } from './useSubNavView.ts';
 export type { SubNavViewModel } from './useSubNavView.ts';
 export { useEmailComposer } from './useEmailComposer.ts';
