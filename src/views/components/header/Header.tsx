@@ -41,7 +41,7 @@ export function HeaderContent({ closeMobileMenu, isMobileMenuOpen, toggleMobileM
     <header id="header"><div className="headerContainer">
       <button type="button" className="headerBrand" onClick={() => navigate(viewModel.brandPath)} title={viewModel.isAuthRoute ? '' : 'Home'}><figure className="brandLogo"><img src={antlLogo} alt="ANTL" /></figure></button>
       <div className="headerRight">
-        {viewModel.hasUser && !viewModel.isAuthRoute && <span className="userGreeting"><span>{viewModel.greeting}</span>{viewModel.showTestBadge && <span className="envBadge envBadge--test">TEST</span>}</span>}
+        {viewModel.hasUser && !viewModel.isAuthRoute && <span className="userGreeting"><span className="userGreetingText">{viewModel.greeting}</span>{viewModel.showTestBadge && <span className="envBadge envBadge--test">TEST</span>}</span>}
         {viewModel.hasUser && !viewModel.isAuthRoute && <div className="headerActions"><PWAInstallButton variant="desktop" compact /><button type="button" onClick={logout} className="logoutButton" title="Déconnexion" aria-label="Déconnexion"><LuLogOut size={18} /></button></div>}
         {!viewModel.isAuthRoute && <button type="button" className="headerToggle" onClick={toggleMobileMenu} aria-label="Toggle navigation">{isMobileMenuOpen ? <HiX /> : <HiMenu />}</button>}
       </div>
@@ -49,7 +49,7 @@ export function HeaderContent({ closeMobileMenu, isMobileMenuOpen, toggleMobileM
     {isMobileMenuOpen && !viewModel.isAuthRoute && <div className="mobileMenuOverlay" onClick={closeMobileMenu}><div className="mobileMenu utils" onClick={(event) => event.stopPropagation()}>
       <div className="mobileMenuHeader utils"><span className="mobileMenuTitle">Navigation</span><button type="button" className="mobileMenuClose" onClick={closeMobileMenu}><HiX /></button></div>
       <div className="mobileMenuContent">
-        {viewModel.hasUser && <div className="mobileUserInfo"><span className="mobileUserGreeting"><span>{viewModel.greeting}</span>{viewModel.showTestBadge && <span className="envBadge envBadge--test">TEST</span>}</span><PWAInstallButton variant="mobile" compact /><button type="button" onClick={logout} className="mobileLogoutButton" title="Déconnexion"><LuLogOut size={16} /> Déconnexion</button></div>}
+        {viewModel.hasUser && <div className="mobileUserInfo"><span className="mobileUserGreeting"><span className="userGreetingText">{viewModel.greeting}</span>{viewModel.showTestBadge && <span className="envBadge envBadge--test">TEST</span>}</span><PWAInstallButton variant="mobile" compact /><button type="button" onClick={logout} className="mobileLogoutButton" title="Déconnexion"><LuLogOut size={16} /> Déconnexion</button></div>}
         <div className="mobileSection">{viewModel.mobileGroups.map((group) => <div key={group.id}>{group.title && <h3 className="mobileSectionTitle">{group.title}</h3>}{group.items.map((item) => <button type="button" key={item.id} className={`mobileNavItem ${item.active ? 'active' : ''}`} onClick={() => navigate(item.path)}><NavigationIcon icon={item.icon} /><span className="mobileNavText">{item.label}</span></button>)}</div>)}</div>
       </div>
     </div></div>}

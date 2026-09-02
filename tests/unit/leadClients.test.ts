@@ -99,6 +99,9 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
         }
       };
     },
+    postRequest: async (): Promise<AxiosLikeResponse<unknown>> => ({
+      data: { success: true },
+    }),
   }
 });
 

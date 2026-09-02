@@ -167,9 +167,9 @@ export function getSalutation(
   }
 
   if (audience === 'partenaire_externe') {
-    if (h < 12) return `Bonjour${p}, bienvenue dans votre espace partenaire.`;
-    if (h < 18) return `Bon après-midi${p}, bienvenue dans votre espace partenaire.`;
-    return `Bonsoir${p}, bienvenue dans votre espace partenaire.`;
+    if (h < 12) return `Bonjour${p} !`;
+    if (h < 18) return `Bon après-midi${p} !`;
+    return `Bonsoir${p} !`;
   }
 
   if (h < 5)  return `Vous êtes couché·e très tard${p} !`;
