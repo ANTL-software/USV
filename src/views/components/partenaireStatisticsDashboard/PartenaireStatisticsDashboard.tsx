@@ -90,7 +90,7 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
     </section>
 
     <section className="partnerStats__grid partnerStats__grid--wide">
-      <Panel title="Meilleurs créneaux de contact humain" description="Jusqu’à six créneaux sont classés selon leur taux de contact humain.">
+      <Panel title="Meilleurs créneaux de contact humain" description="Historique complet de la campagne, indépendant du filtre de période. Jusqu’à six créneaux sont classés.">
         {data.joignabilite.meilleurs_creneaux.length === 0
           ? <EmptyChart message={`Au moins ${data.joignabilite.minimum_appels_recommandation} appels sur un même créneau sont nécessaires avant de proposer une recommandation.`} />
           : <ol className="partnerStats__slots">{data.joignabilite.meilleurs_creneaux.map((slot) => <li key={slot.heure} className="partnerStats__slot"><strong>{formatPartnerHourRange(slot.heure)}</strong><span>{formatPartnerStatisticPercent(slot.taux_contact_humain)} de contact humain</span><small>{formatPartnerStatisticNumber(slot.contacts_humains, 0)} contacts · {formatPartnerStatisticNumber(slot.appels, 0)} appels · {formatPartnerStatisticNumber(slot.repondeurs, 0)} répondeur{slot.repondeurs > 1 ? 's' : ''}</small></li>)}</ol>}
@@ -99,10 +99,10 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
     </section>
 
     <section className="partnerStats__grid partnerStats__grid--wide">
-      <Panel title="Taux de contact humain par horaire" description="Comparez le volume d’appels et le taux de contact humain pour chaque heure.">
+      <Panel title="Taux de contact humain par horaire" description="Historique complet de la campagne, indépendant du filtre de période.">
         {hourly.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart partnerStats__chart--large"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourly} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#a78bfa" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_contact_humain" name="Taux de contact humain" stroke="#5b21b6" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
       </Panel>
-      <Panel title="Journées les plus pertinentes" description="Moyenne du taux de contact humain constaté pour chaque jour de semaine.">
+      <Panel title="Journées les plus pertinentes" description="Historique complet de la campagne, indépendant du filtre de période. Moyenne constatée pour chaque jour de semaine.">
         {data.joignabilite.meilleurs_jours.length === 0
           ? <EmptyChart message="Les indicateurs apparaîtront dès que des appels auront été enregistrés." />
           : <div className="partnerStats__weekday-grid">{data.joignabilite.meilleurs_jours.map((day) => <article key={day.jour}><strong>{getPartnerWeekdayLongLabel(day.jour)}</strong><span>{formatPartnerStatisticPercent(day.taux_contact_humain)}</span><small>Moyenne de {formatPartnerWeekdayObservationCount(day.jour, day.jours_observes)} · {formatPartnerStatisticNumber(day.appels, 0)} appels</small></article>)}</div>}
