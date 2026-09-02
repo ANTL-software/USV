@@ -49,7 +49,7 @@ export function FacturationPreview({ state }: FacturationPreviewProps): ReactEle
     const largeCompanyCount = preview.rows.length - smallCompanyCount;
     content = (
       <>
-        <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>Règle de facturation MMA :</strong> chaque rendez-vous est facturé dès sa prise, quelle que soit l’étape ultérieure du rappel qualité. La période est déterminée par la date de création du rendez-vous.</div>
+        <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>Règle de facturation MMA :</strong> seuls les rendez-vous au statut effectué, dont la date de passage au statut effectué est comprise dans la période, sont retenus.</div>
         <div className="facturationView__kpis">
           <div className="facturationView__kpi"><span>Rendez-vous facturables</span><strong>{preview.rows.length}</strong></div>
           <div className="facturationView__kpi"><span>Entreprises de 5 salariés ou moins</span><strong>{smallCompanyCount} × 75 € HT</strong></div>
@@ -57,10 +57,10 @@ export function FacturationPreview({ state }: FacturationPreviewProps): ReactEle
           <div className="facturationView__kpi"><span>CA facturable</span><strong>{formatBillingCurrency(state.previewTotals.totalHt)} HT<br />{formatBillingCurrency(state.previewTotals.totalTtc)} TTC</strong></div>
         </div>
         <div className="facturationView__table-wrapper">
-          <table><thead><tr><th>Lead</th><th>Client</th><th>Date de prise</th><th>Catégorie</th><th>Montant</th></tr></thead>
-            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={5} className="facturationView__table-empty">Aucun rendez-vous pris sur la période.</td></tr> : preview.rows.map((lead) => {
+          <table><thead><tr><th>Lead</th><th>Client</th><th>Date effectuée</th><th>Catégorie</th><th>Montant</th></tr></thead>
+            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={5} className="facturationView__table-empty">Aucun rendez-vous effectué sur la période.</td></tr> : preview.rows.map((lead) => {
               const amounts = state.getLeadAmounts(lead);
-              return <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.created_at)}</td><td>{lead.entreprise_plus_de_cinq_salaries ? 'Plus de 5 salariés' : '5 salariés ou moins'}</td><td>{formatBillingCurrency(amounts.totalHt)} HT<br />{formatBillingCurrency(amounts.totalTtc)} TTC</td></tr>;
+              return <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.date_effectue)}</td><td>{lead.entreprise_plus_de_cinq_salaries ? 'Plus de 5 salariés' : '5 salariés ou moins'}</td><td>{formatBillingCurrency(amounts.totalHt)} HT<br />{formatBillingCurrency(amounts.totalTtc)} TTC</td></tr>;
             })}</tbody>
           </table>
         </div>

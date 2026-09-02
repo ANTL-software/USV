@@ -118,7 +118,7 @@ export function useFacturation() {
             campagne: selectedCampagne.id_campagne,
             date_debut: resolvedPeriod.start,
             date_fin: resolvedPeriod.end,
-            date_field: 'emission',
+            date_field: 'completion',
           });
           if (!isCancelled) setPreview({ source: 'leads', rows: response.leads, stats: response.stats ?? DEFAULT_LEAD_STATS });
         } else {
