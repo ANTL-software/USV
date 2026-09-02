@@ -18,7 +18,9 @@ import {
   getPersonSignalStrength,
   getPhoneSignalStrength,
   getVigiePayloadLabel,
+  getTopVigieContactDays,
   getTopVigieContactHours,
+  getVigieWeekdayLabel,
   resolveLeadContactEmail,
   resolveLeadContactName,
   resolveLeadContactPhone,
@@ -217,4 +219,11 @@ test('les périodes et libellés Vigie restent déterministes', () => {
   ];
   assert.deepEqual(getTopVigieContactHours(hours, 2).map(({ heure }) => heure), [10, 9]);
   assert.deepEqual(hours.map(({ heure }) => heure), [9, 10, 11]);
+
+  const days = [
+    { jour: 1, jours_observes: 2, appels: 30, contacts_humains: 6, taux_contact_humain: 20 },
+    { jour: 2, jours_observes: 3, appels: 20, contacts_humains: 10, taux_contact_humain: 50 },
+  ];
+  assert.deepEqual(getTopVigieContactDays(days).map(({ jour }) => jour), [2, 1]);
+  assert.equal(getVigieWeekdayLabel(2), 'Mardi');
 });

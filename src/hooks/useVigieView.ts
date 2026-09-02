@@ -13,6 +13,7 @@ import type {
   VigieSegmentDimension,
 } from '../utils/types/index.ts';
 import {
+  getTopVigieContactDays,
   getTopVigieContactHours,
   type SelectOption,
   type VigieActionMessageTone,
@@ -82,6 +83,10 @@ export function useVigieView(options?: UseVigieViewOptions) {
   const topContactHours = useMemo(
     () => getTopVigieContactHours(snapshot?.creneaux_horaires || []),
     [snapshot?.creneaux_horaires],
+  );
+  const topContactDays = useMemo(
+    () => getTopVigieContactDays(snapshot?.contacts_par_jour || []),
+    [snapshot?.contacts_par_jour],
   );
 
   const selectCampaign = useCallback((idCampaign: number | null): void => {
@@ -254,6 +259,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
     submitManualPriority,
     submitPriorityBatch,
     toggleCandidate,
+    topContactDays,
     topContactHours,
     validateRecommendation,
     validatedRecommendationKeys,

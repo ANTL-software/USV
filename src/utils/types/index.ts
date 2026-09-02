@@ -390,6 +390,7 @@ export type {
   VigieRecommendation,
   VigieSegmentDimension,
   VigieSnapshot,
+  VigieWeekdayPerformance,
 } from './vigie.types.ts';
 
 export {
@@ -522,4 +523,3 @@ export type {
   HomeKpiData,
   HomeKpiResponse,
 } from './homeKpi.types.ts';
-

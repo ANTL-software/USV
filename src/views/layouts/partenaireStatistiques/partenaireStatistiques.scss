@@ -227,6 +227,29 @@
   color: #64748b;
 }
 
+.partnerStats__weekday-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+}
+
+.partnerStats__weekday-grid article {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+}
+
+.partnerStats__weekday-grid span {
+  color: #5b21b6;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.partnerStats__weekday-grid small { color: #64748b; }
+
 .partnerStats__empty,
 .partnerStats__loading,
 .partnerStats__error {
@@ -314,4 +337,5 @@
   .partnerStats__panel { padding: 1rem 0.65rem; }
   .partnerStats__slot { grid-template-columns: 1fr; }
   .partnerStats__slot span { text-align: left; }
+  .partnerStats__weekday-grid { grid-template-columns: 1fr; }
 }

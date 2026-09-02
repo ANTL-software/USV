@@ -226,8 +226,11 @@ export {
   formatVigieNumber,
   formatVigiePercent,
   formatVigiePerThousand,
+  formatVigieWeekdayObservationCount,
   getVigiePayloadLabel,
+  getTopVigieContactDays,
   getTopVigieContactHours,
+  getVigieWeekdayLabel,
 } from './vigie.ts';
 export type { SelectOption, VigieActionMessageTone, VigiePeriodKey } from './vigie.ts';
 export {
@@ -631,5 +634,7 @@ export {
   formatPartnerHourRange,
   formatPartnerStatisticNumber,
   formatPartnerStatisticPercent,
+  formatPartnerWeekdayObservationCount,
   getPartnerWeekdayLabel,
+  getPartnerWeekdayLongLabel,
 } from './partenaireStatistics.ts';

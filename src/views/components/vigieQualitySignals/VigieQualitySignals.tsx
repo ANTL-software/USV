@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
-import { IoPeopleOutline, IoShieldCheckmarkOutline, IoStatsChartOutline, IoTimeOutline } from 'react-icons/io5';
+import { IoCalendarOutline, IoPeopleOutline, IoShieldCheckmarkOutline, IoStatsChartOutline, IoTimeOutline } from 'react-icons/io5';
 
 import type { VigieViewState } from '../../../hooks/index.ts';
-import { formatVigieNumber, formatVigiePercent } from '../../../utils/scripts/index.ts';
+import { formatVigieNumber, formatVigiePercent, formatVigieWeekdayObservationCount, getVigieWeekdayLabel } from '../../../utils/scripts/index.ts';
 
 interface VigieQualitySignalsProps {
   state: VigieViewState;
@@ -27,9 +27,10 @@ export function VigieQualitySignals({ state }: VigieQualitySignalsProps): ReactE
         </section>
       </div>
       <div className="vigieView__grid vigieView__grid--signals">
-        <section className="vigieView__panel"><div className="vigieView__panel-title"><IoTimeOutline /><div><h2>Créneaux de contact</h2><p>Taux de contact humain constaté par heure.</p></div></div><div className="vigieView__hour-grid">{state.topContactHours.map((hour) => <article key={hour.heure}><strong>{String(hour.heure).padStart(2, '0')}h–{String(hour.heure + 1).padStart(2, '0')}h</strong><span>{formatVigiePercent(hour.taux_contact_humain)}</span><small>{formatVigieNumber(hour.appels)} appels</small></article>)}</div></section>
-        <section className="vigieView__panel"><div className="vigieView__panel-title"><IoStatsChartOutline /><div><h2>Statuts d’appel</h2><p>Répartition exhaustive sur la période sélectionnée.</p></div></div><div className="vigieView__status-list">{snapshot.statuts_appels.map((status) => <div key={status.statut}><span>{status.statut.replace(/_/g, ' ')}</span><strong>{formatVigieNumber(status.total)}</strong><small>{formatVigiePercent(status.taux ?? null)}</small></div>)}</div></section>
+        <section className="vigieView__panel"><div className="vigieView__panel-title"><IoTimeOutline /><div><h2>Créneaux de contact</h2><p>Taux de contact humain confirmé par un ProgPA de 1 à 5, par heure.</p></div></div>{state.topContactHours.length === 0 ? <p className="vigieView__empty-copy">Aucun appel sur la période.</p> : <div className="vigieView__hour-grid">{state.topContactHours.map((hour) => <article key={hour.heure}><strong>{String(hour.heure).padStart(2, '0')}h–{String(hour.heure + 1).padStart(2, '0')}h</strong><span>{formatVigiePercent(hour.taux_contact_humain)}</span><small>{formatVigieNumber(hour.contacts_humains)} contacts · {formatVigieNumber(hour.appels)} appels</small></article>)}</div>}</section>
+        <section className="vigieView__panel"><div className="vigieView__panel-title"><IoCalendarOutline /><div><h2>Journées les plus pertinentes</h2><p>Moyenne des taux quotidiens de contact humain confirmés par ProgPA, pour chaque jour de semaine.</p></div></div>{state.topContactDays.length === 0 ? <p className="vigieView__empty-copy">Aucun appel sur la période.</p> : <div className="vigieView__hour-grid">{state.topContactDays.map((day) => <article key={day.jour}><strong>{getVigieWeekdayLabel(day.jour)}</strong><span>{formatVigiePercent(day.taux_contact_humain)}</span><small>Moyenne de {formatVigieWeekdayObservationCount(day.jour, day.jours_observes)} · {formatVigieNumber(day.appels)} appels</small></article>)}</div>}</section>
       </div>
+      <section className="vigieView__panel"><div className="vigieView__panel-title"><IoStatsChartOutline /><div><h2>Statuts d’appel</h2><p>Répartition exhaustive sur la période sélectionnée.</p></div></div><div className="vigieView__status-list">{snapshot.statuts_appels.map((status) => <div key={status.statut}><span>{status.statut.replace(/_/g, ' ')}</span><strong>{formatVigieNumber(status.total)}</strong><small>{formatVigiePercent(status.taux ?? null)}</small></div>)}</div></section>
     </>
   );
 }

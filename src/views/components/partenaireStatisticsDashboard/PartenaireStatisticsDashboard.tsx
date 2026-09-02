@@ -22,7 +22,8 @@ import {
   formatPartnerStatisticDate,
   formatPartnerStatisticNumber,
   formatPartnerStatisticPercent,
-  getPartnerWeekdayLabel,
+  formatPartnerWeekdayObservationCount,
+  getPartnerWeekdayLongLabel,
   PARTNER_STATISTICS_PERIODS,
 } from '../../../utils/scripts/index.ts';
 import { Button } from '../button/index.ts';
@@ -59,7 +60,6 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
   if (!data) return <main className="partnerStats">{backButton}<EmptyChart message="Aucune statistique disponible." /></main>;
 
   const hourly = data.joignabilite.par_horaire.map((point) => ({ ...point, label: `${point.heure} h` }));
-  const weekdays = data.joignabilite.par_jour.map((point) => ({ ...point, label: getPartnerWeekdayLabel(point.jour) }));
   const daily = data.joignabilite.quotidienne.map((point) => ({
     ...point,
     label: new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit' }).format(new Date(`${point.date}T12:00:00`)),
@@ -68,7 +68,7 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
   return <main className="partnerStats">
     {backButton}
     <section className="partnerStats__hero">
-      <div><p className="partnerStats__eyebrow">Analyse de joignabilité</p><h1>{data.campagne.nom_campagne}</h1><p>Repérez les créneaux où les prospects décrochent le plus et la part des répondeurs pour ajuster les horaires d’appel.</p></div>
+      <div><p className="partnerStats__eyebrow">Analyse de joignabilité</p><h1>{data.campagne.nom_campagne}</h1><p>Repérez les heures et les jours où les contacts humains sont les plus fréquents.</p></div>
       <div className="partnerStats__updated"><span>Dernière actualisation</span><strong>{formatPartnerStatisticDate(data.generated_at)}</strong><Button style="white" onClick={refresh} disabled={loading}><IoRefresh /> Actualiser</Button></div>
     </section>
 
@@ -83,36 +83,38 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
     <section className="partnerStats__metrics">
       <Metric label="Prospects de la campagne" value={formatPartnerStatisticNumber(data.synthese.total_prospects, 0)} icon={<IoPeopleOutline />} />
       <Metric label="Prospects appelés" value={formatPartnerStatisticNumber(data.synthese.prospects_appeles, 0)} detail={`${formatPartnerStatisticPercent(data.synthese.taux_couverture)} de la base`} icon={<IoCallOutline />} tone="blue" />
-      <Metric label="Prospects joints" value={formatPartnerStatisticNumber(data.synthese.prospects_joints, 0)} detail={`${formatPartnerStatisticPercent(data.synthese.taux_decroche)} de décroché`} icon={<IoCheckmarkCircleOutline />} tone="green" />
+      <Metric label="Prospects avec contact humain" value={formatPartnerStatisticNumber(data.synthese.prospects_contacts_humains, 0)} detail={`${formatPartnerStatisticPercent(data.synthese.taux_contact_humain)} des appels`} icon={<IoCheckmarkCircleOutline />} tone="green" />
       <Metric label="Répondeurs" value={formatPartnerStatisticNumber(data.synthese.repondeurs, 0)} detail={`${formatPartnerStatisticPercent(data.synthese.taux_repondeur)} des appels`} tone="purple" />
       <Metric label="Sans réponse" value={formatPartnerStatisticNumber(data.synthese.sans_reponse, 0)} detail={`${formatPartnerStatisticPercent(data.synthese.taux_sans_reponse)} des appels`} tone="orange" />
       <Metric label="Appels analysés" value={formatPartnerStatisticNumber(data.synthese.total_appels, 0)} detail="Sur la période sélectionnée" icon={<IoTimeOutline />} tone="teal" />
     </section>
 
     <section className="partnerStats__grid partnerStats__grid--wide">
-      <Panel title="Meilleurs créneaux de décroché" description="Seuls les créneaux disposant d’un volume suffisant sont recommandés.">
+      <Panel title="Meilleurs créneaux de contact humain" description="Jusqu’à six créneaux sont classés selon leur taux de contact humain.">
         {data.joignabilite.meilleurs_creneaux.length === 0
           ? <EmptyChart message={`Au moins ${data.joignabilite.minimum_appels_recommandation} appels sur un même créneau sont nécessaires avant de proposer une recommandation.`} />
-          : <ol className="partnerStats__slots">{data.joignabilite.meilleurs_creneaux.map((slot) => <li key={slot.heure} className="partnerStats__slot"><strong>{formatPartnerHourRange(slot.heure)}</strong><span>{formatPartnerStatisticPercent(slot.taux_decroche)} de décroché</span><small>{formatPartnerStatisticNumber(slot.appels, 0)} appels · {formatPartnerStatisticNumber(slot.repondeurs, 0)} répondeur{slot.repondeurs > 1 ? 's' : ''}</small></li>)}</ol>}
+          : <ol className="partnerStats__slots">{data.joignabilite.meilleurs_creneaux.map((slot) => <li key={slot.heure} className="partnerStats__slot"><strong>{formatPartnerHourRange(slot.heure)}</strong><span>{formatPartnerStatisticPercent(slot.taux_contact_humain)} de contact humain</span><small>{formatPartnerStatisticNumber(slot.contacts_humains, 0)} contacts · {formatPartnerStatisticNumber(slot.appels, 0)} appels · {formatPartnerStatisticNumber(slot.repondeurs, 0)} répondeur{slot.repondeurs > 1 ? 's' : ''}</small></li>)}</ol>}
       </Panel>
       <Panel title="Issues des appels" description="Répartition sur la période sélectionnée."><OutcomesPie data={data.joignabilite.resultats} /></Panel>
     </section>
 
     <section className="partnerStats__grid partnerStats__grid--wide">
-      <Panel title="Taux de décroché par horaire" description="Comparez le volume d’appels et le taux de décroché pour chaque heure.">
-        {hourly.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart partnerStats__chart--large"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourly} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#a78bfa" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_decroche" name="Taux de décroché" stroke="#5b21b6" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
+      <Panel title="Taux de contact humain par horaire" description="Comparez le volume d’appels et le taux de contact humain pour chaque heure.">
+        {hourly.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart partnerStats__chart--large"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourly} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#a78bfa" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_contact_humain" name="Taux de contact humain" stroke="#5b21b6" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
       </Panel>
-      <Panel title="Répondeurs par horaire" description="Identifiez les horaires où les répondeurs sont les plus présents.">
-        {hourly.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart partnerStats__chart--large"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourly} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="repondeurs" name="Répondeurs" fill="#7c3aed" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_repondeur" name="Taux de répondeur" stroke="#c4b5fd" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
+      <Panel title="Journées les plus pertinentes" description="Moyenne du taux de contact humain constaté pour chaque jour de semaine.">
+        {data.joignabilite.meilleurs_jours.length === 0
+          ? <EmptyChart message="Les indicateurs apparaîtront dès que des appels auront été enregistrés." />
+          : <div className="partnerStats__weekday-grid">{data.joignabilite.meilleurs_jours.map((day) => <article key={day.jour}><strong>{getPartnerWeekdayLongLabel(day.jour)}</strong><span>{formatPartnerStatisticPercent(day.taux_contact_humain)}</span><small>Moyenne de {formatPartnerWeekdayObservationCount(day.jour, day.jours_observes)} · {formatPartnerStatisticNumber(day.appels, 0)} appels</small></article>)}</div>}
       </Panel>
     </section>
 
     <section className="partnerStats__grid partnerStats__grid--wide">
-      <Panel title="Taux de décroché par jour" description="Lecture complémentaire pour orienter les jours d’appel.">
-        {weekdays.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={weekdays} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#c4b5fd" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_decroche" name="Taux de décroché" stroke="#5b21b6" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
+      <Panel title="Répondeurs par horaire" description="Identifiez les horaires où les répondeurs sont les plus présents.">
+        {hourly.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={hourly} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="repondeurs" name="Répondeurs" fill="#7c3aed" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_repondeur" name="Taux de répondeur" stroke="#c4b5fd" strokeWidth={3} dot={{ r: 3 }} /></ComposedChart></ResponsiveContainer></div>}
       </Panel>
-      <Panel title="Évolution de la joignabilité" description="Suivez l’évolution du taux de décroché dans le temps.">
-        {daily.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={daily} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#ddd6fe" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_decroche" name="Taux de décroché" stroke="#7c3aed" strokeWidth={3} dot={false} /></ComposedChart></ResponsiveContainer></div>}
+      <Panel title="Évolution de la joignabilité" description="Suivez l’évolution du taux de contact humain dans le temps.">
+        {daily.length === 0 ? <EmptyChart /> : <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={daily} margin={{ top: 12, right: 12, left: -18, bottom: 6 }}><CartesianGrid strokeDasharray="3 3" vertical={false} /><XAxis dataKey="label" /><YAxis yAxisId="volume" allowDecimals={false} /><YAxis yAxisId="taux" orientation="right" domain={[0, 100]} tickFormatter={(value: number) => `${value} %`} /><Tooltip /><Legend /><Bar yAxisId="volume" dataKey="appels" name="Appels" fill="#ddd6fe" radius={[6, 6, 0, 0]} /><Line yAxisId="taux" type="monotone" dataKey="taux_contact_humain" name="Taux de contact humain" stroke="#7c3aed" strokeWidth={3} dot={false} /></ComposedChart></ResponsiveContainer></div>}
       </Panel>
     </section>
   </main>;

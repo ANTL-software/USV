@@ -21,3 +21,13 @@ export const formatPartnerStatisticDate = (value: string | null): string => valu
 export const formatPartnerHourRange = (hour: number): string => `${hour} h – ${hour} h 59`;
 
 export const getPartnerWeekdayLabel = (day: number): string => ['Lun.', 'Mar.', 'Mer.', 'Jeu.', 'Ven.', 'Sam.', 'Dim.'][day - 1] || String(day);
+
+export const getPartnerWeekdayLongLabel = (day: number): string => (
+  ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'][day - 1]
+  || String(day)
+);
+
+export const formatPartnerWeekdayObservationCount = (day: number, count: number): string => {
+  const weekday = getPartnerWeekdayLongLabel(day).toLocaleLowerCase('fr-FR');
+  return `${count} ${weekday}${count > 1 ? 's' : ''} observé${count > 1 ? 's' : ''}`;
+};

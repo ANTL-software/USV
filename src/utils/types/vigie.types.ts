@@ -108,6 +108,14 @@ export interface VigieHourlyPerformance {
   taux_contact_humain: number | null;
 }
 
+export interface VigieWeekdayPerformance {
+  jour: number;
+  jours_observes: number;
+  appels: number;
+  contacts_humains: number;
+  taux_contact_humain: number | null;
+}
+
 export interface VigieQualiteFichier {
   fiches_file: number;
   sans_secteur_brut: number;
@@ -198,6 +206,7 @@ export interface VigieSnapshot {
   resultat_metier: VigieBusinessResult;
   statuts_appels: VigieStatusCount[];
   creneaux_horaires: VigieHourlyPerformance[];
+  contacts_par_jour: VigieWeekdayPerformance[];
   agents: VigieAgentPerformance[];
   segments: VigieSegment[];
   qualite_fichier: VigieQualiteFichier;

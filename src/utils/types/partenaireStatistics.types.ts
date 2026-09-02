@@ -17,9 +17,11 @@ export interface PartenaireStatisticsPoint {
 export interface PartenaireStatisticsContactabilityPoint {
   appels: number;
   decroches: number;
+  contacts_humains: number;
   repondeurs: number;
   sans_reponse: number;
   taux_decroche: number;
+  taux_contact_humain: number;
   taux_repondeur: number;
 }
 
@@ -33,6 +35,7 @@ export interface PartenaireStatisticsHourlyPoint extends PartenaireStatisticsCon
 
 export interface PartenaireStatisticsWeekdayPoint extends PartenaireStatisticsContactabilityPoint {
   jour: number;
+  jours_observes: number;
 }
 
 export interface PartenaireStatistics {
@@ -44,12 +47,15 @@ export interface PartenaireStatistics {
     total_prospects: number;
     prospects_appeles: number;
     prospects_joints: number;
+    prospects_contacts_humains: number;
     total_appels: number;
     decroches: number;
+    contacts_humains: number;
     repondeurs: number;
     sans_reponse: number;
     taux_couverture: number;
     taux_decroche: number;
+    taux_contact_humain: number;
     taux_repondeur: number;
     taux_sans_reponse: number;
     premier_appel: string | null;
@@ -58,6 +64,7 @@ export interface PartenaireStatistics {
   joignabilite: {
     minimum_appels_recommandation: number;
     meilleurs_creneaux: PartenaireStatisticsHourlyPoint[];
+    meilleurs_jours: PartenaireStatisticsWeekdayPoint[];
     par_horaire: PartenaireStatisticsHourlyPoint[];
     par_jour: PartenaireStatisticsWeekdayPoint[];
     quotidienne: PartenaireStatisticsDailyPoint[];

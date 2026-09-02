@@ -1,4 +1,4 @@
-import type { VigieAction, VigieDateRange, VigieHourlyPerformance, VigieSegmentDimension } from '../types/index.ts';
+import type { VigieAction, VigieDateRange, VigieHourlyPerformance, VigieSegmentDimension, VigieWeekdayPerformance } from '../types/index.ts';
 
 export interface SelectOption<T> {
   value: T;
@@ -87,3 +87,23 @@ export function getTopVigieContactHours(
     .sort((left, right) => (right.taux_contact_humain || 0) - (left.taux_contact_humain || 0))
     .slice(0, limit);
 }
+
+export function getTopVigieContactDays(
+  days: VigieWeekdayPerformance[],
+): VigieWeekdayPerformance[] {
+  return [...days].sort((left, right) => (
+    (right.taux_contact_humain || 0) - (left.taux_contact_humain || 0)
+    || right.appels - left.appels
+    || left.jour - right.jour
+  ));
+}
+
+export const getVigieWeekdayLabel = (day: number): string => (
+  ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'][day - 1]
+  || String(day)
+);
+
+export const formatVigieWeekdayObservationCount = (day: number, count: number): string => {
+  const weekday = getVigieWeekdayLabel(day).toLocaleLowerCase('fr-FR');
+  return `${count} ${weekday}${count > 1 ? 's' : ''}`;
+};
