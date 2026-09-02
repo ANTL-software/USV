@@ -6,6 +6,7 @@ const EXPECTED_ROUTES = [
   '/',
   'auth',
   'home',
+  'documentation',
   'mail',
   'mail/list',
   'mail/new',
@@ -29,6 +30,8 @@ const EXPECTED_ROUTES = [
   'partenaire',
   'partenaire/documents',
   'partenaire/statistiques',
+  'partenaire/prospects',
+  'partenaire/ecoutes',
   'operations/employes/new',
   'operations/employes/details/:id',
   'operations/employes/:id',
@@ -84,4 +87,24 @@ test('le manifeste de routes reste identique au point de départ de la refactori
   );
 
   assert.deepEqual(routes, EXPECTED_ROUTES);
+});
+
+test('les vues partenaire déduisent leur unique campagne sans sélecteur ni paramètre client', async () => {
+  const [service, statistics, documents, prospects, recordings, adminHook, adminView] = await Promise.all([
+    readFile('src/API/services/partenaireExterne.service.ts', 'utf8'),
+    readFile('src/views/components/partenaireStatisticsDashboard/PartenaireStatisticsDashboard.tsx', 'utf8'),
+    readFile('src/views/components/partenaireDocumentsContent/PartenaireDocumentsContent.tsx', 'utf8'),
+    readFile('src/views/components/partenaireProspectsContent/PartenaireProspectsContent.tsx', 'utf8'),
+    readFile('src/hooks/useQualiteEcoutes.ts', 'utf8'),
+    readFile('src/hooks/usePartenairesExternesPage.ts', 'utf8'),
+    readFile('src/views/layouts/partenairesExternes/PartenairesExternes.tsx', 'utf8'),
+  ]);
+
+  assert.doesNotMatch(service, /parameters\.set\('id_campagne'/);
+  assert.doesNotMatch(statistics, /<label>Campagne<select/);
+  assert.doesNotMatch(documents, /<label>Campagne<select/);
+  assert.doesNotMatch(prospects, /<select/);
+  assert.match(recordings, /showCampaignFilter: scope === 'operations'/);
+  assert.match(adminHook, /id_campagnes_autorisees: \[id\]/);
+  assert.match(adminView, /type="radio" name="partner-active-campaign"/);
 });

@@ -38,6 +38,8 @@ export { PartenairesExternes } from './partenairesExternes/index.ts';
 export { PartenaireStatistiques } from './partenaireStatistiques/index.ts';
 export { PartenaireDocuments } from './partenaireDocuments/index.ts';
 export { PartenairePortal } from './partenairePortal/index.ts';
+export { PartenaireProspects } from './partenaireProspects/index.ts';
+export { PartenaireEcoutes } from './partenaireEcoutes/index.ts';
 export { PaniersList } from './paniersList/index.ts';
 export { PosteForm } from './posteForm/index.ts';
 export { PostesList } from './postesList/index.ts';

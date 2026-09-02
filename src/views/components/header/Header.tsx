@@ -2,7 +2,8 @@ import './header.scss';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { HiMenu, HiX } from 'react-icons/hi';
-import { IoAdd, IoAlertCircleOutline, IoCalendar, IoCallOutline, IoDocumentTextOutline, IoFolder, IoHome, IoList, IoPeopleCircle, IoReceiptOutline, IoStatsChartOutline } from 'react-icons/io5';
+import { IoAdd, IoAlertCircleOutline, IoCalendar, IoCallOutline, IoDocumentTextOutline, IoEarOutline, IoFolder, IoHome, IoList, IoPeopleCircle, IoReceiptOutline, IoStatsChartOutline } from 'react-icons/io5';
+import { MdOutlineFileDownload } from 'react-icons/md';
 import { LuLogOut } from 'react-icons/lu';
 import antlLogo from '../../../assets/antlLogo.png';
 import { useHeaderView } from '../../../hooks/index.ts';
@@ -27,6 +28,8 @@ function NavigationIcon({ icon }: { icon: NavigationIconKey }): ReactElement {
   if (icon === 'list') return <IoList className="mobileNavIcon" />;
   if (icon === 'operations') return <IoCallOutline className="mobileNavIcon" />;
   if (icon === 'projects') return <IoFolder className="mobileNavIcon" />;
+  if (icon === 'prospects') return <MdOutlineFileDownload className="mobileNavIcon" />;
+  if (icon === 'recordings') return <IoEarOutline className="mobileNavIcon" />;
   if (icon === 'statistics') return <IoStatsChartOutline className="mobileNavIcon" />;
   return <IoHome className="mobileNavIcon" />;
 }

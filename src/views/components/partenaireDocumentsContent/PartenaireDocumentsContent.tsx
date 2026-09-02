@@ -20,21 +20,16 @@ const getDossierStatusLabel = (type: 'lead' | 'vente', status: string): string =
   return 'Rendez-vous validé';
 };
 
-const getHeroTitle = (campaigns: PartenaireDocumentCampaign[], selectedCampaignId: number | null): string => {
-  const visibleCampaigns = selectedCampaignId
-    ? campaigns.filter(({ id_campagne: campaignId }) => campaignId === selectedCampaignId)
-    : campaigns;
-  const types = new Set(visibleCampaigns.map(({ type_campagne: campaignType }) => campaignType));
-  if (types.size !== 1) return 'Dossiers validés';
-  return types.has('lead_b2b') ? 'Rendez-vous validés' : 'Commandes validées';
+const getHeroTitle = (campaign: PartenaireDocumentCampaign | undefined): string => {
+  if (!campaign) return 'Dossiers validés';
+  return campaign.type_campagne === 'lead_b2b' ? 'Rendez-vous validés' : 'Commandes validées';
 };
 
 interface PartenaireDocumentsContentProps {
-  navigateBack: () => void;
   viewModel: PartenaireDocumentsViewModel;
 }
 
-export default function PartenaireDocumentsContent({ navigateBack, viewModel }: PartenaireDocumentsContentProps): ReactElement {
+export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocumentsContentProps): ReactElement {
   const {
     data,
     dateDebut,
@@ -42,30 +37,28 @@ export default function PartenaireDocumentsContent({ navigateBack, viewModel }: 
     downloadDocument,
     error,
     loading,
+    navigateBack,
     nextPage,
     period,
     previousPage,
     refresh,
-    selectCampaign,
     selectPeriod,
-    selectedCampaignId,
     setDateDebut,
     setDateFin,
   } = viewModel;
-  const heroTitle = getHeroTitle(data?.campagnes || [], selectedCampaignId);
+  const heroTitle = getHeroTitle(data?.campagne);
 
   return <main className="partnerDocuments">
     <div className="partnerDocuments__back"><Button style="back" onClick={navigateBack}><MdArrowBack /> Retour</Button></div>
     <section className="partnerDocuments__hero">
-      <div><p>Documents commerciaux</p><h1>{heroTitle}</h1><span>Retrouvez les pièces déposées pour les dossiers finalisés de vos campagnes.</span></div>
+      <div><p>Documents commerciaux</p><h1>{heroTitle}</h1><span>Retrouvez les pièces déposées pour les dossiers finalisés de votre campagne.</span></div>
       <Button style="white" onClick={refresh} disabled={loading}><IoRefresh /> Actualiser</Button>
     </section>
 
     <section className="partnerDocuments__filters" aria-label="Filtres des documents">
-      <label>Campagne<select value={selectedCampaignId || ''} onChange={(event) => selectCampaign(event.target.value ? Number(event.target.value) : null)}><option value="">Toutes les campagnes autorisées</option>{data?.campagnes.map((campaign) => <option key={campaign.id_campagne} value={campaign.id_campagne}>{campaign.nom_campagne}</option>)}</select></label>
       <label>Période<select value={period} onChange={(event) => selectPeriod(event.target.value as PartenaireDocumentsPeriod)}>{PERIOD_OPTIONS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
       {period === 'custom' && <><label>Du<input type="date" value={dateDebut} max={dateFin} onChange={(event) => setDateDebut(event.target.value)} /></label><label>Au<input type="date" value={dateFin} min={dateDebut} onChange={(event) => setDateFin(event.target.value)} /></label></>}
-      <div className="partnerDocuments__counter"><strong>{data?.pagination.total || 0}</strong><span>dossier{(data?.pagination.total || 0) > 1 ? 's' : ''}</span></div>
+      {data?.campagne && <div className="partnerDocuments__counter"><strong>{data.campagne.nom_campagne}</strong><span>Campagne partenaire</span></div>}
     </section>
 
     {error && <div className="partnerDocuments__error"><span>{error}</span><Button style="gradient" onClick={refresh}>Réessayer</Button></div>}
@@ -93,10 +86,10 @@ export default function PartenaireDocumentsContent({ navigateBack, viewModel }: 
       </article>)}
     </section>}
 
-    {data && data.pagination.total_pages > 1 && <nav className="partnerDocuments__pagination" aria-label="Pagination des documents">
+    {data && (data.pagination.page > 1 || data.pagination.has_more) && <nav className="partnerDocuments__pagination" aria-label="Pagination des documents">
       <button type="button" onClick={previousPage} disabled={data.pagination.page <= 1}><IoChevronBack /> Précédent</button>
-      <span>Page {data.pagination.page} sur {data.pagination.total_pages}</span>
-      <button type="button" onClick={nextPage} disabled={data.pagination.page >= data.pagination.total_pages}>Suivant <IoChevronForward /></button>
+      <span>Page {data.pagination.page}</span>
+      <button type="button" onClick={nextPage} disabled={!data.pagination.has_more}>Suivant <IoChevronForward /></button>
     </nav>}
   </main>;
 }

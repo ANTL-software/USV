@@ -54,10 +54,11 @@ export interface EnregistrementsApiResponse {
   success: boolean;
   data: Enregistrement[];
   pagination: {
-    total: number;
+    total?: number;
     page: number;
     limit: number;
-    totalPages: number;
+    totalPages?: number;
+    hasMore?: boolean;
   };
 }
 
@@ -78,4 +79,17 @@ export interface RecordingOperationsConfiguration {
 export interface UpdateRecordingOperationsConfiguration {
   enabled?: boolean;
   answeringMachineEnabled?: boolean;
+}
+
+export interface PartnerRecordingOptions {
+  campagne: {
+    id_campagne: number;
+    nom_campagne: string;
+  };
+  agents: Array<{
+    id_employe: number;
+    nom: string;
+    prenom: string;
+    identifiant: string;
+  }>;
 }

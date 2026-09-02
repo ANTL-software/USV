@@ -30,7 +30,7 @@ import { Button } from '../button/index.ts';
 
 const COLORS = ['#7c3aed', '#a78bfa', '#c4b5fd', '#ddd6fe'];
 
-interface DashboardProps { navigateBack: () => void; viewModel: PartenaireStatisticsViewModel; }
+interface DashboardProps { viewModel: PartenaireStatisticsViewModel; }
 interface PanelProps { children: ReactNode; description?: string; title: string; }
 interface MetricProps { detail?: string; icon?: ReactNode; label: string; tone?: 'blue' | 'green' | 'orange' | 'purple' | 'red' | 'teal'; value: string; }
 
@@ -51,8 +51,8 @@ function OutcomesPie({ data }: { data: PartenaireStatisticsPoint[] }): ReactElem
   return <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={data} dataKey="valeur" nameKey="label" innerRadius={55} outerRadius={88} paddingAngle={2}>{data.map((point, index) => <Cell key={`${point.label}-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend verticalAlign="bottom" height={42} /></PieChart></ResponsiveContainer></div>;
 }
 
-function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardProps): ReactElement {
-  const { data, error, loading, period, refresh, selectCampaign, selectPeriod, selectedCampaignId } = viewModel;
+function PartenaireStatisticsDashboard({ viewModel }: DashboardProps): ReactElement {
+  const { data, error, loading, navigateBack, period, refresh, selectPeriod } = viewModel;
   const backButton = <div className="partnerStats__back"><Button style="back" onClick={navigateBack}><MdArrowBack /> Retour</Button></div>;
 
   if (loading && !data) return <main className="partnerStats">{backButton}<div className="partnerStats__loading">Chargement des indicateurs de joignabilité…</div></main>;
@@ -73,7 +73,6 @@ function PartenaireStatisticsDashboard({ navigateBack, viewModel }: DashboardPro
     </section>
 
     <section className="partnerStats__filters" aria-label="Filtres statistiques">
-      <label>Campagne<select value={selectedCampaignId || ''} onChange={(event) => selectCampaign(Number(event.target.value))}>{data.campagnes.map((campaign) => <option key={campaign.id_campagne} value={campaign.id_campagne}>{campaign.nom_campagne}</option>)}</select></label>
       <label>Période d’analyse<select value={period} onChange={(event) => selectPeriod(event.target.value as PartenaireStatisticsPeriod)}>{PARTNER_STATISTICS_PERIODS.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}</select></label>
       <p>Les résultats sont agrégés : aucune donnée individuelle de collaborateur n’est affichée.</p>
     </section>

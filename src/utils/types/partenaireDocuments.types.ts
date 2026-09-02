@@ -35,14 +35,12 @@ export interface PartenaireDocumentDossier {
 export interface PartenaireDocumentsPagination {
   page: number;
   limit: number;
-  total: number;
-  total_pages: number;
+  has_more: boolean;
 }
 
 export interface PartenaireDocumentsResponse {
-  campagnes: PartenaireDocumentCampaign[];
+  campagne: PartenaireDocumentCampaign;
   filtres: {
-    id_campagne: number | null;
     date_debut: string;
     date_fin: string;
   };
@@ -51,7 +49,6 @@ export interface PartenaireDocumentsResponse {
 }
 
 export interface PartenaireDocumentsFilters {
-  id_campagne?: number;
   date_debut: string;
   date_fin: string;
   page: number;

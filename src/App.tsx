@@ -60,6 +60,8 @@ import {
   PartenairesExternes as PartenairesExternesWithAuth,
   PartenaireDocuments as PartenaireDocumentsWithAuth,
   PartenairePortal as PartenairePortalWithAuth,
+  PartenaireProspects as PartenaireProspectsWithAuth,
+  PartenaireEcoutes as PartenaireEcoutesWithAuth,
   PartenaireStatistiques as PartenaireStatistiquesWithAuth,
   PaniersList as PaniersListWithAuth,
   PosteForm as PosteFormWithAuth,
@@ -168,6 +170,8 @@ function App(): ReactElement {
         <Route path={"partenaire"} element={<PartenairePortalWithAuth />}></Route>
         <Route path={"partenaire/documents"} element={<PartenaireDocumentsWithAuth />}></Route>
         <Route path={"partenaire/statistiques"} element={<PartenaireStatistiquesWithAuth />}></Route>
+        <Route path={"partenaire/prospects"} element={<PartenaireProspectsWithAuth />}></Route>
+        <Route path={"partenaire/ecoutes"} element={<PartenaireEcoutesWithAuth />}></Route>
         <Route path={"operations/employes/new"} element={<AgentFormWithAuth />}></Route>
         <Route path={"operations/employes/details/:id"} element={<AgentDetailsWithAuth />}></Route>
         <Route path={"operations/employes/:id"} element={<AgentFormWithAuth />}></Route>

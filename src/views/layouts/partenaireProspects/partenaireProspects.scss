@@ -1,0 +1,42 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#partnerProspects {
+  min-height: calc(100dvh - 6dvh);
+  margin-top: 6dvh;
+  padding-bottom: 2rem;
+  background: linear-gradient(135deg, #f8f9fb 0%, #e8ecf0 50%, #f0f3f7 100%);
+}
+#partnerProspects main { padding: 1.5rem 1rem; }
+#partnerProspects .partnerProspects__container { @include mixins.centeredContainer(1450px); }
+#partnerProspects .backButton { margin-bottom: 1.25rem; }
+#partnerProspects .partnerProspects__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin: 1rem 0 1.5rem; }
+#partnerProspects .partnerProspects__header h1 { margin: 0 0 0.35rem; color: vars.$fontColorPrimary; }
+#partnerProspects .partnerProspects__header p { margin: 0; color: vars.$fontColorSecondary; }
+#partnerProspects .partnerProspects__count { padding: 0.45rem 0.9rem; border-radius: 999px; background: rgba(vars.$utilsPrimary, 0.1); color: vars.$utilsPrimary; font-weight: 700; white-space: nowrap; }
+#partnerProspects .partnerProspects__controls { @include mixins.card(12px, light); display: flex; align-items: flex-end; flex-wrap: wrap; gap: 1rem; padding: 1.25rem; margin-bottom: 1.5rem; }
+#partnerProspects .partnerProspects__controls label { display: flex; flex-direction: column; gap: 0.4rem; font-size: 0.82rem; font-weight: 700; color: vars.$fontColorSecondary; }
+#partnerProspects .partnerProspects__controls select,
+#partnerProspects .partnerProspects__controls input { min-height: 40px; padding: 0.65rem 0.8rem; border: 1px solid vars.$borderColor; border-radius: 8px; background: #fff; color: vars.$fontColorPrimary; }
+#partnerProspects .partnerProspects__controls form { flex: 1 1 460px; }
+#partnerProspects .partnerProspects__search { display: flex; gap: 0.6rem; }
+#partnerProspects .partnerProspects__search input { flex: 1; min-width: 180px; }
+#partnerProspects .partnerProspects__export { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; min-height: 40px; padding: 0.65rem 1rem; border-radius: 8px; background: vars.$utilsPrimary; color: #fff; font-weight: 700; text-decoration: none; transition: opacity 0.2s ease; }
+#partnerProspects .partnerProspects__export:hover { opacity: 0.85; }
+#partnerProspects .partnerProspects__error { padding: 1rem; border-radius: 8px; background: rgba(vars.$errorColor, 0.1); color: vars.$errorColor; font-weight: 600; }
+#partnerProspects .partnerProspects__state { @include mixins.card(12px, light); padding: 3rem 1rem; text-align: center; color: vars.$fontColorSecondary; }
+#partnerProspects .partnerProspects__table-wrap { @include mixins.card(12px, light); overflow-x: auto; }
+#partnerProspects .partnerProspects__table { width: 100%; min-width: 1250px; border-collapse: collapse; font-size: 0.88rem; }
+#partnerProspects .partnerProspects__table th,
+#partnerProspects .partnerProspects__table td { padding: 0.9rem 1rem; border-bottom: 1px solid vars.$borderColor; text-align: left; vertical-align: top; }
+#partnerProspects .partnerProspects__table th { background: rgba(0, 0, 0, 0.02); color: vars.$fontColorSecondary; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+#partnerProspects .partnerProspects__table tr:hover { background: vars.$greyBackground; }
+#partnerProspects .partnerProspects__table small { display: block; margin-top: 0.25rem; color: vars.$fontColorSecondary; }
+#partnerProspects .partnerProspects__badge { display: inline-flex; padding: 0.25rem 0.55rem; border-radius: 999px; background: #eef2ff; color: #4338ca; font-weight: 700; }
+#partnerProspects .partnerProspects__pagination { display: flex; align-items: center; justify-content: center; gap: 1rem; padding: 1rem; }
+
+@media (max-width: 760px) {
+  #partnerProspects .partnerProspects__header { flex-direction: column; }
+  #partnerProspects .partnerProspects__search { flex-wrap: wrap; }
+  #partnerProspects .partnerProspects__search input { flex-basis: 100%; }
+}

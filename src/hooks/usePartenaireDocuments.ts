@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   getPartenaireDocumentDownloadUrl,
   getPartenaireDocumentsService,
@@ -18,18 +19,18 @@ export interface PartenaireDocumentsViewModel {
   downloadDocument: (documentId: number) => void;
   error: string | null;
   loading: boolean;
+  navigateBack: () => void;
   nextPage: () => void;
   period: PartenaireDocumentsPeriod;
   previousPage: () => void;
   refresh: () => void;
-  selectCampaign: (campaignId: number | null) => void;
   selectPeriod: (period: PartenaireDocumentsPeriod) => void;
-  selectedCampaignId: number | null;
   setDateDebut: (date: string) => void;
   setDateFin: (date: string) => void;
 }
 
 export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
+  const navigate = useNavigate();
   const currentMonth = getMonthBounds(0);
   const [data, setData] = useState<PartenaireDocumentsResponse | null>(null);
   const [dateDebut, setDateDebutState] = useState(currentMonth.start);
@@ -38,7 +39,6 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [period, setPeriod] = useState<PartenaireDocumentsPeriod>('current_month');
-  const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   const requestSequence = useRef(0);
 
   const load = useCallback(async (): Promise<void> => {
@@ -49,7 +49,6 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
     setError(null);
     try {
       const result = await getPartenaireDocumentsService({
-        ...(selectedCampaignId ? { id_campagne: selectedCampaignId } : {}),
         date_debut: dateDebut,
         date_fin: dateFin,
         limit: PAGE_SIZE,
@@ -63,7 +62,7 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
     } finally {
       if (requestSequence.current === requestId) setLoading(false);
     }
-  }, [dateDebut, dateFin, page, selectedCampaignId]);
+  }, [dateDebut, dateFin, page]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -86,18 +85,16 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
     setPage(1);
     setDateFinState(date);
   }, []);
-  const selectCampaign = useCallback((campaignId: number | null): void => {
-    setSelectedCampaignId(campaignId);
-    setPage(1);
-  }, []);
   const downloadDocument = useCallback((documentId: number): void => {
     window.open(getPartenaireDocumentDownloadUrl(documentId), '_blank', 'noopener,noreferrer');
   }, []);
   const previousPage = useCallback((): void => setPage((current) => Math.max(current - 1, 1)), []);
   const nextPage = useCallback((): void => setPage((current) => {
-    const totalPages = data?.pagination.total_pages || 1;
-    return Math.min(current + 1, totalPages);
-  }), [data?.pagination.total_pages]);
+    return data?.pagination.has_more ? current + 1 : current;
+  }), [data?.pagination.has_more]);
+  const navigateBack = useCallback((): void => {
+    void navigate('/partenaire');
+  }, [navigate]);
 
   return {
     data,
@@ -106,13 +103,12 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
     downloadDocument,
     error,
     loading,
+    navigateBack,
     nextPage,
     period,
     previousPage,
     refresh: (): void => { void load(); },
-    selectCampaign,
     selectPeriod,
-    selectedCampaignId,
     setDateDebut,
     setDateFin,
   };

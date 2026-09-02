@@ -176,6 +176,7 @@ export { PWAInstallButton } from './pwaInstallButton/index.ts';
 export { PartenaireStatisticsDashboard } from './partenaireStatisticsDashboard/index.ts';
 export { PartenaireDocumentsContent } from './partenaireDocumentsContent/index.ts';
 export { PartenairePortalCards } from './partenairePortalCards/index.ts';
+export { PartenaireProspectsContent } from './partenaireProspectsContent/index.ts';
 export { PWAStatus } from './pwaStatus/index.ts';
 export { ProjetDetailsContent } from './projetDetailsContent/index.ts';
 export { ProjetDetailsDashboard } from './projetDetailsDashboard/index.ts';

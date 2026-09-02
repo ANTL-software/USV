@@ -41,7 +41,6 @@ export interface PartenaireStatisticsWeekdayPoint extends PartenaireStatisticsCo
 export interface PartenaireStatistics {
   generated_at: string;
   periode: { jours: number | null; date_debut: string | null };
-  campagnes: PartenaireStatisticsCampaign[];
   campagne: PartenaireStatisticsCampaign;
   synthese: {
     total_prospects: number;
@@ -73,6 +72,5 @@ export interface PartenaireStatistics {
 }
 
 export interface PartenaireStatisticsFilters {
-  id_campagne?: number;
   jours: PartenaireStatisticsPeriod;
 }

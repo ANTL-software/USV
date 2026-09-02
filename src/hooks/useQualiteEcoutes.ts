@@ -3,6 +3,9 @@ import {
   getAllCampagnesService,
   getAllEmployesService,
   getAllRecordingsService,
+  getPartenaireRecordingOptionsService,
+  getPartenaireRecordingsService,
+  getPartenaireRecordingStreamUrl,
   getRecordingOperationsConfigurationService,
   getRecordingStreamUrl,
   updateRecordingOperationsConfigurationService,
@@ -10,6 +13,7 @@ import {
 import type { Enregistrement, EnregistrementFilters, RecordingFilterOption, RecordingOperationsConfiguration } from '../utils/types/index.ts';
 
 const PAGE_SIZE = 10;
+export type QualiteEcoutesScope = 'operations' | 'partenaire';
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error
@@ -17,10 +21,11 @@ function getErrorMessage(error: unknown): string {
     : 'Une erreur est survenue lors de la récupération des écoutes';
 }
 
-export function useQualiteEcoutes() {
+export function useQualiteEcoutes(scope: QualiteEcoutesScope = 'operations') {
   const [recordings, setRecordings] = useState<Enregistrement[]>([]);
   const [agents, setAgents] = useState<RecordingFilterOption[]>([]);
   const [campaigns, setCampaigns] = useState<RecordingFilterOption[]>([]);
+  const [partnerCampaignName, setPartnerCampaignName] = useState<string | null>(null);
   const [selectedAgent, setSelectedAgent] = useState<RecordingFilterOption | null>(null);
   const [selectedCampaign, setSelectedCampaign] = useState<RecordingFilterOption | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<RecordingFilterOption | null>(null);
@@ -38,24 +43,40 @@ export function useQualiteEcoutes() {
   const [isUpdatingConfiguration, setIsUpdatingConfiguration] = useState(false);
 
   const loadOperationsConfiguration = useCallback(async (): Promise<void> => {
+    if (scope !== 'operations') return;
     try {
       setOperationsConfiguration(await getRecordingOperationsConfigurationService());
     } catch (configurationError) {
       console.error('Erreur chargement configuration enregistrements :', configurationError);
     }
-  }, []);
+  }, [scope]);
 
   useEffect(() => {
+    if (scope !== 'operations') return undefined;
     void loadOperationsConfiguration();
     const interval = window.setInterval(() => { void loadOperationsConfiguration(); }, 30000);
     return () => window.clearInterval(interval);
-  }, [loadOperationsConfiguration]);
+  }, [loadOperationsConfiguration, scope]);
 
   useEffect(() => {
     let isCancelled = false;
 
     const loadFilterData = async (): Promise<void> => {
       try {
+        if (scope === 'partenaire') {
+          const options = await getPartenaireRecordingOptionsService();
+          if (isCancelled) return;
+          setAgents([
+            { value: '', label: 'Tous les agents' },
+            ...options.agents.map((agent) => ({
+              value: String(agent.id_employe),
+              label: `${agent.prenom} ${agent.nom.toUpperCase()}`,
+            })),
+          ]);
+          setPartnerCampaignName(options.campagne.nom_campagne);
+          setCampaigns([]);
+          return;
+        }
         const [agentsData, campaignsData] = await Promise.all([
           getAllEmployesService(),
           getAllCampagnesService(),
@@ -89,7 +110,7 @@ export function useQualiteEcoutes() {
     return () => {
       isCancelled = true;
     };
-  }, []);
+  }, [scope]);
 
   const fetchRecordings = useCallback(async (): Promise<void> => {
     setIsLoading(true);
@@ -99,7 +120,7 @@ export function useQualiteEcoutes() {
       page,
       limit: PAGE_SIZE,
       id_agent: selectedAgent?.value || undefined,
-      id_campagne: selectedCampaign?.value || undefined,
+      id_campagne: scope === 'operations' ? selectedCampaign?.value || undefined : undefined,
       statut_appel: selectedStatus?.value || undefined,
       date_debut: dateDebut || undefined,
       date_fin: dateFin || undefined,
@@ -108,22 +129,25 @@ export function useQualiteEcoutes() {
     };
 
     try {
-      const response = await getAllRecordingsService(filters);
+      const response = scope === 'partenaire'
+        ? await getPartenaireRecordingsService(filters)
+        : await getAllRecordingsService(filters);
       if (!response.success) {
         setError('Impossible de charger les enregistrements');
         return;
       }
 
       setRecordings(response.data);
-      setTotalPages(response.pagination.totalPages);
-      setTotalCount(response.pagination.total);
+      const hasMore = response.pagination.hasMore === true;
+      setTotalPages(response.pagination.totalPages || (hasMore ? page + 1 : page));
+      setTotalCount(response.pagination.total || 0);
     } catch (loadError) {
       console.error('Erreur fetchRecordings :', loadError);
       setError(getErrorMessage(loadError));
     } finally {
       setIsLoading(false);
     }
-  }, [dateDebut, dateFin, page, recherche, selectedAgent, selectedCampaign, selectedStatus, telephone]);
+  }, [dateDebut, dateFin, page, recherche, scope, selectedAgent, selectedCampaign, selectedStatus, telephone]);
 
   useEffect(() => {
     void fetchRecordings();
@@ -215,7 +239,7 @@ export function useQualiteEcoutes() {
     dateDebut,
     dateFin,
     error,
-    getRecordingUrl: getRecordingStreamUrl,
+    getRecordingUrl: scope === 'partenaire' ? getPartenaireRecordingStreamUrl : getRecordingStreamUrl,
     isLoading,
     isUpdatingConfiguration,
     nextPage,
@@ -224,6 +248,7 @@ export function useQualiteEcoutes() {
     recherche,
     recordings,
     operationsConfiguration,
+    partnerCampaignName,
     resetFilters,
     selectAgent,
     selectCampaign,
@@ -239,5 +264,7 @@ export function useQualiteEcoutes() {
     toggleRecordingEnabled,
     totalCount,
     totalPages,
+    showCampaignFilter: scope === 'operations',
+    showTotalCount: scope === 'operations',
   };
 }

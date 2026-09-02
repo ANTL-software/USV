@@ -791,6 +791,12 @@ USV/
 /operations/commandes → CommandesList
 /operations/signalements → ProspectsSignales
 
+/partenaire                  → PartenairePortal
+/partenaire/documents        → PartenaireDocuments
+/partenaire/statistiques     → PartenaireStatistiques
+/partenaire/prospects        → PartenaireProspects (permission `extraction-prospects-partenaire`)
+/partenaire/ecoutes          → PartenaireEcoutes (permission `ecoutes-appels-partenaire`)
+
 /campagnes          → CampagnesList
 /campagnes/new      → CampagneForm
 /campagnes/:id      → CampagneForm
@@ -1211,6 +1217,7 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-09-02 | Ajout des vues partenaire `/partenaire/prospects` et `/partenaire/ecoutes`, avec cartes, navigation, droits dédiés et données strictement limitées aux campagnes autorisées | AI Agent |
 | 2026-07-30 | Refonte du viewer de documents partagé : PDF multipage en scroll continu, zoom et téléchargement dans une toolbar compacte, modale ajustée au document | AI Agent |
 | 2026-07-20 | Mise à jour des dépendances vulnérables, neutralisation de l'évaluation dynamique PDF et ajout d'un test navigateur avec document réel | AI Agent |
 | 2026-07-18 | Ajout des tests navigateur Playwright sur les parcours critiques et synchronisation immédiate du détail prospect après modification | AI Agent |

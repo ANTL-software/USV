@@ -111,6 +111,24 @@ test('le partenaire multi-vues arrive sur le portail de choix', () => {
   assert.equal(getFirstAllowedPath(partner), '/partenaire');
 });
 
+test('les nouveaux modules partenaire disposent chacun de leur garde dédiée', () => {
+  const prospectsOnly = createUser({
+    account_type: 'partenaire_externe',
+    permissions: { 'extraction-prospects-partenaire': true },
+  });
+  const recordingsOnly = createUser({
+    account_type: 'partenaire_externe',
+    permissions: { 'ecoutes-appels-partenaire': true },
+  });
+
+  assert.equal(hasAccessToPath(prospectsOnly, '/partenaire/prospects'), true);
+  assert.equal(hasAccessToPath(prospectsOnly, '/partenaire/ecoutes'), false);
+  assert.equal(hasAccessToPath(recordingsOnly, '/partenaire/ecoutes'), true);
+  assert.equal(hasAccessToPath(recordingsOnly, '/partenaire/prospects'), false);
+  assert.deepEqual(getPartnerModules(prospectsOnly).map(({ id }) => id), ['prospects']);
+  assert.deepEqual(getPartnerModules(recordingsOnly).map(({ id }) => id), ['ecoutes']);
+});
+
 test('les écrans de modification RH exigent la permission gestion des accès', () => {
   const lecteurRh = createUser({
     poste: {

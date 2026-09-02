@@ -1,7 +1,7 @@
 import type { Employe } from '../types/index.ts';
 import { getAllowedSections, getPartnerModules, hasAccessToSection, hasAccessToSubsection } from './permissions.ts';
 
-export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'documents' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects' | 'statistics';
+export type NavigationIconKey = 'add' | 'booking' | 'commercial' | 'commerciaux' | 'documents' | 'home' | 'incidents' | 'list' | 'mail' | 'operations' | 'projects' | 'prospects' | 'recordings' | 'statistics';
 
 export interface NavigationItem {
   active: boolean;
@@ -59,7 +59,13 @@ export function buildHeaderMobileNavigation(user: Employe | null, pathname: stri
   if (user?.account_type === 'partenaire_externe') {
     const moduleItems: NavigationItem[] = getPartnerModules(user).map((module) => ({
       active: pathname.startsWith(module.path),
-      icon: module.id === 'documents' ? 'documents' : 'statistics',
+      icon: module.id === 'documents'
+        ? 'documents'
+        : module.id === 'prospects'
+          ? 'prospects'
+          : module.id === 'ecoutes'
+            ? 'recordings'
+            : 'statistics',
       id: `partner-${module.id}`,
       label: module.label,
       path: module.path,

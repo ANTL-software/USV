@@ -12,7 +12,12 @@ export function QualiteEcoutesContent({ viewModel }: QualiteEcoutesContentProps)
   return (
     <>
       <main><div className="qualiteEcoutes__container">
-        <QualiteEcoutesHeader onBack={viewModel.navigateBack} totalCount={viewModel.totalCount} />
+        <QualiteEcoutesHeader
+          campaignName={viewModel.partnerCampaignName}
+          onBack={viewModel.navigateBack}
+          showTotalCount={viewModel.showTotalCount}
+          totalCount={viewModel.totalCount}
+        />
         <QualiteEcoutesConfiguration viewModel={viewModel} />
         <QualiteEcoutesFilters viewModel={viewModel} />
         {viewModel.error && <div className="qualiteEcoutes__error">{viewModel.error}</div>}

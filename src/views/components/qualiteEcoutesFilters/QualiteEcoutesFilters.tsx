@@ -33,10 +33,10 @@ export function QualiteEcoutesFilters({ viewModel }: QualiteEcoutesFiltersProps)
             <label htmlFor="recording-agent">Agent</label>
             <Select<RecordingFilterOption> inputId="recording-agent" options={viewModel.agents} value={viewModel.selectedAgent} onChange={(option: SingleValue<RecordingFilterOption>) => viewModel.selectAgent(option)} styles={selectStyles} placeholder="Tous les agents" isClearable />
           </div>
-          <div className="qualiteEcoutes__filter-col">
+          {viewModel.showCampaignFilter && <div className="qualiteEcoutes__filter-col">
             <label htmlFor="recording-campaign">Campagne</label>
             <Select<RecordingFilterOption> inputId="recording-campaign" options={viewModel.campaigns} value={viewModel.selectedCampaign} onChange={(option: SingleValue<RecordingFilterOption>) => viewModel.selectCampaign(option)} styles={selectStyles} placeholder="Toutes les campagnes" isClearable />
-          </div>
+          </div>}
           <div className="qualiteEcoutes__filter-col">
             <label htmlFor="recording-status">Statut</label>
             <Select<RecordingFilterOption> inputId="recording-status" options={RECORDING_STATUS_OPTIONS} value={viewModel.selectedStatus} onChange={(option: SingleValue<RecordingFilterOption>) => viewModel.selectStatus(option)} styles={selectStyles} placeholder="Tous les statuts" isClearable />

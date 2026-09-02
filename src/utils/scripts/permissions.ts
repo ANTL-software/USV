@@ -3,10 +3,12 @@ import type { Employe } from '../types/index.ts';
 export const ACCESS_MANAGEMENT_PERMISSION = 'access-management';
 export const PARTNER_STATISTICS_PERMISSION = 'statistiques-partenaire';
 export const PARTNER_DOCUMENTS_PERMISSION = 'documents-partenaire';
+export const PARTNER_PROSPECTS_PERMISSION = 'extraction-prospects-partenaire';
+export const PARTNER_RECORDINGS_PERMISSION = 'ecoutes-appels-partenaire';
 
 export interface PartnerModuleAccess {
   description: string;
-  id: 'documents' | 'statistiques';
+  id: 'documents' | 'ecoutes' | 'prospects' | 'statistiques';
   label: string;
   path: string;
   permission: string;
@@ -26,6 +28,20 @@ const PARTNER_MODULES: PartnerModuleAccess[] = [
     label: 'Documents commerciaux',
     path: '/partenaire/documents',
     permission: PARTNER_DOCUMENTS_PERMISSION,
+  },
+  {
+    description: 'Consulter les prospects injectés dans votre campagne et télécharger la base complète au format CSV.',
+    id: 'prospects',
+    label: 'Extraction des prospects',
+    path: '/partenaire/prospects',
+    permission: PARTNER_PROSPECTS_PERMISSION,
+  },
+  {
+    description: 'Écouter les appels enregistrés qui concernent exclusivement votre campagne autorisée.',
+    id: 'ecoutes',
+    label: 'Écoute des appels',
+    path: '/partenaire/ecoutes',
+    permission: PARTNER_RECORDINGS_PERMISSION,
   },
 ];
 

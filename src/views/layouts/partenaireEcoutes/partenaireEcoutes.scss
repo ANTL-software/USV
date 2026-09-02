@@ -1,0 +1,7 @@
+@use "../qualiteEcoutes/qualiteEcoutes";
+
+#partnerEcoutes {
+  @extend #qualiteEcoutes;
+  min-height: calc(100dvh - 6dvh);
+  margin-top: 6dvh;
+}

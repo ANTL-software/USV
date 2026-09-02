@@ -71,13 +71,21 @@ test('le menu partenaire contient le portail et seulement les vues autorisées',
     nom: 'Gournay',
     permissions: {
       'documents-partenaire': true,
+      'ecoutes-appels-partenaire': true,
+      'extraction-prospects-partenaire': true,
       'statistiques-partenaire': true,
     },
     prenom: 'François',
   };
   const groups = buildHeaderMobileNavigation(partner, '/partenaire/documents');
   const items = groups[0]?.items ?? [];
-  assert.deepEqual(items.map(({ id }) => id), ['partner-home', 'partner-statistiques', 'partner-documents']);
+  assert.deepEqual(items.map(({ id }) => id), [
+    'partner-home',
+    'partner-statistiques',
+    'partner-documents',
+    'partner-prospects',
+    'partner-ecoutes',
+  ]);
   assert.equal(items.find(({ id }) => id === 'partner-documents')?.active, true);
 });
 

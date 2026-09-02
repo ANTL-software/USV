@@ -66,6 +66,13 @@ export type {
 } from './partenaireDocuments.types.ts';
 
 export type {
+  PartenaireProspectCampaign,
+  PartenaireProspectRow,
+  PartenaireProspectsFilters,
+  PartenaireProspectsResponse,
+} from './partenaireProspects.types.ts';
+
+export type {
   StatutCampagne,
   Campagne,
   CreateCampagneData,
@@ -412,6 +419,7 @@ export type {
   Enregistrement,
   EnregistrementFilters,
   EnregistrementsApiResponse,
+  PartnerRecordingOptions,
   RecordingOperationsConfiguration,
   RecordingFilterOption,
   RecordingStorageStatus,
