@@ -60,24 +60,40 @@ test('getSalutation retourne des messages adaptés pour les partenaires externes
 });
 
 test('getSalutation gère les audiences employe et commercial', () => {
+  const regularDay = new Date(2026, 8, 4, 14, 0, 0);
+
   // Nuit (< 5h)
-  assert.equal(getSalutation('Nina', 3, 2, 'employe'), 'Vous êtes couché·e très tard Nina !');
+  assert.equal(getSalutation('Nina', 3, 2, 'employe', regularDay), 'Vous êtes couché·e très tard Nina !');
 
   // Matinée (< 9h)
-  assert.equal(getSalutation('Nina', 8, 2, 'employe'), 'Belle matinée Nina, on attaque !');
+  assert.equal(getSalutation('Nina', 8, 2, 'employe', regularDay), 'Belle matinée Nina, on attaque !');
 
   // Lundi matin (< 11h)
-  assert.equal(getSalutation('Nina', 10, 1, 'employe'), 'Belle semaine en perspective Nina !');
+  assert.equal(getSalutation('Nina', 10, 1, 'employe', regularDay), 'Belle semaine en perspective Nina !');
 
   // Jeudi après-midi (< 18h) commercial vs employe
-  assert.equal(getSalutation('Alex', 15, 4, 'commercial'), 'Le weekend approche Alex, plus que quelques appels !');
-  assert.equal(getSalutation('Alex', 15, 4, 'employe'), 'Le weekend approche Alex, la journée avance bien !');
+  assert.equal(getSalutation('Alex', 15, 4, 'commercial', regularDay), 'Le weekend approche Alex, plus que quelques appels !');
+  assert.equal(getSalutation('Alex', 15, 4, 'employe', regularDay), 'Le weekend approche Alex, la journée avance bien !');
 
   // Soir (< 21h)
-  assert.equal(getSalutation('Nina', 19, 2, 'employe'), 'Bonne soirée Nina !');
+  assert.equal(getSalutation('Nina', 19, 2, 'employe', regularDay), 'Bonne soirée Nina !');
+});
+
+test('getSalutation affiche l anniversaire de Mehdi le 3 septembre seulement aux autres collaborateurs', () => {
+  const birthday = new Date(2026, 8, 3, 14, 0, 0);
+
+  assert.equal(getSalutation('Nina', 14, 4, 'employe', birthday), 'Bon anniversaire Mehdi !');
+  assert.notEqual(getSalutation('Alex', 14, 4, 'commercial', birthday), 'Bon anniversaire Mehdi !');
+  assert.notEqual(getSalutation('Sophie', 14, 4, 'partenaire_externe', birthday), 'Bon anniversaire Mehdi !');
+  assert.notEqual(getSalutation('Nina', 14, 4, 'employe', new Date(2026, 8, 4, 14, 0, 0)), 'Bon anniversaire Mehdi !');
 });
 
 test('getSalutationRefreshDelay calcule un délai positif', () => {
   const delay = getSalutationRefreshDelay(new Date('2026-06-17T10:00:00.000Z'));
   assert.ok(delay >= 1000);
+});
+
+test('getSalutationRefreshDelay se rafraîchit à minuit', () => {
+  const delay = getSalutationRefreshDelay(new Date(2026, 8, 2, 23, 59, 0));
+  assert.ok(delay < 120_000);
 });

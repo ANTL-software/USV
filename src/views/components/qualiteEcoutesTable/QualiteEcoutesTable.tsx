@@ -1,4 +1,5 @@
 import type { ReactElement } from 'react';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { MdDownload, MdPause, MdPlayArrow } from 'react-icons/md';
 import type { QualiteEcoutesPageViewModel } from '../../../hooks/index.ts';
 import {
@@ -48,9 +49,14 @@ export function QualiteEcoutesTable({ viewModel }: QualiteEcoutesTableProps): Re
       </table>
       {viewModel.totalPages > 1 && (
         <div className="qualiteEcoutes__pagination">
-          <button type="button" disabled={viewModel.page === 1} onClick={viewModel.previousPage}>Précédent</button>
-          <span className="qualiteEcoutes__page-info">Page <strong>{viewModel.page}</strong> sur <strong>{viewModel.totalPages}</strong></span>
-          <button type="button" disabled={viewModel.page === viewModel.totalPages} onClick={viewModel.nextPage}>Suivant</button>
+          <span className="qualiteEcoutes__page-info">Page {viewModel.page} / {viewModel.totalPages}{viewModel.showTotalCount && ` (${viewModel.totalCount} appels)`}</span>
+          <div className="qualiteEcoutes__pagination-buttons">
+            <button type="button" className="qualiteEcoutes__pagination-btn" disabled={viewModel.page === 1} onClick={viewModel.previousPage} title="Page précédente"><IoChevronBack /></button>
+            <span className="qualiteEcoutes__pagination-pages">
+              {viewModel.paginationPages.map((paginationPage) => <button key={paginationPage} type="button" className={viewModel.page === paginationPage ? 'active' : ''} onClick={() => viewModel.setPage(paginationPage)}>{paginationPage}</button>)}
+            </span>
+            <button type="button" className="qualiteEcoutes__pagination-btn" disabled={viewModel.page === viewModel.totalPages} onClick={viewModel.nextPage} title="Page suivante"><IoChevronForward /></button>
+          </div>
         </div>
       )}
     </div>

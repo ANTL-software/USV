@@ -50,6 +50,8 @@ export interface PartenaireProspectsResponse {
   pagination: {
     page: number;
     limit: number;
+    total: number;
+    total_pages: number;
     has_more: boolean;
   };
 }

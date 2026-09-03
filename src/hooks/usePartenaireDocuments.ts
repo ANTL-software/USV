@@ -1,10 +1,10 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getPartenaireDocumentDownloadUrl,
   getPartenaireDocumentsService,
 } from '../API/services/index.ts';
-import { getMonthBounds } from '../utils/scripts/index.ts';
+import { buildPartenairePaginationPages, getMonthBounds } from '../utils/scripts/index.ts';
 import type {
   PartenaireDocumentsPeriod,
   PartenaireDocumentsResponse,
@@ -22,11 +22,13 @@ export interface PartenaireDocumentsViewModel {
   navigateBack: () => void;
   nextPage: () => void;
   period: PartenaireDocumentsPeriod;
+  paginationPages: number[];
   previousPage: () => void;
   refresh: () => void;
   selectPeriod: (period: PartenaireDocumentsPeriod) => void;
   setDateDebut: (date: string) => void;
   setDateFin: (date: string) => void;
+  setPage: (page: number) => void;
 }
 
 export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
@@ -95,6 +97,9 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
   const navigateBack = useCallback((): void => {
     void navigate('/partenaire');
   }, [navigate]);
+  const paginationPages = useMemo(() => data
+    ? buildPartenairePaginationPages(data.pagination.page, data.pagination.total_pages)
+    : [], [data]);
 
   return {
     data,
@@ -106,10 +111,12 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
     navigateBack,
     nextPage,
     period,
+    paginationPages,
     previousPage,
     refresh: (): void => { void load(); },
     selectPeriod,
     setDateDebut,
     setDateFin,
+    setPage,
   };
 }

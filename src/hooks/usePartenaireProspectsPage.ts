@@ -1,9 +1,10 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getPartenaireProspectsExportUrl,
   getPartenaireProspectsService,
 } from '../API/services/index.ts';
+import { buildPartenairePaginationPages } from '../utils/scripts/index.ts';
 import type { PartenaireProspectsResponse } from '../utils/types/index.ts';
 
 const PAGE_SIZE = 25;
@@ -67,6 +68,10 @@ export function usePartenaireProspectsPage() {
     void navigate('/partenaire');
   }, [navigate]);
 
+  const paginationPages = useMemo(() => data
+    ? buildPartenairePaginationPages(page, data.pagination.total_pages)
+    : [], [data, page]);
+
   return {
     error,
     exportUrl: getPartenaireProspectsExportUrl(),
@@ -75,11 +80,13 @@ export function usePartenaireProspectsPage() {
     nextPage,
     page,
     pagination: data?.pagination || null,
+    paginationPages,
     previousPage,
     prospects: data?.prospects || [],
     resetSearch,
     search,
     selectedCampaign: data?.campagne || null,
+    setPage,
     setSearch,
     submitSearch,
   };

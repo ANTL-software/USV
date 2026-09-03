@@ -1,4 +1,5 @@
 import type { FormEvent, ReactElement } from 'react';
+import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { MdArrowBack, MdDownload, MdSearch } from 'react-icons/md';
 import type { PartenaireProspectsPageViewModel } from '../../../hooks/index.ts';
 import type { PartenaireProspectRow } from '../../../utils/types/index.ts';
@@ -115,11 +116,16 @@ export function PartenaireProspectsContent({ viewModel }: PartenaireProspectsCon
                 ))}
               </tbody>
             </table>
-            {viewModel.pagination && (viewModel.page > 1 || viewModel.pagination.has_more) && (
+            {viewModel.pagination && viewModel.pagination.total_pages > 1 && (
               <nav className="partnerProspects__pagination" aria-label="Pagination des prospects">
-                <Button style="white" disabled={viewModel.page === 1} onClick={viewModel.previousPage}>Précédent</Button>
-                <span>Page <strong>{viewModel.page}</strong></span>
-                <Button style="white" disabled={!viewModel.pagination.has_more} onClick={viewModel.nextPage}>Suivant</Button>
+                <span className="partnerProspects__pagination-info">Page {viewModel.page} / {viewModel.pagination.total_pages} ({viewModel.pagination.total} prospects)</span>
+                <div className="partnerProspects__pagination-buttons">
+                  <button type="button" className="partnerProspects__pagination-btn" disabled={viewModel.page === 1} onClick={viewModel.previousPage} title="Page précédente"><IoChevronBack /></button>
+                  <span className="partnerProspects__pagination-pages">
+                    {viewModel.paginationPages.map((paginationPage) => <button key={paginationPage} type="button" className={viewModel.page === paginationPage ? 'active' : ''} onClick={() => viewModel.setPage(paginationPage)}>{paginationPage}</button>)}
+                  </span>
+                  <button type="button" className="partnerProspects__pagination-btn" disabled={viewModel.page === viewModel.pagination.total_pages} onClick={viewModel.nextPage} title="Page suivante"><IoChevronForward /></button>
+                </div>
               </nav>
             )}
           </div>

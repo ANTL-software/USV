@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   getAllCampagnesService,
   getAllEmployesService,
@@ -11,6 +11,7 @@ import {
   updateRecordingOperationsConfigurationService,
 } from '../API/services/index.ts';
 import type { Enregistrement, EnregistrementFilters, RecordingFilterOption, RecordingOperationsConfiguration } from '../utils/types/index.ts';
+import { buildPartenairePaginationPages } from '../utils/scripts/index.ts';
 
 const PAGE_SIZE = 10;
 export type QualiteEcoutesScope = 'operations' | 'partenaire';
@@ -206,6 +207,10 @@ export function useQualiteEcoutes(scope: QualiteEcoutesScope = 'operations') {
   const nextPage = useCallback((): void => {
     setPage((currentPage) => Math.min(currentPage + 1, totalPages));
   }, [totalPages]);
+  const paginationPages = useMemo(
+    () => buildPartenairePaginationPages(page, totalPages),
+    [page, totalPages],
+  );
 
   const updateOperationsConfiguration = useCallback(async (
     updates: { enabled?: boolean; answeringMachineEnabled?: boolean },
@@ -244,6 +249,7 @@ export function useQualiteEcoutes(scope: QualiteEcoutesScope = 'operations') {
     isUpdatingConfiguration,
     nextPage,
     page,
+    paginationPages,
     previousPage,
     recherche,
     recordings,
@@ -257,6 +263,7 @@ export function useQualiteEcoutes(scope: QualiteEcoutesScope = 'operations') {
     selectedStatus,
     selectStatus,
     setActiveRecording,
+    setPage,
     setRecherche,
     submitSearch,
     telephone,

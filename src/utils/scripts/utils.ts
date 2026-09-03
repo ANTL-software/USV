@@ -153,8 +153,9 @@ export function getSalutation(
   _heure?: number,
   _jour?: number,
   audience: SalutationAudience = 'employe',
+  _now: Date = new Date(),
 ): string {
-  const now  = new Date();
+  const now  = _now;
   const h    = _heure !== undefined ? _heure : now.getHours();
   const jour = _jour  !== undefined ? _jour  : now.getDay();
   const mois = now.getMonth();
@@ -164,6 +165,10 @@ export function getSalutation(
   // Bon anniversaire Sonia le 11 mai, sans interférer avec les autres comptes.
   if (mois === 4 && date === 11 && prenom?.trim().toLocaleLowerCase('fr-FR') === 'sonia') {
     return "Bon anniversaire Sonia !";
+  }
+
+  if (mois === 8 && date === 3 && audience === 'employe') {
+    return 'Bon anniversaire Mehdi !';
   }
 
   if (audience === 'partenaire_externe') {
@@ -207,7 +212,11 @@ export function getSalutationRefreshDelay(now: Date = new Date()): number {
     nextTransition.setHours(nextHour, 0, 0, 0);
   }
 
-  return Math.max(1_000, nextTransition.getTime() - now.getTime() + 50);
+  const nextMidnight = new Date(now);
+  nextMidnight.setDate(now.getDate() + 1);
+  nextMidnight.setHours(0, 0, 0, 0);
+
+  return Math.max(1_000, Math.min(nextTransition.getTime(), nextMidnight.getTime()) - now.getTime() + 50);
 }
 
 /**

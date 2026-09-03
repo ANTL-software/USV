@@ -515,6 +515,7 @@ export {
   buildProduitsListCampaignOptions,
   buildProduitsListPaginationPages,
 } from './produitsList.ts';
+export { buildPartenairePaginationPages } from './partenairePagination.ts';
 export type {
   ProduitListRow,
   ProduitsListNavigationState,

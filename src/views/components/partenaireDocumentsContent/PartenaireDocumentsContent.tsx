@@ -40,11 +40,13 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
     navigateBack,
     nextPage,
     period,
+    paginationPages,
     previousPage,
     refresh,
     selectPeriod,
     setDateDebut,
     setDateFin,
+    setPage,
   } = viewModel;
   const heroTitle = getHeroTitle(data?.campagne);
 
@@ -86,10 +88,15 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
       </article>)}
     </section>}
 
-    {data && (data.pagination.page > 1 || data.pagination.has_more) && <nav className="partnerDocuments__pagination" aria-label="Pagination des documents">
-      <button type="button" onClick={previousPage} disabled={data.pagination.page <= 1}><IoChevronBack /> Précédent</button>
-      <span>Page {data.pagination.page}</span>
-      <button type="button" onClick={nextPage} disabled={!data.pagination.has_more}>Suivant <IoChevronForward /></button>
+    {data && data.pagination.total_pages > 1 && <nav className="partnerDocuments__pagination" aria-label="Pagination des documents">
+      <span className="partnerDocuments__pagination-info">Page {data.pagination.page} / {data.pagination.total_pages} ({data.pagination.total} dossiers)</span>
+      <div className="partnerDocuments__pagination-buttons">
+        <button type="button" className="partnerDocuments__pagination-btn" onClick={previousPage} disabled={data.pagination.page <= 1} title="Page précédente"><IoChevronBack /></button>
+        <span className="partnerDocuments__pagination-pages">
+          {paginationPages.map((paginationPage) => <button key={paginationPage} type="button" className={data.pagination.page === paginationPage ? 'active' : ''} onClick={() => setPage(paginationPage)}>{paginationPage}</button>)}
+        </span>
+        <button type="button" className="partnerDocuments__pagination-btn" onClick={nextPage} disabled={data.pagination.page >= data.pagination.total_pages} title="Page suivante"><IoChevronForward /></button>
+      </div>
     </nav>}
   </main>;
 }

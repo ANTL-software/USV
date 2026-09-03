@@ -119,6 +119,8 @@ const STATUT_APPEL_LABELS: Record<string, string> = {
   relance: 'Relance',
   amd_repondeur_auto: 'Répondeur auto coupé',
   amd_fax_auto: 'Fax auto coupé',
+  amd_machine_start_auto: 'Répondeur automatique détecté',
+  non_renseigne: 'Statut non renseigné',
 };
 
 /**
@@ -140,4 +142,3 @@ const STATUT_PROSPECT_LABELS: Record<string, string> = {
 export function getStatutProspectLabel(statut: string): string {
   return STATUT_PROSPECT_LABELS[statut] || statut;
 }
-

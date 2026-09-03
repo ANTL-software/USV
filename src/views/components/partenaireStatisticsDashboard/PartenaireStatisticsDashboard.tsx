@@ -23,6 +23,7 @@ import {
   formatPartnerStatisticNumber,
   formatPartnerStatisticPercent,
   formatPartnerWeekdayObservationCount,
+  getStatutAppelLabel,
   getPartnerWeekdayLongLabel,
   PARTNER_STATISTICS_PERIODS,
 } from '../../../utils/scripts/index.ts';
@@ -48,7 +49,8 @@ function EmptyChart({ message = 'Les données apparaîtront dès que des appels 
 
 function OutcomesPie({ data }: { data: PartenaireStatisticsPoint[] }): ReactElement {
   if (data.length === 0) return <EmptyChart />;
-  return <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={data} dataKey="valeur" nameKey="label" innerRadius={55} outerRadius={88} paddingAngle={2}>{data.map((point, index) => <Cell key={`${point.label}-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend verticalAlign="bottom" height={42} /></PieChart></ResponsiveContainer></div>;
+  const chartData = data.map((point) => ({ ...point, label: getStatutAppelLabel(point.label) }));
+  return <div className="partnerStats__chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={chartData} dataKey="valeur" nameKey="label" innerRadius={55} outerRadius={88} paddingAngle={2}>{chartData.map((point, index) => <Cell key={`${point.label}-${index}`} fill={COLORS[index % COLORS.length]} />)}</Pie><Tooltip /><Legend verticalAlign="bottom" height={42} /></PieChart></ResponsiveContainer></div>;
 }
 
 function PartenaireStatisticsDashboard({ viewModel }: DashboardProps): ReactElement {
