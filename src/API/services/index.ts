@@ -6,6 +6,7 @@ export {
 export {
   createPartenaireExterneService,
   getPartenaireDocumentDownloadUrl,
+  getPartenaireLeadDocumentDownloadUrl,
   getPartenaireDocumentsService,
   getPartenaireProspectsExportUrl,
   getPartenaireProspectsService,

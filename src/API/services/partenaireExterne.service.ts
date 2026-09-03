@@ -56,6 +56,10 @@ export const getPartenaireDocumentDownloadUrl = (documentId: number): string => 
   `${getApiBaseUrl()}/partenaires-externes/documents/${documentId}/download`
 );
 
+export const getPartenaireLeadDocumentDownloadUrl = (leadId: number): string => (
+  `${getApiBaseUrl()}/partenaires-externes/documents/leads/${leadId}/download`
+);
+
 export const getPartenaireProspectsService = async (
   filters: PartenaireProspectsFilters,
 ): Promise<PartenaireProspectsResponse> => {

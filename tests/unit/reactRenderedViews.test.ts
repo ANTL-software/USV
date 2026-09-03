@@ -15,6 +15,7 @@ import type {
   BookingFormViewModel,
   EmailComposerViewModel,
   HeaderViewModel,
+  PartenaireDocumentsViewModel,
   ProduitsImportModalViewModel,
   ProspectDetailViewModel,
   SignInFormViewModel,
@@ -35,7 +36,7 @@ import {
 } from '../../src/utils/scripts/index.ts';
 import type { NavigationGroup } from '../../src/utils/scripts/index.ts';
 import type { Employe, Prospect } from '../../src/utils/types/index.ts';
-import type { LeadClient, QuoteFormState, QuotePdfPayload, StatutRendezVous } from '../../src/utils/types/index.ts';
+import type { LeadClient, PartenaireDocumentsResponse, QuoteFormState, QuotePdfPayload, StatutRendezVous } from '../../src/utils/types/index.ts';
 
 const ROOT = process.cwd();
 let viteServer: ViteDevServer | null = null;
@@ -539,6 +540,84 @@ test('la fiche détail affiche le nombre de salariés pour MMA uniquement', asyn
 
   assert.match(mmaHtml, /Entreprise \+ de 5 salariés/);
   assert.doesNotMatch(fgaHtml, /Entreprise \+ de 5 salariés/);
+});
+
+test('les campagnes Lead B2B réimpriment la fiche générée dans le portail partenaire', async () => {
+  const PartenaireDocumentsContent = await loadComponent<{
+    viewModel: PartenaireDocumentsViewModel;
+  }>('/src/views/components/partenaireDocumentsContent/PartenaireDocumentsContent.tsx');
+  const data: PartenaireDocumentsResponse = {
+    campagne: {
+      id_campagne: 11,
+      nom_campagne: 'FGA Consulting',
+      type_campagne: 'lead_b2b',
+    },
+    dossiers: [{
+      date_rendez_vous: '2026-09-08',
+      date_validation: '2026-09-03T10:00:00.000Z',
+      documents: [],
+      heure_rendez_vous: '14:15:00',
+      id_campagne: 11,
+      id_dossier: 2724,
+      montant_total: null,
+      nom_campagne: 'FGA Consulting',
+      raison_sociale: 'Entreprise Démo',
+      reference: 'RDV-2724',
+      statut_dossier: 'planifie',
+      type_campagne: 'lead_b2b',
+      type_dossier: 'lead',
+      ville: 'Paris',
+    }],
+    filtres: {
+      date_debut: '2026-09-01',
+      date_fin: '2026-09-30',
+    },
+    pagination: {
+      has_more: false,
+      limit: 20,
+      page: 1,
+      total: 1,
+      total_pages: 1,
+    },
+  };
+  const viewModel: PartenaireDocumentsViewModel = {
+    data,
+    dateDebut: '2026-09-01',
+    dateFin: '2026-09-30',
+    downloadDocument: noop,
+    downloadLeadDocument: noop,
+    error: null,
+    isLeadB2bCampaign: true,
+    loading: false,
+    navigateBack: noop,
+    nextPage: noop,
+    paginationPages: [1],
+    period: 'current_month',
+    previousPage: noop,
+    refresh: noop,
+    selectPeriod: noop,
+    setDateDebut: noop,
+    setDateFin: noop,
+    setPage: noop,
+  };
+
+  const leadHtml = renderToStaticMarkup(createElement(PartenaireDocumentsContent, { viewModel }));
+  const saleHtml = renderToStaticMarkup(createElement(PartenaireDocumentsContent, {
+    viewModel: {
+      ...viewModel,
+      data: {
+        ...data,
+        campagne: { ...data.campagne, type_campagne: 'vente' },
+        dossiers: [{ ...data.dossiers[0], type_campagne: 'vente', type_dossier: 'vente' }],
+      },
+      isLeadB2bCampaign: false,
+    },
+  }));
+
+  assert.match(leadHtml, /Réimprimer la fiche du rendez-vous/);
+  assert.doesNotMatch(leadHtml, /Document en attente de dépôt/);
+  assert.doesNotMatch(saleHtml, /Réimprimer la fiche du rendez-vous/);
+  assert.match(saleHtml, /Document en attente de dépôt/);
 });
 
 test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête', async () => {

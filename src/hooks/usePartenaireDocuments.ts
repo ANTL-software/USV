@@ -2,9 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   getPartenaireDocumentDownloadUrl,
+  getPartenaireLeadDocumentDownloadUrl,
   getPartenaireDocumentsService,
 } from '../API/services/index.ts';
-import { buildPartenairePaginationPages, getMonthBounds } from '../utils/scripts/index.ts';
+import {
+  CAMPAIGN_VARIANTS,
+  buildPartenairePaginationPages,
+  getMonthBounds,
+  normalizeCampaignVariant,
+} from '../utils/scripts/index.ts';
 import type {
   PartenaireDocumentsPeriod,
   PartenaireDocumentsResponse,
@@ -17,7 +23,9 @@ export interface PartenaireDocumentsViewModel {
   dateDebut: string;
   dateFin: string;
   downloadDocument: (documentId: number) => void;
+  downloadLeadDocument: (leadId: number) => void;
   error: string | null;
+  isLeadB2bCampaign: boolean;
   loading: boolean;
   navigateBack: () => void;
   nextPage: () => void;
@@ -90,6 +98,9 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
   const downloadDocument = useCallback((documentId: number): void => {
     window.open(getPartenaireDocumentDownloadUrl(documentId), '_blank', 'noopener,noreferrer');
   }, []);
+  const downloadLeadDocument = useCallback((leadId: number): void => {
+    window.open(getPartenaireLeadDocumentDownloadUrl(leadId), '_blank', 'noopener,noreferrer');
+  }, []);
   const previousPage = useCallback((): void => setPage((current) => Math.max(current - 1, 1)), []);
   const nextPage = useCallback((): void => setPage((current) => {
     return data?.pagination.has_more ? current + 1 : current;
@@ -100,13 +111,17 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
   const paginationPages = useMemo(() => data
     ? buildPartenairePaginationPages(data.pagination.page, data.pagination.total_pages)
     : [], [data]);
+  const isLeadB2bCampaign = normalizeCampaignVariant(data?.campagne.type_campagne)
+    === CAMPAIGN_VARIANTS.lead_b2b;
 
   return {
     data,
     dateDebut,
     dateFin,
     downloadDocument,
+    downloadLeadDocument,
     error,
+    isLeadB2bCampaign,
     loading,
     navigateBack,
     nextPage,

@@ -1,6 +1,6 @@
 import './partenaireDocumentsContent.scss';
 import type { ReactElement } from 'react';
-import { IoChevronBack, IoChevronForward, IoCloudDownloadOutline, IoDocumentTextOutline, IoRefresh } from 'react-icons/io5';
+import { IoChevronBack, IoChevronForward, IoCloudDownloadOutline, IoDocumentTextOutline, IoPrint, IoRefresh } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import type { PartenaireDocumentsViewModel } from '../../../hooks/index.ts';
 import { formatCommandesDate, formatFileSize, formatMontant } from '../../../utils/scripts/index.ts';
@@ -35,7 +35,9 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
     dateDebut,
     dateFin,
     downloadDocument,
+    downloadLeadDocument,
     error,
+    isLeadB2bCampaign,
     loading,
     navigateBack,
     nextPage,
@@ -81,7 +83,9 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
           {dossier.type_dossier === 'lead' && dossier.date_rendez_vous && <div><dt>Date du rendez-vous</dt><dd>{formatCommandesDate(dossier.date_rendez_vous)}{dossier.heure_rendez_vous ? ` à ${dossier.heure_rendez_vous.slice(0, 5)}` : ''}</dd></div>}
         </dl>
         <div className="partnerDocuments__files">
-          {dossier.documents.length === 0
+          {isLeadB2bCampaign && dossier.type_dossier === 'lead'
+            ? <button type="button" onClick={() => downloadLeadDocument(dossier.id_dossier)}><IoPrint /><span><strong>Réimprimer la fiche du rendez-vous</strong></span></button>
+            : dossier.documents.length === 0
             ? <span className="partnerDocuments__pending"><IoDocumentTextOutline /> Document en attente de dépôt</span>
             : dossier.documents.map((document) => <button type="button" key={document.id_document_commercial} onClick={() => downloadDocument(document.id_document_commercial)}><IoCloudDownloadOutline /><span><strong>{document.nom_fichier}</strong><small>{formatFileSize(document.taille_octets)}</small></span></button>)}
         </div>
