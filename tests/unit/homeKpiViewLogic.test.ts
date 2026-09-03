@@ -1,6 +1,19 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { HOME_KPI_PATHS } from '../../src/utils/scripts/index.ts';
 import type { HomeKpiData } from '../../src/utils/types/index.ts';
+
+test('each home KPI targets its detailed view', () => {
+  assert.deepEqual(HOME_KPI_PATHS, {
+    commandes: '/operations/commandes',
+    ca: '/operations/commandes',
+    rdv: '/operations/commandes',
+    commerciaux: '/supervision',
+    incidents: '/incidents/traitement',
+    projets: '/projets',
+    'rdv-agenda': '/booking',
+  });
+});
 
 test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends', () => {
   const sampleKpis: HomeKpiData = {

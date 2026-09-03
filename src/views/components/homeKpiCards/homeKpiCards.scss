@@ -31,6 +31,9 @@
   overflow: hidden;
   border: 1px solid rgba(0, 0, 0, 0.08);
   transition: transform vars.$transitionMedium, box-shadow vars.$transitionMedium;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
 
   .homeKpiCards__card-header {
     display: flex;
@@ -73,6 +76,13 @@
 }
 
 #homeKpiCards .homeKpiCards__card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+#homeKpiCards .homeKpiCards__card:focus-visible {
+  outline: 3px solid rgba(124, 58, 237, 0.35);
+  outline-offset: 3px;
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }

@@ -22,8 +22,8 @@ export function useHomePage() {
     vigie: hasAccessToSubsection(user, 'operations', 'vigie'),
     // Droits pour l'affichage conditionnel des cartes KPI
     kpiCommandes: hasAccessToSubsection(user, 'operations', 'commandes'),
-    kpiCommerciaux: hasAccessToSubsection(user, 'operations', 'supervision') || hasAccessToSubsection(user, 'operations', 'vigie'),
-    kpiIncidents: hasAccessToSection(user, 'incidents'),
+    kpiCommerciaux: hasAccessToSubsection(user, 'operations', 'supervision'),
+    kpiIncidents: hasAccessToSubsection(user, 'incidents', 'traiter'),
     kpiProjets: hasAccessToSection(user, 'projets'),
     kpiBooking: hasAccessToSection(user, 'booking'),
   };

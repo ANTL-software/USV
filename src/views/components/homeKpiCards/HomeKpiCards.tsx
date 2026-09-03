@@ -1,6 +1,8 @@
-import type { ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 import { Line, LineChart, ResponsiveContainer } from 'recharts';
 import type { HomeKpisState } from '../../../hooks/index.ts';
+import { HOME_KPI_PATHS } from '../../../utils/scripts/index.ts';
+import type { HomeKpiId } from '../../../utils/scripts/index.ts';
 import type { SparklinePoint } from '../../../utils/types/index.ts';
 import './homeKpiCards.scss';
 
@@ -13,11 +15,22 @@ interface HomeKpiCardsProps {
     kpiProjets?: boolean;
     kpiBooking?: boolean;
   };
+  onNavigate: (path: string) => void;
 }
 
 interface SparklineProps {
   data?: SparklinePoint[];
   color: string;
+}
+
+interface HomeKpiCard {
+  id: HomeKpiId;
+  label: string;
+  value: string;
+  trend: SparklinePoint[];
+  color: string;
+  isAmount: boolean;
+  visible: boolean;
 }
 
 function MiniSparkline({ data, color }: SparklineProps): ReactElement {
@@ -43,7 +56,7 @@ function MiniSparkline({ data, color }: SparklineProps): ReactElement {
   );
 }
 
-export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactElement | null {
+export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProps): ReactElement | null {
   const { kpis, isLoading } = kpisState;
 
   const canViewCommandes = access ? Boolean(access.kpiCommandes) : true;
@@ -52,7 +65,7 @@ export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactEle
   const canViewProjets = access ? Boolean(access.kpiProjets) : true;
   const canViewBooking = access ? Boolean(access.kpiBooking) : true;
 
-  const allCards = [
+  const allCards: HomeKpiCard[] = [
     {
       id: 'commandes',
       label: 'Commandes validées',
@@ -120,6 +133,15 @@ export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactEle
 
   const visibleCards = allCards.filter((card) => card.visible);
 
+  const handleClick = (event: MouseEvent<HTMLAnchorElement>, path: string): void => {
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+      return;
+    }
+
+    event.preventDefault();
+    onNavigate(path);
+  };
+
   if (visibleCards.length === 0) {
     return null;
   }
@@ -129,9 +151,12 @@ export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactEle
       <h2 className="homeKpiCards__title">Aperçu Global et KPI Clés</h2>
       <div className="homeKpiCards__grid">
         {visibleCards.map((card) => (
-          <article
+          <a
             key={card.id}
+            href={HOME_KPI_PATHS[card.id]}
             className={`homeKpiCards__card ${card.isAmount ? 'homeKpiCards__card--amount' : ''}`}
+            aria-label={`${card.label} : voir les indicateurs détaillés`}
+            onClick={(event) => handleClick(event, HOME_KPI_PATHS[card.id])}
           >
             <div className="homeKpiCards__card-header">
               <span>{card.label}</span>
@@ -140,7 +165,7 @@ export function HomeKpiCards({ kpisState, access }: HomeKpiCardsProps): ReactEle
               <strong>{card.value}</strong>
               <MiniSparkline data={card.trend} color={card.color} />
             </div>
-          </article>
+          </a>
         ))}
       </div>
     </section>

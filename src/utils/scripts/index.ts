@@ -83,6 +83,8 @@ export {
   toLocalIsoDate,
 } from './utils.ts';
 export type { SalutationAudience } from './utils.ts';
+export { HOME_KPI_PATHS } from './homeKpiNavigation.ts';
+export type { HomeKpiId } from './homeKpiNavigation.ts';
 export { testEnvironmentConfig } from './testEnvironment.ts';
 export {
   handleCourrierUploadError,

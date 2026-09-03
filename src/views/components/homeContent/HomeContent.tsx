@@ -29,7 +29,7 @@ export function HomeContent({ viewModel }: HomeContentProps): ReactElement {
           {hasAnyKpiAccess && (
             <>
               <div className="homeContainer__kpi-section">
-                <HomeKpiCards kpisState={kpis} access={access} />
+                <HomeKpiCards kpisState={kpis} access={access} onNavigate={navigateTo} />
               </div>
               <hr className="homeContainer__divider-horizontal" />
             </>
