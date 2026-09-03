@@ -495,6 +495,52 @@ test('le panneau lead conserve qualification réimpression et bouton d envoi ema
   assert.match(html, /Envoyer par mail à MMA/);
 });
 
+test('la fiche détail affiche le nombre de salariés pour MMA uniquement', async () => {
+  interface LeadClientSummaryProps {
+    lead: LeadClient;
+    notesUpdateLoading: boolean;
+    onUpdateNotes: (notes: string) => Promise<boolean>;
+    showEmployeeCountQualification: boolean;
+  }
+  const LeadClientSummary = await loadComponent<LeadClientSummaryProps>(
+    '/src/views/components/leadClientSummary/LeadClientSummary.tsx',
+    'LeadClientSummary',
+  );
+  const lead: LeadClient = {
+    created_at: '2026-09-03T10:00:00.000Z',
+    date_rdv: '2026-09-08',
+    heure_rdv: '14:15:00',
+    id_agent: 4,
+    id_campagne: 10,
+    id_lead: 2724,
+    id_prospect: 12,
+    motif: 'Prise de rendez-vous client',
+    entreprise_plus_de_cinq_salaries: true,
+    notes: null,
+    statut: 'planifie',
+    updated_at: '2026-09-03T10:00:00.000Z',
+    campagne: { id_campagne: 10, nom_campagne: 'MMA' },
+  };
+  const commonProps = {
+    lead,
+    notesUpdateLoading: false,
+    onUpdateNotes: async (): Promise<boolean> => true,
+  };
+
+  const mmaHtml = renderToStaticMarkup(createElement(LeadClientSummary, {
+    ...commonProps,
+    showEmployeeCountQualification: true,
+  }));
+  const fgaHtml = renderToStaticMarkup(createElement(LeadClientSummary, {
+    ...commonProps,
+    lead: { ...lead, id_campagne: 11, campagne: { id_campagne: 11, nom_campagne: 'FGA Consulting' } },
+    showEmployeeCountQualification: false,
+  }));
+
+  assert.match(mmaHtml, /Entreprise \+ de 5 salariés/);
+  assert.doesNotMatch(fgaHtml, /Entreprise \+ de 5 salariés/);
+});
+
 test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête', async () => {
   const TelephonyProviderSwitch = await loadComponent<{
     viewModel: TelephonyProviderConfigurationViewModel;

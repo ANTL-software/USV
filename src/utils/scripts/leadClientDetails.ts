@@ -8,6 +8,14 @@ export const LEAD_QUALIFICATION_OPTIONS: StatutRendezVous[] = [
   'non_honore',
 ];
 
+export const MMA_EMPLOYEE_COUNT_QUALIFICATION_CAMPAIGN_ID = 10;
+
+export function shouldShowLeadEmployeeCountQualification(
+  lead: Pick<LeadClient, 'id_campagne'>,
+): boolean {
+  return lead.id_campagne === MMA_EMPLOYEE_COUNT_QUALIFICATION_CAMPAIGN_ID;
+}
+
 export function formatLeadDateTime(dateValue?: string | null, timeValue?: string | null): string {
   if (!dateValue) {
     return '—';

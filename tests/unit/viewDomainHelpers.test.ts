@@ -24,6 +24,7 @@ import {
   resolveLeadContactEmail,
   resolveLeadContactName,
   resolveLeadContactPhone,
+  shouldShowLeadEmployeeCountQualification,
 } from '../../src/utils/scripts/index.ts';
 import type { LeadClient, ProspectEnrichmentSnapshot, VigieAction } from '../../src/utils/types/index.ts';
 
@@ -71,6 +72,12 @@ test('les helpers lead conservent l’identité du PDF et les snapshots de coord
   assert.equal(resolveLeadContactEmail(lead), 'decision@client.fr');
   assert.equal(formatLeadProspectAddress(lead), '1 rue de Paris, 75001 Paris, France');
   assert.equal(getLeadQualificationButtonClass('non_honore'), 'qualif-btn--non-honore');
+});
+
+test('la qualification du nombre de salariés est affichée uniquement pour MMA', () => {
+  assert.equal(shouldShowLeadEmployeeCountQualification(createLead({ id_campagne: 10 })), true);
+  assert.equal(shouldShowLeadEmployeeCountQualification(createLead({ id_campagne: 11 })), false);
+  assert.equal(shouldShowLeadEmployeeCountQualification(createLead({ id_campagne: 12 })), false);
 });
 
 test('les signaux enrichissement classent les preuves publiques', () => {

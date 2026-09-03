@@ -16,9 +16,10 @@ interface LeadClientSummaryProps {
   lead: LeadClient;
   notesUpdateLoading: boolean;
   onUpdateNotes: (notes: string) => Promise<boolean>;
+  showEmployeeCountQualification: boolean;
 }
 
-export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes }: LeadClientSummaryProps): ReactElement {
+export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification }: LeadClientSummaryProps): ReactElement {
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(lead.notes ?? '');
 
@@ -60,7 +61,7 @@ export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes }: L
           <div className="grid-item"><span className="grid-label">Rendez-vous client</span><span className="grid-value">{formatLeadDateTime(lead.date_rdv, lead.heure_rdv)}</span></div>
           <div className="grid-item"><span className="grid-label">Commercial</span><span className="grid-value">{formatLeadAgentLabel(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Campagne</span><span className="grid-value">{lead.campagne?.nom_campagne ?? '—'}</span></div>
-          <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>
+          {showEmployeeCountQualification && <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>}
           <div className="grid-item full-width"><span className="grid-label">Motif</span><span className="grid-value">{lead.motif ?? '—'}</span></div>
           <div className="grid-item full-width">
             <div className="leadClientDetails__notes-label"><span className="grid-label">Notes du rendez-vous</span><button type="button" className="leadClientDetails__notes-edit" onClick={startNotesEdition} title="Modifier les notes" aria-label="Modifier les notes du rendez-vous"><IoPencil /></button></div>

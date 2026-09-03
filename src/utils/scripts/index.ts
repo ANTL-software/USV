@@ -186,6 +186,7 @@ export {
   resolveLeadContactName,
   resolveLeadContactPhone,
   resolveLeadContactRole,
+  shouldShowLeadEmployeeCountQualification,
 } from './leadClientDetails.ts';
 export {
   ENRICHMENT_STATUS_LABELS,

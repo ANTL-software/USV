@@ -14,7 +14,7 @@ import {
   type LeadClient,
   type StatutRendezVous,
 } from '../utils/types/index.ts';
-import { isLeadClientRendezVous } from '../utils/scripts/index.ts';
+import { isLeadClientRendezVous, shouldShowLeadEmployeeCountQualification } from '../utils/scripts/index.ts';
 import { useAlert } from './useAlert.ts';
 
 export function useLeadClientDetails(idLead: number) {
@@ -41,6 +41,9 @@ export function useLeadClientDetails(idLead: number) {
   const [emailSubject, setEmailSubject] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const showEmployeeCountQualification = lead
+    ? shouldShowLeadEmployeeCountQualification(lead)
+    : false;
 
   const loadLead = useCallback(async (): Promise<void> => {
     if (!Number.isInteger(idLead) || idLead <= 0) {
@@ -271,6 +274,7 @@ export function useLeadClientDetails(idLead: number) {
     senderName,
     setSenderName,
     senderNameOptions,
+    showEmployeeCountQualification,
     sendLeadEmail,
     setEmailMessage,
     setEmailSubject,
