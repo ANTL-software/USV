@@ -102,12 +102,15 @@ test('la synthèse de file applique les seuils de stock métier', () => {
   ]);
 });
 
-test('les agents déjà en appel ne sont pas dupliqués dans les agents visibles', () => {
-  const agents = [createAgent(1), createAgent(2)];
+test('un appel remonté par le fallback backend masque le statut hors ligne désynchronisé', () => {
+  const agents = [createAgent(1, { statut_dialer: 'hors_ligne' }), createAgent(2)];
   assert.deepEqual(
     getVisibleSupervisionAgents(agents, [createCall()]).map(({ id_employe }) => id_employe),
     [2],
   );
+  assert.equal(buildSupervisionCallRows([
+    createCall({ twilio_call_sid: 'CA-agent', prospect_call_sid: 'CA-prospect' }),
+  ])[0].whisperAvailability, 'available');
 });
 
 test('la synthèse dialer et runtime conserve les anomalies multi-campagne', () => {

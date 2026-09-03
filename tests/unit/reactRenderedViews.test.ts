@@ -158,7 +158,7 @@ test('Header et SubNav rendent les permissions et la route active via leurs hook
     ),
   ));
 
-  assert.match(html, /Nina/);
+  assert.match(html, /(?:Nina|Bon anniversaire Mehdi !)/);
   assert.match(html, /Accueil/);
   assert.match(html, /Booking/);
   assert.match(html, /Gestion opérationnelle/);

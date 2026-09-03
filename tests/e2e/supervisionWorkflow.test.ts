@@ -32,7 +32,7 @@ const queueState: QueueState = {
       nom: 'Durand',
       prenom: 'Alice',
       identifiant: 'alice',
-      statut_dialer: 'en_appel',
+      statut_dialer: 'hors_ligne',
       debut_statut: '2026-07-16T08:00:00.000Z',
       raison_pause: null,
       id_campagne_active: 7,
@@ -116,7 +116,7 @@ mock.module(apiModuleUrl, {
   },
 });
 
-test('le parcours supervision sépare temps réel campagne et statistiques agent', async () => {
+test('le parcours supervision garde un appel coachable malgré un statut dialer hors ligne désynchronisé', async () => {
   const {
     getEmployeGraphiquesService,
     getQueueStateService,
