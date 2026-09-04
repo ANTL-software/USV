@@ -66,7 +66,12 @@ export function getRecordingProspectLabel(recording: Enregistrement): string {
   const prospect = recording.appel?.prospect;
   return prospect?.raison_sociale?.trim()
     || [prospect?.prenom, prospect?.nom].filter(Boolean).join(' ').trim()
-    || 'Particulier';
+    || '—';
+}
+
+export function getRecordingActivityLabel(recording: Enregistrement): string {
+  const prospect = recording.appel?.prospect;
+  return prospect?.activite?.trim() || prospect?.secteur?.trim() || '—';
 }
 
 export function getRecordingStatusLabel(recording: Enregistrement): string {

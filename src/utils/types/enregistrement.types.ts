@@ -46,6 +46,8 @@ export interface Enregistrement {
       prenom: string;
       raison_sociale: string;
       telephone: string;
+      activite?: string | null;
+      secteur?: string | null;
     };
   };
 }

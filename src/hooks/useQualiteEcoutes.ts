@@ -272,6 +272,7 @@ export function useQualiteEcoutes(scope: QualiteEcoutesScope = 'operations') {
     totalCount,
     totalPages,
     showCampaignFilter: scope === 'operations',
+    showProspectActivity: scope === 'operations',
     showTotalCount: scope === 'operations',
   };
 }

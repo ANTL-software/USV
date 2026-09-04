@@ -25,6 +25,7 @@ import {
   getAdjacentKanbanStatus,
   getEmployeePosteBadgeClass,
   getKanbanPriorityBadgeClass,
+  getRecordingActivityLabel,
   getRecordingAgentLabel,
   getRecordingProspectLabel,
   getRecordingStatusClass,
@@ -129,6 +130,18 @@ test('les écoutes préparent leurs libellés hors du tableau', () => {
   assert.equal(getRecordingProspectLabel(recording), 'Alice Dupont');
   assert.equal(getRecordingStatusLabel(recording), 'Commande à établir');
   assert.equal(getRecordingStatusClass(recording), 'qualiteEcoutes__badge-statut qualiteEcoutes__badge-statut--rdv_pris');
+  assert.equal(getRecordingActivityLabel(recording), '—');
+
+  const prospect = recording.appel?.prospect;
+  assert.ok(prospect);
+  prospect.raison_sociale = 'Atelier du Centre';
+  prospect.activite = 'Menuiserie';
+  prospect.secteur = 'Construction';
+  assert.equal(getRecordingProspectLabel(recording), 'Atelier du Centre');
+  assert.equal(getRecordingActivityLabel(recording), 'Menuiserie');
+  prospect.activite = null;
+  assert.equal(getRecordingActivityLabel(recording), 'Construction');
+  assert.equal(getRecordingProspectLabel({ ...recording, appel: undefined }), '—');
 });
 
 test('le formulaire panier normalise création édition et prix', () => {

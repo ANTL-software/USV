@@ -6,6 +6,7 @@ import {
   formatFileSize,
   formatRecordingDate,
   formatRecordingDuration,
+  getRecordingActivityLabel,
   getRecordingAgentLabel,
   getRecordingPhone,
   getRecordingProspectLabel,
@@ -22,7 +23,7 @@ export function QualiteEcoutesTable({ viewModel }: QualiteEcoutesTableProps): Re
   return (
     <div className="qualiteEcoutes__table-wrap animate-fade-in">
       <table className="qualiteEcoutes__table">
-        <thead><tr><th>ID Appel</th><th>Date / Heure</th><th>Agent</th><th>Campagne</th><th>Prospect / Raison Sociale</th><th>Téléphone</th><th>Durée</th><th>Statut</th><th>Fichier</th><th>Actions</th></tr></thead>
+        <thead><tr><th>ID Appel</th><th>Date / Heure</th><th>Agent</th><th>Campagne</th><th>Prospect / Raison Sociale</th>{viewModel.showProspectActivity && <th>Secteur d’activité</th>}<th>Téléphone</th><th>Durée</th><th>Statut</th><th>Fichier</th><th>Actions</th></tr></thead>
         <tbody>
           {viewModel.recordings.map((recording) => {
             const isPlaying = viewModel.activeRecording?.id_enregistrement === recording.id_enregistrement;
@@ -33,7 +34,8 @@ export function QualiteEcoutesTable({ viewModel }: QualiteEcoutesTableProps): Re
                 <td><strong>{formatRecordingDate(recording.created_at)}</strong></td>
                 <td>{getRecordingAgentLabel(recording)}</td>
                 <td><span className="qualiteEcoutes__badge-campagne">{recording.appel?.campagne?.nom_campagne || '—'}</span></td>
-                <td className={getRecordingProspectLabel(recording) === 'Particulier' ? 'qualiteEcoutes__text-muted' : ''}>{getRecordingProspectLabel(recording)}</td>
+                <td className={getRecordingProspectLabel(recording) === '—' ? 'qualiteEcoutes__text-muted' : ''}>{getRecordingProspectLabel(recording)}</td>
+                {viewModel.showProspectActivity && <td>{getRecordingActivityLabel(recording)}</td>}
                 <td>{getRecordingPhone(recording)}</td>
                 <td>{formatRecordingDuration(recording.duree_secondes)}</td>
                 <td><span className={getRecordingStatusClass(recording)}>{getRecordingStatusLabel(recording)}</span></td>

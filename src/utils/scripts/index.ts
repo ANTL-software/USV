@@ -117,6 +117,7 @@ export {
   formatFileSize,
   formatRecordingDate,
   formatRecordingDuration,
+  getRecordingActivityLabel,
   getRecordingAgentLabel,
   getRecordingPhone,
   getRecordingProspectLabel,
