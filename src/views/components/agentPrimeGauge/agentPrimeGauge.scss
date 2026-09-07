@@ -1,0 +1,160 @@
+@use "../../../utils/styles/variables" as vars;
+
+.agentPrimeGauge {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.agentPrimeGauge__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.agentPrimeGauge__headerLeft,
+.agentPrimeGauge__headerRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.agentPrimeGauge__headerRight {
+  align-items: flex-end;
+}
+
+.agentPrimeGauge__level {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+
+.agentPrimeGauge__monthlyStats,
+.agentPrimeGauge__objective {
+  font-size: 0.8125rem;
+  color: vars.$fontColorSecondary;
+}
+
+.agentPrimeGauge__pendingStats {
+  color: vars.$warningColor;
+  font-weight: 600;
+}
+
+.agentPrimeGauge__bonus {
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.agentPrimeGauge__bonus--active {
+  color: vars.$utilsPrimary;
+}
+
+.agentPrimeGauge__bonus--none {
+  color: vars.$fontColorSecondary;
+}
+
+.agentPrimeGauge__trackWrapper {
+  position: relative;
+  padding-bottom: 3.25rem;
+}
+
+.agentPrimeGauge__track {
+  position: relative;
+  height: 0.875rem;
+  background: #e5e7eb;
+  border-radius: 9999px;
+  overflow: visible;
+}
+
+.agentPrimeGauge__fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  height: 100%;
+  background: linear-gradient(90deg, vars.$utilsSecondary 0%, vars.$utilsPrimary 100%);
+  border-radius: 9999px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.agentPrimeGauge__marker {
+  position: absolute;
+  top: -3px;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.agentPrimeGauge__markerLine {
+  width: 2px;
+  height: calc(0.875rem + 6px);
+  background: #d1d5db;
+  border-radius: 1px;
+}
+
+.agentPrimeGauge__marker--unlocked .agentPrimeGauge__markerLine {
+  background: vars.$utilsDark;
+}
+
+.agentPrimeGauge__labels {
+  position: absolute;
+  top: calc(0.875rem + 8px);
+  inset-inline: 0;
+}
+
+.agentPrimeGauge__label {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.05rem;
+  color: vars.$fontColorSecondary;
+}
+
+.agentPrimeGauge__label:first-child {
+  transform: translateX(0);
+  align-items: flex-start;
+}
+
+.agentPrimeGauge__label:last-child {
+  transform: translateX(-100%);
+  align-items: flex-end;
+}
+
+.agentPrimeGauge__label--unlocked {
+  color: vars.$utilsPrimary;
+}
+
+.agentPrimeGauge__labelPercentage,
+.agentPrimeGauge__labelBonus {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.agentPrimeGauge__labelObjective {
+  font-size: 0.625rem;
+  white-space: nowrap;
+}
+
+.agentPrimeGauge__progressText {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.25rem;
+  font-size: 0.75rem;
+  color: vars.$fontColorPrimary;
+}
+
+.agentPrimeGauge__percentageValue {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: vars.$utilsPrimary;
+}
+
+@media (max-width: 640px) {
+  .agentPrimeGauge__headerRight {
+    align-items: flex-start;
+  }
+}

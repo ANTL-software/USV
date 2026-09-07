@@ -106,7 +106,7 @@ test('le parcours Vigie prépare des priorités puis permet leur annulation', as
   const manual = await createVigieManualPriorityService(7, {
     id_agent_cible: 4,
     telephone_prospect: '0612345678',
-    libelle_prospect: 'Prospect manuel',
+    motif_rappel_force: 'Le prospect a demandé à être rappelé en priorité.',
   });
   const cancelled = await cancelVigieActionService(7, manual.id_vigie_action);
   const journal = await getVigieActionsService(7);
@@ -114,6 +114,11 @@ test('le parcours Vigie prépare des priorités puis permet leur annulation', as
   assert.equal(recommendation.type_action, 'validation_recommandation');
   assert.equal(batch.length, 2);
   assert.equal(cancelled.statut, 'annulee');
+  assert.deepEqual(manual.payload, {
+    id_agent_cible: 4,
+    telephone_prospect: '0612345678',
+    motif_rappel_force: 'Le prospect a demandé à être rappelé en priorité.',
+  });
   assert.equal(journal.length, 4);
   assert.deepEqual(
     requests.find(({ url }) => url === '/supervision/vigie/7')?.config,

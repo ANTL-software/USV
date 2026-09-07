@@ -2,15 +2,16 @@ import type { ReactElement } from 'react';
 import { IoArrowBack, IoSave } from 'react-icons/io5';
 import Select from 'react-select';
 import type { AgentFormViewModel } from '../../../hooks/index.ts';
-import { BackToTop, Button, ColorPicker, Header, PasswordStrengthIndicator, SubNav } from '../index.ts';
+import { AgentPrimeGauge, BackToTop, Button, ColorPicker, Header, PasswordStrengthIndicator, SubNav } from '../index.ts';
 
 interface AgentFormContentProps { viewModel: AgentFormViewModel; }
 
 export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactElement {
   const {
     form, setForm, existing,
-    postes, rangs, isEdit, isLoading, isFetching,
-    error, success,
+    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats,
+    isEdit, isLoading, isFetching, isPrimeStatsLoading,
+    error, success, primeStatsError,
     handleChange, handleSubmit, navigateBack,
   } = viewModel;
 
@@ -81,35 +82,76 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                     inputId="id_poste"
                     options={postes.map(p => ({ value: String(p.id_poste), label: p.libelle_poste }))}
                     value={form.id_poste ? { value: form.id_poste, label: postes.find(p => String(p.id_poste) === form.id_poste)?.libelle_poste ?? '' } : null}
-                    onChange={opt => setForm(prev => ({ ...prev, id_poste: opt ? opt.value : '', id_rang_commercial: '' }))}
+                    onChange={opt => setForm(prev => ({ ...prev, id_poste: opt ? opt.value : '', id_niveau_prime: '' }))}
                     isDisabled={isLoading}
                     isClearable
                     placeholder="— Sélectionner un poste —"
                     noOptionsMessage={() => 'Aucun poste trouvé'}
                     classNamePrefix="reactSelect"
                   />
-                  {postes.find(p => String(p.id_poste) === form.id_poste)?.type_poste === 'commercial' && (
-                    <div className="agentForm__field" style={{ marginTop: '0.75em' }}>
-                      <label htmlFor="id_rang_commercial">Rang commercial (Niveau de prime)</label>
+                  {isCommercial && (
+                    <div className="agentForm__prime-fields">
+                      <div className="agentForm__field">
+                      <label htmlFor="id_niveau_prime">Palier de prime</label>
                       <Select
-                        inputId="id_rang_commercial"
+                        inputId="id_niveau_prime"
                         options={[
                           { value: '', label: 'Aucun' },
-                          ...rangs.map(r => ({ value: String(r.id_rang), label: r.libelle }))
+                          ...niveauxPrime.map(niveau => ({ value: String(niveau.id_niveau_prime), label: niveau.libelle }))
                         ]}
-                        value={form.id_rang_commercial ? { value: form.id_rang_commercial, label: rangs.find(r => String(r.id_rang) === form.id_rang_commercial)?.libelle ?? '' } : { value: '', label: 'Aucun' }}
-                        onChange={opt => setForm(prev => ({ ...prev, id_rang_commercial: opt ? opt.value : '' }))}
+                        value={form.id_niveau_prime ? { value: form.id_niveau_prime, label: niveauxPrime.find(niveau => String(niveau.id_niveau_prime) === form.id_niveau_prime)?.libelle ?? '' } : { value: '', label: 'Aucun' }}
+                        onChange={opt => setForm(prev => ({ ...prev, id_niveau_prime: opt ? opt.value : '' }))}
                         isDisabled={isLoading}
                         isClearable
-                        placeholder="— Sélectionner un rang —"
-                        noOptionsMessage={() => 'Aucun rang trouvé'}
+                        placeholder="— Sélectionner un palier —"
+                        noOptionsMessage={() => 'Aucun palier trouvé'}
                         classNamePrefix="reactSelect"
                       />
+                      </div>
+                      <div className="agentForm__field">
+                        <label htmlFor="objectif_prime">Objectif 100 % ({primeObjectiveUnit})</label>
+                        <input
+                          id="objectif_prime"
+                          name="objectif_prime"
+                          type="number"
+                          min="1"
+                          step="1"
+                          value={form.objectif_prime}
+                          onChange={handleChange}
+                          disabled={isLoading || !activePrimeAssignment}
+                          placeholder={activePrimeAssignment ? undefined : 'Affectez d’abord une campagne'}
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
             </fieldset>
+
+            {isEdit && isCommercial && (
+              <fieldset className="agentForm__fieldset">
+                <legend>Suivi de la prime</legend>
+                <p className="agentForm__fieldset-hint">
+                  Vue affichée au commercial sur le Dashboard du Script pour sa campagne active.
+                </p>
+                {isPrimeStatsLoading && (
+                  <div className="agentForm__prime-state">Chargement de la jauge...</div>
+                )}
+                {!isPrimeStatsLoading && primeStatsError && (
+                  <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
+                )}
+                {!isPrimeStatsLoading && !primeStatsError && primeStats?.prime && (
+                  <AgentPrimeGauge stats={primeStats} />
+                )}
+                {!isPrimeStatsLoading && !primeStatsError && !primeStats?.prime && (
+                  <div className="agentForm__prime-state">
+                    {activePrimeAssignment
+                      ? 'Sélectionnez un palier de prime pour afficher la jauge.'
+                      : 'Aucune campagne active : la jauge de prime n’est pas disponible.'}
+                  </div>
+                )}
+              </fieldset>
+            )}
 
             <fieldset className="agentForm__fieldset">
               <legend>{isEdit ? 'Changer le mot de passe (laisser vide pour conserver)' : 'Mot de passe *'}</legend>

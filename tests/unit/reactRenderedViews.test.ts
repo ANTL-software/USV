@@ -35,7 +35,7 @@ import {
   getEmailComposerCopy,
 } from '../../src/utils/scripts/index.ts';
 import type { NavigationGroup } from '../../src/utils/scripts/index.ts';
-import type { Employe, Prospect } from '../../src/utils/types/index.ts';
+import type { Employe, EmployeStats, Prospect } from '../../src/utils/types/index.ts';
 import type { LeadClient, PartenaireDocumentsResponse, QuoteFormState, QuotePdfPayload, StatutRendezVous } from '../../src/utils/types/index.ts';
 
 const ROOT = process.cwd();
@@ -791,4 +791,58 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
   assert.match(html, /Mot de passe enregistré/);
   assert.match(html, /Configuration trunk appliquée/);
   assert.match(html, /Activation en trois étapes/);
+});
+
+test('la fiche employé peut rendre la même jauge Lead B2B que le Dashboard Script', async () => {
+  const AgentPrimeGauge = await loadComponent<{ stats: EmployeStats }>(
+    '/src/views/components/agentPrimeGauge/AgentPrimeGauge.tsx',
+    'AgentPrimeGauge',
+  );
+  const stats: EmployeStats = {
+    date: '2026-09-07',
+    type_campagne: 'lead_b2b',
+    appels_total: 0,
+    appels_aboutis: 0,
+    rdv_pris: 0,
+    rendez_vous_pris: 0,
+    taux_conversion: 0,
+    ventes_jour_en_attente_count: 0,
+    ventes_jour_en_attente_montant: 0,
+    ventes_jour_validees_count: 0,
+    ventes_jour_validees_montant: 0,
+    leads_jour_count: 2,
+    leads_mois_count: 32,
+    ventes_mois_count: 0,
+    ventes_mois_montant: 0,
+    ventes_mois_en_attente_count: 0,
+    ventes_mois_en_attente_montant: 0,
+    ventes: 0,
+    ventes_jour_montant: 0,
+    prime: {
+      niveau: 1,
+      code_niveau: 'palier_1',
+      libelle: 'Palier 1',
+      type_campagne: 'lead_b2b',
+      unite_objectif: 'lead',
+      salaire_fixe: 1500,
+      objectif: 35,
+      valeur_realisee: 32,
+      pourcentage_atteint: 91.4,
+      prime_debloquee: 600,
+      remuneration_totale: 2100,
+      paliers: [
+        { seuil_pourcentage: 0, objectif_palier: 0, montant_prime: 0, montant_total: 1500, debloque: true },
+        { seuil_pourcentage: 75, objectif_palier: 26, montant_prime: 300, montant_total: 1800, debloque: true },
+        { seuil_pourcentage: 90, objectif_palier: 32, montant_prime: 600, montant_total: 2100, debloque: true },
+        { seuil_pourcentage: 100, objectif_palier: 35, montant_prime: 1200, montant_total: 2700, debloque: false },
+      ],
+    },
+  };
+  const html = renderToStaticMarkup(createElement(AgentPrimeGauge, { stats }));
+
+  assert.match(html, /Palier 1/);
+  assert.match(html, /32 leads produits/);
+  assert.match(html, /Prime débloquée/);
+  assert.match(html, /Objectif 100 % : 35 leads/);
+  assert.match(html, />0%<.*>75%<.*>90%<.*>100%</);
 });

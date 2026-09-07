@@ -21,11 +21,12 @@ export {
 export {
   getAllEmployesService,
   getEmployeByIdService,
+  getEmployeStatsService,
   updateEmployeService,
   updateEmployeScriptCallAccessService,
   deleteEmployeService,
   createEmployeService,
-  getRangsCommerciauxService,
+  getPaliersPrimeService,
   getPostesService,
   getPosteByIdService,
   createPosteService,

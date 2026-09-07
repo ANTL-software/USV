@@ -36,7 +36,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
   const [selectedProspectIds, setSelectedProspectIds] = useState<number[]>([]);
   const [priorityAgentId, setPriorityAgentId] = useState<number | null>(null);
   const [manualPriorityTelephone, setManualPriorityTelephone] = useState('');
-  const [manualPriorityLabel, setManualPriorityLabel] = useState('');
+  const [manualPriorityReason, setManualPriorityReason] = useState('');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [actionMessageTone, setActionMessageTone] = useState<VigieActionMessageTone>('info');
   const [pendingAction, setPendingAction] = useState<string | null>(null);
@@ -180,19 +180,19 @@ export function useVigieView(options?: UseVigieViewOptions) {
   }, [priorityAgentId, refresh, selectedCampaignId, selectedCandidates]);
 
   const submitManualPriority = useCallback(async (): Promise<void> => {
-    if (!selectedCampaignId || !priorityAgentId || !manualPriorityTelephone.trim()) return;
+    if (!selectedCampaignId || !priorityAgentId || !manualPriorityTelephone.trim() || !manualPriorityReason.trim()) return;
     try {
       setPendingAction('priorite-manuelle');
       setActionMessage(null);
       await createVigieManualPriorityService(selectedCampaignId, {
         id_agent_cible: priorityAgentId,
         telephone_prospect: manualPriorityTelephone.trim(),
-        libelle_prospect: manualPriorityLabel.trim() || undefined,
+        motif_rappel_force: manualPriorityReason.trim(),
       });
       setActionMessage('Numéro injecté : il sera appelé en priorité dès le prochain passage disponible du commercial, après les rappels échus.');
       setActionMessageTone('success');
       setManualPriorityTelephone('');
-      setManualPriorityLabel('');
+      setManualPriorityReason('');
       await refresh();
     } catch (actionError) {
       setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’injecter ce numéro.');
@@ -200,7 +200,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
     } finally {
       setPendingAction(null);
     }
-  }, [manualPriorityLabel, manualPriorityTelephone, priorityAgentId, refresh, selectedCampaignId]);
+  }, [manualPriorityReason, manualPriorityTelephone, priorityAgentId, refresh, selectedCampaignId]);
 
   const cancelAction = useCallback(async (action: VigieAction): Promise<void> => {
     if (!selectedCampaignId) return;
@@ -231,7 +231,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
     error,
     isLoading,
     isScoringExpanded,
-    manualPriorityLabel,
+    manualPriorityReason,
     manualPriorityTelephone,
     pendingAction,
     period,
@@ -248,7 +248,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
     selectedProspectIds,
     selectedSegments,
     setIsScoringExpanded,
-    setManualPriorityLabel,
+    setManualPriorityReason,
     setManualPriorityTelephone,
     setPeriod,
     setPriorityAgentId,

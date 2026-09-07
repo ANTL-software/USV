@@ -1217,6 +1217,7 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-09-07 | Remplacement du rang commercial par Palier 1/2/3, objectif individuel à 100 % et miroir de la jauge Dashboard Script sur le profil commercial | AI Agent |
 | 2026-09-02 | Ajout des vues partenaire `/partenaire/prospects` et `/partenaire/ecoutes`, avec cartes, navigation, droits dédiés et données strictement limitées aux campagnes autorisées | AI Agent |
 | 2026-07-30 | Refonte du viewer de documents partagé : PDF multipage en scroll continu, zoom et téléchargement dans une toolbar compacte, modale ajustée au document | AI Agent |
 | 2026-07-20 | Mise à jour des dépendances vulnérables, neutralisation de l'évaluation dynamique PDF et ajout d'un test navigateur avec document réel | AI Agent |

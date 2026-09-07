@@ -757,6 +757,10 @@
 #vigieView .vigieView__manual-priority > .vigieView__button {
   margin-top: 0.1em;
 }
+#vigieView .vigieView__manual-priority textarea {
+  min-height: 5.5em;
+  resize: vertical;
+}
 #vigieView .vigieView__step {
   display: grid;
   width: 30px;

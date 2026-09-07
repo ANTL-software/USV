@@ -1,7 +1,7 @@
 import { getRequest, postRequest, patchRequest, deleteRequest, postFormDataRequest } from '../APICalls.ts';
 import type { AxiosResponse } from 'axios';
 import { UserModel } from '../models/index.ts';
-import type { Employe, Poste, RangCommercial, ApiResponse, CreateEmployeData, CreateEmployeResponse, UpdateEmployeScriptCallAccessPayload } from '../../utils/types/index.ts';
+import type { Employe, EmployeStats, Poste, NiveauPrime, ApiResponse, CreateEmployeData, CreateEmployeResponse, UpdateEmployeScriptCallAccessPayload } from '../../utils/types/index.ts';
 
 export const getAllEmployesService = async (): Promise<UserModel[]> => {
   const response: AxiosResponse<ApiResponse<{ employes: Employe[] }>> = await getRequest('/employes');
@@ -19,9 +19,17 @@ export const getEmployeByIdService = async (id: number): Promise<UserModel> => {
   throw new Error(response.data.message || 'Impossible de récupérer l\'employé');
 };
 
+export const getEmployeStatsService = async (id: number): Promise<EmployeStats> => {
+  const response: AxiosResponse<ApiResponse<EmployeStats>> = await getRequest(`/employes/${id}/stats`);
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer la jauge de prime');
+};
+
 export const updateEmployeService = async (
   id: number,
-  data: Partial<Employe> & { password?: string }
+  data: Partial<Employe> & { objectif_prime?: number; password?: string }
 ): Promise<UserModel> => {
   const response: AxiosResponse<ApiResponse<Employe>> = await patchRequest(`/employes/${id}`, data);
   if (response.data.success && response.data.data) {
@@ -65,10 +73,10 @@ export const createEmployeService = async (data: CreateEmployeData): Promise<Cre
 };
 
 
-export const getRangsCommerciauxService = async (): Promise<RangCommercial[]> => {
-  const response: AxiosResponse<ApiResponse<RangCommercial[]>> = await getRequest('/rangs-commerciaux');
+export const getPaliersPrimeService = async (): Promise<NiveauPrime[]> => {
+  const response: AxiosResponse<ApiResponse<NiveauPrime[]>> = await getRequest('/paliers-prime');
   if (response.data.success && response.data.data) return response.data.data;
-  throw new Error(response.data.message || 'Impossible de récupérer les rangs');
+  throw new Error(response.data.message || 'Impossible de récupérer les paliers de prime');
 };
 
 export const getPostesService = async (): Promise<Poste[]> => {

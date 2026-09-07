@@ -11,6 +11,7 @@ export { AgentDocumentUploadModal } from './agentDocumentUploadModal/index.ts';
 export { AgentDocumentViewerModal } from './agentDocumentViewerModal/index.ts';
 export { AgentPlanningModal } from './agentPlanningModal/index.ts';
 export { AgentPhotoTooltip } from './agentPhotoTooltip/index.ts';
+export { AgentPrimeGauge } from './agentPrimeGauge/index.ts';
 export { AgentsListContent } from './agentsListContent/index.ts';
 export { AgentsListHeader } from './agentsListHeader/index.ts';
 export { AgentsListTable } from './agentsListTable/index.ts';

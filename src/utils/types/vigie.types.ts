@@ -241,5 +241,5 @@ export interface CreateVigiePriorityBatchData {
 export interface CreateVigieManualPriorityData {
   id_agent_cible: number;
   telephone_prospect: string;
-  libelle_prospect?: string;
+  motif_rappel_force: string;
 }

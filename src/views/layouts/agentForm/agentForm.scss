@@ -104,6 +104,17 @@
   flex-direction: column;
   gap: 0.35em;
 }
+#agentForm .agentForm__prime-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0.75em;
+  margin-top: 0.75em;
+}
+@media (max-width: 640px) {
+  #agentForm .agentForm__prime-fields {
+    grid-template-columns: 1fr;
+  }
+}
 #agentForm .agentForm__field label {
   font-size: 0.85rem;
   font-weight: 500;
@@ -131,6 +142,19 @@
 }
 #agentForm .agentForm__field input::placeholder {
   color: #94a3b8;
+}
+#agentForm .agentForm__prime-state {
+  padding: 1em;
+  border: 1px dashed vars.$borderColor;
+  border-radius: 8px;
+  color: vars.$fontColorSecondary;
+  text-align: center;
+  font-size: 0.85rem;
+}
+#agentForm .agentForm__prime-state--error {
+  border-color: rgba(vars.$errorColor, 0.35);
+  color: vars.$errorColor;
+  background: rgba(vars.$errorColor, 0.05);
 }
 #agentForm .agentForm__field .reactSelect__control {
   border-color: vars.$borderColor;

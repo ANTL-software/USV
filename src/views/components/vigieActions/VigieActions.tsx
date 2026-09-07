@@ -43,8 +43,8 @@ export function VigieActions({ state }: VigieActionsProps): ReactElement {
           <div className="vigieView__manual-priority">
             <div><span>ou</span><strong>Injecter un numéro manuel</strong></div><p>Pour un rappel transmis au superviseur : la fiche est créée ou rattachée à la campagne, puis servie en priorité au commercial choisi.</p>
             <label htmlFor="vigie-manual-priority-phone">Numéro à appeler</label><input id="vigie-manual-priority-phone" type="tel" value={state.manualPriorityTelephone} onChange={(event) => state.setManualPriorityTelephone(event.target.value)} placeholder="Ex. 06 12 34 56 78" />
-            <label htmlFor="vigie-manual-priority-label">Nom ou société <em>facultatif</em></label><input id="vigie-manual-priority-label" value={state.manualPriorityLabel} onChange={(event) => state.setManualPriorityLabel(event.target.value)} placeholder="Ex. Mme Martin — rappel demandé" />
-            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.priorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>Injecter et prioriser ce numéro</button>
+            <label htmlFor="vigie-manual-priority-reason">Motif du rappel forcé</label><textarea id="vigie-manual-priority-reason" value={state.manualPriorityReason} onChange={(event) => state.setManualPriorityReason(event.target.value)} placeholder="Expliquez au commercial pourquoi ce rappel doit être traité en priorité." required />
+            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.manualPriorityReason.trim() || !state.priorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>Injecter et prioriser ce numéro</button>
           </div>
         </div>
       </div>

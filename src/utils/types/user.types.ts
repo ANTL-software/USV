@@ -26,10 +26,70 @@ export interface Departement {
   id_responsable?: number;
 }
 
-export interface RangCommercial {
-  id_rang: number;
-  nom_rang: string;
+export interface NiveauPrime {
+  id_niveau_prime: number;
+  numero: 1 | 2 | 3;
+  code_niveau: 'palier_1' | 'palier_2' | 'palier_3';
   libelle: string;
+}
+
+export interface SeuilPrimeStats {
+  seuil_pourcentage: number;
+  objectif_palier: number;
+  montant_prime: number;
+  montant_total: number;
+  debloque: boolean;
+}
+
+export interface PrimeStats {
+  niveau: 1 | 2 | 3;
+  code_niveau: 'palier_1' | 'palier_2' | 'palier_3';
+  libelle: string;
+  type_campagne: 'vente' | 'lead_b2b';
+  unite_objectif: 'euro' | 'lead';
+  salaire_fixe: number;
+  objectif: number;
+  valeur_realisee: number;
+  pourcentage_atteint: number;
+  prime_debloquee: number;
+  remuneration_totale: number;
+  paliers: SeuilPrimeStats[];
+}
+
+export interface EmployeStats {
+  date: string;
+  type_campagne: 'vente' | 'lead_b2b' | string;
+  appels_total: number;
+  appels_aboutis: number;
+  rdv_pris: number;
+  rendez_vous_pris: number;
+  taux_conversion: number;
+  ventes_jour_en_attente_count: number;
+  ventes_jour_en_attente_montant: number;
+  ventes_jour_validees_count: number;
+  ventes_jour_validees_montant: number;
+  leads_jour_count: number;
+  leads_mois_count: number;
+  ventes_mois_count: number;
+  ventes_mois_montant: number;
+  ventes_mois_en_attente_count: number;
+  ventes_mois_en_attente_montant: number;
+  ventes: number;
+  ventes_jour_montant: number;
+  prime: PrimeStats | null;
+}
+
+export interface EmployeCampagneAssignment {
+  id_affectation: number;
+  id_campagne: number;
+  date_debut_affectation: string | null;
+  date_fin_affectation: string | null;
+  objectif_prime: number;
+  campagne?: {
+    id_campagne: number;
+    nom_campagne: string;
+    type_campagne: 'vente' | 'lead_b2b' | string;
+  };
 }
 
 export interface Employe {
@@ -42,7 +102,7 @@ export interface Employe {
   date_embauche?: string;
   id_poste?: number;
   id_departement?: number;
-  id_rang_commercial?: number | null;
+  id_niveau_prime?: number | null;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
   couleur?: string | null;
@@ -50,7 +110,8 @@ export interface Employe {
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
-  rangCommercial?: RangCommercial | null;
+  niveauPrime?: NiveauPrime | null;
+  campagnesAssignees?: EmployeCampagneAssignment[];
   photo_path?: string | null;
   photo_file_name?: string | null;
   account_type?: 'employe' | 'partenaire_externe';
@@ -106,7 +167,7 @@ export interface CreateEmployeData {
   telephone?: string;
   date_embauche?: string;
   id_poste?: number;
-  id_rang_commercial?: number | null;
+  id_niveau_prime?: number | null;
   couleur?: string;
 }
 

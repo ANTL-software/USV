@@ -5,6 +5,13 @@ export {
   normalizeCampaignVariant,
 } from './campaignVariants.ts';
 export type { CampaignVariant } from './campaignVariants.ts';
+export {
+  formatPrimeAmount,
+  formatPrimeBonus,
+  formatPrimeObjective,
+  formatPrimeProduction,
+  sortPrimeThresholds,
+} from './prime.ts';
 export { formatLeadClientReference } from './leadClients.ts';
 export {
   COMMANDES_PERIOD_OPTIONS,

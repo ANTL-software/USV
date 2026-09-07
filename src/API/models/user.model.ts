@@ -1,6 +1,6 @@
 // Adapté depuis script/src/API/models/User.model.ts
 // Différence : pas de localStorage (USV utilise les cookies httpOnly)
-import type { Departement, Employe, Poste, RangCommercial } from '../../utils/types/index.ts';
+import type { Departement, Employe, EmployeCampagneAssignment, NiveauPrime, Poste } from '../../utils/types/index.ts';
 
 export class UserModel implements Employe {
   id_employe: number;
@@ -12,7 +12,7 @@ export class UserModel implements Employe {
   date_embauche?: string;
   id_poste?: number;
   id_departement?: number;
-  id_rang_commercial?: number | null;
+  id_niveau_prime?: number | null;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
   couleur?: string | null;
@@ -20,7 +20,8 @@ export class UserModel implements Employe {
   updated_at?: string;
   poste?: Poste;
   departement?: Departement;
-  rangCommercial?: RangCommercial | null;
+  niveauPrime?: NiveauPrime | null;
+  campagnesAssignees?: EmployeCampagneAssignment[];
   photo_path?: string | null;
   photo_file_name?: string | null;
   account_type?: 'employe' | 'partenaire_externe';
@@ -43,7 +44,7 @@ export class UserModel implements Employe {
     this.date_embauche = data.date_embauche;
     this.id_poste = data.id_poste;
     this.id_departement = data.id_departement;
-    this.id_rang_commercial = data.id_rang_commercial ?? null;
+    this.id_niveau_prime = data.id_niveau_prime ?? null;
     this.actif = data.actif;
     this.role = data.role;
     this.couleur = data.couleur;
@@ -51,7 +52,8 @@ export class UserModel implements Employe {
     this.updated_at = data.updated_at;
     this.poste = data.poste;
     this.departement = data.departement;
-    this.rangCommercial = data.rangCommercial ?? null;
+    this.niveauPrime = data.niveauPrime ?? null;
+    this.campagnesAssignees = data.campagnesAssignees ?? [];
     this.photo_path = data.photo_path ?? null;
     this.photo_file_name = data.photo_file_name ?? null;
     this.account_type = data.account_type;
@@ -87,7 +89,7 @@ export class UserModel implements Employe {
       date_embauche: this.date_embauche,
       id_poste: this.id_poste,
       id_departement: this.id_departement,
-      id_rang_commercial: this.id_rang_commercial,
+      id_niveau_prime: this.id_niveau_prime,
       actif: this.actif,
       role: this.role,
       couleur: this.couleur,
@@ -95,7 +97,8 @@ export class UserModel implements Employe {
       updated_at: this.updated_at,
       poste: this.poste,
       departement: this.departement,
-      rangCommercial: this.rangCommercial,
+      niveauPrime: this.niveauPrime,
+      campagnesAssignees: this.campagnesAssignees,
       photo_path: this.photo_path,
       photo_file_name: this.photo_file_name,
       account_type: this.account_type,

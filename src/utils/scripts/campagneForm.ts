@@ -243,7 +243,12 @@ export function getAvailableCampaignEmployes(
   agents: AgentAffecte[],
 ): Employe[] {
   const assignedIds = new Set(agents.map((agent) => agent.id_employe));
-  return employes.filter((employe) => employe.actif && !assignedIds.has(employe.id_employe));
+  return employes.filter((employe) => {
+    const hasActiveCampaign = (employe.campagnesAssignees ?? []).some(
+      (assignment) => assignment.date_fin_affectation === null,
+    );
+    return employe.actif && !hasActiveCampaign && !assignedIds.has(employe.id_employe);
+  });
 }
 
 export function getTransferableCampaigns(

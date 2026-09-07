@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   getEmployeByIdService,
+  getEmployeStatsService,
   createEmployeService,
   updateEmployeService,
   getPostesService,
-  getRangsCommerciauxService,
+  getPaliersPrimeService,
 } from '../API/services/index.ts';
-import type { Employe, Poste, RangCommercial } from '../utils/types/index.ts';
+import type { Employe, EmployeStats, NiveauPrime, Poste } from '../utils/types/index.ts';
 import { sanitizePhoneNumber } from '../utils/scripts/index.ts';
 
 interface AgentFormState {
@@ -17,7 +18,8 @@ interface AgentFormState {
   telephone:           string;
   date_embauche:       string;
   id_poste:            string;
-  id_rang_commercial:  string;
+  id_niveau_prime:     string;
+  objectif_prime:      string;
   password:            string;
   password_confirm:    string;
   couleur:             string | null;
@@ -30,7 +32,8 @@ const INITIAL_FORM: AgentFormState = {
   telephone:          '',
   date_embauche:      '',
   id_poste:           '',
-  id_rang_commercial: '',
+  id_niveau_prime:    '',
+  objectif_prime:     '',
   password:           '',
   password_confirm:   '',
   couleur:            null,
@@ -44,15 +47,18 @@ export function useAgentForm() {
   const [form, setForm]                       = useState<AgentFormState>(INITIAL_FORM);
   const [existing, setExisting]               = useState<Employe | null>(null);
   const [postes, setPostes]                   = useState<Poste[]>([]);
-  const [rangs, setRangs]                     = useState<RangCommercial[]>([]);
+  const [niveauxPrime, setNiveauxPrime]       = useState<NiveauPrime[]>([]);
+  const [primeStats, setPrimeStats]             = useState<EmployeStats | null>(null);
   const [isLoading, setIsLoading]             = useState(false);
   const [isFetching, setIsFetching]           = useState(isEdit);
+  const [isPrimeStatsLoading, setIsPrimeStatsLoading] = useState(isEdit);
+  const [primeStatsError, setPrimeStatsError]   = useState<string | null>(null);
   const [error, setError]                     = useState<string | null>(null);
   const [success, setSuccess]                 = useState<string | null>(null);
 
   useEffect(() => {
     getPostesService().then(setPostes).catch(() => {});
-    getRangsCommerciauxService().then(setRangs).catch(() => {});
+    getPaliersPrimeService().then(setNiveauxPrime).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -69,7 +75,10 @@ export function useAgentForm() {
           telephone:          data.telephone || '',
           date_embauche:      data.date_embauche || '',
           id_poste:           data.id_poste ? String(data.id_poste) : '',
-          id_rang_commercial: data.id_rang_commercial ? String(data.id_rang_commercial) : '',
+          id_niveau_prime:    data.id_niveau_prime ? String(data.id_niveau_prime) : '',
+          objectif_prime:     data.campagnesAssignees?.[0]?.objectif_prime
+            ? String(data.campagnesAssignees[0].objectif_prime)
+            : '',
           password:           '',
           password_confirm:   '',
           couleur:            data.couleur || '',
@@ -78,6 +87,14 @@ export function useAgentForm() {
         setError(err instanceof Error ? err.message : 'Erreur de chargement');
       } finally {
         setIsFetching(false);
+      }
+
+      try {
+        setPrimeStats(await getEmployeStatsService(Number(id)));
+      } catch (err) {
+        setPrimeStatsError(err instanceof Error ? err.message : 'Erreur de chargement de la jauge');
+      } finally {
+        setIsPrimeStatsLoading(false);
       }
     };
     load();
@@ -124,7 +141,8 @@ export function useAgentForm() {
         if (form.telephone !== undefined) updateData.telephone = form.telephone ? sanitizePhoneNumber(form.telephone) : '';
         if (form.date_embauche) updateData.date_embauche = form.date_embauche;
         if (form.id_poste)  updateData.id_poste  = Number(form.id_poste);
-        updateData.id_rang_commercial = form.id_rang_commercial ? Number(form.id_rang_commercial) : null;
+        updateData.id_niveau_prime = form.id_niveau_prime ? Number(form.id_niveau_prime) : null;
+        if (form.objectif_prime) updateData.objectif_prime = Number(form.objectif_prime);
         if (form.password)  updateData.password  = form.password;
         if (form.couleur)   updateData.couleur   = form.couleur;
         else updateData.couleur = null;
@@ -140,7 +158,7 @@ export function useAgentForm() {
           telephone:          form.telephone ? sanitizePhoneNumber(form.telephone) : undefined,
           date_embauche:      form.date_embauche || undefined,
           id_poste:           form.id_poste ? Number(form.id_poste) : undefined,
-          id_rang_commercial: form.id_rang_commercial ? Number(form.id_rang_commercial) : undefined,
+          id_niveau_prime:    form.id_niveau_prime ? Number(form.id_niveau_prime) : undefined,
           couleur:            form.couleur || undefined,
         });
 
@@ -154,10 +172,15 @@ export function useAgentForm() {
     }
   };
 
+  const activePrimeAssignment = existing?.campagnesAssignees?.[0] ?? null;
+  const isCommercial = postes.find((poste) => String(poste.id_poste) === form.id_poste)?.type_poste === 'commercial';
+  const primeObjectiveUnit = activePrimeAssignment?.campagne?.type_campagne === 'lead_b2b' ? 'leads' : '€';
+
   return {
-    form, setForm, existing, postes, rangs,
-    isEdit, isLoading, isFetching,
-    error, success,
+    form, setForm, existing, postes, niveauxPrime,
+    activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats,
+    isEdit, isLoading, isFetching, isPrimeStatsLoading,
+    error, success, primeStatsError,
     handleChange, handleSubmit,
     navigateBack: () => void navigate('/operations/employes'),
   };
