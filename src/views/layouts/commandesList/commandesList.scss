@@ -58,6 +58,10 @@
   }
   #commandesList .commandesList__filter-group--campaign {
     grid-column: 1 / -1;
+    order: -1;
+  }
+  #commandesList .commandesList__filter-group--search {
+    grid-column: span 2;
   }
 }
 #commandesList .commandesList__filter-group label {
@@ -72,6 +76,18 @@
   font-size: 0.95em;
   font-family: inherit;
   height: 44px;
+}
+#commandesList .commandesList__filter-group input[type="search"] {
+  padding: 0.5em 0.75em;
+  border: 2px solid vars.$borderColor;
+  border-radius: 8px;
+  font: inherit;
+  height: 44px;
+}
+#commandesList .commandesList__filter-group input[type="search"]:focus {
+  border-color: vars.$utilsPrimary;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
 }
 #commandesList .commandesList__filter-group input[type="date"]:focus {
   border-color: vars.$utilsPrimary;

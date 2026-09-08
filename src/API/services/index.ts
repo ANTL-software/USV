@@ -159,6 +159,7 @@ export {
 export {
   getAllVentesService,
   getVentesService,
+  searchCommandesService,
   getVenteByIdService,
   updateVenteStatutService,
   snoozeFrigoReminderService,

@@ -21,6 +21,7 @@ const commandesSelectStyles = reactSelectStyles as StylesConfig<
 export function CommandesFilters({ state }: CommandesFiltersProps): ReactElement {
   return (
     <div className="commandesList__filters">
+      <div className="commandesList__filter-group commandesList__filter-group--search"><label htmlFor="commandesSearch">Recherche toutes campagnes</label><input id="commandesSearch" type="search" value={state.searchQuery} onChange={(event) => state.setSearchQuery(event.target.value)} placeholder="N° commande, téléphone, société, contact…" /></div>
       {!state.isLeadCampaign && <div className="commandesList__filter-group"><label>Vue</label><Select<CommandesSelectOption, false>
         options={[...COMMANDES_VIEW_OPTIONS]}
         value={COMMANDES_VIEW_OPTIONS.find(({ value }) => value === state.vueMode) ?? COMMANDES_VIEW_OPTIONS[0]}

@@ -17,7 +17,7 @@ function CommandesList(): ReactElement {
         <div className="commandesList__header"><Button style="back" onClick={viewModel.navigateBack}><MdArrowBack /> Retour</Button><div className="commandesList__title"><h2>{commandes.isLeadCampaign ? 'Rendez-vous client' : 'Commandes'}</h2>{!commandes.isLeadCampaign && <NotificationBadge sectionId="operations" subsectionId="commandes" className="commandesList__notificationBadge" />}</div>{!commandes.isLeadCampaign && commandes.isCorbeille && <span className="commandesList__corbeille-badge">🗑️ Mode Corbeille</span>}</div>
         <CommandesFilters state={commandes} />
         {commandes.pageError && <div className="commandesList__error">{commandes.pageError}</div>}
-        <CommandesSummary state={commandes} />
+        {!commandes.isCrossCampaignSearch && <CommandesSummary state={commandes} />}
         <CommandesContent viewModel={viewModel} />
       </div></main>
       <BackToTop />

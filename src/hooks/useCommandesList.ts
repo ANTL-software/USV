@@ -4,7 +4,9 @@ import {
   getActiveFrigoAlertsService,
   getLeadClientsService,
   restoreVenteService,
+  searchCommandesService,
 } from '../API/services/index.ts';
+import type { CommandeSearchResult } from '../API/services/vente.service.ts';
 import { VenteContext } from '../context/vente/index.ts';
 import {
   CAMPAIGN_VARIANTS,
@@ -98,6 +100,12 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
     statut: initialSnapshot?.leadStatus || undefined,
   }));
   const [frigoAlertCampaignIds, setFrigoAlertCampaignIds] = useState<Set<number>>(new Set());
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<CommandeSearchResult[]>([]);
+  const [searchPagination, setSearchPagination] = useState<{ page: number; totalPages: number; total: number } | null>(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  const [searchPage, setSearchPage] = useState(1);
 
   const selectedCampagne = campagnes.find((campagne) => campagne.id_campagne === filters.campagne);
   const selectedVariant = selectedCampagne
@@ -106,6 +114,40 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
   const isLeadCampaign = selectedVariant === CAMPAIGN_VARIANTS.lead_b2b;
   const hasResolvedSelectedCampaign = !filters.campagne || selectedCampagne !== undefined;
   const isCorbeille = vueMode === 'corbeille';
+  const isCrossCampaignSearch = searchQuery.trim().length >= 2;
+
+  useEffect(() => {
+    if (!isCrossCampaignSearch) {
+      setSearchResults([]);
+      setSearchPagination(null);
+      setSearchError(null);
+      return;
+    }
+
+    let cancelled = false;
+    const timeoutId = window.setTimeout(() => {
+      setSearchLoading(true);
+      setSearchError(null);
+      void searchCommandesService(searchQuery.trim(), searchPage)
+        .then((result) => {
+          if (cancelled) return;
+          setSearchResults(result.commandes);
+          setSearchPagination(result.pagination);
+        })
+        .catch((searchFailure: unknown) => {
+          if (cancelled) return;
+          setSearchResults([]);
+          setSearchPagination(null);
+          setSearchError(searchFailure instanceof Error ? searchFailure.message : 'Recherche impossible');
+        })
+        .finally(() => { if (!cancelled) setSearchLoading(false); });
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [isCrossCampaignSearch, searchPage, searchQuery]);
 
   const loadLeadClients = useCallback(async (
     campagneId: number,
@@ -606,6 +648,15 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
     pageLoading: isLeadCampaign ? leadLoading : isLoading,
     pagination,
     periodPreset,
+    searchError,
+    searchLoading,
+    searchPage,
+    searchPagination,
+    searchQuery,
+    searchResults,
+    setSearchPage,
+    setSearchQuery: (query: string): void => { setSearchQuery(query); setSearchPage(1); },
+    isCrossCampaignSearch,
     restoreVente,
     salePage: filters.page ?? 1,
     saleSummaryCards,

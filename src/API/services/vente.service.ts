@@ -43,6 +43,28 @@ interface VentesResponse {
   agents?: Array<{ id_employe: number; prenom?: string; nom?: string }>;
 }
 
+export interface CommandeSearchResult {
+  type: 'vente' | 'lead';
+  id: number;
+  reference: string;
+  campagne: string;
+  client: string | null;
+  contact: string | null;
+  telephone: string | null;
+  date_creation: string;
+  statut: string;
+}
+
+export interface CommandesSearchResponse {
+  commandes: CommandeSearchResult[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 const EMPTY_VENTE_STATS: VenteStats = {
   validees: { count: 0, total_montant: 0 },
   enAttente: { count: 0, total_montant: 0 },
@@ -141,6 +163,18 @@ export const getVentesService = async (params?: VenteListParams): Promise<Ventes
   }
 
   throw new Error(response.data.message || 'Impossible de récupérer les ventes');
+};
+
+export const searchCommandesService = async (query: string, page = 1): Promise<CommandesSearchResponse> => {
+  const params = new URLSearchParams({ q: query, page: String(page), limit: '20' });
+  const response: AxiosResponse<ApiResponse<CommandeSearchResult[]>> = await getRequest(`/ventes/recherche?${params.toString()}`);
+  if (response.data.success && response.data.data) {
+    return {
+      commandes: response.data.data,
+      pagination: response.data.pagination ?? { page: 1, limit: 20, total: response.data.data.length, totalPages: 1 },
+    };
+  }
+  throw new Error(response.data.message || 'Impossible de rechercher les commandes');
 };
 
 export const getAllVentesService = async (params?: VenteListParams): Promise<VentesResponse> => {
