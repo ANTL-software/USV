@@ -94,7 +94,7 @@
   gap: 1em;
   flex-wrap: wrap;
 }
-#agentForm .agentForm__row + #agentForm .agentForm__row {
+#agentForm .agentForm__row + .agentForm__row {
   margin-top: 0.85em;
 }
 #agentForm .agentForm__field {
@@ -106,6 +106,8 @@
 }
 #agentForm .agentForm__prime-fields {
   display: grid;
+  flex: 1 1 100%;
+  min-width: 0;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 0.75em;
   margin-top: 0.75em;

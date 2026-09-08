@@ -89,9 +89,12 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                     noOptionsMessage={() => 'Aucun poste trouvé'}
                     classNamePrefix="reactSelect"
                   />
-                  {isCommercial && (
-                    <div className="agentForm__prime-fields">
-                      <div className="agentForm__field">
+                </div>
+              </div>
+              {isCommercial && (
+                <div className="agentForm__row">
+                  <div className="agentForm__prime-fields">
+                    <div className="agentForm__field">
                       <label htmlFor="id_niveau_prime">Palier de prime</label>
                       <Select
                         inputId="id_niveau_prime"
@@ -107,25 +110,24 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                         noOptionsMessage={() => 'Aucun palier trouvé'}
                         classNamePrefix="reactSelect"
                       />
-                      </div>
-                      <div className="agentForm__field">
-                        <label htmlFor="objectif_prime">Objectif 100 % ({primeObjectiveUnit})</label>
-                        <input
-                          id="objectif_prime"
-                          name="objectif_prime"
-                          type="number"
-                          min="1"
-                          step="1"
-                          value={form.objectif_prime}
-                          onChange={handleChange}
-                          disabled={isLoading || !activePrimeAssignment}
-                          placeholder={activePrimeAssignment ? undefined : 'Affectez d’abord une campagne'}
-                        />
-                      </div>
                     </div>
-                  )}
+                    <div className="agentForm__field">
+                      <label htmlFor="objectif_prime">Objectif 100 % ({primeObjectiveUnit})</label>
+                      <input
+                        id="objectif_prime"
+                        name="objectif_prime"
+                        type="number"
+                        min="1"
+                        step="1"
+                        value={form.objectif_prime}
+                        onChange={handleChange}
+                        disabled={isLoading || !activePrimeAssignment}
+                        placeholder={activePrimeAssignment ? undefined : 'Affectez d’abord une campagne'}
+                      />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )}
             </fieldset>
 
             {isEdit && isCommercial && (
