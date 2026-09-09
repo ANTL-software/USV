@@ -6,7 +6,7 @@ import {
   restoreVenteService,
   searchCommandesService,
 } from '../API/services/index.ts';
-import type { CommandeSearchResult } from '../API/services/vente.service.ts';
+import type { CommandeSearchResult } from '../API/services/index.ts';
 import { VenteContext } from '../context/vente/index.ts';
 import {
   CAMPAIGN_VARIANTS,

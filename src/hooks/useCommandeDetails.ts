@@ -7,11 +7,14 @@ import {
   sendSignedOrderEmailService,
   snoozeFrigoReminderService,
   updateVenteStatutService,
+  updateSaleAddressService,
 } from '../API/services/index.ts';
 import { confirm, showError, showSuccess } from '../utils/services/index.ts';
 import { useNotifications } from './useNotifications.ts';
 import { STATUT_VENTE_LABELS } from '../utils/types/index.ts';
-import type { Appel, StatutVente, VenteComplete } from '../utils/types/index.ts';
+import type { Appel, EditableAddress, StatutVente, VenteComplete } from '../utils/types/index.ts';
+import { saleEditableAddress } from '../utils/scripts/index.ts';
+import { useEditableAddress } from './useEditableAddress.ts';
 import {
   buildCommandeCallRows,
   buildCommandeProductRows,
@@ -30,6 +33,12 @@ export function useCommandeDetails(idVente: number) {
   const { refreshNotifications } = useNotifications();
   const commercialDocuments = useCommercialDocuments('ventes', idVente);
   const [commande, setCommande] = useState<VenteComplete | null>(null);
+  const persistAddress = (kind: 'facturation' | 'livraison') => async (address: EditableAddress): Promise<void> => {
+    const updated = await updateSaleAddressService(idVente, kind, address);
+    setCommande((previous) => previous?.id_vente === updated.id_vente ? updated : previous);
+  };
+  const billingEditor = useEditableAddress(`vente-${idVente}-facturation`, saleEditableAddress(commande, 'facturation'), persistAddress('facturation'));
+  const deliveryEditor = useEditableAddress(`vente-${idVente}-livraison`, saleEditableAddress(commande, 'livraison'), persistAddress('livraison'));
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -289,6 +298,8 @@ export function useCommandeDetails(idVente: number) {
     callRows,
     previousCommandeRows,
     billingAddress,
+    billingEditor,
+    deliveryEditor,
     deliveryAddress,
     paymentLabel,
     statusPresentation,

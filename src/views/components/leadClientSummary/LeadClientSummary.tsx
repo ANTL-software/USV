@@ -1,6 +1,7 @@
 import { useState, type FormEvent, type ReactElement } from 'react';
 import { IoBusiness, IoCheckmark, IoClose, IoInformationCircle, IoPencil, IoPerson } from 'react-icons/io5';
-import type { LeadClient } from '../../../utils/types/index.ts';
+import type { AddressEditorViewModel, LeadClient } from '../../../utils/types/index.ts';
+import { AddressEditor } from '../addressEditor/index.ts';
 import {
   formatLeadAgentLabel,
   formatLeadDateTime,
@@ -13,13 +14,14 @@ import {
 } from '../../../utils/scripts/index.ts';
 
 interface LeadClientSummaryProps {
+  addressEditor: AddressEditorViewModel;
   lead: LeadClient;
   notesUpdateLoading: boolean;
   onUpdateNotes: (notes: string) => Promise<boolean>;
   showEmployeeCountQualification: boolean;
 }
 
-export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification }: LeadClientSummaryProps): ReactElement {
+export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification }: LeadClientSummaryProps): ReactElement {
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(lead.notes ?? '');
 
@@ -51,7 +53,7 @@ export function LeadClientSummary({ lead, notesUpdateLoading, onUpdateNotes, sho
           <div className="grid-item"><span className="grid-label">Fonction</span><span className="grid-value">{resolveLeadContactRole(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Téléphone</span><span className="grid-value">{resolveLeadContactPhone(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Email</span><span className="grid-value">{resolveLeadContactEmail(lead)}</span></div>
-          <div className="grid-item full-width"><span className="grid-label">Adresse</span><span className="grid-value">{formatLeadProspectAddress(lead)}</span></div>
+          <div className="grid-item full-width"><AddressEditor title="Adresse du prospect" lines={[formatLeadProspectAddress(lead)]} viewModel={addressEditor} notice="Cette adresse est celle de la fiche prospect, partagée avec ses autres rendez-vous client. Les adresses des commandes existantes ne sont pas modifiées." /></div>
         </div>
       </section>
       <section className="details-section card-style">

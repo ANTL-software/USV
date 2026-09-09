@@ -3,11 +3,11 @@ import {
   IoBusiness,
   IoCart,
   IoInformationCircle,
-  IoLocation,
   IoPerson,
 } from 'react-icons/io5';
 
 import type { useCommandeDetails } from '../../../hooks/index.ts';
+import { AddressEditor } from '../addressEditor/index.ts';
 import {
   formatCommandeCurrency,
   formatCommandeDateTime,
@@ -23,6 +23,8 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
   const {
     agentName,
     billingAddress,
+    billingEditor,
+    deliveryEditor,
     commande,
     deliveryAddress,
     paymentLabel,
@@ -63,14 +65,8 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
         </div>
 
         <div className="addresses-grid">
-          {[billingAddress, deliveryAddress].map((address) => (
-            <div className="address-block" key={address.title}>
-              <span className="grid-label"><IoLocation /> {address.title}</span>
-              <p className="grid-value address-text">
-                {address.lines.map((line) => <span key={line}>{line}<br /></span>)}
-              </p>
-            </div>
-          ))}
+          <AddressEditor title={billingAddress.title} lines={billingAddress.lines} viewModel={billingEditor} notice="Modification limitée à cette commande. Les documents déjà signés ne sont pas remplacés." />
+          <AddressEditor title={deliveryAddress.title} lines={deliveryAddress.lines} viewModel={deliveryEditor} notice="Modification limitée à la livraison de cette commande. Les documents déjà signés ne sont pas remplacés." />
         </div>
       </section>
 

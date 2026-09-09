@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonTableRows, defaultComparisonMonths, formatComparisonValue } from '../../src/API/models/index.ts';
+import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonTableRows, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, formatComparisonValue } from '../../src/API/models/index.ts';
 import { comparisonFixture } from '../fixtures/monthlyComparison.ts';
 
 test('variations : points, référence nulle et absence de valeur', () => {
@@ -24,6 +24,14 @@ test('le filtrage et le tri ne modifient pas les données source', () => {
 test('les cartes changent avec la variante de campagne', () => {
   assert.equal(comparisonCards(comparisonFixture()).some((card) => card.key === 'orders'), true);
   assert.equal(comparisonCards(comparisonFixture(10)).some((card) => card.key === 'orders'), false);
+});
+test('Les Cigales est le choix par défaut seulement lorsqu’elle est active', () => {
+  const campaigns = [{ id: 11, name: 'FGA', variant: 'lead_b2b' as const, status: 'active' }, { id: 7, name: 'Les Cigales', variant: 'vente' as const, status: 'active' }];
+  assert.equal(defaultComparisonCampaign(campaigns), 7);
+  assert.equal(defaultComparisonCampaign(campaigns, 11), 11);
+  campaigns[1].status = 'terminee'; assert.equal(defaultComparisonCampaign(campaigns), 11);
+  assert.equal(comparisonDimension('daily').plural, 'jours du mois');
+  assert.equal(comparisonDimension('sectors').plural, 'secteurs et activités');
 });
 test('export complet : tous les groupes, définition, filtres et sources indisponibles', () => {
   const report = comparisonFixture(); const csv = comparisonCsv(report);

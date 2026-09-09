@@ -7,7 +7,7 @@ export interface ComparisonSection {
   metrics: ComparisonMetric[]; chartMetric: string; error: string | null; rows: ComparisonRow[];
 }
 export interface ComparisonPeriod { month: string; start: string; endExclusive: string; days: number; partialDay: boolean; }
-export interface ComparisonCampaign { id: number; name: string; variant: 'vente' | 'lead_b2b'; }
+export interface ComparisonCampaign { id: number; name: string; variant: 'vente' | 'lead_b2b'; status?: string; }
 export interface ComparisonOptions {
   campaigns: ComparisonCampaign[];
   agents: { id: number; name: string; campaigns: number[] }[];

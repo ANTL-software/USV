@@ -1,4 +1,4 @@
-import type { ComparisonMetric, ComparisonPeriod, ComparisonRow, ComparisonSection, ComparisonUnit, MonthlyComparison } from '../../utils/types/index.ts';
+import type { ComparisonCampaign, ComparisonMetric, ComparisonPeriod, ComparisonRow, ComparisonSection, ComparisonUnit, MonthlyComparison } from '../../utils/types/index.ts';
 
 const number = new Intl.NumberFormat('fr-FR', { maximumFractionDigits: 1 });
 export function formatComparisonValue(value: number | null | undefined, unit: ComparisonUnit): string {
@@ -34,6 +34,30 @@ export const comparisonGroups = [
   { id: 'followup', label: 'Suivi & patrimoine', sections: ['products', 'order_documents', 'reminders', 'documents', 'recordings', 'objections', 'sale_events', 'lead_events', 'invoices', 'health'] },
 ];
 
+export const defaultComparisonCampaign = (campaigns: ComparisonCampaign[], requested?: number): number =>
+  campaigns.find((campaign) => campaign.id === requested)?.id
+  ?? campaigns.find((campaign) => campaign.id === 7 && campaign.status === 'active')?.id
+  ?? campaigns.find((campaign) => campaign.status === 'active')?.id
+  ?? campaigns[0]?.id ?? 0;
+
+export function comparisonDimension(id: string) {
+  const labels: Record<string, [string, string]> = {
+    daily: ['Jour du mois', 'jours du mois'], order_daily: ['Jour du mois', 'jours du mois'], lead_daily: ['Jour du mois', 'jours du mois'],
+    progpa: ['Étape du plan d’appel', 'étapes du plan d’appel'], status: ['Statut de closing', 'statuts de closing'], origin: ['Origine de l’appel', 'origines d’appel'],
+    hours: ['Créneau horaire', 'créneaux horaires'], weekdays: ['Jour de la semaine', 'jours de la semaine'],
+    agents: ['Commercial', 'commerciaux'], order_agents: ['Commercial', 'commerciaux'], lead_agents: ['Commercial', 'commerciaux'],
+    sources: ['Source de fichier', 'sources de fichiers'], sectors: ['Secteur / activité', 'secteurs et activités'], regions: ['Région', 'régions'],
+    durations: ['Tranche de durée', 'tranches de durée'], attempts: ['Nombre d’appels par prospect', 'niveaux de sollicitation'],
+    products: ['Produit / panier', 'produits et paniers'], order_documents: ['Document / paiement', 'types de documents et paiements'],
+    reminders: ['Motif de rappel', 'motifs de rappel'], documents: ['Type de document', 'types de documents'], recordings: ['Statut de l’appel enregistré', 'statuts d’appels enregistrés'],
+    sessions: ['Statut du dialer', 'statuts du dialer'], objections: ['Objection', 'objections'], injections: ['État de la file', 'états de la file'], portfolio: ['État de la file', 'états de la file'],
+    sale_events: ['Événement commercial', 'événements commerciaux'], lead_events: ['Événement client', 'événements client'], relations: ['Relation / origine', 'relations et origines'],
+    enrichment: ['Statut d’enrichissement', 'statuts d’enrichissement'], invoices: ['Statut / devise', 'statuts et devises'],
+  };
+  const [singular, plural] = labels[id] ?? ['Indicateur', 'indicateurs'];
+  return { singular, plural, search: `Rechercher : ${singular.toLocaleLowerCase('fr')}` };
+}
+
 export function comparisonCards(report: MonthlyComparison) {
   const requests = [
     ['activity', 'calls'], ['activity', 'humans'], ['activity', 'contact_rate'], ['activity', 'result_rate'],
@@ -46,23 +70,25 @@ export function comparisonCards(report: MonthlyComparison) {
     const row = section.rows[0];
     return [{ key, label: metric.label, value: formatComparisonValue(row?.current?.[key], metric.unit),
       previous: formatComparisonValue(row?.reference?.[key], metric.unit),
-      delta: comparisonDelta(row?.current?.[key], row?.reference?.[key], metric.unit), description: metric.description }];
+      delta: comparisonDelta(row?.current?.[key], row?.reference?.[key], metric.unit), description: metric.description,
+      deltaClass: ['contact_rate', 'result_rate', 'validation_rate', 'done_rate', 'validated', 'validated_amount', 'done'].includes(key) && row?.current?.[key] != null && row.reference?.[key] != null
+        ? row.current[key]! > row.reference[key]! ? 'comparison__delta--up' : row.current[key]! < row.reference[key]! ? 'comparison__delta--down' : '' : '' }];
   });
 }
 
-export function comparisonSignals(report: MonthlyComparison): string[] {
+export function comparisonSignals(report: MonthlyComparison): { title: string; message: string; tone: 'warning' | 'error' | 'info' }[] {
   const activity = report.sections.find((section) => section.id === 'activity')?.rows[0];
   const result = report.sections.find((section) => section.id === (report.campaign.variant === 'vente' ? 'orders' : 'leads'))?.rows[0];
-  const signals: string[] = [];
+  const signals: { title: string; message: string; tone: 'warning' | 'error' | 'info' }[] = [];
   if (activity?.current && activity.reference) {
     const current = activity.current; const reference = activity.reference;
-    if ((current.calls ?? 0) > (reference.calls ?? 0) && (current.result_rate ?? 0) < (reference.result_rate ?? 0)) signals.push('Le volume d’appels augmente mais la part de contacts avec résultat lié baisse. Examinez le plan d’appel, le ciblage et le suivi avant de conclure à un problème de cadence.');
-    if ((current.humans ?? 0) < 30 || (reference.humans ?? 0) < 30) signals.push('Au moins une période compte moins de 30 contacts humains : les variations de conversion sont particulièrement sensibles à quelques appels.');
+    if ((current.calls ?? 0) > (reference.calls ?? 0) && (current.result_rate ?? 0) < (reference.result_rate ?? 0)) signals.push({ title: 'Plus d’appels, moins de conversion', tone: 'warning', message: 'Le volume d’appels augmente mais la part de contacts avec résultat lié baisse. Examinez le plan d’appel, le ciblage et le suivi avant de conclure à un problème de cadence.' });
+    if ((current.humans ?? 0) < 30 || (reference.humans ?? 0) < 30) signals.push({ title: 'Échantillon limité', tone: 'warning', message: 'Au moins une période compte moins de 30 contacts humains : les variations de conversion sont particulièrement sensibles à quelques appels.' });
   }
-  if ((result?.current?.unlinked ?? 0) > 0) signals.push(`${result?.current?.unlinked} résultat(s) du mois sans appel lié cohérent : la production totale et la conversion par appel ne recouvrent pas exactement les mêmes données.`);
+  if ((result?.current?.unlinked ?? 0) > 0) signals.push({ title: 'Traçabilité à vérifier', tone: 'warning', message: `${result?.current?.unlinked} résultat(s) du mois sans appel lié cohérent : la production totale et la conversion par appel ne recouvrent pas exactement les mêmes données.` });
   const unavailable = report.sections.filter((section) => section.error).length;
-  if (unavailable) signals.push(`${unavailable} rubrique(s) indisponible(s). Leurs chiffres ne sont pas interprétables comme des zéros.`);
-  if (!signals.length) signals.push('Commencez par distinguer volume de contacts, progression du discours et devenir de la production. Une variation mensuelle seule n’établit pas sa cause.');
+  if (unavailable) signals.push({ title: 'Rapport partiel', tone: 'error', message: `${unavailable} rubrique(s) indisponible(s). Leurs chiffres ne sont pas interprétables comme des zéros.` });
+  if (!signals.length) signals.push({ title: 'Clé de lecture', tone: 'info', message: 'Commencez par distinguer volume de contacts, progression du discours et devenir de la production. Une variation mensuelle seule n’établit pas sa cause.' });
   return signals;
 }
 
@@ -84,7 +110,7 @@ const csvCell = (value: string | number | null) => {
   return `"${(/^[=+@\-\t\r]/.test(text) && typeof value !== 'number' ? `'${text}` : text).replace(/"/g, '""')}"`;
 };
 export function comparisonCsv(report: MonthlyComparison, sections = report.sections): string {
-  const rows: (string | number | null)[][] = [['Campagne', 'Commercial (ID)', 'Généré le', 'Mois', 'Début', 'Fin exclusive', 'Référence', 'Début référence', 'Fin référence exclusive', 'Mode', 'Rubrique', 'Périmètre', 'Source disponible', 'Groupe', 'Indicateur', 'Unité', 'Valeur', 'Référence valeur', 'Définition']];
+  const rows: (string | number | null)[][] = [['Campagne', 'Commercial (ID)', 'Généré le', 'Mois', 'Début', 'Fin exclusive', 'Référence', 'Début référence', 'Fin référence exclusive', 'Mode', 'Rubrique', 'Périmètre', 'Source disponible', 'Ligne de ventilation (voir rubrique)', 'Indicateur', 'Unité', 'Valeur', 'Référence valeur', 'Définition']];
   for (const section of sections) {
     const prefix = [report.campaign.name, report.agent, report.generatedAt, report.periods.current.month, report.periods.current.start, report.periods.current.endExclusive, report.periods.reference.month, report.periods.reference.start, report.periods.reference.endExclusive, report.periods.mode, section.title, section.scope, section.error || 'Oui'];
     if (!section.rows.length) rows.push([...prefix, '', '', '', null, null, section.error || `${section.description} Aucune ligne dans les périodes sélectionnées.`]);

@@ -70,7 +70,7 @@ test('les helpers lead conservent l’identité du PDF et les snapshots de coord
   assert.equal(getLeadInterlocuteur(lead), 'Alice DUPONT');
   assert.equal(resolveLeadContactPhone(lead), '0611111111');
   assert.equal(resolveLeadContactEmail(lead), 'decision@client.fr');
-  assert.equal(formatLeadProspectAddress(lead), '1 rue de Paris, 75001 Paris, France');
+  assert.equal(formatLeadProspectAddress(lead), '1 Rue De Paris, 75001 Paris, France');
   assert.equal(getLeadQualificationButtonClass('non_honore'), 'qualif-btn--non-honore');
 });
 

@@ -89,6 +89,7 @@ export function formatLeadProspectAddress(lead: LeadClient): string {
 
   return [lead.prospect?.adresse_facturation?.trim(), locality, lead.prospect?.pays?.trim()]
     .filter((value): value is string => typeof value === 'string' && value.length > 0)
+    .map(capitalizeAddress)
     .join(', ') || '—';
 }
 
@@ -109,3 +110,4 @@ export function getLeadQualificationButtonClass(statut: StatutRendezVous): strin
 }
 
 export const getLeadStatusBadgeClass = (statut: StatutRendezVous): string => `statut-badge statut-badge--${statut}`;
+import { capitalizeAddress } from './addressFormatting.ts';

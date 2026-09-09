@@ -161,14 +161,14 @@ export function buildPreviousCommandeRows(ventes: VenteComplete[]): PreviousComm
 export function getCommandeBillingAddress(commande: VenteComplete): CommandeAddressView {
   const cityLine = [
     commande.code_postal_facturation || commande.prospect?.code_postal,
-    commande.ville_facturation || commande.prospect?.ville,
+    capitalizeAddress(commande.ville_facturation || commande.prospect?.ville || ''),
   ].filter(Boolean).join(' ');
   return {
     title: 'Adresse de Facturation',
     lines: [
-      commande.adresse_facturation || commande.prospect?.adresse_facturation || '—',
+      capitalizeAddress(commande.adresse_facturation || commande.prospect?.adresse_facturation || '—'),
       cityLine,
-      commande.pays_facturation || commande.prospect?.pays || 'France',
+      capitalizeAddress(commande.pays_facturation || commande.prospect?.pays || 'France'),
     ].filter(Boolean),
   };
 }
@@ -180,9 +180,9 @@ export function getCommandeDeliveryAddress(commande: VenteComplete): CommandeAdd
   return {
     title: 'Adresse de Livraison',
     lines: [
-      commande.adresse_livraison,
-      [commande.code_postal_livraison, commande.ville_livraison].filter(Boolean).join(' '),
-      commande.pays_livraison || 'France',
+      capitalizeAddress(commande.adresse_livraison),
+      [commande.code_postal_livraison || commande.code_postal_facturation || commande.prospect?.code_postal, capitalizeAddress(commande.ville_livraison || commande.ville_facturation || commande.prospect?.ville || '')].filter(Boolean).join(' '),
+      capitalizeAddress(commande.pays_livraison || commande.pays_facturation || commande.prospect?.pays || 'France'),
     ].filter(Boolean),
   };
 }
@@ -199,3 +199,4 @@ export function getCommandeStatusPresentation(status: StatutVente): {
 } {
   return { label: STATUT_VENTE_LABELS[status], color: STATUT_VENTE_COLORS[status] };
 }
+import { capitalizeAddress } from './addressFormatting.ts';

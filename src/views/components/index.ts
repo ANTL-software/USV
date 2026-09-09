@@ -236,3 +236,5 @@ export { VigieQualitySignals } from './vigieQualitySignals/index.ts';
 export { VigieScoring } from './vigieScoring/index.ts';
 export { VigieSegments } from './vigieSegments/index.ts';
 export { ComparisonSection } from './comparisonSection/index.ts';
+export * from './addressAutocomplete/index.ts';
+export * from './addressEditor/index.ts';

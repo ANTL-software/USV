@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+test.setTimeout(60000);
 
 import {
   apiSuccess,
@@ -142,11 +143,15 @@ test('l’import produits et le détail prospect fonctionnent dans le navigateur
   await expect(prospectModal.getByRole('heading', { name: 'Détail du prospect' })).toBeVisible();
   await expect(prospectModal.getByText('contact@durand-conseil.fr')).toBeVisible();
   await prospectModal.getByRole('button', { name: 'Modifier' }).click();
+  await page.route('https://data.geopf.fr/**', (route) => fulfillJson(route, { features: [{ properties: { name: '8 rue des Fleurs', label: '8 rue des Fleurs 75001 Paris', postcode: '75001', city: 'Paris' } }] }));
+  await prospectModal.getByRole('combobox', { name: 'Adresse du prospect' }).fill('8 rue');
+  await prospectModal.getByRole('listbox', { name: /Suggestions d.adresses/ }).getByRole('option').first().click();
   await prospectModal.locator('.prospectDetail__section').filter({ hasText: 'Contact' }).locator('input[type="email"]').fill('direction@durand-conseil.fr');
   await prospectModal.getByRole('button', { name: 'Enregistrer' }).click();
 
   await expect.poll(() => prospectUpdatePayload).not.toBeNull();
   expect(prospectUpdatePayload).toMatchObject({ email: 'direction@durand-conseil.fr' });
+  expect(prospectUpdatePayload).toMatchObject({ adresse: '8 Rue Des Fleurs', code_postal: '75001', ville: 'Paris', pays: 'France' });
   await expect(prospectModal.getByText('direction@durand-conseil.fr')).toBeVisible();
   expect(unhandledRequests).toEqual([]);
 });

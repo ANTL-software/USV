@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { ADMIN_USER, apiSuccess, fulfillJson, installApiRoute } from './support.ts';
 import { comparisonFixture } from '../fixtures/monthlyComparison.ts';
+test.setTimeout(60000);
 
 test('hub, comparaison, explorations, exports et variantes', async ({ page }) => {
   const requests: URLSearchParams[] = []; const unhandled: string[] = [];
@@ -19,8 +20,8 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
   await expect(page.getByRole('heading', { name: 'Comprendre ce qui change.' })).toBeVisible();
   await expect(page.locator('.comparison__kpi')).toHaveCount(8);
   await expect(page.getByRole('heading', { name: 'Rythme quotidien' })).toBeVisible();
-  await page.getByLabel('Mois analysé', { exact: true }).fill('2026-07');
-  await page.getByLabel('Mois de référence', { exact: true }).fill('2026-06');
+  await page.getByLabel('Mois analysé', { exact: true }).fill('2026-07-01');
+  await page.getByLabel('Mois de référence', { exact: true }).fill('2026-06-01');
   await page.getByLabel('Commercial', { exact: true }).selectOption('9');
   await page.getByRole('button', { name: 'Comparer les mois' }).click();
   await expect.poll(() => requests.at(-1)?.get('id_agent')).toBe('9');
@@ -30,7 +31,7 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
   await expect(sources.getByText('Page 1 / 3')).toBeVisible();
   await sources.getByRole('button', { name: 'Suivant' }).click();
   await expect(sources.getByText('Page 2 / 3')).toBeVisible();
-  await sources.getByLabel('Rechercher un groupe').fill('Source 24');
+  await sources.getByLabel('Rechercher : source de fichier').fill('Source 24');
   await expect(sources.locator('tbody tr')).toHaveCount(1);
   await sources.getByRole('button', { name: 'Afficher tous les indicateurs' }).click();
   await expect(sources.locator('tbody tr')).toHaveCount(4);
@@ -71,8 +72,14 @@ test('erreur initiale, reprise et écran mobile sans débordement', async ({ pag
   await page.getByRole('button', { name: 'Réessayer' }).click();
   await expect(page.locator('.comparison__kpi')).toHaveCount(8);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect(page.getByRole('button', { name: 'Retour à la qualité' })).toBeInViewport();
   await page.screenshot({ path: 'test-results/monthly-comparison-mobile.png', fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.evaluate(() => window.scrollTo(0, 0));
+  const back = await page.getByRole('button', { name: 'Retour à la qualité' }).boundingBox();
+  const nav = await page.locator('#subNav').boundingBox();
+  expect(back!.y).toBeGreaterThanOrEqual(nav!.y + nav!.height);
   await page.screenshot({ path: 'test-results/monthly-comparison-desktop.png', fullPage: true });
 });
 

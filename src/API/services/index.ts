@@ -169,6 +169,7 @@ export {
   restoreVenteService,
   sendSignedOrderEmailService,
 } from './vente.service.ts';
+export type { CommandeSearchResult } from './vente.service.ts';
 
 export {
   addProduitToPanierService,
@@ -379,3 +380,5 @@ export {
 export type { AsteriskWhisperCallbacks, AsteriskWhisperClient } from './AsteriskWhisper.service.ts';
 export const loadAsteriskWhisperClient = () => import('./AsteriskWhisper.service.ts');
 export { monthlyComparisonService } from './monthlyComparison.service.ts';
+export * from './Address.service.ts';
+export * from './commercialAddress.service.ts';

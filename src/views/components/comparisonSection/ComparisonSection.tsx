@@ -13,9 +13,9 @@ export function ComparisonSection({ section, report }: Props) {
     {section.error ? <p className="comparison__error" role="alert">{section.error}</p> : !section.rows.length ? <div className="comparison__empty">Aucune donnée enregistrée pour cette rubrique sur les périodes sélectionnées.</div> : <>
       {vm.total.length > 0 ? <div className="comparison__metric-list">{vm.total.map((item) => <div className="comparison__metric" key={item.key} title={item.description}><span>{item.label}</span><strong>{item.current}</strong><small>{vm.snapshot ? 'État actuel' : `${item.reference} en référence · ${item.delta}`}</small></div>)}</div> : <>
         <div className="comparison__tools">
-          <label>Indicateur<select value={vm.metricKey} onChange={(event) => vm.setMetric(event.target.value)}>{section.metrics.map((metric) => <option key={metric.key} value={metric.key}>{metric.label}</option>)}</select></label>
-          <label>Rechercher un groupe<input type="search" placeholder="Commercial, secteur, statut…" value={vm.search} onChange={(event) => vm.setSearch(event.target.value)} /></label>
-          <label>Trier par<select value={vm.sort} onChange={(event) => vm.setSort(event.target.value)}><option value="label">Libellé / ordre naturel</option><option value="current">Mois analysé décroissant</option><option value="reference">Référence décroissante</option></select></label>
+          <label>Indicateur<select aria-label="Indicateur" value={vm.metricKey} onChange={(event) => vm.setMetric(event.target.value)}>{section.metrics.map((metric) => <option key={metric.key} value={metric.key}>{metric.label}</option>)}</select></label>
+          <label>{vm.dimension.search}<input type="search" placeholder={vm.dimension.singular} value={vm.search} onChange={(event) => vm.setSearch(event.target.value)} /></label>
+          <label>Trier par<select aria-label="Trier par" value={vm.sort} onChange={(event) => vm.setSort(event.target.value)}><option value="label">Libellé / ordre naturel</option><option value="current">Mois analysé décroissant</option><option value="reference">Référence décroissante</option></select></label>
         </div>
         {vm.metric.description && <p className="comparison__definition">{vm.metric.description}</p>}
         <div className="comparison__chart" role="img" aria-label={vm.chartLabel}>
@@ -33,8 +33,8 @@ export function ComparisonSection({ section, report }: Props) {
           </ResponsiveContainer>
         </div>
         <p className="comparison__caption">{vm.chartLabel}. Valeurs exactes ci-dessous ; « — » = absent ou non calculable.</p>
-        <div className="comparison__table-tools"><span>{vm.rowCount} groupes · toutes les données dans l’export</span><button className="comparison__secondary" onClick={vm.toggleDetails}>{vm.details ? 'Un indicateur à la fois' : 'Afficher tous les indicateurs'}</button></div>
-        <div className="comparison__table-scroll"><table><caption>{section.title} — {vm.details ? 'détail complet' : vm.metric.label}</caption><thead><tr><th scope="col">Groupe</th>{vm.details && <th scope="col">Indicateur</th>}<th scope="col">{vm.snapshot ? 'Aujourd’hui' : report.periods.current.month}</th>{!vm.snapshot && <><th scope="col">{report.periods.reference.month}</th><th scope="col">Écart absolu</th><th scope="col">Variation</th></>}</tr></thead>
+        <div className="comparison__table-tools"><span><strong>{vm.rowCount} {vm.dimension.plural}</strong> · export complet, sans limite de pagination</span><button className="comparison__secondary" onClick={vm.toggleDetails}>{vm.details ? 'Un indicateur à la fois' : 'Afficher tous les indicateurs'}</button></div>
+        <div className="comparison__table-scroll"><table><caption>{section.title} — {vm.details ? 'détail complet' : vm.metric.label}</caption><thead><tr><th scope="col">{vm.dimension.singular}</th>{vm.details && <th scope="col">Indicateur</th>}<th scope="col">{vm.snapshot ? 'Aujourd’hui' : report.periods.current.month}</th>{!vm.snapshot && <><th scope="col">{report.periods.reference.month}</th><th scope="col">Écart absolu</th><th scope="col">Variation</th></>}</tr></thead>
           <tbody>{vm.details ? vm.detailedRows.map((row) => <tr key={row.key}><th scope="row">{row.label}</th><td>{row.metric}</td><td>{row.current}</td>{!vm.snapshot && <><td>{row.reference}</td><td>{row.absolute}</td><td>{row.delta}</td></>}</tr>) : vm.rows.map((row) => <tr key={row.key}><th scope="row">{row.label}</th><td>{row.current}</td>{!vm.snapshot && <><td>{row.reference}</td><td>{row.absolute}</td><td>{row.delta}</td></>}</tr>)}</tbody>
         </table></div>
         {!vm.rows.length && <p className="comparison__empty">Aucun groupe ne correspond à votre recherche.</p>}

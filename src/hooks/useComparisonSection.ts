@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { comparisonCsv, comparisonDisplayRow, comparisonTableRows, formatComparisonValue } from '../API/models/index.ts';
+import { comparisonCsv, comparisonDimension, comparisonDisplayRow, comparisonTableRows, formatComparisonValue } from '../API/models/index.ts';
 import { monthlyComparisonService } from '../API/services/index.ts';
 import type { ComparisonSection, MonthlyComparison } from '../utils/types/index.ts';
 
@@ -10,6 +10,7 @@ export function useComparisonSection(section: ComparisonSection, report: Monthly
   const [page, setPage] = useState(1);
   const [details, setDetails] = useState(false);
   const metric = section.metrics.find((item) => item.key === metricKey) ?? section.metrics[0];
+  const dimension = comparisonDimension(section.id);
   const filtered = useMemo(() => comparisonTableRows(section, metric, search, sort), [section, metric, search, sort]);
   const pages = Math.max(1, Math.ceil(filtered.length / 12));
   const safePage = Math.min(page, pages);
@@ -21,8 +22,8 @@ export function useComparisonSection(section: ComparisonSection, report: Monthly
   const detailedRows = pageRows.flatMap((row) => section.metrics.map((item) => ({ ...comparisonDisplayRow(row, item), key: `${row.key}-${item.key}`, metric: item.label })));
   const total = section.rows.length === 1 ? section.metrics.map((item) => ({ ...comparisonDisplayRow(section.rows[0], item), key: item.key, label: item.label, description: item.description })) : [];
   return {
-    section, metric, metricKey, search, sort, page: safePage, pages, rows, detailedRows, details, total, chart, chronological,
-    chartLabel: `${metric.label} — ${chronological || filtered.length <= 12 ? 'tous les groupes' : '12 premiers groupes du mois analysé'}`,
+    section, metric, metricKey, dimension, search, sort, page: safePage, pages, rows, detailedRows, details, total, chart, chronological,
+    chartLabel: `${metric.label} — ${chronological || filtered.length <= 12 ? `${filtered.length} ${dimension.plural}` : `12 ${dimension.plural} avec les valeurs les plus élevées du mois analysé`}`,
     rowCount: filtered.length, snapshot: section.scope === 'snapshot',
     setMetric: (value: string) => { setMetricKey(value); setPage(1); },
     setSearch: (value: string) => { setSearch(value); setPage(1); },

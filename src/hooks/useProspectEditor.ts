@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { updateProspectService } from '../API/services/index.ts';
 import { useAlert } from '../context/alert/index.ts';
-import type { Prospect, ProspectUpdateData } from '../utils/types/index.ts';
+import type { AddressSelectionResult, Prospect, ProspectUpdateData } from '../utils/types/index.ts';
+import { capitalizeAddress } from '../utils/scripts/index.ts';
 
 function buildProspectDraft(prospect: Prospect): ProspectUpdateData {
   return {
@@ -56,6 +57,9 @@ export function useProspectEditor(
   const changeField = (field: keyof ProspectUpdateData, value: string): void => {
     setEditedProspect((previous) => ({ ...previous, [field]: value }));
   };
+  const selectAddress = (result: AddressSelectionResult): void => {
+    setEditedProspect((previous) => ({ ...previous, adresse: result.adresse, code_postal: result.code_postal, ville: result.ville, pays: result.pays }));
+  };
 
   const save = async (): Promise<void> => {
     if (!prospect) return;
@@ -72,7 +76,12 @@ export function useProspectEditor(
 
     setIsSubmitting(true);
     try {
-      const updated = await updateProspectService(prospect.id_prospect, normalizeDraft(editedProspect));
+      const updated = await updateProspectService(prospect.id_prospect, normalizeDraft({
+        ...editedProspect,
+        adresse: capitalizeAddress(editedProspect.adresse ?? ''),
+        ville: capitalizeAddress(editedProspect.ville ?? ''),
+        pays: capitalizeAddress(editedProspect.pays ?? ''),
+      }));
       onProspectUpdated?.(updated);
       setIsEditing(false);
       await showSuccess('Prospect mis à jour avec succès', 'Succès');
@@ -93,6 +102,7 @@ export function useProspectEditor(
     startEditing,
     cancelEditing,
     changeField,
+    selectAddress,
     save,
   };
 }

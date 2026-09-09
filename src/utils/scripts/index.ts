@@ -652,3 +652,5 @@ export {
   getPartnerWeekdayLabel,
   getPartnerWeekdayLongLabel,
 } from './partenaireStatistics.ts';
+export * from './addressFormatting.ts';
+export * from './editableAddress.ts';

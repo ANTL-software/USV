@@ -7,6 +7,7 @@ import {
   sendLeadClientEmailService,
   updateLeadClientNotesService,
   updateLeadClientStatusService,
+  updateLeadAddressService,
 } from '../API/services/index.ts';
 import {
   STATUT_RENDEZ_VOUS_LABELS,
@@ -16,10 +17,16 @@ import {
 } from '../utils/types/index.ts';
 import { isLeadClientRendezVous, shouldShowLeadEmployeeCountQualification } from '../utils/scripts/index.ts';
 import { useAlert } from './useAlert.ts';
+import { useEditableAddress } from './useEditableAddress.ts';
+import { leadEditableAddress } from '../utils/scripts/index.ts';
 
 export function useLeadClientDetails(idLead: number) {
   const { showError, showSuccess } = useAlert();
   const [lead, setLead] = useState<LeadClient | null>(null);
+  const addressEditor = useEditableAddress(`lead-${idLead}`, leadEditableAddress(lead), async (address): Promise<void> => {
+    const updated = await updateLeadAddressService(idLead, address);
+    setLead((previous) => previous?.id_lead === updated.id_lead ? updated : previous);
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [appels, setAppels] = useState<Appel[]>([]);
@@ -245,6 +252,7 @@ export function useLeadClientDetails(idLead: number) {
   }, [emailMessage, emailSubject, isSendingEmail, lead, loadLead, selectedRecipientEmail, senderEmail, senderName, showError, showSuccess]);
 
   return {
+    addressEditor,
     appels,
     appelsError,
     appelsLoading,

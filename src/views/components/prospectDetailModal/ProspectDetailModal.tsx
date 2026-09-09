@@ -18,6 +18,7 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
     startEditing,
     cancelEditing,
     changeField,
+    selectAddress,
     save,
     close,
     presentation,
@@ -194,9 +195,9 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
             <h3>Adresse</h3>
             <div className="detailRow">
               <span className="detailLabel">Adresse</span>
-              <span className="detailValue">
-                {isEditing ? renderInput('adresse', prospect.adresse) : (prospect.adresse || '—')}
-              </span>
+              <div className="detailValue">
+                {isEditing ? <AddressAutocomplete label="Adresse du prospect" value={editedProspect.adresse ?? prospect.adresse ?? ''} onChange={(value) => changeField('adresse', value)} onSelectAddress={selectAddress} disabled={isSubmitting} /> : (prospect.adresse || '—')}
+              </div>
             </div>
             <div className="detailRow">
               <span className="detailLabel">Code postal</span>
@@ -385,3 +386,4 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
     </div>
   );
 }
+import { AddressAutocomplete } from '../addressAutocomplete/index.ts';

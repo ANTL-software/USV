@@ -1215,8 +1215,21 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 
 ## 📝 Historique
 
+### Comparatif qualité et adresses — 2026-09-09
+
+- `/operations/qualite` reste un hub. `/operations/qualite/comparatif` compare deux mois par campagne et, en option, par commercial. Droit de poste requis : `operations/qualite` et `operations/qualite-comparatif`, contrôlé aussi par l’API.
+- `useMonthlyComparison` orchestre options, filtres appliqués, rechargement, erreurs et exports ; `ComparisonSection` reste passif. Les inputs `date` sélectionnent des mois, pas une plage arbitraire. Le mode aligné compare les jours calendaires terminés communs, en heure de Paris.
+- La campagne 7 est le défaut seulement si son statut est `active`; un filtre explicite dans l’URL reste prioritaire. Le contact humain est exclusivement `progpa_atteint >= 1`, divisé par tous les appels terminés, répondeurs compris.
+- Les rubriques distinguent cohortes commerciales, événements datés et stocks actuels non comparables. Sources absentes : erreur locale, jamais zéro inventé. Les exports comprennent toutes les rubriques et lignes, avec définitions et périodes, même si la vue est filtrée localement.
+- `AddressAutocomplete` + `useAddressAutocomplete` utilisent `https://data.geopf.fr/geocodage/search` avec temporisation et annulation. Les CSP autorisent ce seul domaine supplémentaire. La saisie libre reste possible sans suggestion ou en cas de panne.
+- `useProspectEditor` applique une suggestion sur adresse/CP/ville/pays. `useEditableAddress` porte le cycle crayon → édition → annuler/enregistrer des détails vente et lead ; les erreurs conservent le brouillon.
+- `PATCH /ventes/:id/adresses` modifie seulement les champs de facturation ou livraison envoyés sur cette vente. `PATCH /leads/:id/adresse` modifie la fiche prospect utilisée par les PDF lead (pas de snapshot d’adresse). Authentification, droit commandes ou facturation et CSRF requis. Les documents signés ne sont pas réécrits.
+- La capitalisation est une normalisation de valeur dans le payload et côté serveur, jamais seulement du CSS. Le helper préserve chiffres, accents, apostrophes et sauts de ligne.
+- Tests navigateur : `monthly-comparison.spec.ts`, `address-editing.spec.ts`, `products-prospects.spec.ts`.
+
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-09-09 | Comparatif qualité : ProgPA, dates, campagne active, lisibilité ; adresses IGN/BAN sur prospects, ventes et leads | AI Agent |
 | 2026-09-07 | Remplacement du rang commercial par Palier 1/2/3, objectif individuel à 100 % et miroir de la jauge Dashboard Script sur le profil commercial | AI Agent |
 | 2026-09-02 | Ajout des vues partenaire `/partenaire/prospects` et `/partenaire/ecoutes`, avec cartes, navigation, droits dédiés et données strictement limitées aux campagnes autorisées | AI Agent |
 | 2026-07-30 | Refonte du viewer de documents partagé : PDF multipage en scroll continu, zoom et téléchargement dans une toolbar compacte, modale ajustée au document | AI Agent |

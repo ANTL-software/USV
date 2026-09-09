@@ -498,6 +498,7 @@ test('le panneau lead conserve qualification réimpression et bouton d envoi ema
 
 test('la fiche détail affiche le nombre de salariés pour MMA uniquement', async () => {
   interface LeadClientSummaryProps {
+    addressEditor: import('../../src/utils/types/index.ts').AddressEditorViewModel;
     lead: LeadClient;
     notesUpdateLoading: boolean;
     onUpdateNotes: (notes: string) => Promise<boolean>;
@@ -524,6 +525,10 @@ test('la fiche détail affiche le nombre de salariés pour MMA uniquement', asyn
   };
   const commonProps = {
     lead,
+    addressEditor: {
+      editing: false, saving: false, error: '', draft: { adresse: '', code_postal: '', ville: '', pays: 'France' },
+      start: () => {}, cancel: () => {}, change: () => {}, select: () => {}, save: async (): Promise<void> => {},
+    },
     notesUpdateLoading: false,
     onUpdateNotes: async (): Promise<boolean> => true,
   };

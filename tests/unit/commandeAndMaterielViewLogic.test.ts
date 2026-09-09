@@ -95,7 +95,7 @@ test('les informations client et adresses ont des fallbacks déterministes', () 
   const commande = createCommande();
   assert.equal(getCommandeProspectName(commande), 'Mme Alice DUPONT');
   assert.equal(getCommandePaymentLabel(commande), 'Virement');
-  assert.deepEqual(getCommandeBillingAddress(commande).lines, ['1 rue de Paris', '75001 Paris', 'France']);
+  assert.deepEqual(getCommandeBillingAddress(commande).lines, ['1 Rue De Paris', '75001 Paris', 'France']);
   assert.deepEqual(getCommandeDeliveryAddress(commande).lines, ['Identique à la facturation']);
   assert.equal(formatCommandeDateTime('invalide'), '—');
 });
@@ -232,4 +232,3 @@ test('les emails de campagne et messages par défaut sont bien structurés sur l
   assert.equal(commande.campagne?.objet_envoi_commande, 'Bon de commande signé');
   assert.equal(commande.campagne?.message_envoi_commande?.includes('Bruno'), true);
 });
-
