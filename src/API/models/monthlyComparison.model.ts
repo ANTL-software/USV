@@ -85,6 +85,14 @@ export function comparisonSignals(report: MonthlyComparison): { title: string; m
     if ((current.calls ?? 0) > (reference.calls ?? 0) && (current.result_rate ?? 0) < (reference.result_rate ?? 0)) signals.push({ title: 'Plus d’appels, moins de conversion', tone: 'warning', message: 'Le volume d’appels augmente mais la part de contacts avec résultat lié baisse. Examinez le plan d’appel, le ciblage et le suivi avant de conclure à un problème de cadence.' });
     if ((current.humans ?? 0) < 30 || (reference.humans ?? 0) < 30) signals.push({ title: 'Échantillon limité', tone: 'warning', message: 'Au moins une période compte moins de 30 contacts humains : les variations de conversion sont particulièrement sensibles à quelques appels.' });
   }
+  if (report.campaign.variant === 'vente' && result?.current?.validated != null && result.current.emitted_validated != null
+    && result.current.validated !== result.current.emitted_validated) {
+    signals.push({
+      title: 'Validations et cohorte d’émission distinctes',
+      tone: 'info',
+      message: `${result.current.validated} commande(s) ont été validées dans la période ; ${result.current.emitted_validated} commande(s) émises dans la période sont aujourd’hui validées. L’écart vient des validations intervenues dans un autre mois que l’émission.`,
+    });
+  }
   if ((result?.current?.unlinked ?? 0) > 0) signals.push({ title: 'Traçabilité à vérifier', tone: 'warning', message: `${result?.current?.unlinked} résultat(s) du mois sans appel lié cohérent : la production totale et la conversion par appel ne recouvrent pas exactement les mêmes données.` });
   const unavailable = report.sections.filter((section) => section.error).length;
   if (unavailable) signals.push({ title: 'Rapport partiel', tone: 'error', message: `${unavailable} rubrique(s) indisponible(s). Leurs chiffres ne sont pas interprétables comme des zéros.` });

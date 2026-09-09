@@ -19,6 +19,7 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
   await page.getByRole('button', { name: /Comparatif mensuel/ }).click();
   await expect(page.getByRole('heading', { name: 'Comprendre ce qui change.' })).toBeVisible();
   await expect(page.locator('.comparison__kpi')).toHaveCount(8);
+  await expect(page.getByText('Validations et cohorte d’émission distinctes')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Rythme quotidien' })).toBeVisible();
   await page.getByLabel('Mois analysé', { exact: true }).fill('2026-07-01');
   await page.getByLabel('Mois de référence', { exact: true }).fill('2026-06-01');
@@ -48,8 +49,8 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
   await page.getByRole('button', { name: 'Comparer les mois' }).click();
   await expect.poll(() => requests.at(-1)?.get('id_campagne')).toBe('10');
   await page.getByRole('button', { name: 'Synthèse', exact: true }).click();
-  await expect(page.getByRole('heading', { name: 'Rendez-vous client : devenir de la cohorte' })).toBeVisible();
-  await expect(page.getByText('Commandes enregistrées', { exact: true })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Rendez-vous client : créations, événements et devenir' })).toBeVisible();
+  await expect(page.getByText('Commandes émises', { exact: true })).toHaveCount(0);
   expect(unhandled).toEqual([]);
 });
 

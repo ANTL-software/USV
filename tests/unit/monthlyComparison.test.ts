@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonTableRows, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, formatComparisonValue } from '../../src/API/models/index.ts';
+import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonSignals, comparisonTableRows, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, formatComparisonValue } from '../../src/API/models/index.ts';
 import { comparisonFixture } from '../fixtures/monthlyComparison.ts';
 
 test('variations : points, référence nulle et absence de valeur', () => {
@@ -24,6 +24,14 @@ test('le filtrage et le tri ne modifient pas les données source', () => {
 test('les cartes changent avec la variante de campagne', () => {
   assert.equal(comparisonCards(comparisonFixture()).some((card) => card.key === 'orders'), true);
   assert.equal(comparisonCards(comparisonFixture(10)).some((card) => card.key === 'orders'), false);
+});
+test('signale la différence entre validations du mois et devenir de la cohorte émise', () => {
+  const report = comparisonFixture();
+  const orders = report.sections.find((section) => section.id === 'orders');
+  assert.ok(orders?.rows[0].current);
+  orders.rows[0].current.emitted_validated = 2;
+  const signal = comparisonSignals(report).find((item) => item.title.includes('Validations et cohorte'));
+  assert.match(signal?.message ?? '', /4 commande\(s\).*2 commande\(s\)/);
 });
 test('Les Cigales est le choix par défaut seulement lorsqu’elle est active', () => {
   const campaigns = [{ id: 11, name: 'FGA', variant: 'lead_b2b' as const, status: 'active' }, { id: 7, name: 'Les Cigales', variant: 'vente' as const, status: 'active' }];

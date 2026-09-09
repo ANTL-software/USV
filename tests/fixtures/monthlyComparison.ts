@@ -14,15 +14,16 @@ export function comparisonFixture(campaign = 7, month = '2026-09', reference = '
   const daily = { ...activity, id: 'daily', title: 'Rythme quotidien', rows: Array.from({ length: 8 }, (_, index) => ({ key: String(index + 1), label: String(index + 1), current: { calls: 200 + index * 30, humans: 90 + index * 8 }, reference: { calls: 130 + index * 20, humans: 40 + index * 5 } })) };
   const sources = { ...activity, id: 'sources', title: 'Origine des fichiers prospect', rows: Array.from({ length: 25 }, (_, index) => ({ key: String(index), label: `Source ${index}`, current: { calls: index + 2, humans: index }, reference: { calls: 10, humans: 5 } })) };
   const result: ComparisonSection = campaign === 7 ? {
-    id: 'orders', title: 'Commandes : devenir de la cohorte', description: 'Statut actuel des commandes créées dans la période.', scope: 'monthly', chartMetric: 'orders', error: null,
+    id: 'orders', title: 'Commandes : émissions, validations et devenir', description: 'Les émissions et validations suivent chacune leur date métier.', scope: 'monthly', chartMetric: 'orders', error: null,
     metrics: [
-      { key: 'orders', label: 'Commandes enregistrées', unit: 'number', description: '' },
+      { key: 'orders', label: 'Commandes émises', unit: 'number', description: '' },
       { key: 'validated', label: 'Commandes validées', unit: 'number', description: '' },
       { key: 'validated_amount', label: 'Montant validé', unit: 'currency', description: '' },
-      { key: 'validation_rate', label: 'Taux de validation', unit: 'percent', description: '' },
-    ], rows: [{ key: 'total', label: 'Commandes', current: { orders: 6, validated: 4, validated_amount: 1166.65, validation_rate: 66.7 }, reference: { orders: 5, validated: 3, validated_amount: 629.2, validation_rate: 60 } }],
+      { key: 'emitted_validated', label: 'Commandes émises désormais validées', unit: 'number', description: '' },
+      { key: 'validation_rate', label: 'Validation de la cohorte émise', unit: 'percent', description: '' },
+    ], rows: [{ key: 'total', label: 'Commandes', current: { orders: 6, validated: 4, validated_amount: 1166.65, emitted_validated: 3, validation_rate: 50 }, reference: { orders: 5, validated: 3, validated_amount: 629.2, emitted_validated: 3, validation_rate: 60 } }],
   } : {
-    id: 'leads', title: 'Rendez-vous client : devenir de la cohorte', description: 'Leads distincts des rappels.', scope: 'monthly', chartMetric: 'leads', error: null,
+    id: 'leads', title: 'Rendez-vous client : créations, événements et devenir', description: 'Leads distincts des rappels.', scope: 'monthly', chartMetric: 'leads', error: null,
     metrics: [{ key: 'leads', label: 'Rendez-vous client créés', unit: 'number', description: '' }],
     rows: [{ key: 'total', label: 'RDV client', current: { leads: 8 }, reference: { leads: 1 } }],
   };
