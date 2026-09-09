@@ -260,6 +260,7 @@ test('la matrice des postes recense chaque carte de hub comme sous-application',
     'qualite-signalements',
     'qualite-ecoutes',
     'qualite-statistiques',
+    'qualite-comparatif',
     'demandes-absence',
     'employes',
     'postes',
@@ -352,4 +353,12 @@ test('le module traitement ouvre uniquement les routes traitement', () => {
   assert.equal(hasAccessToPath(intervenant, '/incidents/traitement'), true);
   assert.equal(hasAccessToPath(intervenant, '/incidents/traitement/12'), true);
   assert.equal(hasAccessToPath(intervenant, '/incidents/liste'), false);
+});
+test('le comparatif mensuel exige son droit dédié et le hub qualité', () => {
+  for (const subsections of [[], ['qualite'], ['qualite-comparatif'], ['qualite', 'qualite-statistiques']]) {
+    const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyste', permissions: { operations: { enabled: true, subsections } } } });
+    assert.equal(hasAccessToPath(user, '/operations/qualite/comparatif'), false);
+  }
+  const allowed = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyste', permissions: { operations: { enabled: true, subsections: ['qualite', 'qualite-comparatif'] } } } });
+  assert.equal(hasAccessToPath(allowed, '/operations/qualite/comparatif'), true);
 });

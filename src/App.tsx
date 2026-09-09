@@ -79,6 +79,7 @@ import {
   Qualite as QualiteWithAuth,
   QualiteEcoutes as QualiteEcoutesWithAuth,
   QualiteStats as QualiteStatsWithAuth,
+  QualiteComparatif as QualiteComparatifWithAuth,
   SupervisionView as SupervisionViewWithAuth,
   TelephonyManagement as TelephonyManagementWithAuth,
   TacheForm as TacheFormWithAuth,
@@ -184,6 +185,7 @@ function App(): ReactElement {
         <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
         <Route path={"operations/qualite/statistiques"} element={<QualiteStatsWithAuth />}></Route>
+        <Route path={"operations/qualite/comparatif"} element={<QualiteComparatifWithAuth />}></Route>
         <Route path={"operations/qualite/ecoutes"} element={<QualiteEcoutesWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>

@@ -97,6 +97,7 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
       { id: 'qualite-signalements', name: 'Qualité — Signalements', path: '/operations/qualite/signalements' },
       { id: 'qualite-ecoutes', name: 'Qualité — Écoutes', path: '/operations/qualite/ecoutes' },
       { id: 'qualite-statistiques', name: 'Qualité — Statistiques', path: '/operations/qualite/statistiques' },
+      { id: 'qualite-comparatif', name: 'Qualité — Comparatif mensuel', path: '/operations/qualite/comparatif' },
       { id: 'demandes-absence', name: 'Demandes d’absence', path: '/operations/demandes-absence' },
       { id: 'employes', name: 'Employés', path: '/operations/employes' },
       { id: 'postes', name: 'Postes & planning', path: '/operations/postes' },
@@ -269,6 +270,10 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     if (cleanPath.startsWith('/operations/prospects') || cleanPath.startsWith('/prospects/import') || cleanPath.includes('/inject')) return hasAccessToSubsection(user, 'operations', 'prospects');
     if (cleanPath.startsWith('/produits') || cleanPath.startsWith('/paniers')) return hasAccessToSubsection(user, 'operations', 'produits');
     if (cleanPath === '/operations/qualite') return hasAccessToSubsection(user, 'operations', 'qualite');
+    if (cleanPath.startsWith('/operations/qualite/comparatif')) {
+      return hasAccessToSubsection(user, 'operations', 'qualite')
+        && hasAccessToSubsection(user, 'operations', 'qualite-comparatif');
+    }
     if (cleanPath.startsWith('/operations/qualite/signalements')) {
       return hasAccessToSubsection(user, 'operations', 'qualite')
         && hasAccessToSubsection(user, 'operations', 'qualite-signalements');

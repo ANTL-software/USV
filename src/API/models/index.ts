@@ -19,3 +19,4 @@ export {
   computeTtcAmount,
   getCampaignBillingSettings,
 } from './facturation.model.ts';
+export { formatComparisonValue, comparisonDelta, comparisonMonthLabel, comparisonPeriodLabel, defaultComparisonMonths, comparisonGroups, comparisonCards, comparisonSignals, comparisonTableRows, comparisonDisplayRow, comparisonCsv } from './monthlyComparison.model.ts';

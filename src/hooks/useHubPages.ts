@@ -72,6 +72,7 @@ export interface IncidentsHubPageViewModel {
 
 export interface QualitePageViewModel {
   access: {
+    comparatif: boolean;
     ecoutes: boolean;
     signalements: boolean;
     statistiques: boolean;
@@ -80,6 +81,7 @@ export interface QualitePageViewModel {
   navigateToEcoutes: () => void;
   navigateToSignalements: () => void;
   navigateToStatistiques: () => void;
+  navigateToComparatif: () => void;
 }
 
 export interface BookingPageViewModel {
@@ -177,11 +179,13 @@ export function useQualitePage(): QualitePageViewModel {
       ecoutes: hasAccessToSubsection(user, 'operations', 'qualite-ecoutes'),
       signalements: hasAccessToSubsection(user, 'operations', 'qualite-signalements'),
       statistiques: hasAccessToSubsection(user, 'operations', 'qualite-statistiques'),
+      comparatif: hasAccessToSubsection(user, 'operations', 'qualite-comparatif'),
     },
     navigateBack: () => void navigate('/operations'),
     navigateToEcoutes: () => void navigate('/operations/qualite/ecoutes'),
     navigateToSignalements: () => void navigate('/operations/qualite/signalements'),
     navigateToStatistiques: () => void navigate('/operations/qualite/statistiques'),
+    navigateToComparatif: () => void navigate('/operations/qualite/comparatif'),
   };
 }
 

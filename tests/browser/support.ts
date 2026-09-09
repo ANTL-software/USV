@@ -45,6 +45,7 @@ export const ADMIN_USER = {
           'qualite-signalements',
           'qualite-ecoutes',
           'qualite-statistiques',
+          'qualite-comparatif',
           'demandes-absence',
           'employes',
           'postes',

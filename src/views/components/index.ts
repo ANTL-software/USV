@@ -235,3 +235,4 @@ export { VigieOverview } from './vigieOverview/index.ts';
 export { VigieQualitySignals } from './vigieQualitySignals/index.ts';
 export { VigieScoring } from './vigieScoring/index.ts';
 export { VigieSegments } from './vigieSegments/index.ts';
+export { ComparisonSection } from './comparisonSection/index.ts';

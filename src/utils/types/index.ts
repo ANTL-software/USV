@@ -535,3 +535,4 @@ export type {
   HomeKpiData,
   HomeKpiResponse,
 } from './homeKpi.types.ts';
+export type { ComparisonUnit, ComparisonValues, ComparisonMetric, ComparisonRow, ComparisonSection, ComparisonPeriod, ComparisonCampaign, ComparisonOptions, ComparisonFilters, MonthlyComparison } from './monthlyComparison.types.ts';

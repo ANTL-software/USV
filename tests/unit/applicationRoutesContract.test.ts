@@ -44,6 +44,7 @@ const EXPECTED_ROUTES = [
   'operations/commandes/details/:id',
   'operations/qualite/signalements',
   'operations/qualite/statistiques',
+  'operations/qualite/comparatif',
   'operations/qualite/ecoutes',
   'operations/qualite',
   'operations/prospects',

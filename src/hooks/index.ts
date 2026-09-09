@@ -238,3 +238,5 @@ export type {
   IncidentsHubPageViewModel,
   QualitePageViewModel,
 } from './useHubPages.ts';
+export { useMonthlyComparison } from './useMonthlyComparison.ts';
+export { useComparisonSection } from './useComparisonSection.ts';
