@@ -535,6 +535,6 @@ export type {
   HomeKpiData,
   HomeKpiResponse,
 } from './homeKpi.types.ts';
-export type { ComparisonUnit, ComparisonValues, ComparisonMetric, ComparisonRow, ComparisonSection, ComparisonPeriod, ComparisonCampaign, ComparisonOptions, ComparisonFilters, MonthlyComparison } from './monthlyComparison.types.ts';
+export type { ComparisonUnit, ComparisonMode, ComparisonValues, ComparisonMetric, ComparisonRow, ComparisonSection, ComparisonPeriod, ComparisonCampaign, ComparisonOptions, ComparisonFilters, MonthlyComparison } from './monthlyComparison.types.ts';
 export * from './address.types.ts';
 export * from './editableAddress.types.ts';

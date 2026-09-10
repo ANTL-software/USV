@@ -18,6 +18,9 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
   await page.goto('/operations/qualite');
   await page.getByRole('button', { name: /Comparatif mensuel/ }).click();
   await expect(page.getByRole('heading', { name: 'Comprendre ce qui change.' })).toBeVisible();
+  await expect(page.getByLabel('Base de comparaison')).toHaveValue('business');
+  await expect.poll(() => requests.at(-1)?.get('mode')).toBe('business');
+  await expect(page.getByText(/août 2026 · 8 jours ouvrés \(du 3 au 12\)/)).toBeVisible();
   await expect(page.locator('.comparison__kpi')).toHaveCount(8);
   await expect(page.getByText('Validations et cohorte d’émission distinctes')).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Rythme quotidien' })).toBeVisible();

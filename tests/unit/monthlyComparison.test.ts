@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonSignals, comparisonTableRows, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, formatComparisonValue } from '../../src/API/models/index.ts';
+import { comparisonCards, comparisonCsv, comparisonDelta, comparisonDisplayRow, comparisonPeriodLabel, comparisonSignals, comparisonTableRows, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, formatComparisonValue } from '../../src/API/models/index.ts';
 import { comparisonFixture } from '../fixtures/monthlyComparison.ts';
 
 test('variations : points, référence nulle et absence de valeur', () => {
@@ -15,6 +15,10 @@ test('variations : points, référence nulle et absence de valeur', () => {
 test('mois par défaut : frontière du mois en heure de Paris et changement d’année', () => {
   assert.deepEqual(defaultComparisonMonths(new Date('2026-08-31T22:30:00Z')), { month: '2026-09', reference: '2026-08' });
   assert.deepEqual(defaultComparisonMonths(new Date('2026-01-15T12:00:00Z')), { month: '2026-01', reference: '2025-12' });
+});
+test('libellé de période : jours ouvrés réels et heure de coupure explicite', () => {
+  const period = comparisonFixture().periods.reference;
+  assert.equal(comparisonPeriodLabel(period), 'août 2026 · 8 jours ouvrés (du 3 au 12) · dernier jour arrêté à 17:30');
 });
 test('le filtrage et le tri ne modifient pas les données source', () => {
   const report = comparisonFixture(); const section = report.sections[3];
@@ -38,13 +42,13 @@ test('Les Cigales est le choix par défaut seulement lorsqu’elle est active', 
   assert.equal(defaultComparisonCampaign(campaigns), 7);
   assert.equal(defaultComparisonCampaign(campaigns, 11), 11);
   campaigns[1].status = 'terminee'; assert.equal(defaultComparisonCampaign(campaigns), 11);
-  assert.equal(comparisonDimension('daily').plural, 'jours du mois');
+  assert.equal(comparisonDimension('daily').plural, 'jours comparables');
   assert.equal(comparisonDimension('sectors').plural, 'secteurs et activités');
 });
 test('export complet : tous les groupes, définition, filtres et sources indisponibles', () => {
   const report = comparisonFixture(); const csv = comparisonCsv(report);
   assert.match(csv, /Source 24/); assert.match(csv, /Source indisponible/);
-  assert.match(csv, /2026-09-09/); assert.match(csv, /ProgPA ≥ 1/); assert.match(csv, /Montant validé/);
+  assert.match(csv, /2026-09-10/); assert.match(csv, /ProgPA ≥ 1/); assert.match(csv, /Montant validé/);
 });
 test('export : neutralise les cellules de texte qui pourraient être des formules', () => {
   const report = comparisonFixture(); report.sections[0].rows[0].label = '=HYPERLINK("evil")';

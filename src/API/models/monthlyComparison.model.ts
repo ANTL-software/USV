@@ -19,7 +19,18 @@ export function comparisonDelta(current: number | null | undefined, reference: n
 }
 
 export const comparisonMonthLabel = (month: string): string => new Date(`${month}-15T12:00:00Z`).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric', timeZone: 'Europe/Paris' });
-export const comparisonPeriodLabel = (period: ComparisonPeriod): string => `${comparisonMonthLabel(period.month)} · ${period.days ? `du 1 au ${period.days}` : 'aucun jour terminé'}${period.partialDay ? ' (aujourd’hui partiel)' : ''}`;
+export const comparisonPeriodLabel = (period: ComparisonPeriod): string => {
+  if (!period.days) return `${comparisonMonthLabel(period.month)} · aucun jour comparable`;
+  const first = period.includedDates?.[0] ?? period.start;
+  const last = period.includedDates?.[period.includedDates.length - 1] ?? period.endExclusive;
+  const firstDay = Number(first.slice(8));
+  const lastDay = Number(last.slice(8));
+  const range = firstDay === lastDay ? `le ${firstDay}` : `du ${firstDay} au ${lastDay}`;
+  const unit = period.basis === 'business'
+    ? period.days > 1 ? 'jours ouvrés' : 'jour ouvré'
+    : period.days > 1 ? 'jours calendaires' : 'jour calendaire';
+  return `${comparisonMonthLabel(period.month)} · ${period.days} ${unit} (${range})${period.partialDay ? ` · dernier jour arrêté à ${period.cutoffTime ?? 'l’heure du calcul'}` : ''}`;
+};
 export function defaultComparisonMonths(now = new Date()) {
   const month = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Paris', year: 'numeric', month: '2-digit' }).format(now);
   const [year, index] = month.split('-').map(Number);
@@ -42,7 +53,7 @@ export const defaultComparisonCampaign = (campaigns: ComparisonCampaign[], reque
 
 export function comparisonDimension(id: string) {
   const labels: Record<string, [string, string]> = {
-    daily: ['Jour du mois', 'jours du mois'], order_daily: ['Jour du mois', 'jours du mois'], lead_daily: ['Jour du mois', 'jours du mois'],
+    daily: ['Jour comparable', 'jours comparables'], order_daily: ['Jour comparable', 'jours comparables'], lead_daily: ['Jour comparable', 'jours comparables'],
     progpa: ['Étape du plan d’appel', 'étapes du plan d’appel'], status: ['Statut de closing', 'statuts de closing'], origin: ['Origine de l’appel', 'origines d’appel'],
     hours: ['Créneau horaire', 'créneaux horaires'], weekdays: ['Jour de la semaine', 'jours de la semaine'],
     agents: ['Commercial', 'commerciaux'], order_agents: ['Commercial', 'commerciaux'], lead_agents: ['Commercial', 'commerciaux'],

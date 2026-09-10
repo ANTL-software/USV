@@ -2,7 +2,9 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { monthlyComparisonService } from '../API/services/index.ts';
 import { comparisonCards, comparisonCsv, comparisonGroups, comparisonPeriodLabel, comparisonSignals, defaultComparisonMonths, defaultComparisonCampaign } from '../API/models/index.ts';
-import type { ComparisonFilters, ComparisonOptions, MonthlyComparison } from '../utils/types/index.ts';
+import type { ComparisonFilters, ComparisonMode, ComparisonOptions, MonthlyComparison } from '../utils/types/index.ts';
+
+const comparisonMode = (value: string | null): ComparisonMode => value === 'aligned' || value === 'full' ? value : 'business';
 
 export function useMonthlyComparison() {
   const navigate = useNavigate();
@@ -13,7 +15,7 @@ export function useMonthlyComparison() {
   const initial = useRef(params);
   const [options, setOptions] = useState<ComparisonOptions | null>(null);
   const [draft, setDraft] = useState<ComparisonFilters>({ campaign: Number(params.get('campagne')) || 0, agent: Number(params.get('agent')) || null,
-    month: params.get('mois') || defaults.month, reference: params.get('reference') || defaults.reference, mode: params.get('mode') === 'full' ? 'full' : 'aligned' });
+    month: params.get('mois') || defaults.month, reference: params.get('reference') || defaults.reference, mode: comparisonMode(params.get('mode')) });
   const [applied, setApplied] = useState<ComparisonFilters | null>(null);
   const [data, setData] = useState<MonthlyComparison | null>(null);
   const [loading, setLoading] = useState(true);
@@ -39,7 +41,7 @@ export function useMonthlyComparison() {
       const month = initial.current.get('mois') || defaults.month;
       const reference = initial.current.get('reference') || defaults.reference;
       const agent = Number(initial.current.get('agent')) || null;
-      const mode = initial.current.get('mode') === 'full' ? 'full' : 'aligned';
+      const mode = comparisonMode(initial.current.get('mode'));
       setApplied({ campaign, agent, month, reference, mode });
     }).catch(() => { if (active) { setError('Impossible de charger les campagnes. Vérifiez votre accès au comparatif.'); setLoading(false); } });
     return () => { active = false; };
@@ -79,7 +81,7 @@ export function useMonthlyComparison() {
     changeAgent: (value: string) => setDraft((previous) => ({ ...previous, agent: Number(value) || null })),
     changeMonth: (value: string) => { setMonthDate(value); setDraft((previous) => ({ ...previous, month: value.slice(0, 7) })); },
     changeReference: (value: string) => { setReferenceDate(value); setDraft((previous) => ({ ...previous, reference: value.slice(0, 7) })); },
-    changeMode: (value: string) => setDraft((previous) => ({ ...previous, mode: value === 'full' ? 'full' : 'aligned' })),
+    changeMode: (value: string) => setDraft((previous) => ({ ...previous, mode: comparisonMode(value) })),
     swap: () => { setMonthDate(referenceDate); setReferenceDate(monthDate); setDraft((previous) => ({ ...previous, month: previous.reference, reference: previous.month })); },
     apply, retry: () => options ? setApplied((previous) => previous ? { ...previous } : null) : setRevision((value) => value + 1),
     navigateBack: () => void navigate('/operations/qualite'),
