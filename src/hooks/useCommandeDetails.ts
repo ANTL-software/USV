@@ -22,6 +22,7 @@ import {
   computeCommandeTotals,
   getCommandeAgentName,
   getCommandeBillingAddress,
+  getCommandeBillingCompanyName,
   getCommandeDeliveryAddress,
   getCommandePaymentLabel,
   getCommandeProspectName,
@@ -257,6 +258,7 @@ export function useCommandeDetails(idVente: number) {
   }, [commande, emailMessage, emailSubject, isSendingEmail, loadCommande, selectedRecipientEmail, senderEmail, senderName]);
 
   const prospectName = useMemo(() => getCommandeProspectName(commande), [commande]);
+  const billingCompanyName = useMemo(() => getCommandeBillingCompanyName(commande), [commande]);
   const agentName = useMemo(() => getCommandeAgentName(commande), [commande]);
   const totals = useMemo(() => computeCommandeTotals(commande), [commande]);
   const productRows = useMemo(() => buildCommandeProductRows(commande?.details || []), [commande?.details]);
@@ -292,6 +294,7 @@ export function useCommandeDetails(idVente: number) {
     snoozeFrigoReminder,
     printDocument,
     prospectName,
+    billingCompanyName,
     agentName,
     totals,
     productRows,

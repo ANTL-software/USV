@@ -363,6 +363,7 @@ export {
   formatCommandeDateTime,
   getCommandeAgentName,
   getCommandeBillingAddress,
+  getCommandeBillingCompanyName,
   getCommandeDeliveryAddress,
   getCommandePaymentLabel,
   getCommandeProspectName,

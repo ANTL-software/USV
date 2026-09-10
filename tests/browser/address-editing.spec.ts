@@ -7,7 +7,7 @@ const suggestion = { type: 'Feature', properties: { name: '12 avenue des Lilas',
 
 test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans modifier la livraison', async ({ page }) => {
   const unhandled: string[] = []; const patches: Record<string, string>[] = []; let fail = true;
-  let sale = { id_vente: 701, id_prospect: 42, id_agent: 9, id_campagne: 7, date_vente: '2026-09-01', montant_total: 500, statut_vente: 'validee', mode_paiement: 'Virement', prospect, campagne: SALES_CAMPAIGN, details: [], adresse_livraison: '3 Rue Du Port', code_postal_livraison: '17000', ville_livraison: 'La Rochelle', pays_livraison: 'France' };
+  let sale = { id_vente: 701, id_prospect: 42, id_agent: 9, id_campagne: 7, date_vente: '2026-09-01', montant_total: 500, statut_vente: 'validee', mode_paiement: 'Virement', raison_sociale_facturation: 'Durand Facturation', prospect, campagne: SALES_CAMPAIGN, details: [], adresse_livraison: '3 Rue Du Port', code_postal_livraison: '17000', ville_livraison: 'La Rochelle', pays_livraison: 'France' };
   await installApiRoute(page, async (route, request) => {
     if (request.path === '/ventes/701' && request.method === 'GET') { await fulfillJson(route, apiSuccess(sale)); return true; }
     if (request.path === '/ventes/701/adresses' && request.method === 'PATCH') {
@@ -22,6 +22,8 @@ test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans mo
   }, unhandled);
   await page.route('https://data.geopf.fr/**', (route) => fulfillJson(route, { features: [suggestion] }));
   await page.goto('/operations/commandes/details/701');
+  await expect(page.getByText('Durand Facturation', { exact: true })).toBeVisible();
+  await expect(page.getByText('Durand Conseil', { exact: true })).toHaveCount(0);
   const billing = page.getByRole('region', { name: 'Adresse de Facturation', exact: true });
   const delivery = page.getByRole('region', { name: 'Adresse de Livraison', exact: true });
   await billing.getByRole('button', { name: 'Modifier Adresse de Facturation' }).click();

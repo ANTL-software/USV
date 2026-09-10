@@ -23,6 +23,7 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
   const {
     agentName,
     billingAddress,
+    billingCompanyName,
     billingEditor,
     deliveryEditor,
     commande,
@@ -40,10 +41,10 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
       <section className="details-section card-style">
         <h3 className="section-title"><IoBusiness /> Client & Contact</h3>
         <div className="details-grid">
-          {commande.prospect?.raison_sociale && (
+          {billingCompanyName && (
             <div className="grid-item full-width">
-              <span className="grid-label">Raison Sociale</span>
-              <span className="grid-value grid-value--bold">{commande.prospect.raison_sociale}</span>
+              <span className="grid-label">Raison sociale de facturation</span>
+              <span className="grid-value grid-value--bold">{billingCompanyName}</span>
             </div>
           )}
           {commande.prospect?.siret && (

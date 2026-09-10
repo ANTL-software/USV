@@ -92,6 +92,11 @@ export function getCommandeProspectName(commande: VenteComplete | null): string 
   );
 }
 
+export function getCommandeBillingCompanyName(commande: VenteComplete | null): string | null {
+  const companyName = commande?.raison_sociale_facturation || commande?.prospect?.raison_sociale || '';
+  return companyName.trim() || null;
+}
+
 export function getCommandeAgentName(commande: VenteComplete | null): string {
   if (!commande?.agent) return '—';
   return `${commande.agent.prenom} ${commande.agent.nom.toUpperCase()}`;

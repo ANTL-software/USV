@@ -59,6 +59,7 @@ export interface Vente {
   soft_deleted?: boolean;
   created_at: string;
   updated_at: string;
+  raison_sociale_facturation?: string;
   adresse_facturation?: string;
   code_postal_facturation?: string;
   ville_facturation?: string;
