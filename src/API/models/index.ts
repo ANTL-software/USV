@@ -17,6 +17,11 @@ export {
   computeFacturableLeadHt,
   computePreviewTotals,
   computeTtcAmount,
+  DEFAULT_LEAD_PRICE_HT,
   getCampaignBillingSettings,
+  getLeadBillingSettings,
+  MMA_LARGE_COMPANY_LEAD_PRICE_HT,
+  MMA_LEAD_BILLING_CAMPAIGN_ID,
+  usesEmployeeCountLeadPricing,
 } from './facturation.model.ts';
 export { formatComparisonValue, comparisonDelta, comparisonMonthLabel, comparisonPeriodLabel, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, comparisonGroups, comparisonCards, comparisonSignals, comparisonTableRows, comparisonDisplayRow, comparisonCsv } from './monthlyComparison.model.ts';

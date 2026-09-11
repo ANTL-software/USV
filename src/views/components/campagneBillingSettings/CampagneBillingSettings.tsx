@@ -8,7 +8,14 @@ interface CampagneBillingSettingsProps {
 }
 
 export function CampagneBillingSettings({ viewModel }: CampagneBillingSettingsProps): ReactElement {
-  const { form, handleChange, handleModesPaiementChange, paymentOptions } = viewModel.campaignForm;
+  const {
+    form,
+    handleChange,
+    handleModesPaiementChange,
+    isLeadCampaign,
+    paymentOptions,
+    usesEmployeeCountLeadPricing,
+  } = viewModel.campaignForm;
   return (
     <>
       <fieldset className="campagneForm__fieldset">
@@ -20,6 +27,15 @@ export function CampagneBillingSettings({ viewModel }: CampagneBillingSettingsPr
         <legend>Commission de facturation</legend>
         <div className="campagneForm__row"><label>Taux de commission antl (%)<input type="number" name="taux_commission_facturation" value={form.taux_commission_facturation} onChange={handleChange} min="0" max="100" step="0.01" placeholder="Ex : 45" /><span className="campagneForm__hint">Pourcentage du montant de vente que nous facturons. Vide ou 0 = non applicable.</span></label></div>
       </fieldset>
+      {isLeadCampaign && <fieldset className="campagneForm__fieldset">
+        <legend>Tarification des leads</legend>
+        {usesEmployeeCountLeadPricing ? <div className="campagneForm__row">
+          <label>Tarif HT — 5 salariés ou moins<input type="number" name="lead_small_company_price_ht" value={form.lead_small_company_price_ht} onChange={handleChange} min="0.01" step="0.01" required /></label>
+          <label>Tarif HT — plus de 5 salariés<input type="number" name="lead_large_company_price_ht" value={form.lead_large_company_price_ht} onChange={handleChange} min="0.01" step="0.01" required /></label>
+        </div> : <div className="campagneForm__row">
+          <label>Tarif HT par rendez-vous effectué<input type="number" name="lead_unit_price_ht" value={form.lead_unit_price_ht} onChange={handleChange} min="0.01" step="0.01" required /><span className="campagneForm__hint">Ce tarif s’applique à chaque lead effectué, sans distinction du nombre de salariés.</span></label>
+        </div>}
+      </fieldset>}
     </>
   );
 }

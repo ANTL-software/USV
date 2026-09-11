@@ -16,6 +16,8 @@ import {
   computePreviewTotals,
   computeTtcAmount,
   getCampaignBillingSettings,
+  getLeadBillingSettings,
+  usesEmployeeCountLeadPricing,
 } from '../API/models/index.ts';
 import type {
   BillingPreview,
@@ -78,7 +80,9 @@ export function useFacturation() {
     ?? null;
   const selectedCampagneId = selectedCampagne?.id_campagne ?? null;
   const selectedVariant = normalizeCampaignVariant(selectedCampagne?.type_campagne);
+  const usesEmployeeCountPricing = usesEmployeeCountLeadPricing(selectedCampagneId);
   const billingSettings = useMemo(() => getCampaignBillingSettings(selectedCampagne), [selectedCampagne]);
+  const leadBillingSettings = useMemo(() => getLeadBillingSettings(selectedCampagne), [selectedCampagne]);
   const resolvedBillingProfile = useMemo(() => buildResolvedBillingProfile(selectedCampagne), [selectedCampagne]);
   const missingRequiredFields = resolvedBillingProfile?.missingRequiredFields ?? [];
   const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0;
@@ -90,8 +94,8 @@ export function useFacturation() {
   }, [currentMonthBounds, customDateEnd, customDateStart, periodPreset, previousMonthBounds]);
 
   const previewTotals = useMemo(
-    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null),
-    [billingSettings, preview, selectedCampagne?.taux_commission_facturation],
+    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null, leadBillingSettings),
+    [billingSettings, leadBillingSettings, preview, selectedCampagne?.taux_commission_facturation],
   );
   const emailOptions = useMemo<InvoiceEmailOption[]>(
     () => buildInvoiceEmailOptions(selectedCampagne),
@@ -320,8 +324,23 @@ export function useFacturation() {
         { label: 'Montant facturé HT', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }];
   }, [missingRequiredFields.length, preview, previewTotals.assietteHt, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
 
+  const leadBillingSummary = useMemo(() => {
+    const rows = preview?.source === 'leads' ? preview.rows : [];
+    const smallCompanyCount = usesEmployeeCountPricing
+      ? rows.filter((lead) => !lead.entreprise_plus_de_cinq_salaries).length
+      : 0;
+    return {
+      campaignName: selectedCampagne?.nom_campagne ?? 'la campagne',
+      defaultPriceHt: usesEmployeeCountPricing ? leadBillingSettings.smallCompanyPriceHt : leadBillingSettings.unitPriceHt,
+      largeCompanyCount: usesEmployeeCountPricing ? rows.length - smallCompanyCount : 0,
+      largeCompanyPriceHt: leadBillingSettings.largeCompanyPriceHt,
+      smallCompanyCount,
+      usesEmployeeCountPricing,
+    };
+  }, [leadBillingSettings, preview, selectedCampagne?.nom_campagne, usesEmployeeCountPricing]);
+
   const getVenteAmounts = useCallback((vente: Vente) => {
-    const assietteHt = computeFacturableHt(vente, billingSettings);
+    const assietteHt = computeFacturableHt(vente);
     const rawCommissionRate = Number(selectedCampagne?.taux_commission_facturation ?? 0);
     const commissionMultiplier = Number.isFinite(rawCommissionRate) && rawCommissionRate > 0
       ? rawCommissionRate / 100
@@ -330,9 +349,9 @@ export function useFacturation() {
     return { assietteHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
   }, [billingSettings, selectedCampagne?.taux_commission_facturation]);
   const getLeadAmounts = useCallback((lead: LeadClient) => {
-    const totalHt = computeFacturableLeadHt(lead);
+    const totalHt = computeFacturableLeadHt(lead, leadBillingSettings);
     return { assietteHt: totalHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
-  }, [billingSettings.vatRate]);
+  }, [billingSettings.vatRate, leadBillingSettings]);
 
   const setDateStart = useCallback((value: string): void => {
     setPeriodPreset('custom');
@@ -363,6 +382,7 @@ export function useFacturation() {
     isLoadingPaInvoice,
     isLoading,
     isSendingInvoiceEmail,
+    leadBillingSummary,
     missingRequiredFields,
     openEmailModal,
     issueInvoiceThroughPa,

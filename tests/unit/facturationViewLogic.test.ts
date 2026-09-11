@@ -5,9 +5,11 @@ import {
   buildFallbackVenteStats,
   buildResolvedBillingProfile,
   computeFacturableHt,
+  computeFacturableLeadHt,
   computePreviewTotals,
   computeTtcAmount,
   getCampaignBillingSettings,
+  getLeadBillingSettings,
 } from '../../src/API/models/index.ts';
 import {
   buildInvoiceEmailOptions,
@@ -16,7 +18,7 @@ import {
   isValidEmail,
   sanitizeBillingFileSegment,
 } from '../../src/utils/scripts/index.ts';
-import type { Campagne, Vente } from '../../src/utils/types/index.ts';
+import type { Campagne, LeadClient, Vente } from '../../src/utils/types/index.ts';
 
 function createCampagne(overrides: Partial<Campagne> = {}): Campagne {
   return {
@@ -68,9 +70,9 @@ test('la facturation applique les réglages par défaut et ceux de campagne', ()
 
 test('les totaux de facturation distinguent assiette, commission et TTC', () => {
   const settings = { vatRate: 0.2, shippingFeeHt: 30, freeShippingThresholdHt: 300 };
-  assert.equal(computeFacturableHt(createVente(), settings), 100);
-  assert.equal(computeFacturableHt(createVente({ livraison_offerte: true }), settings), 100);
-  assert.equal(computeFacturableHt(createVente({ montant_total: '300' }), settings), 300);
+  assert.equal(computeFacturableHt(createVente()), 100);
+  assert.equal(computeFacturableHt(createVente({ livraison_offerte: true })), 100);
+  assert.equal(computeFacturableHt(createVente({ montant_total: '300' })), 300);
   assert.equal(computeTtcAmount(100, 0.2), 120);
 
   const rows = [createVente(), createVente({ id_vente: 2, montant_total: '300' })];
@@ -81,6 +83,35 @@ test('les totaux de facturation distinguent assiette, commission et TTC', () => 
     totalTtc: 216,
   });
   assert.deepEqual(computePreviewTotals(null, settings), { assietteHt: 0, totalHt: 0, totalTtc: 0 });
+});
+
+test('MMA conserve les paliers salariés tandis que FGA et Swiss Life utilisent le tarif lead fixe', () => {
+  const lead = {
+    id_campagne: 10,
+    entreprise_plus_de_cinq_salaries: true,
+  } as LeadClient;
+  const settings = { vatRate: 0.2, shippingFeeHt: 30, freeShippingThresholdHt: 300 };
+
+  const mmaSettings = getLeadBillingSettings(createCampagne({ id_campagne: 10, type_campagne: 'lead_b2b' }));
+  const fgaSettings = getLeadBillingSettings(createCampagne({
+    id_campagne: 11,
+    type_campagne: 'lead_b2b',
+    bon_commande_config: { lead_billing: { unit_price_ht: 92.5 } },
+  }));
+  const swissLifeSettings = getLeadBillingSettings(createCampagne({ id_campagne: 12, type_campagne: 'lead_b2b' }));
+
+  assert.equal(computeFacturableLeadHt(lead, mmaSettings), 150);
+  assert.equal(computeFacturableLeadHt(lead, fgaSettings), 92.5);
+  assert.equal(computeFacturableLeadHt(lead, swissLifeSettings), 75);
+  assert.deepEqual(computePreviewTotals({
+    source: 'leads',
+    rows: [{ ...lead, id_campagne: 11 }, { ...lead, id_campagne: 11 }],
+    stats: { total: 2, planifies: 0, effectues: 2, annules: 0, reportes: 0, nonHonores: 0 },
+  }, settings, null, fgaSettings), {
+    assietteHt: 185,
+    totalHt: 185,
+    totalTtc: 222,
+  });
 });
 
 test('le fallback de statistiques conserve chaque statut et le total global', () => {

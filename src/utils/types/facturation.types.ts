@@ -25,6 +25,13 @@ export interface CampaignBillingSettings {
   freeShippingThresholdHt: number;
 }
 
+export interface LeadBillingSettings {
+  unitPriceHt: number;
+  smallCompanyPriceHt: number;
+  largeCompanyPriceHt: number;
+  usesEmployeeCountPricing: boolean;
+}
+
 export type BillingPreview =
   | { source: 'ventes'; rows: Vente[]; stats: VenteStats }
   | { source: 'leads'; rows: LeadClient[]; stats: LeadClientStats };

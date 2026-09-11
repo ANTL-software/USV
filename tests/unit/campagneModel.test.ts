@@ -40,6 +40,11 @@ test('CampagneModel conserve Cigales en variante vente pour le workflow historiq
     tva: null,
     email_contact: null,
     email_bon_commande: null,
+    email_envoi_commande: null,
+    nom_expediteur_envoi_commande: null,
+    email_expediteur_envoi_commande: null,
+    objet_envoi_commande: null,
+    message_envoi_commande: null,
     adresse: null,
     ville: null,
     telephone: null,
@@ -49,6 +54,33 @@ test('CampagneModel conserve Cigales en variante vente pour le workflow historiq
     modes_paiement: [],
     bon_commande_config: null,
   });
+});
+
+test('CampagneModel conserve toute la configuration email après hydratation API', () => {
+  const source = {
+    id_campagne: 11,
+    nom_campagne: 'FGA',
+    type_campagne: 'lead_b2b' as const,
+    date_debut: '2026-09-01',
+    date_fin: null,
+    statut: 'active' as const,
+    objectifs: null,
+    budget: null,
+    code_postal_maison_mere: null,
+    autoriser_mobile: false,
+    email_envoi_commande: 'envoi@fga.fr',
+    nom_expediteur_envoi_commande: 'FGA Facturation',
+    email_expediteur_envoi_commande: 'factures@fga.fr',
+    objet_envoi_commande: 'Votre document',
+    message_envoi_commande: 'Bonjour, voici votre document.',
+  };
+
+  const result = CampagneModel.fromJSON(source).toJSON();
+  assert.equal(result.email_envoi_commande, source.email_envoi_commande);
+  assert.equal(result.nom_expediteur_envoi_commande, source.nom_expediteur_envoi_commande);
+  assert.equal(result.email_expediteur_envoi_commande, source.email_expediteur_envoi_commande);
+  assert.equal(result.objet_envoi_commande, source.objet_envoi_commande);
+  assert.equal(result.message_envoi_commande, source.message_envoi_commande);
 });
 
 test('CampagneModel applique un fallback vente sur un type_campagne legacy', () => {

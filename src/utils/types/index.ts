@@ -296,6 +296,7 @@ export type {
   FacturationPeriodPreset,
   InvoiceEmailOption,
   InvoiceRecipient,
+  LeadBillingSettings,
   ResolvedBillingProfile,
 } from './facturation.types.ts';
 

@@ -285,6 +285,7 @@ export type { CourrierSelectOption, CourrierSortState } from './courrierList.ts'
 export {
   CAMPAGNE_PAYMENT_OPTIONS,
   INITIAL_CAMPAGNE_FORM,
+  MMA_LEAD_PRICING_CAMPAIGN_ID,
   buildCampagneFormState,
   buildCampagnePayload,
   buildCampaignEmployeOptions,

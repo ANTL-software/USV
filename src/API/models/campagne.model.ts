@@ -28,6 +28,11 @@ export class CampagneModel implements Campagne {
   tva?: string | null;
   email_contact?: string | null;
   email_bon_commande?: string | null;
+  email_envoi_commande?: string | null;
+  nom_expediteur_envoi_commande?: string | null;
+  email_expediteur_envoi_commande?: string | null;
+  objet_envoi_commande?: string | null;
+  message_envoi_commande?: string | null;
   adresse?: string | null;
   ville?: string | null;
   telephone?: string | null;
@@ -57,6 +62,11 @@ export class CampagneModel implements Campagne {
     this.tva = data.tva ?? null;
     this.email_contact = data.email_contact ?? null;
     this.email_bon_commande = data.email_bon_commande ?? null;
+    this.email_envoi_commande = data.email_envoi_commande ?? null;
+    this.nom_expediteur_envoi_commande = data.nom_expediteur_envoi_commande ?? null;
+    this.email_expediteur_envoi_commande = data.email_expediteur_envoi_commande ?? null;
+    this.objet_envoi_commande = data.objet_envoi_commande ?? null;
+    this.message_envoi_commande = data.message_envoi_commande ?? null;
     this.adresse = data.adresse ?? null;
     this.ville = data.ville ?? null;
     this.telephone = data.telephone ?? null;
@@ -100,6 +110,11 @@ export class CampagneModel implements Campagne {
       tva: this.tva,
       email_contact: this.email_contact,
       email_bon_commande: this.email_bon_commande,
+      email_envoi_commande: this.email_envoi_commande,
+      nom_expediteur_envoi_commande: this.nom_expediteur_envoi_commande,
+      email_expediteur_envoi_commande: this.email_expediteur_envoi_commande,
+      objet_envoi_commande: this.objet_envoi_commande,
+      message_envoi_commande: this.message_envoi_commande,
       adresse: this.adresse,
       ville: this.ville,
       telephone: this.telephone,

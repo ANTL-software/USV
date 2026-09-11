@@ -45,22 +45,23 @@ export function FacturationPreview({ state }: FacturationPreviewProps): ReactEle
       </>
     );
   } else {
-    const smallCompanyCount = preview.rows.filter((lead) => !lead.entreprise_plus_de_cinq_salaries).length;
-    const largeCompanyCount = preview.rows.length - smallCompanyCount;
+    const { leadBillingSummary } = state;
     content = (
       <>
-        <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>Règle de facturation MMA :</strong> seuls les rendez-vous au statut effectué, dont la date de passage au statut effectué est comprise dans la période, sont retenus.</div>
+        <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>Règle de facturation {leadBillingSummary.campaignName} :</strong> seuls les rendez-vous au statut effectué, dont la date de passage au statut effectué est comprise dans la période, sont retenus.</div>
         <div className="facturationView__kpis">
           <div className="facturationView__kpi"><span>Rendez-vous facturables</span><strong>{preview.rows.length}</strong></div>
-          <div className="facturationView__kpi"><span>Entreprises de 5 salariés ou moins</span><strong>{smallCompanyCount} × 75 € HT</strong></div>
-          <div className="facturationView__kpi"><span>Entreprises de plus de 5 salariés</span><strong>{largeCompanyCount} × 150 € HT</strong></div>
+          {leadBillingSummary.usesEmployeeCountPricing ? <>
+            <div className="facturationView__kpi"><span>Entreprises de 5 salariés ou moins</span><strong>{leadBillingSummary.smallCompanyCount} × {leadBillingSummary.defaultPriceHt} € HT</strong></div>
+            <div className="facturationView__kpi"><span>Entreprises de plus de 5 salariés</span><strong>{leadBillingSummary.largeCompanyCount} × {leadBillingSummary.largeCompanyPriceHt} € HT</strong></div>
+          </> : <div className="facturationView__kpi"><span>Tarif par rendez-vous effectué</span><strong>{leadBillingSummary.defaultPriceHt} € HT</strong></div>}
           <div className="facturationView__kpi"><span>CA facturable</span><strong>{formatBillingCurrency(state.previewTotals.totalHt)} HT<br />{formatBillingCurrency(state.previewTotals.totalTtc)} TTC</strong></div>
         </div>
         <div className="facturationView__table-wrapper">
-          <table><thead><tr><th>Lead</th><th>Client</th><th>Date effectuée</th><th>Catégorie</th><th>Montant</th></tr></thead>
-            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={5} className="facturationView__table-empty">Aucun rendez-vous effectué sur la période.</td></tr> : preview.rows.map((lead) => {
+          <table><thead><tr><th>Lead</th><th>Client</th><th>Date effectuée</th>{leadBillingSummary.usesEmployeeCountPricing && <th>Catégorie</th>}<th>Montant</th></tr></thead>
+            <tbody>{preview.rows.length === 0 ? <tr><td colSpan={leadBillingSummary.usesEmployeeCountPricing ? 5 : 4} className="facturationView__table-empty">Aucun rendez-vous effectué sur la période.</td></tr> : preview.rows.map((lead) => {
               const amounts = state.getLeadAmounts(lead);
-              return <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.date_effectue)}</td><td>{lead.entreprise_plus_de_cinq_salaries ? 'Plus de 5 salariés' : '5 salariés ou moins'}</td><td>{formatBillingCurrency(amounts.totalHt)} HT<br />{formatBillingCurrency(amounts.totalTtc)} TTC</td></tr>;
+              return <tr key={lead.id_lead}><td>Lead #{lead.id_lead}</td><td>{leadBillingProspectLabel(lead)}</td><td>{formatBillingDateTime(lead.date_effectue)}</td>{leadBillingSummary.usesEmployeeCountPricing && <td>{lead.entreprise_plus_de_cinq_salaries ? 'Plus de 5 salariés' : '5 salariés ou moins'}</td>}<td>{formatBillingCurrency(amounts.totalHt)} HT<br />{formatBillingCurrency(amounts.totalTtc)} TTC</td></tr>;
             })}</tbody>
           </table>
         </div>

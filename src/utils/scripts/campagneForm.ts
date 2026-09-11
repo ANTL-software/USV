@@ -42,6 +42,9 @@ export interface CampagneFormState {
   invoice_city: string;
   invoice_country: string;
   invoice_phone: string;
+  lead_unit_price_ht: string;
+  lead_small_company_price_ht: string;
+  lead_large_company_price_ht: string;
 }
 
 export interface CampagneSelectOption {
@@ -90,7 +93,16 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   invoice_city: '',
   invoice_country: 'France',
   invoice_phone: '',
+  lead_unit_price_ht: '75',
+  lead_small_company_price_ht: '75',
+  lead_large_company_price_ht: '150',
 };
+
+export const MMA_LEAD_PRICING_CAMPAIGN_ID = 10;
+
+const formatPrice = (value: number | null | undefined, fallback: number): string => (
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? String(value) : String(fallback)
+);
 
 export function buildInvoiceRecipientForm(
   recipient?: BonCommandeInvoiceRecipient | null,
@@ -120,6 +132,7 @@ export function buildInvoiceRecipientForm(
 }
 
 export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
+  const leadBilling = campagne.bon_commande_config?.lead_billing;
   return {
     nom_campagne: campagne.nom_campagne,
     type_campagne: normalizeCampaignVariant(campagne.type_campagne),
@@ -150,6 +163,9 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
       ? campagne.modes_paiement.join(',')
       : INITIAL_CAMPAGNE_FORM.modes_paiement,
     ...buildInvoiceRecipientForm(campagne.bon_commande_config?.invoice_recipient),
+    lead_unit_price_ht: formatPrice(leadBilling?.unit_price_ht, 75),
+    lead_small_company_price_ht: formatPrice(leadBilling?.small_company_price_ht, 75),
+    lead_large_company_price_ht: formatPrice(leadBilling?.large_company_price_ht, 150),
   };
 }
 
@@ -183,13 +199,26 @@ export function buildInvoiceRecipientPayload(
   return hasValue ? payload : null;
 }
 
-export function validateCampagneForm(form: CampagneFormState): string | null {
+const parsePositivePrice = (value: string): number | null => {
+  const parsed = Number.parseFloat(value);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : null;
+};
+
+export function validateCampagneForm(form: CampagneFormState, campagneId: number | null = null): string | null {
   if (!form.nom_campagne.trim()) return 'Le nom de la campagne est requis';
   if (!form.date_debut) return 'La date de début est requise';
+  if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
+    if (campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID) {
+      if (!parsePositivePrice(form.lead_small_company_price_ht)) return 'Le tarif des entreprises de 5 salariés ou moins doit être supérieur à 0';
+      if (!parsePositivePrice(form.lead_large_company_price_ht)) return 'Le tarif des entreprises de plus de 5 salariés doit être supérieur à 0';
+    } else if (!parsePositivePrice(form.lead_unit_price_ht)) {
+      return 'Le tarif par lead doit être supérieur à 0';
+    }
+  }
   return null;
 }
 
-export function buildCampagnePayload(form: CampagneFormState): CreateCampagneData {
+export function buildCampagnePayload(form: CampagneFormState, campagneId: number | null = null): CreateCampagneData {
   const modesPaiement = form.modes_paiement
     .split(',')
     .map((mode) => mode.trim())
@@ -200,6 +229,15 @@ export function buildCampagnePayload(form: CampagneFormState): CreateCampagneDat
   const commissionRate = Number.isNaN(parsedCommissionRate) || parsedCommissionRate <= 0
     ? null
     : parsedCommissionRate;
+  const isLeadCampaign = normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b;
+  const leadBilling = isLeadCampaign
+    ? campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID
+      ? {
+          small_company_price_ht: parsePositivePrice(form.lead_small_company_price_ht),
+          large_company_price_ht: parsePositivePrice(form.lead_large_company_price_ht),
+        }
+      : { unit_price_ht: parsePositivePrice(form.lead_unit_price_ht) }
+    : null;
 
   return {
     nom_campagne: form.nom_campagne.trim(),
@@ -226,7 +264,10 @@ export function buildCampagnePayload(form: CampagneFormState): CreateCampagneDat
     footer_text: form.footer_text || undefined,
     taux_commission_facturation: commissionRate,
     modes_paiement: modesPaiement,
-    bon_commande_config: { invoice_recipient: buildInvoiceRecipientPayload(form) },
+    bon_commande_config: {
+      invoice_recipient: buildInvoiceRecipientPayload(form),
+      lead_billing: leadBilling,
+    },
   };
 }
 

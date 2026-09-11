@@ -78,6 +78,9 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
         email: 'facturation@demo.fr',
         country: 'Belgique',
       },
+      lead_billing: {
+        unit_price_ht: 92.5,
+      },
     },
   }));
 
@@ -87,6 +90,28 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
   assert.equal(form.taux_commission_facturation, '45');
   assert.equal(form.invoice_company_name, 'SAS Démo');
   assert.equal(form.invoice_country, 'Belgique');
+  assert.equal(form.lead_unit_price_ht, '92.5');
+});
+
+test('les champs email effectuent un aller-retour complet entre API, formulaire et payload', () => {
+  const form = buildCampagneFormState(createCampagne({
+    email_contact: 'contact@client.fr',
+    email_bon_commande: 'commandes@client.fr',
+    email_envoi_commande: 'destinataire@client.fr',
+    nom_expediteur_envoi_commande: 'Service commandes',
+    email_expediteur_envoi_commande: 'expediteur@antl.fr',
+    objet_envoi_commande: 'Votre commande',
+    message_envoi_commande: 'Bonjour, voici votre commande.',
+  }));
+  const payload = buildCampagnePayload(form, 1);
+
+  assert.equal(payload.email_contact, 'contact@client.fr');
+  assert.equal(payload.email_bon_commande, 'commandes@client.fr');
+  assert.equal(payload.email_envoi_commande, 'destinataire@client.fr');
+  assert.equal(payload.nom_expediteur_envoi_commande, 'Service commandes');
+  assert.equal(payload.email_expediteur_envoi_commande, 'expediteur@antl.fr');
+  assert.equal(payload.objet_envoi_commande, 'Votre commande');
+  assert.equal(payload.message_envoi_commande, 'Bonjour, voici votre commande.');
 });
 
 test('la validation exige le nom et la date de début', () => {
@@ -139,7 +164,10 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
     footer_text: undefined,
     taux_commission_facturation: null,
     modes_paiement: ['CB', 'Virement'],
-    bon_commande_config: { invoice_recipient: null },
+    bon_commande_config: {
+      invoice_recipient: null,
+      lead_billing: { unit_price_ht: 75 },
+    },
   });
 
   const invoiceRecipient = buildInvoiceRecipientPayload({
@@ -148,6 +176,24 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
   });
   assert.equal(invoiceRecipient?.email, 'facturation@mma.fr');
   assert.equal(invoiceRecipient?.country, 'France');
+});
+
+test('MMA persiste les deux paliers 75 et 150 et valide chaque tarif', () => {
+  const mmaForm = {
+    ...INITIAL_CAMPAGNE_FORM,
+    nom_campagne: 'MMA',
+    type_campagne: 'lead_b2b',
+    date_debut: '2026-09-01',
+    lead_small_company_price_ht: '75',
+    lead_large_company_price_ht: '150',
+  };
+
+  assert.equal(validateCampagneForm(mmaForm, 10), null);
+  assert.deepEqual(buildCampagnePayload(mmaForm, 10).bon_commande_config?.lead_billing, {
+    small_company_price_ht: 75,
+    large_company_price_ht: 150,
+  });
+  assert.match(validateCampagneForm({ ...mmaForm, lead_large_company_price_ht: '0' }, 10) ?? '', /plus de 5/);
 });
 
 test('les fichiers logo sont bornés par taille et format', () => {

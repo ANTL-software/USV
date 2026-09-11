@@ -16,8 +16,15 @@ export interface BonCommandeInvoiceRecipient {
   phone?: string | null;
 }
 
+export interface LeadBillingConfig {
+  unit_price_ht?: number | null;
+  small_company_price_ht?: number | null;
+  large_company_price_ht?: number | null;
+}
+
 export interface BonCommandeConfig {
   invoice_recipient?: BonCommandeInvoiceRecipient | null;
+  lead_billing?: LeadBillingConfig | null;
   [key: string]: unknown;
 }
 

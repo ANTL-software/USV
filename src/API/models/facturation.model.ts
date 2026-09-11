@@ -4,6 +4,7 @@ import type {
   CampaignBillingSettings,
   Campagne,
   InvoiceRecipient,
+  LeadBillingSettings,
   LeadClient,
   ResolvedBillingProfile,
   Vente,
@@ -17,8 +18,9 @@ const parseNumericAmount = (value: number | string): number => {
 
 const roundCurrency = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
 
-export const MMA_SMALL_COMPANY_LEAD_PRICE_HT = 75;
+export const DEFAULT_LEAD_PRICE_HT = 75;
 export const MMA_LARGE_COMPANY_LEAD_PRICE_HT = 150;
+export const MMA_LEAD_BILLING_CAMPAIGN_ID = 10;
 
 const isFilled = (value: string | string[] | null | undefined): boolean => Array.isArray(value)
   ? value.length > 0
@@ -66,26 +68,54 @@ export function getCampaignBillingSettings(campagne: Campagne | null): CampaignB
 
 export const computeTtcAmount = (htAmount: number | string, vatRate: number): number => parseNumericAmount(htAmount) * (1 + vatRate);
 
-export function computeFacturableHt(vente: Vente, _settings?: CampaignBillingSettings): number {
+export function computeFacturableHt(vente: Vente): number {
   return parseNumericAmount(vente.montant_total);
 }
 
-export function computeFacturableLeadHt(lead: LeadClient): number {
+export function usesEmployeeCountLeadPricing(campaignId: number | null | undefined): boolean {
+  return campaignId === MMA_LEAD_BILLING_CAMPAIGN_ID;
+}
+
+const parsePositivePrice = (value: number | null | undefined, fallback: number): number => (
+  typeof value === 'number' && Number.isFinite(value) && value > 0 ? value : fallback
+);
+
+export function getLeadBillingSettings(campagne: Campagne | null): LeadBillingSettings {
+  const config = campagne?.bon_commande_config?.lead_billing;
+  return {
+    unitPriceHt: parsePositivePrice(config?.unit_price_ht, DEFAULT_LEAD_PRICE_HT),
+    smallCompanyPriceHt: parsePositivePrice(config?.small_company_price_ht, DEFAULT_LEAD_PRICE_HT),
+    largeCompanyPriceHt: parsePositivePrice(config?.large_company_price_ht, MMA_LARGE_COMPANY_LEAD_PRICE_HT),
+    usesEmployeeCountPricing: usesEmployeeCountLeadPricing(campagne?.id_campagne),
+  };
+}
+
+export function computeFacturableLeadHt(lead: LeadClient, settings: LeadBillingSettings): number {
+  if (!settings.usesEmployeeCountPricing) return settings.unitPriceHt;
   return lead.entreprise_plus_de_cinq_salaries
-    ? MMA_LARGE_COMPANY_LEAD_PRICE_HT
-    : MMA_SMALL_COMPANY_LEAD_PRICE_HT;
+    ? settings.largeCompanyPriceHt
+    : settings.smallCompanyPriceHt;
 }
 
 export function computePreviewTotals(
   preview: BillingPreview | null,
   settings: CampaignBillingSettings,
   commissionRate: number | null = null,
+  leadBillingSettings: LeadBillingSettings | null = null,
 ): BillingAmounts {
   if (!preview) return { assietteHt: 0, totalHt: 0, totalTtc: 0 };
 
   const assietteHt = roundCurrency(preview.source === 'ventes'
-    ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente, settings), 0)
-    : preview.rows.reduce((sum, lead) => sum + computeFacturableLeadHt(lead), 0));
+    ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente), 0)
+    : preview.rows.reduce((sum, lead) => sum + computeFacturableLeadHt(
+      lead,
+      leadBillingSettings ?? {
+        unitPriceHt: DEFAULT_LEAD_PRICE_HT,
+        smallCompanyPriceHt: DEFAULT_LEAD_PRICE_HT,
+        largeCompanyPriceHt: MMA_LARGE_COMPANY_LEAD_PRICE_HT,
+        usesEmployeeCountPricing: usesEmployeeCountLeadPricing(lead.id_campagne),
+      },
+    ), 0));
   const commissionMultiplier = preview.source === 'ventes' && commissionRate !== null && commissionRate > 0
     ? commissionRate / 100
     : 1;

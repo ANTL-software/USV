@@ -20,6 +20,9 @@ import {
   buildCampagnePayload,
   validateCampagneForm,
   validateCampagneLogoFile,
+  CAMPAIGN_VARIANTS,
+  MMA_LEAD_PRICING_CAMPAIGN_ID,
+  normalizeCampaignVariant,
 } from '../utils/scripts/index.ts';
 import type { CampagneFormState } from '../utils/scripts/index.ts';
 
@@ -45,6 +48,8 @@ export function useCampagneForm() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const campagneId = existing?.id_campagne ?? null;
+  const isLeadCampaign = normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b;
+  const usesEmployeeCountLeadPricing = campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID;
 
   // Charger la campagne existante si édition
   useEffect(() => {
@@ -185,7 +190,7 @@ export function useCampagneForm() {
     setError(null);
     setSuccess(null);
 
-    const validationError = validateCampagneForm(form);
+    const validationError = validateCampagneForm(form, campagneId);
     if (validationError) {
       setError(validationError);
       return;
@@ -194,7 +199,7 @@ export function useCampagneForm() {
     setIsLoading(true);
 
     try {
-      const payload = buildCampagnePayload(form);
+      const payload = buildCampagnePayload(form, campagneId);
 
       if (isEdit) {
         await updateCampagneService(Number(id), payload);
@@ -220,6 +225,8 @@ export function useCampagneForm() {
     isFetching,
     error,
     success,
+    isLeadCampaign,
+    usesEmployeeCountLeadPricing,
     handleChange,
     handleModesPaiementChange,
     paymentOptions: CAMPAGNE_PAYMENT_OPTIONS,
