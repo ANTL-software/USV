@@ -20,6 +20,7 @@ interface ProductImportRequest {
 
 interface ProspectUpdateRequest {
   email?: string;
+  raison_sociale?: string;
 }
 
 const prospect = {
@@ -143,6 +144,7 @@ test('l’import produits et le détail prospect fonctionnent dans le navigateur
   await expect(prospectModal.getByRole('heading', { name: 'Détail du prospect' })).toBeVisible();
   await expect(prospectModal.getByText('contact@durand-conseil.fr')).toBeVisible();
   await prospectModal.getByRole('button', { name: 'Modifier' }).click();
+  await prospectModal.locator('.detailRow').filter({ hasText: 'Raison sociale' }).locator('input').fill('SAS Durand');
   await page.route('https://data.geopf.fr/**', (route) => fulfillJson(route, { features: [{ properties: { name: '8 rue des Fleurs', label: '8 rue des Fleurs 75001 Paris', postcode: '75001', city: 'Paris' } }] }));
   await prospectModal.getByRole('combobox', { name: 'Adresse du prospect' }).fill('8 rue');
   await prospectModal.getByRole('listbox', { name: /Suggestions d.adresses/ }).getByRole('option').first().click();
@@ -150,8 +152,9 @@ test('l’import produits et le détail prospect fonctionnent dans le navigateur
   await prospectModal.getByRole('button', { name: 'Enregistrer' }).click();
 
   await expect.poll(() => prospectUpdatePayload).not.toBeNull();
-  expect(prospectUpdatePayload).toMatchObject({ email: 'direction@durand-conseil.fr' });
+  expect(prospectUpdatePayload).toMatchObject({ email: 'direction@durand-conseil.fr', raison_sociale: 'SAS Durand' });
   expect(prospectUpdatePayload).toMatchObject({ adresse: '8 Rue Des Fleurs', code_postal: '75001', ville: 'Paris', pays: 'France' });
   await expect(prospectModal.getByText('direction@durand-conseil.fr')).toBeVisible();
+  await expect(prospectModal.getByText('SAS Durand', { exact: true })).toBeVisible();
   expect(unhandledRequests).toEqual([]);
 });
