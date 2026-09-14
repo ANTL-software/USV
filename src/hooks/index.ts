@@ -214,6 +214,8 @@ export { useCampagnesListPage } from './useCampagnesListPage.ts';
 export type { CampagnesListPageViewModel } from './useCampagnesListPage.ts';
 export { useMonPlanningPage } from './useMonPlanningPage.ts';
 export type { MonPlanningPageViewModel } from './useMonPlanningPage.ts';
+export { useCommercialAgenda } from './useCommercialAgenda.ts';
+export type { CommercialAgendaViewModel } from './useCommercialAgenda.ts';
 export { useNotesDirectionPage } from './useNotesDirectionPage.ts';
 export type { NotesDirectionPageViewModel } from './useNotesDirectionPage.ts';
 export { useImageConverterPage } from './useImageConverterPage.ts';

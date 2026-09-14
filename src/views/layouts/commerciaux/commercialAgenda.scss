@@ -1,0 +1,312 @@
+@use "../../../utils/styles/mixins" as mixins;
+@use "../../../utils/styles/variables" as vars;
+
+#commercialAgenda {
+  @include mixins.mainView;
+}
+
+#commercialAgenda .commercialAgenda__back {
+  @include mixins.centeredContainer(90em);
+  padding: 1em 1em 0;
+}
+
+#commercialAgenda .commercialAgenda__wrapper {
+  @include mixins.centeredContainer(90em);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 1.25em;
+  padding: 1.5em 1em 2em;
+}
+
+#commercialAgenda .commercialAgenda__header {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#commercialAgenda .commercialAgenda__header h1 {
+  margin: 0.2em 0 0.25em;
+  color: vars.$fontColorPrimary;
+  font-size: clamp(1.75rem, 4vw, 2.6rem);
+}
+
+#commercialAgenda .commercialAgenda__header p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.55;
+}
+
+#commercialAgenda .commercialAgenda__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  color: vars.$utilsPrimary;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+#commercialAgenda .commercialAgenda__selectorCard,
+#commercialAgenda .commercialAgenda__calendarCard,
+#commercialAgenda .commercialAgenda__empty,
+#commercialAgenda .commercialAgenda__errorState {
+  @include mixins.card(16px, light);
+}
+
+#commercialAgenda .commercialAgenda__selectorCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65em;
+  padding: 1.1em;
+}
+
+#commercialAgenda .commercialAgenda__selectorCard label {
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+
+#commercialAgenda .commercialAgendaSelect__control {
+  min-height: 3em;
+  border-color: vars.$borderColor;
+  border-radius: 10px;
+}
+
+#commercialAgenda .commercialAgendaSelect__control:hover,
+#commercialAgenda .commercialAgendaSelect__control--is-focused {
+  border-color: vars.$utilsPrimary;
+  box-shadow: 0 0 0 1px vars.$utilsPrimary;
+}
+
+#commercialAgenda .commercialAgenda__identityNotice {
+  margin: 0;
+  padding: 0.8em 0.9em;
+  border-left: 4px solid vars.$utilsPrimary;
+  border-radius: 8px;
+  background: rgba(124, 58, 237, 0.08);
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard {
+  position: relative;
+  min-height: 42em;
+  padding: 0.85em;
+  overflow: hidden;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-calendar {
+  min-height: 40em;
+  font-family: inherit;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-toolbar {
+  align-items: stretch;
+  gap: 0.5em;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-toolbar button {
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  color: vars.$fontColorPrimary;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-toolbar button:hover,
+#commercialAgenda .commercialAgenda__calendarCard .rbc-toolbar button:focus {
+  border-color: vars.$utilsPrimary;
+  background: rgba(124, 58, 237, 0.08);
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-toolbar button.rbc-active {
+  border-color: transparent;
+  background: vars.$utilsGradient;
+  color: white;
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-today {
+  background: rgba(124, 58, 237, 0.07);
+}
+
+#commercialAgenda .commercialAgenda__calendarCard .rbc-event:focus {
+  outline: 3px solid rgba(124, 58, 237, 0.3);
+}
+
+#commercialAgenda .commercialAgenda__loading {
+  position: absolute;
+  z-index: 3;
+  top: 0.8em;
+  right: 0.8em;
+  margin: 0;
+  padding: 0.5em 0.75em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.1);
+  color: vars.$fontColorSecondary;
+  font-size: 0.8rem;
+}
+
+#commercialAgenda .commercialAgenda__empty,
+#commercialAgenda .commercialAgenda__errorState {
+  padding: 2em;
+  color: vars.$fontColorSecondary;
+  text-align: center;
+}
+
+#commercialAgenda .commercialAgenda__errorState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1em;
+  flex-wrap: wrap;
+  border: 1px solid rgba(220, 38, 38, 0.2);
+}
+
+#commercialAgenda .commercialAgenda__errorState p {
+  margin: 0;
+  color: #b91c1c;
+}
+
+#commercialAgenda .commercialAgenda__modalBody,
+#commercialAgenda .commercialAgenda__editForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#commercialAgenda .commercialAgenda__status {
+  align-self: flex-start;
+  padding: 0.4em 0.75em;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#commercialAgenda .commercialAgenda__details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+  margin: 0;
+}
+
+#commercialAgenda .commercialAgenda__details div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding-bottom: 0.75em;
+  border-bottom: 1px solid vars.$borderColor;
+}
+
+#commercialAgenda .commercialAgenda__details dt {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+#commercialAgenda .commercialAgenda__details dd {
+  margin: 0;
+  color: vars.$fontColorPrimary;
+  font-weight: 600;
+}
+
+#commercialAgenda .commercialAgenda__details .commercialAgenda__notes {
+  padding: 0.75em;
+  border-radius: 8px;
+  background: vars.$greyBackground;
+  font-style: italic;
+  font-weight: 400;
+  white-space: pre-wrap;
+}
+
+#commercialAgenda .commercialAgenda__locked {
+  margin: 0;
+  padding: 0.8em;
+  border: 1px solid rgba(217, 119, 6, 0.28);
+  border-radius: 8px;
+  background: #fffbeb;
+  color: #92400e;
+  line-height: 1.45;
+}
+
+#commercialAgenda .commercialAgenda__modalActions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65em;
+}
+
+#commercialAgenda .commercialAgenda__editForm > p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.45;
+}
+
+#commercialAgenda .commercialAgenda__editRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85em;
+}
+
+#commercialAgenda .commercialAgenda__editRow label,
+#commercialAgenda .commercialAgenda__editField {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.4em;
+  color: vars.$fontColorPrimary;
+  font-weight: 700;
+}
+
+#commercialAgenda .commercialAgenda__editRow input,
+#commercialAgenda .commercialAgenda__editField select {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.75em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+  background: white;
+  color: vars.$fontColorPrimary;
+  font: inherit;
+}
+
+#commercialAgenda .commercialAgenda__error {
+  margin: 0;
+  color: #b91c1c;
+  font-weight: 600;
+}
+
+@media (min-width: vars.$tabletWidth) {
+  #commercialAgenda .commercialAgenda__header {
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-direction: row;
+  }
+
+  #commercialAgenda .commercialAgenda__selectorCard {
+    max-width: 36em;
+  }
+
+  #commercialAgenda .commercialAgenda__modalActions,
+  #commercialAgenda .commercialAgenda__editRow {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: vars.$tabletWidth) {
+  #commercialAgenda .commercialAgenda__calendarCard {
+    min-height: 34em;
+    overflow-x: auto;
+  }
+
+  #commercialAgenda .commercialAgenda__calendarCard .rbc-calendar {
+    min-width: 48em;
+    min-height: 32em;
+  }
+}

@@ -13,7 +13,7 @@ export { CentreAppels } from './centreAppels/index.ts';
 export { CommandeDetails } from './commandeDetails/index.ts';
 export { CommandesList } from './commandesList/index.ts';
 export { Commercial } from './commercial/index.ts';
-export { Commerciaux, MonPlanning, NotesDirection } from './commerciaux/index.ts';
+export { CommercialAgenda, Commerciaux, MonPlanning, NotesDirection } from './commerciaux/index.ts';
 export { ConvertisseurImage } from './convertisseurImage/index.ts';
 export { Courriers } from './courriers/index.ts';
 export { Devis } from './devis/index.ts';

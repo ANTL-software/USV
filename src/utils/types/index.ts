@@ -1,4 +1,14 @@
 export type {
+  CommercialAgendaAgent,
+  CommercialAgendaAgentOption,
+  CommercialAgendaCalendarState,
+  CommercialAgendaEditForm,
+  CommercialAgendaEvent,
+  CommercialAgendaPresentation,
+  CommercialAgendaUpdatePayload,
+} from './commercialAgenda.types.ts';
+
+export type {
   SocialPlatform,
   SocialDraftStatus,
   SocialEditorialDraft,

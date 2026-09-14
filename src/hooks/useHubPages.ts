@@ -20,10 +20,12 @@ export interface CommercialPageViewModel {
 
 export interface CommerciauxPageViewModel {
   access: {
+    agenda: boolean;
     notes: boolean;
     planning: boolean;
   };
   navigateBack: () => void;
+  navigateToAgenda: () => void;
   navigateToNotes: () => void;
   navigateToPlanning: () => void;
 }
@@ -112,10 +114,12 @@ export function useCommerciauxPage(): CommerciauxPageViewModel {
   const { user } = useUserContext();
   return {
     access: {
+      agenda: hasAccessToSubsection(user, 'commerciaux', 'agenda-travail'),
       notes: hasAccessToSubsection(user, 'commerciaux', 'notes-direction'),
       planning: hasAccessToSubsection(user, 'commerciaux', 'mon_planning'),
     },
     navigateBack: () => void navigate('/home'),
+    navigateToAgenda: () => void navigate('/commerciaux/agenda-travail'),
     navigateToNotes: () => void navigate('/commerciaux/notes-direction'),
     navigateToPlanning: () => void navigate('/commerciaux/mon_planning'),
   };

@@ -1204,6 +1204,14 @@ Ce fichier AGENTS.md doit être mis à jour dans les cas suivants :
 
 Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dans les permissions de poste, la navigation et les garde-fous de route. Le droit doit être testé ; masquer un lien ne suffit pas à sécuriser la sous-application.
 
+### Agenda travail commerciaux
+
+- `/commerciaux/agenda-travail` est accessible depuis le hub `/commerciaux` avec le droit dédié `commerciaux/agenda-travail`, vérifié dans la navigation, la route React et les endpoints Olympe.
+- Le sélecteur ne liste que les employés actifs dont le poste est de type `commercial`. Toute lecture et toute mutation portent l'identifiant du commercial sélectionné dans l'URL.
+- Le calendrier reprend les vues mois, semaine et jour ainsi que les couleurs métier du calendrier Script. Les rappels forcés Vigie et les relances automatiques de vente restent visibles mais non modifiables.
+- Déplacer ou annuler un rendez-vous ne change jamais son `id_agent`. Les payloads frontend n'envoient pas ce champ et le backend vérifie que le rendez-vous appartient au commercial ciblé avant la transaction.
+- `useCommercialAgenda` orchestre le chargement et les mutations ; les composants et le layout restent passifs. Le scénario Playwright `commercial-agenda.spec.ts` couvre navigation, changement de commercial, déplacement, annulation, absence de croisement et contrôle du droit.
+
 ### Comment mettre à jour
 
 1. Ajouter une entrée dans le tableau d'historique en bas du fichier
@@ -1230,6 +1238,7 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 
 | Date | Modification | Auteur |
 |------|--------------|--------|
+| 2026-09-14 | Agenda de supervision des commerciaux avec sélection, déplacement et annulation sans réaffectation | AI Agent |
 | 2026-09-09 | Comparatif qualité : ProgPA, dates, campagne active, lisibilité ; adresses IGN/BAN sur prospects, ventes et leads | AI Agent |
 | 2026-09-07 | Remplacement du rang commercial par Palier 1/2/3, objectif individuel à 100 % et miroir de la jauge Dashboard Script sur le profil commercial | AI Agent |
 | 2026-09-02 | Ajout des vues partenaire `/partenaire/prospects` et `/partenaire/ecoutes`, avec cartes, navigation, droits dédiés et données strictement limitées aux campagnes autorisées | AI Agent |

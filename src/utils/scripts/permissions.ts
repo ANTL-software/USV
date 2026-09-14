@@ -136,6 +136,7 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
       { id: 'notes-direction-create', name: 'Notes de direction (création)', path: '/commerciaux/notes-direction' },
       { id: 'notes-direction-delete', name: 'Notes de direction (suppression)', path: '/commerciaux/notes-direction' },
       { id: 'mon_planning', name: 'Mon planning', path: '/commerciaux/mon_planning' },
+      { id: 'agenda-travail', name: 'Agenda travail commerciaux', path: '/commerciaux/agenda-travail' },
     ],
   },
   {
@@ -206,7 +207,7 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     return hasAccessToSection(user, 'booking');
   }
 
-  if (cleanPath.startsWith('/commercial')) {
+  if (cleanPath === '/commercial' || cleanPath.startsWith('/commercial/')) {
     if (!hasAccessToSection(user, 'commercial')) return false;
     if (cleanPath === '/commercial') return true;
     if (cleanPath.startsWith('/commercial/publications-reseaux-sociaux')) {
@@ -224,11 +225,12 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
     return false;
   }
   
-  if (cleanPath.startsWith('/commerciaux')) {
+  if (cleanPath === '/commerciaux' || cleanPath.startsWith('/commerciaux/')) {
     if (!hasAccessToSection(user, 'commerciaux')) return false;
     if (cleanPath === '/commerciaux') return true;
     if (cleanPath === '/commerciaux/notes-direction') return hasAccessToSubsection(user, 'commerciaux', 'notes-direction');
     if (cleanPath === '/commerciaux/mon_planning') return hasAccessToSubsection(user, 'commerciaux', 'mon_planning');
+    if (cleanPath === '/commerciaux/agenda-travail') return hasAccessToSubsection(user, 'commerciaux', 'agenda-travail');
     return false;
   }
   

@@ -36,6 +36,7 @@ import {
   CommandeDetails as CommandeDetailsWithAuth,
   CommandesList as CommandesListWithAuth,
   Commercial as CommercialWithAuth,
+  CommercialAgenda as CommercialAgendaWithAuth,
   Commerciaux as CommerciauxWithAuth,
   ConvertisseurImage as ConvertisseurImageWithAuth,
   Courriers as CourriersWithAuth,
@@ -157,6 +158,7 @@ function App(): ReactElement {
         <Route path={"commerciaux"} element={<CommerciauxWithAuth />}></Route>
         <Route path={"commerciaux/notes-direction"} element={<NotesDirectionWithAuth />}></Route>
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
+        <Route path={"commerciaux/agenda-travail"} element={<CommercialAgendaWithAuth />}></Route>
         <Route path={"commercial"} element={<CommercialWithAuth />}></Route>
         <Route path={"commercial/facturation"} element={<FacturationWithAuth />}></Route>
         <Route path={"commercial/publications-reseaux-sociaux"} element={<SocialPublicationsWithAuth />}></Route>

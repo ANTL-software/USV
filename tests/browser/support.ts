@@ -28,7 +28,7 @@ export const ADMIN_USER = {
       },
       commerciaux: {
         enabled: true,
-        subsections: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
+        subsections: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning', 'agenda-travail'],
       },
       incidents: { enabled: true, subsections: ['declarer', 'qualifier', 'traiter', 'liste'] },
       mail: { enabled: true, subsections: ['mail_new', 'mail_list', 'mail_convert'] },

@@ -82,6 +82,33 @@ test('hasAccessToPath applique le module sélectionné dans le menu parent', () 
   assert.equal(hasAccessToPath(user, '/commercial'), false);
 });
 
+test('agenda travail commerciaux exige son droit dédié sans confusion avec le menu commercial', () => {
+  const agendaManager = createUser({
+    poste: {
+      id_poste: 15,
+      libelle_poste: 'Manager agenda',
+      permissions: {
+        commerciaux: { enabled: true, subsections: ['agenda-travail'] },
+        commercial: { enabled: false, subsections: [] },
+      },
+    },
+  });
+  const planningOnly = createUser({
+    poste: {
+      id_poste: 16,
+      libelle_poste: 'Commercial',
+      permissions: {
+        commerciaux: { enabled: true, subsections: ['mon_planning'] },
+      },
+    },
+  });
+
+  assert.equal(hasAccessToPath(agendaManager, '/commerciaux'), true);
+  assert.equal(hasAccessToPath(agendaManager, '/commerciaux/agenda-travail'), true);
+  assert.equal(hasAccessToPath(agendaManager, '/commercial'), false);
+  assert.equal(hasAccessToPath(planningOnly, '/commerciaux/agenda-travail'), false);
+});
+
 test('le partenaire accède au portail et uniquement à ses modules explicites', () => {
   const partner = createUser({
     account_type: 'partenaire_externe',

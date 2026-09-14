@@ -5,6 +5,10 @@ export { courrierModel } from './courrier.model.ts';
 export { MaterielModel } from './materiel.model.ts';
 export { DocumentModel } from './document.model.ts';
 export { BookingModel } from './booking.model.ts';
+export {
+  normalizeCommercialAgendaAgent,
+  normalizeCommercialAgendaRendezVous,
+} from './commercialAgenda.model.ts';
 export { ProspectModel, mapProspectCampagneRowToProspect } from './prospect.model.ts';
 export { NoteDirectionModel } from './noteDirection.model.ts';
 export type { NoteDirectionData } from './noteDirection.model.ts';

@@ -74,6 +74,8 @@ export interface RendezVousItem {
   telephone_contact_snapshot?: string | null;
   email_contact_snapshot?: string | null;
   notes?: string | null;
+  is_rappel_force?: boolean;
+  id_vigie_action?: number;
   statut: StatutRendezVous;
   date_qualification?: string | null;
   date_effectue?: string | null;

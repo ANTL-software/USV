@@ -226,6 +226,9 @@ export { SocialPublicationWorkspace } from './socialPublicationWorkspace/index.t
 export { SocialPublicationHistoryContent } from './socialPublicationHistory/index.ts';
 export { SocialPublicationHistoryDetailModal } from './socialPublicationHistory/index.ts';
 export { CommerciauxHubContent } from './commerciauxHubContent/index.ts';
+export { CommercialAgendaContent } from './commercialAgendaContent/index.ts';
+export { CommercialAgendaDetailsModal } from './commercialAgendaDetailsModal/index.ts';
+export { CommercialAgendaEditModal } from './commercialAgendaEditModal/index.ts';
 export { IncidentsHubContent } from './incidentsHubContent/index.ts';
 export { QualiteHubContent } from './qualiteHubContent/index.ts';
 export { VigieActions } from './vigieActions/index.ts';

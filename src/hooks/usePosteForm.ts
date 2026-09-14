@@ -46,7 +46,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
   commercial: ['publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
   incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
   mail: ['mail_new', 'mail_list', 'mail_convert'],
-  commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning'],
+  commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning', 'agenda-travail'],
   documentation: ['documentation-consultation'],
 };
 const QUALITY_SUBSECTIONS = [
