@@ -35,18 +35,16 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
   } = viewModel;
 
   if (!commande || !billingAddress || !deliveryAddress) return <></>;
+  const deliveryCompanyName = commande.raison_sociale_livraison
+    || commande.prospect?.raison_sociale_livraison
+    || commande.prospect?.raison_sociale
+    || null;
 
   return (
     <>
       <section className="details-section card-style">
         <h3 className="section-title"><IoBusiness /> Client & Contact</h3>
         <div className="details-grid">
-          {billingCompanyName && (
-            <div className="grid-item full-width">
-              <span className="grid-label">Raison sociale de facturation</span>
-              <span className="grid-value grid-value--bold">{billingCompanyName}</span>
-            </div>
-          )}
           {commande.prospect?.siret && (
             <div className="grid-item">
               <span className="grid-label">SIRET</span>
@@ -66,8 +64,8 @@ export function CommandeDetailsSummary({ viewModel }: CommandeDetailsSummaryProp
         </div>
 
         <div className="addresses-grid">
-          <AddressEditor title={billingAddress.title} lines={billingAddress.lines} viewModel={billingEditor} notice="Modification limitée à cette commande. Les documents déjà signés ne sont pas remplacés." />
-          <AddressEditor title={deliveryAddress.title} lines={deliveryAddress.lines} viewModel={deliveryEditor} notice="Modification limitée à la livraison de cette commande. Les documents déjà signés ne sont pas remplacés." />
+          <AddressEditor title={billingAddress.title} lines={billingAddress.lines} viewModel={billingEditor} companyName={billingCompanyName} companyNameLabel="Raison sociale de facturation" notice="Modification limitée à cette commande. Les documents déjà signés ne sont pas remplacés." />
+          <AddressEditor title={deliveryAddress.title} lines={deliveryAddress.lines} viewModel={deliveryEditor} companyName={deliveryCompanyName} companyNameLabel="Raison sociale de livraison" notice="Modification limitée à la livraison de cette commande. Les documents déjà signés ne sont pas remplacés." />
         </div>
       </section>
 

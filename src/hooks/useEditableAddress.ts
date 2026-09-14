@@ -16,7 +16,7 @@ export function useEditableAddress(identity: string, address: EditableAddress, p
   const cancel = (): void => { if (!pending.current) { setEditing(false); setError(''); } };
   const change = (field: keyof EditableAddress, value: string): void => { if (!pending.current) setDraft((previous) => ({ ...previous, [field]: value })); };
   const select = (result: AddressSelectionResult): void => {
-    if (!pending.current) setDraft({ adresse: result.adresse, code_postal: result.code_postal, ville: result.ville, pays: result.pays });
+    if (!pending.current) setDraft((previous) => ({ ...previous, adresse: result.adresse, code_postal: result.code_postal, ville: result.ville, pays: result.pays }));
   };
   const save = async (): Promise<void> => {
     if (pending.current) return;

@@ -7,7 +7,7 @@ const suggestion = { type: 'Feature', properties: { name: '12 avenue des Lilas',
 
 test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans modifier la livraison', async ({ page }) => {
   const unhandled: string[] = []; const patches: Record<string, string>[] = []; let fail = true;
-  let sale = { id_vente: 701, id_prospect: 42, id_agent: 9, id_campagne: 7, date_vente: '2026-09-01', montant_total: 500, statut_vente: 'validee', mode_paiement: 'Virement', raison_sociale_facturation: 'Durand Facturation', prospect, campagne: SALES_CAMPAIGN, details: [], adresse_livraison: '3 Rue Du Port', code_postal_livraison: '17000', ville_livraison: 'La Rochelle', pays_livraison: 'France' };
+  let sale = { id_vente: 701, id_prospect: 42, id_agent: 9, id_campagne: 7, date_vente: '2026-09-01', montant_total: 500, statut_vente: 'validee', mode_paiement: 'Virement', raison_sociale_facturation: 'Durand Facturation', raison_sociale_livraison: 'Durand Livraison', prospect, campagne: SALES_CAMPAIGN, details: [], adresse_livraison: '3 Rue Du Port', code_postal_livraison: '17000', ville_livraison: 'La Rochelle', pays_livraison: 'France' };
   await installApiRoute(page, async (route, request) => {
     if (request.path === '/ventes/701' && request.method === 'GET') { await fulfillJson(route, apiSuccess(sale)); return true; }
     if (request.path === '/ventes/701/adresses' && request.method === 'PATCH') {
@@ -23,6 +23,7 @@ test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans mo
   await page.route('https://data.geopf.fr/**', (route) => fulfillJson(route, { features: [suggestion] }));
   await page.goto('/operations/commandes/details/701');
   await expect(page.getByText('Durand Facturation', { exact: true })).toBeVisible();
+  await expect(page.getByText('Durand Livraison', { exact: true })).toBeVisible();
   await expect(page.getByText('Durand Conseil', { exact: true })).toHaveCount(0);
   const billing = page.getByRole('region', { name: 'Adresse de Facturation', exact: true });
   const delivery = page.getByRole('region', { name: 'Adresse de Livraison', exact: true });
@@ -35,6 +36,7 @@ test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans mo
   expect(patches).toHaveLength(0);
   await expect(billing).toContainText('10 Rue De La Paix');
   await billing.getByRole('button', { name: 'Modifier Adresse de Facturation' }).click();
+  await billing.getByLabel('Raison sociale de facturation').fill('Nouvelle Facturation');
   await billing.getByRole('combobox').fill("14 RUE DE L'ÉGLISE");
   await billing.getByRole('combobox').press('Tab');
   await billing.getByLabel('Ville', { exact: true }).fill('SAINT-ÉTIENNE');
@@ -46,9 +48,11 @@ test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans mo
   await billing.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(billing.getByRole('combobox')).toHaveCount(0);
   await expect(billing).toContainText("14 Rue De L'Église");
-  expect(patches.at(-1)).toEqual({ adresse_facturation: "14 Rue De L'Église", code_postal_facturation: '42000', ville_facturation: 'Saint-Étienne', pays_facturation: 'France' });
+  expect(patches.at(-1)).toEqual({ raison_sociale_facturation: 'Nouvelle Facturation', adresse_facturation: "14 Rue De L'Église", code_postal_facturation: '42000', ville_facturation: 'Saint-Étienne', pays_facturation: 'France' });
+  await expect(billing.getByText('Nouvelle Facturation', { exact: true })).toBeVisible();
   await expect(delivery).toContainText('3 Rue Du Port');
   await delivery.getByRole('button', { name: 'Modifier Adresse de Livraison' }).click();
+  await delivery.getByLabel('Raison sociale de livraison').fill('Nouvelle Livraison');
   await delivery.getByRole('combobox').fill('12 avenue');
   await delivery.getByRole('option').first().click();
   await page.screenshot({ path: 'test-results/address-sale-desktop.png', fullPage: true });
@@ -59,7 +63,8 @@ test('vente : crayon, autocomplétion, annulation et sauvegarde manuelle sans mo
   expect(gutters.text).toBeGreaterThan(gutters.icon + 3);
   await delivery.getByRole('button', { name: 'Enregistrer', exact: true }).click();
   await expect(delivery).toContainText('12 Avenue Des Lilas');
-  expect(patches.at(-1)).toEqual({ adresse_livraison: '12 Avenue Des Lilas', code_postal_livraison: '75001', ville_livraison: 'Paris', pays_livraison: 'France' });
+  expect(patches.at(-1)).toEqual({ raison_sociale_livraison: 'Nouvelle Livraison', adresse_livraison: '12 Avenue Des Lilas', code_postal_livraison: '75001', ville_livraison: 'Paris', pays_livraison: 'France' });
+  await expect(delivery.getByText('Nouvelle Livraison', { exact: true })).toBeVisible();
   expect(unhandled).toEqual([]);
 });
 

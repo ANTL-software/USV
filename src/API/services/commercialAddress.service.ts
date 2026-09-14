@@ -5,6 +5,7 @@ interface AddressResponse<T> { success: boolean; data?: T; message?: string }
 
 export async function updateSaleAddressService(id: number, kind: 'facturation' | 'livraison', address: EditableAddress): Promise<VenteComplete> {
   const response = await patchRequest<Record<string, string>, AddressResponse<VenteComplete>>(`/ventes/${id}/adresses`, {
+    ...(address.raison_sociale !== undefined ? { [`raison_sociale_${kind}`]: address.raison_sociale } : {}),
     [`adresse_${kind}`]: address.adresse,
     [`code_postal_${kind}`]: address.code_postal,
     [`ville_${kind}`]: address.ville,

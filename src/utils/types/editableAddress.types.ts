@@ -1,4 +1,5 @@
 export interface EditableAddress {
+  raison_sociale?: string;
   adresse: string;
   code_postal: string;
   ville: string;

@@ -9,6 +9,7 @@ export interface VenteProspect {
   email?: string;
   telephone?: string;
   raison_sociale?: string;
+  raison_sociale_livraison?: string;
   siret?: string;
   adresse_facturation?: string;
   code_postal?: string;
@@ -65,6 +66,7 @@ export interface Vente {
   ville_facturation?: string;
   pays_facturation?: string;
   adresse_livraison?: string;
+  raison_sociale_livraison?: string;
   code_postal_livraison?: string;
   ville_livraison?: string;
   pays_livraison?: string;
