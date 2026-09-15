@@ -67,7 +67,7 @@ const createConfiguration = (provider: 'twilio' | 'asterisk'): TelephonyOperatio
       outboundCalls: true,
       incomingCalls: true,
       supervisorWhisper: provider === 'twilio',
-      answeringMachineDetection: provider === 'twilio',
+      answeringMachineDetection: false,
       recording: provider === 'twilio',
     },
   },

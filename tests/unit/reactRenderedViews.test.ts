@@ -654,7 +654,7 @@ test('le switch téléphonie rend Twilio par défaut et la cible Asterisk prête
           outboundCalls: true,
           incomingCalls: true,
           supervisorWhisper: true,
-          answeringMachineDetection: true,
+          answeringMachineDetection: false,
           recording: true,
         },
       },

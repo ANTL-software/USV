@@ -66,7 +66,7 @@ const createOperations = (
         outboundCalls: true,
         incomingCalls: true,
         supervisorWhisper: true,
-        answeringMachineDetection: provider === 'twilio',
+        answeringMachineDetection: false,
         recording: true,
       },
     },
