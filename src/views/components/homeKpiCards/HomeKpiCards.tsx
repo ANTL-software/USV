@@ -86,7 +86,7 @@ export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProp
     },
     {
       id: 'rdv',
-      label: 'RDV lead B2B',
+      label: 'Leads B2B pris',
       value: isLoading ? '...' : (kpis?.rdvClientsPlanifies?.total ?? 0).toLocaleString('fr-FR'),
       trend: kpis?.rdvClientsPlanifies?.trend ?? [],
       color: '#a78bfa',
