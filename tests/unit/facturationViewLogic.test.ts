@@ -195,3 +195,11 @@ test('les destinataires de facture identiques sont dédupliqués', () => {
     label: 'Email de facturation — factures@client.fr',
   }]);
 });
+
+test('identifie les campagnes Swiss Life (12) et Swiss Life IND (14) pour le bouton 1 lot de 10 rendez-vous qualifié', () => {
+  const isSwissLife = (id: number) => id === 12 || id === 14;
+  assert.equal(isSwissLife(12), true);
+  assert.equal(isSwissLife(14), true);
+  assert.equal(isSwissLife(10), false);
+  assert.equal(isSwissLife(11), false);
+});

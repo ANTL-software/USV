@@ -194,6 +194,24 @@ export function useFacturation() {
     }
   }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
 
+  const generateFacturXLot10Rdv = useCallback(async (): Promise<void> => {
+    if (!selectedCampagne || !canGenerateInvoice) return;
+    try {
+      setPreviewError(null);
+      setIsGeneratingFacturX(true);
+      const blob = await downloadCampagneFacturXDocumentService(selectedCampagne.id_campagne, {
+        date_debut: resolvedPeriod.start,
+        date_fin: resolvedPeriod.end,
+        mode: 'lot_10_rdv',
+      });
+      triggerBlobDownload(blob, `factur-x_lot10rdv_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
+    } catch (generationError) {
+      setPreviewError(generationError instanceof Error ? generationError.message : 'Impossible de générer le document Factur-X pour 1 lot de 10 rendez-vous.');
+    } finally {
+      setIsGeneratingFacturX(false);
+    }
+  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
+
   const issueInvoiceThroughPa = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canIssueInvoiceThroughPa) return;
     const confirmed = await showConfirm(
@@ -362,6 +380,8 @@ export function useFacturation() {
     setCustomDateEnd(value);
   }, []);
 
+  const isSwissLifeCampaign = selectedCampagne?.id_campagne === 12 || selectedCampagne?.id_campagne === 14;
+
   return {
     activeCampagnes,
     billingSettings,
@@ -373,11 +393,13 @@ export function useFacturation() {
     emailOptions,
     error,
     generateFacturX,
+    generateFacturXLot10Rdv,
     getLeadAmounts,
     getVenteAmounts,
     isEmailModalOpen,
     isGeneratingFacturX,
     isIssuingPaInvoice,
+    isSwissLifeCampaign,
     isTestingPaInvoice,
     isLoadingPaInvoice,
     isLoading,
