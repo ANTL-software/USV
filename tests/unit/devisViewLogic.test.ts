@@ -63,7 +63,7 @@ test('la tarification au rendez-vous garde les paliers et clauses valides sans l
   ]);
 
   assert.deepEqual(lines.map(({ id, label, amount, included, amount_kind }) => ({ id, label, amount, included, amount_kind })), [
-    { id: 'qualified-appointment-base', label: 'Rendez-vous pris', amount: 75, included: false, amount_kind: 'currency' },
+    { id: 'qualified-appointment-base', label: 'Rendez-vous', amount: 75, included: false, amount_kind: 'currency' },
     { id: 'large-company', label: 'Entreprise de plus de 5 personnes', amount: 150, included: false, amount_kind: 'currency' },
     { id: 'included', label: 'Ciblage fourni', amount: 0, included: true, amount_kind: 'currency' },
   ]);

@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { getProspectSourcesService } from '../API/services/index.ts';
+import { getProspectNafCodesService, getProspectSourcesService } from '../API/services/index.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   parseCampaignRouteId,
@@ -18,6 +18,7 @@ export function useProspectInjectionPage() {
   const campagneId = parseCampaignRouteId(id);
   const injection = useProspectInjection(campagneId);
   const [sourceOptions, setSourceOptions] = useState<ProspectSelectOption[]>(DEFAULT_SOURCE_OPTIONS);
+  const [nafOptions, setNafOptions] = useState<ProspectSelectOption[]>([]);
   const [availableSources, setAvailableSources] = useState<Set<string> | null>(null);
 
   useEffect(() => {
@@ -48,11 +49,34 @@ export function useProspectInjectionPage() {
   }, []);
 
   useEffect(() => {
-    if (
-      availableSources
-      && injection.filters.source
-      && !availableSources.has(injection.filters.source)
-    ) {
+    let isCancelled = false;
+
+    void getProspectNafCodesService()
+      .then((nafCodes) => {
+        if (!isCancelled) {
+          setNafOptions(nafCodes.map(({ code_naf, prospect_count }) => ({
+            value: code_naf,
+            label: `${code_naf} (${prospect_count.toLocaleString('fr-FR')})`,
+          })));
+        }
+      })
+      .catch(() => {
+        if (!isCancelled) setNafOptions([]);
+      });
+
+    return () => {
+      isCancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!availableSources) return;
+
+    const validSources = (injection.filters.sources || [])
+      .filter(source => availableSources.has(source));
+    if (validSources.length !== (injection.filters.sources || []).length) {
+      injection.setFilters({ ...injection.filters, sources: validSources.length ? validSources : undefined });
+    } else if (injection.filters.source && !availableSources.has(injection.filters.source)) {
       injection.setFilters({ ...injection.filters, source: undefined });
     }
   }, [availableSources, injection.filters, injection.setFilters]);
@@ -63,6 +87,7 @@ export function useProspectInjectionPage() {
     fallbackAreaOptions: PROSPECT_FALLBACK_AREA_OPTIONS,
     relationOptions: PROSPECT_RELATION_OPTIONS,
     navigateBack: () => void navigate('/operations/prospects'),
+    nafOptions,
     sourceOptions,
     typeOptions: PROSPECT_TYPE_OPTIONS,
   };

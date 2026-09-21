@@ -25,6 +25,7 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
         {viewModel.isConquestQuote && (
           <DevisOfferComposition
             appointmentRate={viewModel.appointmentRate}
+            appointmentDescription={viewModel.appointmentDescription}
             campaignType={viewModel.campaignType}
             commercialCommissionRate={viewModel.commercialCommissionRate}
             customClauses={viewModel.customClauses}
@@ -36,6 +37,7 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
             onAddProjectLine={viewModel.addProjectLine}
             onAddThirdPartyService={viewModel.addThirdPartyService}
             onAppointmentRateChange={viewModel.setAppointmentRate}
+            onAppointmentDescriptionChange={viewModel.setAppointmentDescription}
             onCampaignTypeChange={viewModel.setCampaignType}
             onCommercialCommissionRateChange={viewModel.setCommercialCommissionRate}
             onRemoveCustomClause={viewModel.removeCustomClause}
@@ -50,6 +52,7 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
         {viewModel.isProjectQuote && (
           <DevisOfferComposition
             appointmentRate={viewModel.appointmentRate}
+            appointmentDescription={viewModel.appointmentDescription}
             campaignType={viewModel.campaignType}
             commercialCommissionRate={viewModel.commercialCommissionRate}
             customClauses={viewModel.customClauses}
@@ -61,6 +64,7 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
             onAddProjectLine={viewModel.addProjectLine}
             onAddThirdPartyService={viewModel.addThirdPartyService}
             onAppointmentRateChange={viewModel.setAppointmentRate}
+            onAppointmentDescriptionChange={viewModel.setAppointmentDescription}
             onCampaignTypeChange={viewModel.setCampaignType}
             onCommercialCommissionRateChange={viewModel.setCommercialCommissionRate}
             onRemoveCustomClause={viewModel.removeCustomClause}

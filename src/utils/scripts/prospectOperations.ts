@@ -11,13 +11,13 @@ export const PROSPECT_SIGNALEMENT_TYPE_OPTIONS: ProspectSelectOption<Signalement
   { value: 'optout', label: 'Opt-out' },
 ];
 
-export const PROSPECT_TYPE_OPTIONS: ProspectSelectOption[] = [
+export const PROSPECT_TYPE_OPTIONS: ProspectSelectOption<'Particulier' | 'Entreprise' | ''>[] = [
   { value: '', label: 'Tous' },
   { value: 'Particulier', label: 'Particulier' },
   { value: 'Entreprise', label: 'Entreprise' },
 ];
 
-export const PROSPECT_RELATION_OPTIONS: ProspectSelectOption[] = [
+export const PROSPECT_RELATION_OPTIONS: ProspectSelectOption<'prospect' | 'client' | 'lead_genere' | ''>[] = [
   { value: '', label: 'Tous' },
   { value: 'prospect', label: 'Prospect' },
   { value: 'client', label: 'Client' },

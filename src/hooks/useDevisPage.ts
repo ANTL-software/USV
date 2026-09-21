@@ -6,7 +6,6 @@ import {
   ENGAGEMENT_LABELS,
   buildProjectQuoteSections,
   getQuoteEngagementMonths,
-  TIMELINE_LABELS,
 } from '../utils/scripts/index.ts';
 import { triggerBlobDownload } from '../utils/services/index.ts';
 import type { QuotePdfPayload } from '../utils/types/index.ts';
@@ -65,10 +64,11 @@ export function useDevisPage() {
         objective: devis.formState.objective.trim(),
       },
       terms: {
-        timeline_label: TIMELINE_LABELS[devis.formState.timeline],
+        timeline_label: devis.formState.timeline.trim(),
         engagement_label: ENGAGEMENT_LABELS[devis.formState.engagement],
         engagement_months: getQuoteEngagementMonths(devis.formState.engagement),
         billing_label: BILLING_LABELS[devis.formState.billingRhythm],
+        conditions: devis.formState.commercialConditions.trim(),
       },
       lines: quoteLines,
       assumptions: devis.isProjectQuote ? [] : devis.selectedAssumptions.map((assumption) => assumption.label),

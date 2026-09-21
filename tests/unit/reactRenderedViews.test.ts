@@ -423,6 +423,7 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
     objective: 'Générer des rendez-vous',
     phone: '0612345678',
     timeline: '30j',
+    commercialConditions: '',
   };
   const quoteLines: QuotePdfPayload['lines'] = [{
     amount: 75,
@@ -430,7 +431,7 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
     description: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
     id: 'qualified-appointment-base',
     included: false,
-    label: 'Rendez-vous pris',
+    label: 'Rendez-vous',
     mode: 'ponctuel',
   }];
 
@@ -450,7 +451,7 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
   assert.match(summaryHtml, /Valider le récap avant PDF/);
   assert.match(previewHtml, /Entreprise Démo/);
   assert.match(previewHtml, /Rendez-vous qualifié/);
-  assert.match(previewHtml, /Rendez-vous pris/);
+  assert.match(previewHtml, /Rendez-vous/);
   assert.match(previewHtml, /Éditer le devis/);
 });
 

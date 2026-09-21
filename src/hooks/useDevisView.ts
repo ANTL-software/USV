@@ -30,6 +30,7 @@ export function useDevisView() {
   const [campaignType, setCampaignType] = useState<QuoteCampaignType>('qualified_appointment');
   const [commercialCommissionRate, setCommercialCommissionRate] = useState<number | undefined>();
   const [appointmentRate, setAppointmentRate] = useState<number | undefined>();
+  const [appointmentDescription, setAppointmentDescription] = useState('Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.');
   const [customClauses, setCustomClauses] = useState<QuoteCustomClause[]>([]);
   const [projectSections, setProjectSections] = useState<QuoteProjectSection[]>(() => (
     PROJECT_QUOTE_SECTIONS.map((section) => ({
@@ -53,9 +54,9 @@ export function useDevisView() {
   const isConquestQuote = selectedTemplateIds.includes('conquete');
   const conquestQuoteLines = useMemo(
     () => (isConquestQuote
-      ? buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses)
+      ? buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses, appointmentDescription)
       : []),
-    [appointmentRate, campaignType, commercialCommissionRate, customClauses, isConquestQuote],
+    [appointmentRate, appointmentDescription, campaignType, commercialCommissionRate, customClauses, isConquestQuote],
   );
   const projectQuoteLines = useMemo(
     () => (isProjectQuote ? buildProjectQuotePricingLines(projectSections) : []),
@@ -202,6 +203,7 @@ export function useDevisView() {
     addProjectLine,
     addThirdPartyService,
     appointmentRate,
+    appointmentDescription,
     campaignType,
     commercialCommissionRate,
     conquestQuoteLines,
@@ -222,6 +224,7 @@ export function useDevisView() {
     selectedTemplateTitle,
     selectedTemplates,
     setAppointmentRate,
+    setAppointmentDescription,
     setCampaignType,
     setCommercialCommissionRate,
     setFamilyFilter,

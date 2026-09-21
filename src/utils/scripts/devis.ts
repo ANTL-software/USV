@@ -420,6 +420,7 @@ export const DEFAULT_FORM: QuoteFormState = {
   timeline: '30j',
   billingRhythm: 'mensuel',
   engagement: '1_mois_reconduction',
+  commercialConditions: '',
 };
 
 export const PROJECT_QUOTE_SECTIONS: QuoteProjectSection[] = [
@@ -607,6 +608,7 @@ export const buildQuotePricingLines = (
   commercialCommissionRate: number | undefined,
   appointmentRate: number | undefined,
   customClauses: QuoteCustomClause[],
+  appointmentDescription = 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
 ): QuotePdfPayload['lines'] => {
   if (campaignType === 'commercial') {
     if (commercialCommissionRate === undefined) return [];
@@ -623,8 +625,8 @@ export const buildQuotePricingLines = (
 
   const appointmentLine = appointmentRate === undefined ? [] : [{
     id: 'qualified-appointment-base',
-    label: 'Rendez-vous pris',
-    description: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
+    label: 'Rendez-vous',
+    description: appointmentDescription,
     mode: 'ponctuel' as const,
     included: false,
     amount: appointmentRate,

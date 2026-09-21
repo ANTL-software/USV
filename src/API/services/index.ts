@@ -216,6 +216,7 @@ export {
   getAllProspectsService,
   getProspectsCountService as getAllProspectsCountService,
   getProspectSourcesService,
+  getProspectNafCodesService,
   getProspectByIdService,
   getProspectEnrichmentSnapshotService,
   previewProspectEnrichmentService,

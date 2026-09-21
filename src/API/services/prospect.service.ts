@@ -8,6 +8,7 @@ import type {
   SignalementType,
   Prospect,
   ProspectSourceCount,
+  ProspectNafCount,
   ProspectsApiResponse,
   ProspectFilters,
   ProspectUpdateData,
@@ -94,6 +95,14 @@ export const getProspectSourcesService = async (): Promise<ProspectSourceCount[]
     return response.data.data;
   }
   throw new Error(response.data.message || 'Impossible de récupérer les sources de prospects');
+};
+
+export const getProspectNafCodesService = async (): Promise<ProspectNafCount[]> => {
+  const response: AxiosResponse<{ success: boolean; data?: ProspectNafCount[]; message?: string }> = await getRequest('/prospects/naf-codes');
+  if (response.data.success && response.data.data) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Impossible de récupérer les codes NAF');
 };
 
 export const getProspectByIdService = async (id: number): Promise<Prospect> => {

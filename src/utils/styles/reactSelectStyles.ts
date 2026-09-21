@@ -6,11 +6,11 @@ import type { StylesConfig, GroupBase } from 'react-select';
  * - Même border, focus que les inputs
  * - On NE touche PAS au valueContainer (react-select gère le centrage)
  */
-const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
+export const createReactSelectStyles = <Option, IsMulti extends boolean>(isMulti = false): StylesConfig<Option, IsMulti, GroupBase<Option>> => ({
   control: (base, state) => ({
     ...base,
     minHeight: '38px',
-    height: '38px',
+    height: isMulti ? 'auto' : '38px',
     border: state.isFocused
       ? '2px solid #7c3aed'
       : '2px solid rgba(0, 0, 0, 0.1)',
@@ -27,7 +27,9 @@ const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
 
   valueContainer: (provided) => ({
     ...provided,
-    height: '34px',
+    height: isMulti ? 'auto' : '34px',
+    maxHeight: isMulti ? '116px' : '34px',
+    overflowY: isMulti ? 'auto' : 'visible',
     padding: '0 10px',
   }),
 
@@ -53,7 +55,7 @@ const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
 
   indicatorsContainer: (provided) => ({
     ...provided,
-    height: '34px',
+    height: isMulti ? 'auto' : '34px',
   }),
 
   clearIndicator: (provided) => ({
@@ -93,6 +95,10 @@ const reactSelectStyles: StylesConfig<unknown, false, GroupBase<unknown>> = {
       backgroundColor: state.isSelected ? '#7c3aed' : 'rgba(124,58,237,0.08)',
     },
   }),
-};
+});
+
+const reactSelectStyles = createReactSelectStyles<unknown, false>();
+
+export const reactMultiSelectStyles = createReactSelectStyles<unknown, true>(true);
 
 export default reactSelectStyles;

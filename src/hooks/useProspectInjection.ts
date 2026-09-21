@@ -70,8 +70,23 @@ export function useProspectInjection(campagneId: number | null) {
       return false;
     }
 
+    const radius = filters.rayon_km ?? 150;
+    if (!Number.isInteger(radius) || radius < 1 || radius > 150) {
+      void showError('Le rayon doit être compris entre 1 et 150 km.');
+      return false;
+    }
+
+    if (
+      filters.effectif_min !== undefined
+      && filters.effectif_max !== undefined
+      && filters.effectif_min > filters.effectif_max
+    ) {
+      void showError("L'effectif minimum ne peut pas dépasser l'effectif maximum.");
+      return false;
+    }
+
     return true;
-  }, [filters.code_postal, showError]);
+  }, [filters.code_postal, filters.effectif_max, filters.effectif_min, filters.rayon_km, showError]);
 
   const countProspects = useCallback((): void => {
     if (!campagneId || !validateFilters()) {
@@ -95,13 +110,11 @@ export function useProspectInjection(campagneId: number | null) {
     }
   }, [campagneId, inject, showConfirm, validateFilters]);
 
-  const updateFilter = useCallback((key: keyof InjectionFilters, value: string): void => {
-    if (key === 'limit') {
-      const parsed = value ? Number.parseInt(value, 10) : undefined;
-      setFilters({ ...filters, [key]: parsed });
-    } else {
-      setFilters({ ...filters, [key]: value === '' ? undefined : value });
-    }
+  const updateFilter = useCallback(<Key extends keyof InjectionFilters>(
+    key: Key,
+    value: InjectionFilters[Key],
+  ): void => {
+    setFilters({ ...filters, [key]: value });
     setHasInjected(false);
   }, [filters, setFilters]);
 

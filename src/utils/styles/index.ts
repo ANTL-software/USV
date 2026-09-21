@@ -1,3 +1,5 @@
 export { default as reactSelectStyles } from './reactSelectStyles.ts';
+export { reactMultiSelectStyles } from './reactSelectStyles.ts';
+export { createReactSelectStyles } from './reactSelectStyles.ts';
 export { default as devisSelectStyles } from './devisSelectStyles.ts';
 export { default as bookingSelectStyles } from './bookingSelectStyles.ts';

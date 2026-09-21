@@ -1,6 +1,7 @@
 import type { ReactElement } from 'react';
 import { MdCheckCircle, MdHandshake } from 'react-icons/md';
 import Select from 'react-select';
+import CreatableSelect from 'react-select/creatable';
 import type { StylesConfig } from 'react-select';
 import { BILLING_LABELS, ENGAGEMENT_LABELS, TIMELINE_LABELS } from '../../../utils/scripts/index.ts';
 import { devisSelectStyles } from '../../../utils/styles/index.ts';
@@ -10,7 +11,6 @@ import type {
   QuoteFormChangeHandler,
   QuoteFormState,
   TemplateAssumption,
-  Timeline,
 } from '../../../utils/types/index.ts';
 
 interface DevisCommercialTermsProps {
@@ -21,7 +21,7 @@ interface DevisCommercialTermsProps {
 
 type TimelineOption = {
   label: string;
-  value: Timeline;
+  value: string;
 };
 
 type EngagementOption = {
@@ -40,7 +40,7 @@ export function DevisCommercialTerms({
   onFormChange,
 }: DevisCommercialTermsProps): ReactElement {
   const timelineOptions: TimelineOption[] = Object.entries(TIMELINE_LABELS).map(([value, label]) => ({
-    value: value as Timeline,
+    value,
     label,
   }));
   const engagementOptions: EngagementOption[] = Object.entries(ENGAGEMENT_LABELS).map(([value, label]) => ({
@@ -65,17 +65,22 @@ export function DevisCommercialTerms({
       <div className="devisView__form-grid">
         <label className="devisView__field">
           <span>Délai de démarrage</span>
-          <Select
+          <CreatableSelect
             className="react-select-container"
             classNamePrefix="react-select"
-            isSearchable={false}
+            isSearchable
+            formatCreateLabel={(inputValue) => `Utiliser « ${inputValue} »`}
             menuPlacement="top"
             menuPortalTarget={document.body}
             menuPosition="fixed"
             options={timelineOptions}
             styles={devisSelectStyles as StylesConfig<TimelineOption, false>}
-            value={timelineOptions.find((option) => option.value === form.timeline) ?? null}
+            value={timelineOptions.find((option) => option.value === form.timeline) ?? {
+              value: form.timeline,
+              label: form.timeline,
+            }}
             onChange={(option) => option && onFormChange('timeline', option.value)}
+            onCreateOption={(value) => onFormChange('timeline', value)}
           />
         </label>
         <label className="devisView__field">
@@ -109,6 +114,16 @@ export function DevisCommercialTerms({
           />
         </label>
       </div>
+
+      <label className="devisView__field devisView__commercial-conditions">
+        <span>Condition</span>
+        <textarea
+          aria-label="Condition commerciale"
+          placeholder="Ex. Facturation au rendez-vous réalisé."
+          value={form.commercialConditions}
+          onChange={(event) => onFormChange('commercialConditions', event.target.value)}
+        />
+      </label>
 
       <div className="devisView__assumptions">
         {assumptions.map((assumption) => (

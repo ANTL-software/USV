@@ -71,17 +71,29 @@ export interface InjectionResult {
 
 export interface InjectionFilters {
   code_postal?: string;
+  rayon_km?: number;
   secteur?: string;
   type_prospect?: 'Particulier' | 'Entreprise';
+  types_prospect?: Array<'Particulier' | 'Entreprise'>;
   limit?: number;
   source?: string;
+  sources?: string[];
   relation_commerciale?: 'prospect' | 'client' | 'lead_genere';
+  relations_commerciales?: Array<'prospect' | 'client' | 'lead_genere'>;
   code_naf?: string;
+  codes_naf?: string[];
+  effectif_min?: number;
+  effectif_max?: number;
   code_postal_repli?: string;
 }
 
 export interface ProspectSourceCount {
   source: string;
+  prospect_count: number;
+}
+
+export interface ProspectNafCount {
+  code_naf: string;
   prospect_count: number;
 }
 

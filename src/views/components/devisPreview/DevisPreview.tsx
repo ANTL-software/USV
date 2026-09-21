@@ -3,7 +3,6 @@ import { MdAutoGraph, MdDescription, MdSchedule } from 'react-icons/md';
 import {
   BUDGET_LABELS,
   ENGAGEMENT_LABELS,
-  TIMELINE_LABELS,
   formatCurrency,
   QUOTE_CAMPAIGN_TYPE_LABELS,
 } from '../../../utils/scripts/index.ts';
@@ -94,7 +93,7 @@ export function DevisPreview({
         <div className="devisView__timeline">
           <div>
             <MdSchedule />
-            <span>{TIMELINE_LABELS[form.timeline]}</span>
+            <span>{form.timeline}</span>
           </div>
           <div>
             <MdAutoGraph />

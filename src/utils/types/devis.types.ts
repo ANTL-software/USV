@@ -79,9 +79,10 @@ export type QuoteFormState = {
   needSummary: string;
   objective: string;
   budgetBand: BudgetBand;
-  timeline: Timeline;
+  timeline: string;
   billingRhythm: BillingRhythm;
   engagement: Engagement;
+  commercialConditions: string;
 };
 
 export type QuoteFormChangeHandler = <Field extends keyof QuoteFormState>(
@@ -107,6 +108,7 @@ export type QuotePdfPayload = {
     engagement_label: string;
     engagement_months: number;
     billing_label: string;
+    conditions: string;
   };
   lines: Array<{
     id: string;

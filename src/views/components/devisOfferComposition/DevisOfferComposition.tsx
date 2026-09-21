@@ -15,6 +15,7 @@ import { Button } from '../button/index.ts';
 
 interface DevisOfferCompositionProps {
   appointmentRate: number | undefined;
+  appointmentDescription: string;
   campaignType: QuoteCampaignType;
   commercialCommissionRate: number | undefined;
   customClauses: QuoteCustomClause[];
@@ -26,6 +27,7 @@ interface DevisOfferCompositionProps {
   onAddProjectLine: (sectionId: string) => void;
   onAddThirdPartyService: () => void;
   onAppointmentRateChange: (amount: number | undefined) => void;
+  onAppointmentDescriptionChange: (description: string) => void;
   onCampaignTypeChange: (campaignType: QuoteCampaignType) => void;
   onCommercialCommissionRateChange: (rate: number | undefined) => void;
   onRemoveCustomClause: (clauseId: string) => void;
@@ -64,6 +66,7 @@ const getOptionalAmount = (value: string): number | undefined => (value === '' ?
 
 export function DevisOfferComposition({
   appointmentRate,
+  appointmentDescription,
   campaignType,
   commercialCommissionRate,
   customClauses,
@@ -75,6 +78,7 @@ export function DevisOfferComposition({
   onAddProjectLine,
   onAddThirdPartyService,
   onAppointmentRateChange,
+  onAppointmentDescriptionChange,
   onCampaignTypeChange,
   onCommercialCommissionRateChange,
   onRemoveCustomClause,
@@ -255,7 +259,7 @@ export function DevisOfferComposition({
             <span>Définissez le tarif unitaire, puis ajoutez les conditions particulières nécessaires.</span>
           </div>
           <label className="devisView__pricing-line">
-            <span>Rendez-vous pris</span>
+            <span>Rendez-vous</span>
             <div>
               <input
                 min="0"
@@ -266,6 +270,15 @@ export function DevisOfferComposition({
               />
               <small>€ HT</small>
             </div>
+          </label>
+          <label className="devisView__field devisView__appointment-description">
+            <span>Description</span>
+            <input
+              aria-label="Description du rendez-vous"
+              type="text"
+              value={appointmentDescription}
+              onChange={(event) => onAppointmentDescriptionChange(event.target.value)}
+            />
           </label>
 
           <div className="devisView__custom-clauses">

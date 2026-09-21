@@ -367,6 +367,7 @@ export type {
   InjectionResult,
   InjectionFilters,
   ProspectSourceCount,
+  ProspectNafCount,
   ProspectCampagneRow,
   ProspectsCount,
   CampaignAgentStats,
