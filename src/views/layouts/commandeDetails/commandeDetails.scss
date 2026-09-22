@@ -39,6 +39,18 @@
   letter-spacing: 0.5px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+#commandeDetails .commandeDetails__email-open {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+  border: 1px solid #86efac;
+  border-radius: 999px;
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 0.85em;
+  font-weight: 700;
+  padding: 0.35em 0.85em;
+}
 #commandeDetails .statut-badge--planifie { background: #2563eb; }
 #commandeDetails .statut-badge--effectue { background: vars.$successColor; }
 #commandeDetails .statut-badge--annule { background: vars.$errorColor; }
@@ -1163,4 +1175,3 @@
   background: #f8fafc;
   border-radius: 0 0 12px 12px;
 }
-

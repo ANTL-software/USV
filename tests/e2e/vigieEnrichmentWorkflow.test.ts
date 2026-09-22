@@ -86,7 +86,7 @@ mock.module(apiModuleUrl, {
   },
 });
 
-test('le parcours Vigie prépare des priorités puis permet leur annulation', async () => {
+test('le parcours Vigie injecte une fiche pour la commerciale #8 puis permet son annulation', async () => {
   const {
     cancelVigieActionService,
     createVigieActionService,
@@ -102,9 +102,9 @@ test('le parcours Vigie prépare des priorités puis permet leur annulation', as
     recommendation_key: 'segment-chaud',
     payload: { secteur: 'Assurance' },
   });
-  const batch = await createVigiePriorityBatchService(7, { id_agent_cible: 4, id_prospects: [42, 43] });
+  const batch = await createVigiePriorityBatchService(7, { id_agent_cible: 8, id_prospects: [42, 43] });
   const manual = await createVigieManualPriorityService(7, {
-    id_agent_cible: 4,
+    id_agent_cible: 8,
     telephone_prospect: '0612345678',
     motif_rappel_force: 'Le prospect a demandé à être rappelé en priorité.',
   });
@@ -115,11 +115,19 @@ test('le parcours Vigie prépare des priorités puis permet leur annulation', as
   assert.equal(batch.length, 2);
   assert.equal(cancelled.statut, 'annulee');
   assert.deepEqual(manual.payload, {
-    id_agent_cible: 4,
+    id_agent_cible: 8,
     telephone_prospect: '0612345678',
     motif_rappel_force: 'Le prospect a demandé à être rappelé en priorité.',
   });
   assert.equal(journal.length, 4);
+  assert.deepEqual(
+    requests.find(({ url }) => url === '/supervision/vigie/7/actions/priorites/manuelle')?.payload,
+    {
+      id_agent_cible: 8,
+      telephone_prospect: '0612345678',
+      motif_rappel_force: 'Le prospect a demandé à être rappelé en priorité.',
+    },
+  );
   assert.deepEqual(
     requests.find(({ url }) => url === '/supervision/vigie/7')?.config,
     { date_debut: '2026-07-01', date_fin: '2026-07-15' },

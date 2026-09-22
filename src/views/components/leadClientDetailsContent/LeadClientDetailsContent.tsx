@@ -1,8 +1,8 @@
 import type { ReactElement } from 'react';
-import { IoArrowBack } from 'react-icons/io5';
+import { IoArrowBack, IoEye } from 'react-icons/io5';
 import type { LeadClientDetailsPageViewModel } from '../../../hooks/index.ts';
 import { STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
-import { formatLeadClientReference, getLeadStatusBadgeClass } from '../../../utils/scripts/index.ts';
+import { formatCommandeDateTime, formatLeadClientReference, getLeadStatusBadgeClass } from '../../../utils/scripts/index.ts';
 import {
   Button,
   LeadAppointmentsHistory,
@@ -29,6 +29,7 @@ export function LeadClientDetailsContent({ viewModel }: LeadClientDetailsContent
         <Button style="back" onClick={viewModel.navigateBack}><IoArrowBack /> Retour</Button>
         <h2>Rendez-vous client {formatLeadClientReference(lead.id_lead)}</h2>
         <span className={getLeadStatusBadgeClass(lead.statut)}>{STATUT_RENDEZ_VOUS_LABELS[lead.statut]}</span>
+        {lead.fiche_consultee_at && <span className="commandeDetails__email-open" title="Consultation détectée lors du chargement de l’e-mail"><IoEye /> Consultation détectée le {formatCommandeDateTime(lead.fiche_consultee_at)}</span>}
       </div>
       <div className="commandeDetails__content">
         <div className="commandeDetails__left"><LeadClientSummary lead={lead} addressEditor={viewModel.addressEditor} notesUpdateLoading={viewModel.notesUpdateLoading} onUpdateNotes={viewModel.updateLeadNotes} showEmployeeCountQualification={viewModel.showEmployeeCountQualification} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>

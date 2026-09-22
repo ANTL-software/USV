@@ -1,6 +1,6 @@
 // libraries
 import axios from "axios";
-import type { AxiosResponse } from "axios";
+import type { AxiosRequestConfig, AxiosResponse } from "axios";
 
 // utils
 import { getApiBaseUrl, isCsrfAxiosError } from "../utils/scripts/index.ts";
@@ -51,10 +51,10 @@ axios.interceptors.request.use(async (config) => {
 axios.interceptors.response.use(
   (response) => response,
   async (error) => {
-    const originalRequest = error.config as {
+    const originalRequest = error.config as (AxiosRequestConfig & {
       _retry?: boolean;
-      url?: string;
-    };
+      _csrfRetry?: boolean;
+    }) | undefined;
 
     const authEndpoints = ['/auth/login', '/auth/refresh', '/auth/logout', '/api/auth/refresh', '/auth/me'];
     const isAuthEndpoint = authEndpoints.some(endpoint =>
@@ -64,8 +64,8 @@ axios.interceptors.response.use(
     // Gestion automatique du refresh de token sur 401
     if (
       error.response?.status === 401 &&
-      !originalRequest._retry &&
       originalRequest &&
+      !originalRequest._retry &&
       !isAuthEndpoint
     ) {
       originalRequest._retry = true;
@@ -92,6 +92,19 @@ axios.interceptors.response.use(
       // un droit de poste refusé et ne doit pas invalider la session CSRF.
       console.warn('Token CSRF invalide');
       csrfService.clearToken();
+
+      // Le serveur rejette la mutation avant tout traitement. Un unique
+      // renouvellement transparent évite de faire échouer l'action si le
+      // secret de session a expiré entre le chargement de la Vigie et le clic.
+      if (originalRequest && !originalRequest._csrfRetry) {
+        originalRequest._csrfRetry = true;
+        try {
+          await csrfService.getToken();
+          return axios(originalRequest);
+        } catch (csrfRefreshError) {
+          return Promise.reject(csrfRefreshError);
+        }
+      }
     }
     
     return Promise.reject(error);

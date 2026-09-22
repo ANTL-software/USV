@@ -34,7 +34,8 @@ export function useVigieView(options?: UseVigieViewOptions) {
   const [isScoringExpanded, setIsScoringExpanded] = useState(false);
   const [sectorToPrepare, setSectorToPrepare] = useState('');
   const [selectedProspectIds, setSelectedProspectIds] = useState<number[]>([]);
-  const [priorityAgentId, setPriorityAgentId] = useState<number | null>(null);
+  const [batchPriorityAgentId, setBatchPriorityAgentId] = useState<number | null>(null);
+  const [manualPriorityAgentId, setManualPriorityAgentId] = useState<number | null>(null);
   const [manualPriorityTelephone, setManualPriorityTelephone] = useState('');
   const [manualPriorityReason, setManualPriorityReason] = useState('');
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -91,7 +92,8 @@ export function useVigieView(options?: UseVigieViewOptions) {
 
   const selectCampaign = useCallback((idCampaign: number | null): void => {
     setSelectedCampaignId(idCampaign);
-    setPriorityAgentId(null);
+    setBatchPriorityAgentId(null);
+    setManualPriorityAgentId(null);
     setSelectedProspectIds([]);
     setActionMessage(null);
   }, []);
@@ -159,12 +161,12 @@ export function useVigieView(options?: UseVigieViewOptions) {
   }, [sectorToPrepare, submitAction]);
 
   const submitPriorityBatch = useCallback(async (): Promise<void> => {
-    if (!selectedCampaignId || !priorityAgentId || selectedCandidates.length === 0) return;
+    if (!selectedCampaignId || !batchPriorityAgentId || selectedCandidates.length === 0) return;
     try {
       setPendingAction('priorite-lot');
       setActionMessage(null);
       await createVigiePriorityBatchService(selectedCampaignId, {
-        id_agent_cible: priorityAgentId,
+        id_agent_cible: batchPriorityAgentId,
         id_prospects: selectedCandidates.map((candidate) => candidate.id_prospect),
       });
       setActionMessage(`${selectedCandidates.length} fiche(s) envoyée(s) dans la file prioritaire du commercial, dans l’ordre du classement.`);
@@ -177,15 +179,15 @@ export function useVigieView(options?: UseVigieViewOptions) {
     } finally {
       setPendingAction(null);
     }
-  }, [priorityAgentId, refresh, selectedCampaignId, selectedCandidates]);
+  }, [batchPriorityAgentId, refresh, selectedCampaignId, selectedCandidates]);
 
   const submitManualPriority = useCallback(async (): Promise<void> => {
-    if (!selectedCampaignId || !priorityAgentId || !manualPriorityTelephone.trim() || !manualPriorityReason.trim()) return;
+    if (!selectedCampaignId || !manualPriorityAgentId || !manualPriorityTelephone.trim() || !manualPriorityReason.trim()) return;
     try {
       setPendingAction('priorite-manuelle');
       setActionMessage(null);
       await createVigieManualPriorityService(selectedCampaignId, {
-        id_agent_cible: priorityAgentId,
+        id_agent_cible: manualPriorityAgentId,
         telephone_prospect: manualPriorityTelephone.trim(),
         motif_rappel_force: manualPriorityReason.trim(),
       });
@@ -200,7 +202,7 @@ export function useVigieView(options?: UseVigieViewOptions) {
     } finally {
       setPendingAction(null);
     }
-  }, [manualPriorityReason, manualPriorityTelephone, priorityAgentId, refresh, selectedCampaignId]);
+  }, [manualPriorityAgentId, manualPriorityReason, manualPriorityTelephone, refresh, selectedCampaignId]);
 
   const cancelAction = useCallback(async (action: VigieAction): Promise<void> => {
     if (!selectedCampaignId) return;
@@ -237,7 +239,8 @@ export function useVigieView(options?: UseVigieViewOptions) {
     period,
     prepareInjection,
     prepareRecommendation,
-    priorityAgentId,
+    batchPriorityAgentId,
+    manualPriorityAgentId,
     refresh,
     sectorToPrepare,
     segmentDimension,
@@ -251,7 +254,8 @@ export function useVigieView(options?: UseVigieViewOptions) {
     setManualPriorityReason,
     setManualPriorityTelephone,
     setPeriod,
-    setPriorityAgentId,
+    setBatchPriorityAgentId,
+    setManualPriorityAgentId,
     setSectorToPrepare,
     setSegmentDimension,
     setSelectedProspectIds,

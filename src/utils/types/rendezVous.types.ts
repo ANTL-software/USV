@@ -96,6 +96,7 @@ export type LeadClient = Omit<RendezVousItem, 'id_rendez_vous'> & {
   fiche_envoyee_at?: string | null;
   fiche_envoyee_a?: string | null;
   fiche_envoyee_par?: number | null;
+  fiche_consultee_at?: string | null;
 };
 
 export interface LeadClientListParams {

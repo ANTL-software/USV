@@ -28,23 +28,32 @@ export function VigieActions({ state }: VigieActionsProps): ReactElement {
           <button className="vigieView__button vigieView__button--primary" type="button" disabled={!state.sectorToPrepare.trim() || state.pendingAction === 'preparation_injection-preparation-injection'} onClick={() => { void state.prepareInjection(); }}>Préparer l’injection</button>
         </div>
         <div className="vigieView__prepare-action">
-          <div><span className="vigieView__step">02</span><h3>Envoyer un lot prioritaire</h3></div><p>Sélectionnez jusqu’à 30 fiches dans le classement. Elles expirent après 24 h et les rappels échus restent servis avant le lot.</p>
+          <div><span className="vigieView__step">02</span><h3>Envoyer un lot prioritaire</h3></div><p>Sélectionnez jusqu’à 50 fiches dans le classement. Elles expirent après 24 h et les rappels échus restent servis avant le lot.</p>
           <div className="vigieView__selected-list">{state.selectedCandidates.length === 0 ? <span>Sélectionnez les fiches à envoyer dans le tableau Potentiel.</span> : state.selectedCandidates.map((candidate, index) => <button key={candidate.id_prospect} type="button" onClick={() => state.toggleCandidate(candidate.id_prospect)} title="Retirer de la sélection"><b>{index + 1}</b><span>{candidate.raison_sociale}</span><small>{candidate.telephone_contact || candidate.telephone}</small></button>)}</div>
           <label htmlFor="vigie-priority-agent">Commercial affecté à la campagne</label>
           <Select<SelectOption<number>, false>
             inputId="vigie-priority-agent" options={state.agentOptions}
-            value={state.agentOptions.find(({ value }) => value === state.priorityAgentId) || null}
-            onChange={(option) => state.setPriorityAgentId(option?.value ?? null)}
+            value={state.agentOptions.find(({ value }) => value === state.batchPriorityAgentId) || null}
+            onChange={(option) => state.setBatchPriorityAgentId(option?.value ?? null)}
             styles={reactSelectStyles as StylesConfig<SelectOption<number>, false>}
             placeholder={state.campaignAgentsLoading ? 'Chargement des agents...' : 'Choisir un commercial...'}
             isLoading={state.campaignAgentsLoading} isDisabled={state.campaignAgentsLoading}
           />
-          <button className="vigieView__button vigieView__button--primary" type="button" disabled={state.selectedCandidates.length === 0 || !state.priorityAgentId || state.pendingAction === 'priorite-lot'} onClick={() => { void state.submitPriorityBatch(); }}>Envoyer {state.selectedCandidates.length || ''} fiche(s) au commercial</button>
+          <button className="vigieView__button vigieView__button--primary" type="button" disabled={state.selectedCandidates.length === 0 || !state.batchPriorityAgentId || state.pendingAction === 'priorite-lot'} onClick={() => { void state.submitPriorityBatch(); }}>Envoyer {state.selectedCandidates.length || ''} fiche(s) au commercial</button>
           <div className="vigieView__manual-priority">
             <div><span>ou</span><strong>Injecter un numéro manuel</strong></div><p>Pour un rappel transmis au superviseur : la fiche est créée ou rattachée à la campagne, puis servie en priorité au commercial choisi.</p>
             <label htmlFor="vigie-manual-priority-phone">Numéro à appeler</label><input id="vigie-manual-priority-phone" type="tel" value={state.manualPriorityTelephone} onChange={(event) => state.setManualPriorityTelephone(event.target.value)} placeholder="Ex. 06 12 34 56 78" />
             <label htmlFor="vigie-manual-priority-reason">Motif du rappel forcé</label><textarea id="vigie-manual-priority-reason" value={state.manualPriorityReason} onChange={(event) => state.setManualPriorityReason(event.target.value)} placeholder="Expliquez au commercial pourquoi ce rappel doit être traité en priorité." required />
-            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.manualPriorityReason.trim() || !state.priorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>Injecter et prioriser ce numéro</button>
+            <label htmlFor="vigie-manual-priority-agent">Commercial affecté à la campagne</label>
+            <Select<SelectOption<number>, false>
+              inputId="vigie-manual-priority-agent" options={state.agentOptions}
+              value={state.agentOptions.find(({ value }) => value === state.manualPriorityAgentId) || null}
+              onChange={(option) => state.setManualPriorityAgentId(option?.value ?? null)}
+              styles={reactSelectStyles as StylesConfig<SelectOption<number>, false>}
+              placeholder={state.campaignAgentsLoading ? 'Chargement des agents...' : 'Choisir un commercial...'}
+              isLoading={state.campaignAgentsLoading} isDisabled={state.campaignAgentsLoading}
+            />
+            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.manualPriorityReason.trim() || !state.manualPriorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>Injecter et prioriser ce numéro</button>
           </div>
         </div>
       </div>

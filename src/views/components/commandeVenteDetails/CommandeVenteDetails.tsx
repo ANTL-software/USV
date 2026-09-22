@@ -1,7 +1,8 @@
 import type { ReactElement } from 'react';
-import { IoArrowBack } from 'react-icons/io5';
+import { IoArrowBack, IoEye } from 'react-icons/io5';
 
 import { useCommandeDetails } from '../../../hooks/index.ts';
+import { formatCommandeDateTime } from '../../../utils/scripts/index.ts';
 import {
   BackToTop,
   Button,
@@ -65,6 +66,7 @@ export function CommandeVenteDetails({ idVente, onBack }: CommandeVenteDetailsPr
                 {statusPresentation.label}
               </span>
             )}
+            {commande.bon_commande_signe_consulte_at && <span className="commandeDetails__email-open" title="Consultation détectée lors du chargement de l’e-mail"><IoEye /> Consultation détectée le {formatCommandeDateTime(commande.bon_commande_signe_consulte_at)}</span>}
           </div>
           <div className="commandeDetails__content">
             <div className="commandeDetails__left">
