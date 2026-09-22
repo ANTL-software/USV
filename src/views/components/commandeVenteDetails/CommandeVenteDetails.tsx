@@ -66,7 +66,7 @@ export function CommandeVenteDetails({ idVente, onBack }: CommandeVenteDetailsPr
                 {statusPresentation.label}
               </span>
             )}
-            {commande.bon_commande_signe_consulte_at && <span className="commandeDetails__email-open" title="Consultation détectée lors du chargement de l’e-mail"><IoEye /> Consultation détectée le {formatCommandeDateTime(commande.bon_commande_signe_consulte_at)}</span>}
+            {commande.bon_commande_signe_consulte_at && <span className="commandeDetails__email-open" title="Consultation du mail par notre client détectée lors du chargement de l’e-mail"><IoEye /> Consultation du mail par notre client détectée le {formatCommandeDateTime(commande.bon_commande_signe_consulte_at)}</span>}
           </div>
           <div className="commandeDetails__content">
             <div className="commandeDetails__left">

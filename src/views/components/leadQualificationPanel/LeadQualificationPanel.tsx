@@ -12,7 +12,7 @@ import {
 import type { StatutRendezVous } from '../../../utils/types/index.ts';
 import { STATUT_RENDEZ_VOUS_LABELS } from '../../../utils/types/index.ts';
 import type { LeadClientDetailsPageViewModel } from '../../../hooks/index.ts';
-import { LEAD_QUALIFICATION_OPTIONS, getLeadQualificationButtonClass } from '../../../utils/scripts/index.ts';
+import { formatCommandeDateTime, LEAD_QUALIFICATION_OPTIONS, getLeadQualificationButtonClass } from '../../../utils/scripts/index.ts';
 import { Button } from '../index.ts';
 
 const qualificationIcons: Record<StatutRendezVous, ReactElement> = {
@@ -62,6 +62,14 @@ export function LeadQualificationPanel(props: LeadQualificationPanelProps): Reac
               <span className="signed-order-sent-status__details">
                 Le {new Date(lead.fiche_envoyee_at).toLocaleDateString('fr-FR')} à {new Date(lead.fiche_envoyee_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
                 {lead.fiche_envoyee_a ? ` à ${lead.fiche_envoyee_a}` : ''}
+              </span>
+            </div>
+          ) : null}
+          {lead.premier_telechargement_partenaire_at ? (
+            <div className="signed-order-sent-status">
+              <span className="signed-order-sent-status__badge">Fiche téléchargée par le partenaire</span>
+              <span className="signed-order-sent-status__details">
+                Le {formatCommandeDateTime(lead.premier_telechargement_partenaire_at)}
               </span>
             </div>
           ) : null}

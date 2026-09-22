@@ -50,6 +50,7 @@ export interface Vente {
   bon_commande_signe_envoye_a?: string | null;
   bon_commande_signe_envoye_par?: number | null;
   bon_commande_signe_consulte_at?: string | null;
+  premier_telechargement_partenaire_at?: string | null;
   montant_total: string;
   statut_vente: StatutVente;
   mode_paiement?: ModePaiement;

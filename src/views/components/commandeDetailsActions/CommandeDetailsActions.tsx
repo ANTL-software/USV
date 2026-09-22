@@ -111,6 +111,17 @@ export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProp
             </Button>
           </div>
         )}
+        {commande.premier_telechargement_partenaire_at && (
+          <div className="signed-order-sent-status">
+            <div className="sent-status-header">
+              <IoCheckmarkCircle className="sent-status-icon" />
+              <span className="sent-status-title">Bon de commande téléchargé par le partenaire</span>
+            </div>
+            <p className="sent-status-details">
+              Le {formatCommandeDateTime(commande.premier_telechargement_partenaire_at)}
+            </p>
+          </div>
+        )}
       </div>
     </aside>
   );

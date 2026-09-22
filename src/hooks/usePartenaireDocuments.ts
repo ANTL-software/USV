@@ -97,10 +97,12 @@ export function usePartenaireDocuments(): PartenaireDocumentsViewModel {
   }, []);
   const downloadDocument = useCallback((documentId: number): void => {
     window.open(getPartenaireDocumentDownloadUrl(documentId), '_blank', 'noopener,noreferrer');
-  }, []);
+    window.setTimeout(() => { void load(); }, 750);
+  }, [load]);
   const downloadLeadDocument = useCallback((leadId: number): void => {
     window.open(getPartenaireLeadDocumentDownloadUrl(leadId), '_blank', 'noopener,noreferrer');
-  }, []);
+    window.setTimeout(() => { void load(); }, 750);
+  }, [load]);
   const previousPage = useCallback((): void => setPage((current) => Math.max(current - 1, 1)), []);
   const nextPage = useCallback((): void => setPage((current) => {
     return data?.pagination.has_more ? current + 1 : current;

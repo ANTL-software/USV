@@ -51,6 +51,14 @@
   font-weight: 700;
   padding: 0.35em 0.85em;
 }
+@media (max-width: 1023px) {
+  #commandeDetails .commandeDetails__email-open {
+    flex-basis: 100%;
+    width: fit-content;
+    max-width: 100%;
+    line-height: 1.35;
+  }
+}
 #commandeDetails .statut-badge--planifie { background: #2563eb; }
 #commandeDetails .statut-badge--effectue { background: vars.$successColor; }
 #commandeDetails .statut-badge--annule { background: vars.$errorColor; }

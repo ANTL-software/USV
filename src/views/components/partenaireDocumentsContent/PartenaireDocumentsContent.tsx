@@ -3,7 +3,7 @@ import type { ReactElement } from 'react';
 import { IoChevronBack, IoChevronForward, IoCloudDownloadOutline, IoDocumentTextOutline, IoPrint, IoRefresh } from 'react-icons/io5';
 import { MdArrowBack } from 'react-icons/md';
 import type { PartenaireDocumentsViewModel } from '../../../hooks/index.ts';
-import { formatCommandesDate, formatFileSize, formatMontant } from '../../../utils/scripts/index.ts';
+import { formatCommandeDateTime, formatCommandesDate, formatFileSize, formatMontant } from '../../../utils/scripts/index.ts';
 import type { PartenaireDocumentCampaign, PartenaireDocumentsPeriod } from '../../../utils/types/index.ts';
 import { Button } from '../button/index.ts';
 
@@ -72,7 +72,7 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
     {data && data.dossiers.length > 0 && <section className="partnerDocuments__list" aria-busy={loading}>
       {data.dossiers.map((dossier) => <article key={`${dossier.type_dossier}-${dossier.id_dossier}`} className="partnerDocuments__card">
         <div className="partnerDocuments__identity">
-          <span className={`partnerDocuments__badge partnerDocuments__badge--${dossier.type_dossier}`}>{getDossierStatusLabel(dossier.type_dossier, dossier.statut_dossier)}</span>
+          <span className={`partnerDocuments__badge partnerDocuments__badge--${dossier.type_dossier} partnerDocuments__badge--${dossier.type_dossier}-${dossier.statut_dossier}`}>{getDossierStatusLabel(dossier.type_dossier, dossier.statut_dossier)}</span>
           <h2>{dossier.raison_sociale}</h2>
           <p>{dossier.nom_campagne}{dossier.ville ? ` · ${dossier.ville}` : ''}</p>
         </div>
@@ -84,10 +84,10 @@ export default function PartenaireDocumentsContent({ viewModel }: PartenaireDocu
         </dl>
         <div className="partnerDocuments__files">
           {isLeadB2bCampaign && dossier.type_dossier === 'lead'
-            ? <button type="button" onClick={() => downloadLeadDocument(dossier.id_dossier)}><IoPrint /><span><strong>Réimprimer la fiche du rendez-vous</strong></span></button>
+            ? <button type="button" onClick={() => downloadLeadDocument(dossier.id_dossier)}><IoPrint /><span><strong>Réimprimer la fiche du rendez-vous</strong>{dossier.premier_telechargement_at && <small>Téléchargé le {formatCommandeDateTime(dossier.premier_telechargement_at)}</small>}</span></button>
             : dossier.documents.length === 0
             ? <span className="partnerDocuments__pending"><IoDocumentTextOutline /> Document en attente de dépôt</span>
-            : dossier.documents.map((document) => <button type="button" key={document.id_document_commercial} onClick={() => downloadDocument(document.id_document_commercial)}><IoCloudDownloadOutline /><span><strong>{document.nom_fichier}</strong><small>{formatFileSize(document.taille_octets)}</small></span></button>)}
+            : dossier.documents.map((document) => <button type="button" key={document.id_document_commercial} onClick={() => downloadDocument(document.id_document_commercial)}><IoCloudDownloadOutline /><span><strong>{document.nom_fichier}</strong><small>{formatFileSize(document.taille_octets)}</small>{document.premier_telechargement_at && <small>Téléchargé le {formatCommandeDateTime(document.premier_telechargement_at)}</small>}</span></button>)}
         </div>
       </article>)}
     </section>}

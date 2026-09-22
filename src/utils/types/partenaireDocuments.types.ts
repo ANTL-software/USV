@@ -13,6 +13,7 @@ export interface PartenaireDocumentFile {
   mime_type: string;
   taille_octets: number;
   created_at: string;
+  premier_telechargement_at: string | null;
 }
 
 export interface PartenaireDocumentDossier {
@@ -29,6 +30,7 @@ export interface PartenaireDocumentDossier {
   montant_total: string | null;
   date_rendez_vous: string | null;
   heure_rendez_vous: string | null;
+  premier_telechargement_at: string | null;
   documents: PartenaireDocumentFile[];
 }
 
