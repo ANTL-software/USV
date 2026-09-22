@@ -10,7 +10,7 @@ import {
 const HOME_KPIS: HomeKpiData = {
   commandesValidees: { total: 12, trend: [] },
   caMoisVentes: { total: 24500, formatted: '24 500,00 €', trend: [] },
-  rdvClientsPlanifies: { total: 7, trend: [] },
+  rdvClientsEffectues: { total: 7, trend: [] },
   commerciauxActifsJour: { total: 5, trend: [] },
   incidentsOuverts: { total: 2, trend: [] },
   projetsEnCours: { total: 4, trend: [] },
@@ -20,7 +20,7 @@ const HOME_KPIS: HomeKpiData = {
 const KPI_NAVIGATION_CASES = [
   { label: 'Commandes validées', path: '/operations/commandes' },
   { label: 'CA du mois (Ventes)', path: '/operations/commandes' },
-  { label: 'RDV lead B2B', path: '/operations/commandes' },
+  { label: 'RDV B2B effectués', path: '/operations/commandes' },
   { label: 'Commerciaux en ligne', path: '/supervision' },
   { label: 'Incidents ouverts', path: '/incidents/traitement' },
   { label: 'Projets en cours', path: '/projets' },

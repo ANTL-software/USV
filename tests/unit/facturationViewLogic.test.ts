@@ -196,7 +196,7 @@ test('les destinataires de facture identiques sont dédupliqués', () => {
   }]);
 });
 
-test('identifie les campagnes Swiss Life (12) et Swiss Life IND (14) pour le bouton 1 lot de 10 rendez-vous qualifié', () => {
+test('identifie les campagnes Swiss Life (12) et Swiss Life IND (14) pour le bouton 1 lot de 10 rendez-vous qualifiés', () => {
   const isSwissLife = (id: number) => id === 12 || id === 14;
   assert.equal(isSwissLife(12), true);
   assert.equal(isSwissLife(14), true);

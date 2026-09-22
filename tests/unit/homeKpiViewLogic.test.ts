@@ -34,7 +34,7 @@ test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends'
         { date: '2026-08', value: 24850.5 },
       ],
     },
-    rdvClientsPlanifies: {
+    rdvClientsEffectues: {
       total: 17,
       trend: [
         { date: '2026-06', value: 14 },
@@ -80,8 +80,8 @@ test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends'
   assert.equal(sampleKpis.commandesValidees.trend.length, 3);
   assert.equal(sampleKpis.caMoisVentes.total, 24850.5);
   assert.equal(sampleKpis.caMoisVentes.trend.length, 3);
-  assert.equal(sampleKpis.rdvClientsPlanifies.total, 17);
-  assert.equal(sampleKpis.rdvClientsPlanifies.trend.length, 3);
+  assert.equal(sampleKpis.rdvClientsEffectues.total, 17);
+  assert.equal(sampleKpis.rdvClientsEffectues.trend.length, 3);
   assert.equal(sampleKpis.commerciauxActifsJour.total, 8);
   assert.equal(sampleKpis.commerciauxActifsJour.trend.length, 3);
   assert.equal(sampleKpis.incidentsOuverts.total, 3);
