@@ -96,6 +96,8 @@ export type {
   TransfertAgentData,
   BonCommandeConfig,
   BonCommandeInvoiceRecipient,
+  LeadBookingConfig,
+  LeadBookingWeekday,
   CampagneLogoDeleteResult,
   CampagneLogoUploadResult,
 } from './campagne.types.ts';

@@ -5,6 +5,7 @@ import type {
   CreateCampagneData,
   Employe,
   ModePaiement,
+  LeadBookingWeekday,
 } from '../types/index.ts';
 import { CAMPAIGN_VARIANTS, normalizeCampaignVariant } from './campaignVariants.ts';
 
@@ -45,6 +46,7 @@ export interface CampagneFormState {
   lead_unit_price_ht: string;
   lead_small_company_price_ht: string;
   lead_large_company_price_ht: string;
+  lead_booking_open_weekdays: LeadBookingWeekday[];
 }
 
 export interface CampagneSelectOption {
@@ -58,6 +60,18 @@ export const CAMPAGNE_PAYMENT_OPTIONS: Array<{ value: ModePaiement; label: strin
   { value: 'Virement', label: 'Virement bancaire' },
   { value: 'CB', label: 'Carte bancaire (par téléphone)' },
 ];
+
+export const LEAD_BOOKING_WEEKDAY_OPTIONS: Array<{ value: LeadBookingWeekday; label: string }> = [
+  { value: 1, label: 'Lundi' },
+  { value: 2, label: 'Mardi' },
+  { value: 3, label: 'Mercredi' },
+  { value: 4, label: 'Jeudi' },
+  { value: 5, label: 'Vendredi' },
+  { value: 6, label: 'Samedi' },
+  { value: 7, label: 'Dimanche' },
+];
+
+export const DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS = LEAD_BOOKING_WEEKDAY_OPTIONS.map(({ value }) => value);
 
 export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   nom_campagne: '',
@@ -96,6 +110,7 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   lead_unit_price_ht: '75',
   lead_small_company_price_ht: '75',
   lead_large_company_price_ht: '150',
+  lead_booking_open_weekdays: DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
 };
 
 export const MMA_LEAD_PRICING_CAMPAIGN_ID = 10;
@@ -166,6 +181,9 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     lead_unit_price_ht: formatPrice(leadBilling?.unit_price_ht, 75),
     lead_small_company_price_ht: formatPrice(leadBilling?.small_company_price_ht, 75),
     lead_large_company_price_ht: formatPrice(leadBilling?.large_company_price_ht, 150),
+    lead_booking_open_weekdays: campagne.bon_commande_config?.lead_booking?.open_weekdays?.length
+      ? campagne.bon_commande_config.lead_booking.open_weekdays
+      : DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
   };
 }
 
@@ -208,6 +226,7 @@ export function validateCampagneForm(form: CampagneFormState, campagneId: number
   if (!form.nom_campagne.trim()) return 'Le nom de la campagne est requis';
   if (!form.date_debut) return 'La date de début est requise';
   if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
+    if (form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
     if (campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID) {
       if (!parsePositivePrice(form.lead_small_company_price_ht)) return 'Le tarif des entreprises de 5 salariés ou moins doit être supérieur à 0';
       if (!parsePositivePrice(form.lead_large_company_price_ht)) return 'Le tarif des entreprises de plus de 5 salariés doit être supérieur à 0';
@@ -267,6 +286,7 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
     bon_commande_config: {
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
+      lead_booking: isLeadCampaign ? { open_weekdays: form.lead_booking_open_weekdays } : null,
     },
   };
 }

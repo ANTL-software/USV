@@ -81,6 +81,9 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
       lead_billing: {
         unit_price_ht: 92.5,
       },
+      lead_booking: {
+        open_weekdays: [1, 4],
+      },
     },
   }));
 
@@ -91,6 +94,7 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
   assert.equal(form.invoice_company_name, 'SAS Démo');
   assert.equal(form.invoice_country, 'Belgique');
   assert.equal(form.lead_unit_price_ht, '92.5');
+  assert.deepEqual(form.lead_booking_open_weekdays, [1, 4]);
 });
 
 test('les champs email effectuent un aller-retour complet entre API, formulaire et payload', () => {
@@ -167,6 +171,7 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
     bon_commande_config: {
       invoice_recipient: null,
       lead_billing: { unit_price_ht: 75 },
+      lead_booking: { open_weekdays: [1, 2, 3, 4, 5, 6, 7] },
     },
   });
 
@@ -194,6 +199,25 @@ test('MMA persiste les deux paliers 75 et 150 et valide chaque tarif', () => {
     large_company_price_ht: 150,
   });
   assert.match(validateCampagneForm({ ...mmaForm, lead_large_company_price_ht: '0' }, 10) ?? '', /plus de 5/);
+});
+
+test('une campagne Lead B2B exige et persiste au moins un jour ouvert', () => {
+  const swissLifeForm = {
+    ...INITIAL_CAMPAGNE_FORM,
+    nom_campagne: 'Swiss Life',
+    type_campagne: 'lead_b2b' as const,
+    date_debut: '2026-09-01',
+    lead_booking_open_weekdays: [1, 4] as const,
+  };
+
+  assert.equal(validateCampagneForm({
+    ...swissLifeForm,
+    lead_booking_open_weekdays: [],
+  }), 'Sélectionnez au moins un jour ouvert pour les rendez-vous client');
+  assert.deepEqual(
+    buildCampagnePayload({ ...swissLifeForm, lead_booking_open_weekdays: [1, 4] }).bon_commande_config?.lead_booking,
+    { open_weekdays: [1, 4] },
+  );
 });
 
 test('les fichiers logo sont bornés par taille et format', () => {

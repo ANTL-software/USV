@@ -11,6 +11,7 @@ import {
 } from '../API/services/index.ts';
 import type {
   Campagne,
+  LeadBookingWeekday,
   ModePaiement,
 } from '../utils/types/index.ts';
 import {
@@ -88,6 +89,17 @@ export function useCampagneForm() {
     const modes = (selectedOptions ?? []).map((opt) => opt.value) as ModePaiement[];
     const modesString = modes.join(',');
     setForm(prev => ({ ...prev, modes_paiement: modesString }));
+  };
+
+  const handleLeadBookingWeekdayChange = (weekday: LeadBookingWeekday, checked: boolean) => {
+    setForm((previous) => ({
+      ...previous,
+      lead_booking_open_weekdays: checked
+        ? [...previous.lead_booking_open_weekdays, weekday]
+            .filter((value, index, values) => values.indexOf(value) === index)
+            .sort((left, right) => left - right)
+        : previous.lead_booking_open_weekdays.filter((value) => value !== weekday),
+    }));
   };
 
   // Ouverture de la modale d'upload de logo
@@ -229,6 +241,7 @@ export function useCampagneForm() {
     usesEmployeeCountLeadPricing,
     handleChange,
     handleModesPaiementChange,
+    handleLeadBookingWeekdayChange,
     paymentOptions: CAMPAGNE_PAYMENT_OPTIONS,
     handleSubmit,
     // Logo management

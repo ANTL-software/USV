@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { IoCloudUpload, IoTrash } from 'react-icons/io5';
 
 import type { CampagneFormViewModel } from '../../../hooks/index.ts';
-import { CAMPAIGN_VARIANT_OPTIONS, getCampagneLogoUrl } from '../../../utils/scripts/index.ts';
+import { CAMPAIGN_VARIANT_OPTIONS, LEAD_BOOKING_WEEKDAY_OPTIONS, getCampagneLogoUrl } from '../../../utils/scripts/index.ts';
 import { Button } from '../index.ts';
 
 interface CampagneGeneralFieldsProps {
@@ -10,7 +10,15 @@ interface CampagneGeneralFieldsProps {
 }
 
 export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps): ReactElement {
-  const { form, existing, handleChange, handleDeleteLogo, handleOpenLogoModal } = viewModel.campaignForm;
+  const {
+    form,
+    existing,
+    isLeadCampaign,
+    handleChange,
+    handleDeleteLogo,
+    handleLeadBookingWeekdayChange,
+    handleOpenLogoModal,
+  } = viewModel.campaignForm;
   return (
     <>
       <div className="campagneForm__row">
@@ -31,6 +39,24 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
         <label className="campagneForm__checkbox-label"><input type="checkbox" name="autoriser_mobile" checked={form.autoriser_mobile} onChange={handleChange} /><span>Autoriser les appels sur mobile (06/07)</span></label>
         <span className="campagneForm__hint">{form.autoriser_mobile ? 'Les agents pourront appeler les numéros mobiles' : 'Les agents ne pourront pas appeler les numéros mobiles (verrouillé)'}</span>
       </div>
+      {isLeadCampaign && (
+        <fieldset className="campagneForm__lead-booking-days">
+          <legend>Jours ouverts pour la prise de rendez-vous client</legend>
+          <div className="campagneForm__weekday-grid">
+            {LEAD_BOOKING_WEEKDAY_OPTIONS.map((option) => (
+              <label key={option.value} className="campagneForm__weekday-option">
+                <input
+                  type="checkbox"
+                  checked={form.lead_booking_open_weekdays.includes(option.value)}
+                  onChange={(event) => handleLeadBookingWeekdayChange(option.value, event.target.checked)}
+                />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+          <span className="campagneForm__hint">Les autres jours seront désactivés dans le calendrier du script vendeur.</span>
+        </fieldset>
+      )}
       <label className="campagneForm__label-full">Objectifs<textarea name="objectifs" value={form.objectifs} onChange={handleChange} rows={3} placeholder="Décrivez les objectifs de la campagne..." /></label>
 
       <fieldset className="campagneForm__fieldset campagneForm__fieldset--logo">

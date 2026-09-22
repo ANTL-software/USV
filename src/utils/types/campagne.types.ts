@@ -22,9 +22,16 @@ export interface LeadBillingConfig {
   large_company_price_ht?: number | null;
 }
 
+export type LeadBookingWeekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+
+export interface LeadBookingConfig {
+  open_weekdays: LeadBookingWeekday[];
+}
+
 export interface BonCommandeConfig {
   invoice_recipient?: BonCommandeInvoiceRecipient | null;
   lead_billing?: LeadBillingConfig | null;
+  lead_booking?: LeadBookingConfig | null;
   [key: string]: unknown;
 }
 

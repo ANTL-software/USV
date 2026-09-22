@@ -159,6 +159,33 @@
   padding-top: 1.25em;
   border-top: 1px solid vars.$borderColor;
 }
+#campagneForm .campagneForm__lead-booking-days {
+  margin: 0 0 1em;
+  padding: 1em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 8px;
+}
+#campagneForm .campagneForm__weekday-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8em, 1fr));
+  gap: 0.6em;
+  margin-bottom: 0.6em;
+}
+#campagneForm .campagneForm__weekday-option {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5em;
+  padding: 0.55em 0.7em;
+  background: #f8fafc;
+  border: 1px solid vars.$borderColor;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#campagneForm .campagneForm__weekday-option input {
+  width: 1em;
+  height: 1em;
+  accent-color: #7c3aed;
+}
 // ─── Section agents ─────────────────────────────────────────────────────────
 #campagneForm .campagneForm__agents {
   @include mixins.card(10px, light);
