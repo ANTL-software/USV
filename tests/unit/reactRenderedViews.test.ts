@@ -621,6 +621,8 @@ test('les campagnes Lead B2B réimpriment la fiche générée dans le portail pa
   }));
 
   assert.match(leadHtml, /Réimprimer la fiche du rendez-vous/);
+  assert.match(leadHtml, /Rendez-vous pris/);
+  assert.doesNotMatch(leadHtml, /Rendez-vous validé/);
   assert.doesNotMatch(leadHtml, /Document en attente de dépôt/);
   assert.doesNotMatch(saleHtml, /Réimprimer la fiche du rendez-vous/);
   assert.match(saleHtml, /Document en attente de dépôt/);

@@ -17,12 +17,12 @@ const getDossierStatusLabel = (type: 'lead' | 'vente', status: string): string =
   if (type === 'vente') return 'Commande validée';
   if (status === 'effectue') return 'Rendez-vous effectué';
   if (status === 'reporte') return 'Rendez-vous reporté';
-  return 'Rendez-vous validé';
+  return 'Rendez-vous pris';
 };
 
 const getHeroTitle = (campaign: PartenaireDocumentCampaign | undefined): string => {
   if (!campaign) return 'Dossiers validés';
-  return campaign.type_campagne === 'lead_b2b' ? 'Rendez-vous validés' : 'Commandes validées';
+  return campaign.type_campagne === 'lead_b2b' ? 'Rendez-vous pris' : 'Commandes validées';
 };
 
 interface PartenaireDocumentsContentProps {
