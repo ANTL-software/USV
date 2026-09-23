@@ -63,6 +63,7 @@ export interface CampaignInvoicePaStatus {
   campaign_id: number;
   period_start: string;
   period_end: string;
+  billing_mode?: 'standard' | 'lot_10_rdv';
   internal_reference: string;
   invoice_number: string | null;
   expected_invoice_number?: string;

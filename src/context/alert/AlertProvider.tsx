@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useCallback, useEffect, useMemo } from 'react';
-import { AlertContext, ShowAlertOptions } from './AlertContext';
+import { AlertContext, ShowAlertOptions, ShowNumberConfirmOptions } from './AlertContext';
 import { Alert } from '../../views/components/index.ts';
 import type { AlertProps } from '../../views/components/index.ts';
 import { initializeAlertService } from '../../utils/services/index.ts';
@@ -9,7 +9,7 @@ interface AlertProviderProps {
 }
 
 interface ActiveAlert extends Omit<AlertProps, 'onConfirm' | 'onCancel' | 'onClose'> {
-  resolve: (value: boolean) => void;
+  resolve: (value: boolean | number | null) => void;
 }
 
 export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
@@ -31,7 +31,7 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
         autoClose: options.autoClose,
         confirmText: options.confirmText,
         cancelText: options.cancelText,
-        resolve
+        resolve: (value) => resolve(value === true)
       };
 
       setAlerts(current => [...current, newAlert]);
@@ -47,6 +47,29 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
       cancelText
     });
   }, [showAlert]);
+
+  const showNumberConfirm = useCallback((options: ShowNumberConfirmOptions): Promise<number | null> => {
+    return new Promise((resolve) => {
+      const id = `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      const newAlert: ActiveAlert = {
+        id,
+        type: 'confirm',
+        title: options.title || 'Confirmation',
+        message: options.message,
+        confirmText: options.confirmText,
+        cancelText: options.cancelText,
+        numberInput: {
+          label: options.label,
+          initialValue: options.initialValue ?? 1,
+          min: options.min ?? 1,
+          max: options.max,
+        },
+        resolve: (value) => resolve(typeof value === 'number' ? value : null),
+      };
+
+      setAlerts(current => [...current, newAlert]);
+    });
+  }, []);
 
   const showInfo = useCallback((message: string, title?: string, autoClose = 4000): Promise<boolean> => {
     return showAlert({
@@ -84,10 +107,10 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
     });
   }, [showAlert]);
 
-  const handleConfirm = useCallback((id: string) => {
+  const handleConfirm = useCallback((id: string, value?: number) => {
     const alert = alerts.find(a => a.id === id);
     if (alert) {
-      alert.resolve(true);
+      alert.resolve(alert.numberInput ? (value ?? null) : true);
       removeAlert(id);
     }
   }, [alerts, removeAlert]);
@@ -113,11 +136,12 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
   const contextValue = useMemo(() => ({
     showAlert,
     showConfirm,
+    showNumberConfirm,
     showInfo,
     showSuccess,
     showWarning,
     showError
-  }), [showAlert, showConfirm, showInfo, showSuccess, showWarning, showError]);
+  }), [showAlert, showConfirm, showNumberConfirm, showInfo, showSuccess, showWarning, showError]);
 
   // Initialiser le service d'alerte au montage du provider
   useEffect(() => {
@@ -164,7 +188,8 @@ export const AlertProvider: React.FC<AlertProviderProps> = ({ children }) => {
           autoClose={alert.autoClose}
           confirmText={alert.confirmText}
           cancelText={alert.cancelText}
-          onConfirm={() => handleConfirm(alert.id)}
+          numberInput={alert.numberInput}
+          onConfirm={(value) => handleConfirm(alert.id, value)}
           onCancel={() => handleCancel(alert.id)}
           onClose={() => handleClose(alert.id)}
         />

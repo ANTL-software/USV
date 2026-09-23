@@ -1,20 +1,28 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiX, FiAlertTriangle, FiCheckCircle, FiInfo, FiAlertCircle } from 'react-icons/fi';
 import './alert.scss';
 
 export type AlertType = 'info' | 'success' | 'warning' | 'error' | 'confirm';
+
+export interface AlertNumberInput {
+  label: string;
+  initialValue: number;
+  min: number;
+  max?: number;
+}
 
 export interface AlertProps {
   id: string;
   type: AlertType;
   title?: string;
   message: string;
-  onConfirm?: () => void;
+  onConfirm?: (value?: number) => void;
   onCancel?: () => void;
   onClose?: () => void;
   autoClose?: number; // Fermeture automatique en ms
   confirmText?: string;
   cancelText?: string;
+  numberInput?: AlertNumberInput;
 }
 
 const Alert: React.FC<AlertProps> = ({
@@ -27,8 +35,10 @@ const Alert: React.FC<AlertProps> = ({
   onClose,
   autoClose,
   confirmText = 'Confirmer',
-  cancelText = 'Annuler'
+  cancelText = 'Annuler',
+  numberInput,
 }) => {
+  const [numberValue, setNumberValue] = useState(String(numberInput?.initialValue ?? 1));
   
   useEffect(() => {
     if (autoClose && type !== 'confirm') {
@@ -56,7 +66,11 @@ const Alert: React.FC<AlertProps> = ({
   };
 
   const handleConfirm = () => {
-    onConfirm?.();
+    const parsedValue = Number.parseInt(numberValue, 10);
+    if (numberInput && (!Number.isInteger(parsedValue) || parsedValue < numberInput.min || (numberInput.max !== undefined && parsedValue > numberInput.max))) {
+      return;
+    }
+    onConfirm?.(numberInput ? parsedValue : undefined);
     onClose?.();
   };
 
@@ -84,6 +98,12 @@ const Alert: React.FC<AlertProps> = ({
       handleConfirm();
     }
   };
+
+  const parsedNumberValue = Number.parseInt(numberValue, 10);
+  const isNumberInputValid = !numberInput
+    || (Number.isInteger(parsedNumberValue)
+      && parsedNumberValue >= numberInput.min
+      && (numberInput.max === undefined || parsedNumberValue <= numberInput.max));
 
   return (
     <div 
@@ -122,6 +142,21 @@ const Alert: React.FC<AlertProps> = ({
           <p className="alert__message" id={`alert-message-${id}`}>
             {message}
           </p>
+          {numberInput && (
+            <label className="alert__number-field">
+              <span>{numberInput.label}</span>
+              <input
+                type="number"
+                min={numberInput.min}
+                max={numberInput.max}
+                step="1"
+                value={numberValue}
+                onChange={(event) => setNumberValue(event.target.value)}
+                aria-invalid={!isNumberInputValid}
+                autoFocus
+              />
+            </label>
+          )}
         </div>
         
         {type === 'confirm' && (
@@ -137,7 +172,8 @@ const Alert: React.FC<AlertProps> = ({
               className="alert__button alert__button--confirm"
               onClick={handleConfirm}
               type="button"
-              autoFocus
+              autoFocus={!numberInput}
+              disabled={!isNumberInputValid}
             >
               {confirmText}
             </button>

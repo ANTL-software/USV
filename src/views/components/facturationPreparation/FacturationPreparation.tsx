@@ -30,7 +30,7 @@ export function FacturationPreparation({ state }: FacturationPreparationProps): 
           <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={() => { void state.generateFacturX(); }} disabled={!state.canGenerateInvoice || state.isGeneratingFacturX}>{state.isGeneratingFacturX ? 'Génération...' : 'Télécharger la facture (pdf format Factur-X)'}</Button>
           {state.isSwissLifeCampaign && (
             <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={() => { void state.generateFacturXLot10Rdv(); }} disabled={!state.canGenerateInvoice || state.isGeneratingFacturX}>
-              1 lot de 10 rendez-vous qualifiés
+              Lot(s) de 10 rendez-vous qualifiés
             </Button>
           )}
           <Button style={state.canGenerateInvoice ? 'seaGreen' : 'grey'} onClick={state.openEmailModal} disabled={!state.canGenerateInvoice}>Envoyer la facture par email</Button>

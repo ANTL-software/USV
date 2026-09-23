@@ -98,7 +98,7 @@ export const transfererAgentService = async (
 
 export const downloadCampagneFacturXDocumentService = async (
   idCampagne: number,
-  payload: { date_debut: string; date_fin: string; mode?: string }
+  payload: { date_debut: string; date_fin: string; mode?: string; lot_quantity?: number }
 ): Promise<Blob> => {
   const response = await axios.post(`/campagnes/${idCampagne}/facturation/factur-x`, payload, {
     headers: {

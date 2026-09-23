@@ -10,9 +10,21 @@ export interface ShowAlertOptions {
   cancelText?: string;
 }
 
+export interface ShowNumberConfirmOptions {
+  message: string;
+  title?: string;
+  label: string;
+  initialValue?: number;
+  min?: number;
+  max?: number;
+  confirmText?: string;
+  cancelText?: string;
+}
+
 export interface AlertContextType {
   showAlert: (options: ShowAlertOptions) => Promise<boolean>;
   showConfirm: (message: string, title?: string, confirmText?: string, cancelText?: string) => Promise<boolean>;
+  showNumberConfirm: (options: ShowNumberConfirmOptions) => Promise<number | null>;
   showInfo: (message: string, title?: string, autoClose?: number) => Promise<boolean>;
   showSuccess: (message: string, title?: string, autoClose?: number) => Promise<boolean>;
   showWarning: (message: string, title?: string, autoClose?: number) => Promise<boolean>;

@@ -53,7 +53,7 @@ const DEFAULT_LEAD_STATS = {
 };
 
 export function useFacturation() {
-  const { showConfirm, showError, showSuccess } = useAlert();
+  const { showConfirm, showError, showNumberConfirm, showSuccess } = useAlert();
   const { campagnes, isLoading, error } = useCampagnes();
   const currentMonthBounds = useMemo(() => getBillingMonthBounds(0), []);
   const previousMonthBounds = useMemo(() => getBillingMonthBounds(-1), []);
@@ -196,6 +196,18 @@ export function useFacturation() {
 
   const generateFacturXLot10Rdv = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canGenerateInvoice) return;
+    const lotQuantity = await showNumberConfirm({
+      title: 'Facturer des lots de rendez-vous',
+      message: `Le prix d’un lot est calculé depuis le tarif lead de la campagne : ${formatBillingCurrency(leadBillingSettings.unitPriceHt * 10)} HT par lot de 10 rendez-vous qualifiés.`,
+      label: 'Nombre de lots de 10 rendez-vous qualifiés',
+      initialValue: 1,
+      min: 1,
+      max: 1000,
+      confirmText: 'Générer la facture',
+      cancelText: 'Annuler',
+    });
+    if (lotQuantity === null) return;
+
     try {
       setPreviewError(null);
       setIsGeneratingFacturX(true);
@@ -203,14 +215,15 @@ export function useFacturation() {
         date_debut: resolvedPeriod.start,
         date_fin: resolvedPeriod.end,
         mode: 'lot_10_rdv',
+        lot_quantity: lotQuantity,
       });
-      triggerBlobDownload(blob, `factur-x_lot10rdv_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
+      triggerBlobDownload(blob, `factur-x_lots10rdv_${lotQuantity}lot${lotQuantity > 1 ? 's' : ''}_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
     } catch (generationError) {
       setPreviewError(generationError instanceof Error ? generationError.message : 'Impossible de générer le document Factur-X pour 1 lot de 10 rendez-vous.');
     } finally {
       setIsGeneratingFacturX(false);
     }
-  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
+  }, [canGenerateInvoice, leadBillingSettings.unitPriceHt, resolvedPeriod, selectedCampagne, showNumberConfirm]);
 
   const issueInvoiceThroughPa = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canIssueInvoiceThroughPa) return;
