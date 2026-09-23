@@ -119,6 +119,16 @@ export interface LeadClientStats {
   annules: number;
   reportes: number;
   nonHonores: number;
+  montants: {
+    valides: {
+      count: number;
+      total_montant: number;
+    };
+    enAttente: {
+      count: number;
+      total_montant: number;
+    };
+  };
 }
 
 export const STATUT_RENDEZ_VOUS_LABELS: Record<StatutRendezVous, string> = {

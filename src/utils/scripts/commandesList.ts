@@ -260,6 +260,8 @@ export function buildLeadCommandesSummary(stats: LeadClientStats): CommandesSumm
     { label: 'Rendez-vous pris', value: String(stats.total), tone: 'total' },
     { label: 'Planifiés', value: String(stats.planifies), tone: 'validee' },
     { label: 'Effectués', value: String(stats.effectues), tone: 'amount' },
+    { label: 'Montant validé', value: formatMontant(String(stats.montants.valides.total_montant)), meta: `(${stats.montants.valides.count})`, tone: 'validee' },
+    { label: 'Montant en attente', value: formatMontant(String(stats.montants.enAttente.total_montant)), meta: `(${stats.montants.enAttente.count})`, tone: 'attente' },
     { label: 'Annulés', value: String(stats.annules), tone: 'annulee' },
     { label: 'Reportés', value: String(stats.reportes), tone: 'attente' },
     { label: 'Non honorés', value: String(stats.nonHonores), tone: 'frigo' },

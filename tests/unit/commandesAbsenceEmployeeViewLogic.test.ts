@@ -47,9 +47,20 @@ test('les résumés commandes conservent les volumes et montants de chaque varia
     annules: 1,
     reportes: 1,
     nonHonores: 1,
+    montants: {
+      valides: { count: 2, total_montant: 225 },
+      enAttente: { count: 4, total_montant: 450 },
+    },
   });
-  assert.deepEqual(leadCards.map(({ value }) => value), ['8', '3', '2', '1', '1', '1']);
+  assert.deepEqual(leadCards.slice(0, 3).map(({ value }) => value), ['8', '3', '2']);
+  assert.deepEqual(leadCards.slice(5).map(({ value }) => value), ['1', '1', '1']);
+  assert.match(leadCards[3].value, /225,00/);
+  assert.match(leadCards[4].value, /450,00/);
   assert.equal(leadCards[1].tone, 'validee');
+  assert.equal(leadCards[3].label, 'Montant validé');
+  assert.equal(leadCards[3].meta, '(2)');
+  assert.equal(leadCards[4].label, 'Montant en attente');
+  assert.equal(leadCards[4].meta, '(4)');
 
   const saleCards = buildSaleCommandesSummary({
     totalCount: 6,

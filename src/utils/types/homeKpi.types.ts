@@ -13,9 +13,9 @@ export interface HomeKpiData {
   commandesValidees: KpiMetric;
   caMoisVentes: KpiMetric;
   rdvClientsEffectues: KpiMetric;
+  caMoisRdv: KpiMetric;
   commerciauxActifsJour: KpiMetric;
   incidentsOuverts: KpiMetric;
-  projetsEnCours: KpiMetric;
   rdvAgendaJour: KpiMetric;
 }
 

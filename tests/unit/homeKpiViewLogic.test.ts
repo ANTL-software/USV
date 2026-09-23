@@ -8,14 +8,14 @@ test('each home KPI targets its detailed view', () => {
     commandes: '/operations/commandes',
     ca: '/operations/commandes',
     rdv: '/operations/commandes',
+    'ca-rdv': '/operations/commandes',
     commerciaux: '/supervision',
     incidents: '/incidents/traitement',
-    projets: '/projets',
     'rdv-agenda': '/booking',
   });
 });
 
-test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends', () => {
+test('HomeKpiData contract supports all 7 relevant KPIs with values and sparkline trends', () => {
   const sampleKpis: HomeKpiData = {
     commandesValidees: {
       total: 23,
@@ -42,6 +42,15 @@ test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends'
         { date: '2026-08', value: 17 },
       ],
     },
+    caMoisRdv: {
+      total: 1950,
+      formatted: '1 950,00 €',
+      trend: [
+        { date: '2026-06', value: 1050 },
+        { date: '2026-07', value: 1650 },
+        { date: '2026-08', value: 1950 },
+      ],
+    },
     commerciauxActifsJour: {
       total: 8,
       trend: [
@@ -56,14 +65,6 @@ test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends'
         { date: '2026-06', value: 4 },
         { date: '2026-07', value: 2 },
         { date: '2026-08', value: 3 },
-      ],
-    },
-    projetsEnCours: {
-      total: 12,
-      trend: [
-        { date: '2026-06', value: 10 },
-        { date: '2026-07', value: 11 },
-        { date: '2026-08', value: 12 },
       ],
     },
     rdvAgendaJour: {
@@ -82,12 +83,12 @@ test('HomeKpiData contract supports all 7 KPIs with values and sparkline trends'
   assert.equal(sampleKpis.caMoisVentes.trend.length, 3);
   assert.equal(sampleKpis.rdvClientsEffectues.total, 17);
   assert.equal(sampleKpis.rdvClientsEffectues.trend.length, 3);
+  assert.equal(sampleKpis.caMoisRdv.total, 1950);
+  assert.equal(sampleKpis.caMoisRdv.trend.length, 3);
   assert.equal(sampleKpis.commerciauxActifsJour.total, 8);
   assert.equal(sampleKpis.commerciauxActifsJour.trend.length, 3);
   assert.equal(sampleKpis.incidentsOuverts.total, 3);
   assert.equal(sampleKpis.incidentsOuverts.trend.length, 3);
-  assert.equal(sampleKpis.projetsEnCours.total, 12);
-  assert.equal(sampleKpis.projetsEnCours.trend.length, 3);
   assert.equal(sampleKpis.rdvAgendaJour.total, 5);
   assert.equal(sampleKpis.rdvAgendaJour.trend.length, 3);
 });

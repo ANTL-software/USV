@@ -36,6 +36,10 @@ const DEFAULT_LEAD_STATS: LeadClientStats = {
   annules: 0,
   reportes: 0,
   nonHonores: 0,
+  montants: {
+    valides: { count: 0, total_montant: 0 },
+    enAttente: { count: 0, total_montant: 0 },
+  },
 };
 
 const BILLING_PAGE_SIZE = 100;

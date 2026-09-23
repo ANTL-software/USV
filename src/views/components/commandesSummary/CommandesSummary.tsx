@@ -7,8 +7,11 @@ interface CommandesSummaryProps {
 }
 
 export function CommandesSummary({ state }: CommandesSummaryProps): ReactElement | null {
+  const hasLeadSummary = state.leadStats.total > 0
+    || state.leadStats.montants.valides.count > 0
+    || state.leadStats.montants.enAttente.count > 0;
   const cards = state.isLeadCampaign
-    ? state.leadStats.total > 0 ? state.leadSummaryCards : []
+    ? hasLeadSummary ? state.leadSummaryCards : []
     : state.totalVentesCount > 0 && !state.isCorbeille ? state.saleSummaryCards : [];
 
   if (cards.length === 0) {

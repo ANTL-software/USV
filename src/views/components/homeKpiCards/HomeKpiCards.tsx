@@ -12,7 +12,6 @@ interface HomeKpiCardsProps {
     kpiCommandes?: boolean;
     kpiCommerciaux?: boolean;
     kpiIncidents?: boolean;
-    kpiProjets?: boolean;
     kpiBooking?: boolean;
   };
   onNavigate: (path: string) => void;
@@ -62,7 +61,6 @@ export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProp
   const canViewCommandes = access ? Boolean(access.kpiCommandes) : true;
   const canViewCommerciaux = access ? Boolean(access.kpiCommerciaux) : true;
   const canViewIncidents = access ? Boolean(access.kpiIncidents) : true;
-  const canViewProjets = access ? Boolean(access.kpiProjets) : true;
   const canViewBooking = access ? Boolean(access.kpiBooking) : true;
 
   const allCards: HomeKpiCard[] = [
@@ -94,6 +92,15 @@ export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProp
       visible: canViewCommandes,
     },
     {
+      id: 'ca-rdv',
+      label: 'CA du mois (RDV)',
+      value: isLoading ? '...' : (kpis?.caMoisRdv?.formatted ?? '0,00 €'),
+      trend: kpis?.caMoisRdv?.trend ?? [],
+      color: '#6366f1',
+      isAmount: true,
+      visible: canViewCommandes,
+    },
+    {
       id: 'commerciaux',
       label: 'Commerciaux en ligne',
       value: isLoading ? '...' : (kpis?.commerciauxActifsJour?.total ?? 0).toLocaleString('fr-FR'),
@@ -110,15 +117,6 @@ export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProp
       color: '#ef4444',
       isAmount: false,
       visible: canViewIncidents,
-    },
-    {
-      id: 'projets',
-      label: 'Projets en cours',
-      value: isLoading ? '...' : (kpis?.projetsEnCours?.total ?? 0).toLocaleString('fr-FR'),
-      trend: kpis?.projetsEnCours?.trend ?? [],
-      color: '#0284c7',
-      isAmount: false,
-      visible: canViewProjets,
     },
     {
       id: 'rdv-agenda',
