@@ -175,6 +175,53 @@ test('le détail lead et la facturation gardent leurs workflows navigateur', asy
   expect(unhandledRequests).toEqual([]);
 });
 
+test('la liste lead surligne uniquement les fiches dont le mail reste à envoyer', async ({ page }) => {
+  const unhandledRequests: string[] = [];
+
+  await installApiRoute(page, async (route, request) => {
+    if (request.method === 'GET' && request.path === '/campagnes') {
+      await fulfillJson(route, apiSuccess([MMA_CAMPAIGN]));
+      return true;
+    }
+
+    if (request.method === 'GET' && request.path === '/leads/operations') {
+      await fulfillJson(route, {
+        ...apiSuccess([
+          lead,
+          { ...lead, id_lead: 502, fiche_envoyee_at: '2026-07-19T08:00:00.000Z' },
+        ]),
+        agents: [BOOKING_EMPLOYEE],
+        pagination: { page: 1, limit: 20, total: 2, totalPages: 1 },
+        stats: {
+          total: 2,
+          planifies: 2,
+          effectues: 0,
+          annules: 0,
+          reportes: 0,
+          nonHonores: 0,
+          montants: {
+            valides: { count: 0, total_montant: 0 },
+            enAttente: { count: 2, total_montant: 150 },
+          },
+        },
+      });
+      return true;
+    }
+
+    return false;
+  }, unhandledRequests);
+
+  await page.goto('/operations/commandes');
+  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+
+  const pendingEmailRow = page.getByRole('row', { name: /L-00501/ });
+  const sentEmailRow = page.getByRole('row', { name: /L-00502/ });
+  await expect(pendingEmailRow).toHaveClass(/commandesList__row--email-pending/);
+  await expect(pendingEmailRow).toHaveCSS('background-color', 'rgb(255, 243, 191)');
+  await expect(sentEmailRow).not.toHaveClass(/commandesList__row--email-pending/);
+  expect(unhandledRequests).toEqual([]);
+});
+
 test('le retour des détails restaure filtres et pagination des commandes vente et MMA', async ({ page }) => {
   const unhandledRequests: string[] = [];
   let latestLeadListSearch = '';

@@ -237,6 +237,12 @@
   cursor: pointer;
   transition: background 0.15s ease;
 }
+#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending {
+  background: #fff3bf;
+}
+#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending:hover {
+  background: #ffe69c;
+}
 // Badge statut
 #commandesList .statut-badge {
   display: inline-block;
