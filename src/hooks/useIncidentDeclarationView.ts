@@ -12,6 +12,7 @@ import {
 import { useEmployes } from './useEmployes.ts';
 import { useIncident } from './useIncidents.ts';
 import { useNotifications } from './useNotifications.ts';
+import { showError, showSuccess } from '../utils/services/index.ts';
 
 export function useIncidentDeclarationView() {
   const navigate = useNavigate();
@@ -45,6 +46,14 @@ export function useIncidentDeclarationView() {
     setIsSaving(false);
     if (!created) return;
     setCreatedResult(created);
+    if (created.meta?.emailNotification?.success) {
+      await showSuccess(`Incident déclaré et email envoyé à ${created.meta.emailNotification.recipient}.`, 'Email envoyé');
+    } else {
+      await showError(
+        `Incident déclaré, mais l’email n’a pas pu être envoyé${created.meta?.emailNotification?.error ? ` : ${created.meta.emailNotification.error}` : '.'}`,
+        'Échec de l’envoi'
+      );
+    }
     setForm(createIncidentDeclarationInitialForm());
     await refreshNotifications();
   }, [create, form, refreshNotifications]);
