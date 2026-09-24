@@ -202,6 +202,43 @@
 #commandesList .summary-card--frigo .summary-card__value--split > :first-child {
   color: #6b7280;
 }
+#commandesList .commandesList__email-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55em 1.25em;
+  margin: -0.35em 0 0.8em;
+  color: vars.$fontColorSecondary;
+  font-size: 0.82em;
+}
+#commandesList .commandesList__email-legend-title {
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
+#commandesList .commandesList__email-legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  white-space: nowrap;
+}
+#commandesList .commandesList__email-legend-swatch {
+  display: inline-block;
+  width: 2.75em;
+  height: 0.7em;
+  border: 1px solid vars.$borderColor;
+  border-radius: 2px;
+}
+#commandesList .commandesList__email-legend-swatch--prospect-pending {
+  background: #f0e9ff;
+  border-color: #d8c7ff;
+}
+#commandesList .commandesList__email-legend-swatch--client-pending {
+  background: #fff3bf;
+  border-color: #f5d76e;
+}
+#commandesList .commandesList__email-legend-swatch--completed {
+  background: #ffffff;
+}
 // Tableau
 #commandesList .commandesList__table-wrapper {
   overflow-x: auto;

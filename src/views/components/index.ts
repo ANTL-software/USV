@@ -47,6 +47,7 @@ export { CommandeProspectEmailModal } from './commandeProspectEmailModal/index.t
 export { CommandeVenteDetails } from './commandeVenteDetails/index.ts';
 export { CommercialDocumentsManager } from './commercialDocumentsManager/index.ts';
 export { CommandesContent } from './commandesContent/index.ts';
+export { CommandesEmailLegend } from './commandesEmailLegend/index.ts';
 export { CommandesFilters } from './commandesFilters/index.ts';
 export { CommandesLeadTable } from './commandesLeadTable/index.ts';
 export { CommandesSaleTable } from './commandesSaleTable/index.ts';

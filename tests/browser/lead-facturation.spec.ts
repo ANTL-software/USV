@@ -102,6 +102,10 @@ test('les commandes vente signalent séparément les envois prospect et client',
   }, unhandledRequests);
 
   await page.goto('/operations/commandes');
+  const saleLegend = page.getByLabel('Légende des couleurs d’envoi');
+  await expect(saleLegend).toContainText('Bon de commande à envoyer au prospect');
+  await expect(saleLegend).toContainText('Bon de commande signé à envoyer au client');
+  await expect(saleLegend).toContainText('Envois terminés ou commande annulée');
   const prospectPending = page.getByRole('row', { name: /0600701/ });
   const clientPending = page.getByRole('row', { name: /0600702/ });
   const completed = page.getByRole('row', { name: /0600703/ });
@@ -255,6 +259,10 @@ test('la liste lead surligne uniquement les fiches dont le mail reste à envoyer
 
   await page.goto('/operations/commandes');
   await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  const leadLegend = page.getByLabel('Légende des couleurs d’envoi');
+  await expect(leadLegend).toContainText('Fiche de rendez-vous à envoyer au client');
+  await expect(leadLegend).toContainText('Fiche de rendez-vous envoyée au client');
+  await expect(leadLegend).not.toContainText('Bon de commande à envoyer au prospect');
 
   const pendingEmailRow = page.getByRole('row', { name: /L-00501/ });
   const sentEmailRow = page.getByRole('row', { name: /L-00502/ });

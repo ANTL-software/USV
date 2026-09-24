@@ -5,7 +5,7 @@ import './commandesList.scss';
 
 import { useCommandesListView } from '../../../hooks/index.ts';
 import { WithAuth } from '../../../utils/middleware/index.ts';
-import { BackToTop, Button, CommandesContent, CommandesFilters, CommandesSummary, Header, NotificationBadge, SubNav } from '../../components/index.ts';
+import { BackToTop, Button, CommandesContent, CommandesEmailLegend, CommandesFilters, CommandesSummary, Header, NotificationBadge, SubNav } from '../../components/index.ts';
 
 function CommandesList(): ReactElement {
   const viewModel = useCommandesListView();
@@ -18,6 +18,7 @@ function CommandesList(): ReactElement {
         <CommandesFilters state={commandes} />
         {commandes.pageError && <div className="commandesList__error">{commandes.pageError}</div>}
         {!commandes.isCrossCampaignSearch && <CommandesSummary state={commandes} />}
+        {!commandes.isCrossCampaignSearch && commandes.hasCampaignSelection && !commandes.isCorbeille && <CommandesEmailLegend isLeadCampaign={commandes.isLeadCampaign} />}
         <CommandesContent viewModel={viewModel} />
       </div></main>
       <BackToTop />
