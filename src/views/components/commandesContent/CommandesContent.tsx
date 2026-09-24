@@ -3,6 +3,7 @@ import type { ReactElement } from 'react';
 import type { CommandesListViewModel } from '../../../hooks/index.ts';
 import { CommandesLeadTable, CommandesSaleTable, Loader } from '../index.ts';
 import { Button } from '../button/index.ts';
+import { getSaleEmailDispatchRowClass } from '../../../utils/scripts/index.ts';
 
 interface CommandesContentProps {
   viewModel: CommandesListViewModel;
@@ -17,7 +18,7 @@ export function CommandesContent({ viewModel }: CommandesContentProps): ReactEle
     return <>
       <div className="commandesList__table-wrapper"><table>
         <thead><tr><th>Réf.</th><th>Type</th><th>Campagne</th><th>Client</th><th>Contact</th><th>Téléphone</th><th>Date</th><th>Statut</th></tr></thead>
-        <tbody>{commandes.searchResults.map((result) => <tr key={`${result.type}-${result.id}`} className={['commandesList__row--clickable', !result.email_sent_at ? 'commandesList__row--email-pending' : ''].filter(Boolean).join(' ')} onClick={() => { if (result.type === 'lead') viewModel.navigateToLead(result.id); else viewModel.navigateToSale(result.id); }}>
+        <tbody>{commandes.searchResults.map((result) => <tr key={`${result.type}-${result.id}`} className={['commandesList__row--clickable', result.type === 'vente' ? getSaleEmailDispatchRowClass({ statutVente: result.statut, prospectEmailSentAt: result.email_sent_at, signedOrderSentAt: result.client_email_sent_at }) : !result.email_sent_at ? 'commandesList__row--email-pending' : ''].filter(Boolean).join(' ')} onClick={() => { if (result.type === 'lead') viewModel.navigateToLead(result.id); else viewModel.navigateToSale(result.id); }}>
           <td><span className="commandesList__reference">{result.reference}</span></td><td>{result.type === 'lead' ? 'Lead client' : 'Vente'}</td><td>{result.campagne}</td><td>{result.client ?? '—'}</td><td>{result.contact ?? '—'}</td><td>{result.telephone ?? '—'}</td><td>{new Intl.DateTimeFormat('fr-FR').format(new Date(result.date_creation))}</td><td>{result.statut}</td>
         </tr>)}</tbody>
       </table></div>

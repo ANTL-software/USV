@@ -237,11 +237,19 @@
   cursor: pointer;
   transition: background 0.15s ease;
 }
-#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending {
+#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending,
+#commandesList .commandesList__table-wrapper table .commandesList__row--client-email-pending {
   background: #fff3bf;
 }
-#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending:hover {
+#commandesList .commandesList__table-wrapper table .commandesList__row--email-pending:hover,
+#commandesList .commandesList__table-wrapper table .commandesList__row--client-email-pending:hover {
   background: #ffe69c;
+}
+#commandesList .commandesList__table-wrapper table .commandesList__row--prospect-email-pending {
+  background: #f0e9ff;
+}
+#commandesList .commandesList__table-wrapper table .commandesList__row--prospect-email-pending:hover {
+  background: #e4d6ff;
 }
 // Badge statut
 #commandesList .statut-badge {

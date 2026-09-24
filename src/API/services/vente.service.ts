@@ -54,6 +54,7 @@ export interface CommandeSearchResult {
   date_creation: string;
   statut: string;
   email_sent_at: string | null;
+  client_email_sent_at: string | null;
 }
 
 export interface CommandesSearchResponse {

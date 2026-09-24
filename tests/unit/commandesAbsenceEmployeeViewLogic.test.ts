@@ -10,6 +10,7 @@ import {
   formatAbsencePeriod,
   formatEmployeeDocumentDate,
   formatFileSizeInKilobytes,
+  getSaleEmailDispatchRowClass,
   getAbsenceEmptyMessage,
   getAbsenceReturnDate,
   isDateAfterPeriod,
@@ -104,6 +105,13 @@ test('une commande frigo n’est signalée qu’à partir de sa relance planifi�
   assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T08:59:59.000Z')), false);
   assert.equal(isFrigoReminderDue(vente, new Date('2026-06-01T09:00:00.000Z')), true);
   assert.equal(isFrigoReminderDue({ ...vente, statut_vente: 'validee' }, new Date('2026-06-01T09:00:00.000Z')), false);
+});
+
+test('les commandes vente suivent les couleurs d’avancement des deux envois', () => {
+  assert.equal(getSaleEmailDispatchRowClass({ statutVente: 'annulee' }), '');
+  assert.equal(getSaleEmailDispatchRowClass({ statutVente: 'en_attente' }), 'commandesList__row--prospect-email-pending');
+  assert.equal(getSaleEmailDispatchRowClass({ statutVente: 'validee', prospectEmailSentAt: '2026-09-24T10:00:00.000Z' }), 'commandesList__row--client-email-pending');
+  assert.equal(getSaleEmailDispatchRowClass({ statutVente: 'validee', prospectEmailSentAt: '2026-09-24T10:00:00.000Z', signedOrderSentAt: '2026-09-25T10:00:00.000Z' }), '');
 });
 
 test('le retour depuis un détail conserve les filtres et la page de la liste commandes', () => {

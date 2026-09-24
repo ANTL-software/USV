@@ -36,6 +36,7 @@ export {
   formatDate as formatCommandesDate,
   formatLeadSlot,
   formatMontant,
+  getSaleEmailDispatchRowClass,
   getLeadAgentName,
   getLeadInterlocuteur,
   getLeadProspectName,

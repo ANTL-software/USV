@@ -165,6 +165,30 @@ export function isFrigoReminderDue(vente: Vente, now: Date = new Date()): boolea
     && new Date(reminderAt).getTime() <= now.getTime();
 }
 
+export function getSaleEmailDispatchRowClass({
+  statutVente,
+  prospectEmailSentAt,
+  signedOrderSentAt,
+}: {
+  statutVente: string;
+  prospectEmailSentAt?: string | null;
+  signedOrderSentAt?: string | null;
+}): string {
+  if (statutVente === 'annulee') {
+    return '';
+  }
+
+  if (!prospectEmailSentAt) {
+    return 'commandesList__row--prospect-email-pending';
+  }
+
+  if (!signedOrderSentAt) {
+    return 'commandesList__row--client-email-pending';
+  }
+
+  return '';
+}
+
 export function formatLeadSlot(dateValue: string, timeValue: string): string {
   const date = new Date(`${dateValue}T${timeValue}`);
 

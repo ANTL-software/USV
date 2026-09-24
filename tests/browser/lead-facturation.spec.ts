@@ -73,6 +73,48 @@ const MMA_CAMPAIGN = {
   type_campagne: 'lead_b2b' as const,
 };
 
+test('les commandes vente signalent séparément les envois prospect et client', async ({ page }) => {
+  const unhandledRequests: string[] = [];
+  const sales = [
+    { ...sale, id_vente: 701, reference_doc: '0600701', email_envoye_at: null, bon_commande_signe_envoye_at: null },
+    { ...sale, id_vente: 702, reference_doc: '0600702', email_envoye_at: '2026-09-24T10:00:00.000Z', bon_commande_signe_envoye_at: null },
+    { ...sale, id_vente: 703, reference_doc: '0600703', email_envoye_at: '2026-09-24T10:00:00.000Z', bon_commande_signe_envoye_at: '2026-09-25T10:00:00.000Z' },
+    { ...sale, id_vente: 704, reference_doc: '0600704', statut_vente: 'annulee' as const, email_envoye_at: null, bon_commande_signe_envoye_at: null },
+  ];
+
+  await installApiRoute(page, async (route, request) => {
+    if (request.method === 'GET' && request.path === '/campagnes') {
+      await fulfillJson(route, apiSuccess([SALES_CAMPAIGN]));
+      return true;
+    }
+    if (request.method === 'GET' && request.path === '/ventes') {
+      await fulfillJson(route, {
+        ...apiSuccess(sales),
+        pagination: { page: 1, limit: 20, total: sales.length, totalPages: 1 },
+        stats: {
+          validees: { count: 3, total_montant: 1500 }, enAttente: { count: 0, total_montant: 0 },
+          annulees: { count: 1, total_montant: 500 }, frigo: { count: 0, total_montant: 0 }, total: { count: 4, total_montant: 2000 },
+        },
+      });
+      return true;
+    }
+    return false;
+  }, unhandledRequests);
+
+  await page.goto('/operations/commandes');
+  const prospectPending = page.getByRole('row', { name: /0600701/ });
+  const clientPending = page.getByRole('row', { name: /0600702/ });
+  const completed = page.getByRole('row', { name: /0600703/ });
+  const cancelled = page.getByRole('row', { name: /0600704/ });
+  await expect(prospectPending).toHaveClass(/commandesList__row--prospect-email-pending/);
+  await expect(prospectPending).toHaveCSS('background-color', 'rgb(240, 233, 255)');
+  await expect(clientPending).toHaveClass(/commandesList__row--client-email-pending/);
+  await expect(clientPending).toHaveCSS('background-color', 'rgb(255, 243, 191)');
+  await expect(completed).not.toHaveClass(/commandesList__row--(?:prospect|client)-email-pending/);
+  await expect(cancelled).not.toHaveClass(/commandesList__row--(?:prospect|client)-email-pending/);
+  expect(unhandledRequests).toEqual([]);
+});
+
 test('le détail lead et la facturation gardent leurs workflows navigateur', async ({ page }) => {
   const unhandledRequests: string[] = [];
   let leadStatusPayload: { statut: string } | null = null;
