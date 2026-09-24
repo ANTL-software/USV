@@ -32,6 +32,7 @@ function createCampagne(overrides: Partial<Campagne> = {}): Campagne {
     objectifs: null,
     budget: null,
     code_postal_maison_mere: null,
+    code_postal_centre_prospection: null,
     autoriser_mobile: false,
     ...overrides,
   };
@@ -72,6 +73,7 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
     budget: 1250.5,
     modes_paiement: ['CB', 'Virement'],
     taux_commission_facturation: 45,
+    code_postal_centre_prospection: '17000',
     bon_commande_config: {
       invoice_recipient: {
         company_name: 'SAS Démo',
@@ -91,6 +93,7 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
   assert.equal(form.budget, '1250.5');
   assert.equal(form.modes_paiement, 'CB,Virement');
   assert.equal(form.taux_commission_facturation, '45');
+  assert.equal(form.code_postal_centre_prospection, '17000');
   assert.equal(form.invoice_company_name, 'SAS Démo');
   assert.equal(form.invoice_country, 'Belgique');
   assert.equal(form.lead_unit_price_ht, '92.5');
@@ -131,6 +134,21 @@ test('la validation exige le nom et la date de début', () => {
   }), null);
 });
 
+test('la validation accepte uniquement un centre de prospection à cinq chiffres', () => {
+  const validForm = {
+    ...INITIAL_CAMPAGNE_FORM,
+    nom_campagne: 'Swiss Life IND',
+    date_debut: '2026-09-24',
+    code_postal_centre_prospection: '17000',
+  };
+
+  assert.equal(validateCampagneForm(validForm), null);
+  assert.equal(
+    validateCampagneForm({ ...validForm, code_postal_centre_prospection: '1700' }),
+    'Le code postal du centre de prospection doit contenir 5 chiffres',
+  );
+});
+
 test('le payload campagne normalise les nombres modes et facturation tierce', () => {
   const emptyInvoiceForm = {
     ...INITIAL_CAMPAGNE_FORM,
@@ -151,6 +169,7 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
     objectifs: undefined,
     budget: 2500,
     code_postal_maison_mere: undefined,
+    code_postal_centre_prospection: null,
     autoriser_mobile: false,
     siret: undefined,
     tva: undefined,

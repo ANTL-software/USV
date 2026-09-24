@@ -36,6 +36,21 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
       </div>
       <div className="campagneForm__row"><label>Budget (€)<input type="number" name="budget" value={form.budget} onChange={handleChange} min="0" step="0.01" placeholder="0.00" /></label></div>
       <div className="campagneForm__row">
+        <label>Code postal du centre de prospection
+          <input
+            type="text"
+            name="code_postal_centre_prospection"
+            value={form.code_postal_centre_prospection}
+            onChange={handleChange}
+            inputMode="numeric"
+            pattern="[0-9]{5}"
+            maxLength={5}
+            placeholder="Ex : 17000"
+          />
+          <span className="campagneForm__hint">Épicentre du tri géographique. Vide : utilisation du code postal de la maison mère.</span>
+        </label>
+      </div>
+      <div className="campagneForm__row">
         <label className="campagneForm__checkbox-label"><input type="checkbox" name="autoriser_mobile" checked={form.autoriser_mobile} onChange={handleChange} /><span>Autoriser les appels sur mobile (06/07)</span></label>
         <span className="campagneForm__hint">{form.autoriser_mobile ? 'Les agents pourront appeler les numéros mobiles' : 'Les agents ne pourront pas appeler les numéros mobiles (verrouillé)'}</span>
       </div>

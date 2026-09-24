@@ -53,6 +53,7 @@ export interface CommandeSearchResult {
   telephone: string | null;
   date_creation: string;
   statut: string;
+  email_sent_at: string | null;
 }
 
 export interface CommandesSearchResponse {
@@ -275,5 +276,17 @@ export const sendSignedOrderEmailService = async (
 
   if (!response.data.success) {
     throw new Error(response.data.message || 'Impossible d’envoyer le bon de commande par email');
+  }
+};
+
+export const sendOrderToProspectEmailService = async (
+  idVente: number,
+  payload: { recipient_email: string; subject: string; message: string },
+): Promise<void> => {
+  const response: AxiosResponse<ApiResponse<unknown>> = await postRequest(
+    `/ventes/${idVente}/send-to-prospect`, payload,
+  );
+  if (!response.data.success) {
+    throw new Error(response.data.message || 'Impossible d’envoyer le bon de commande au prospect');
   }
 };

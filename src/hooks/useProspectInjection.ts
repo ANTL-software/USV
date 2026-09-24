@@ -31,7 +31,18 @@ export function useProspectInjection(campagneId: number | null) {
     void getCampagneByIdService(campagneId)
       .then((campagne) => {
         if (!isCancelled) {
-          setLoadedCampagneNom(campagne.toJSON().nom_campagne);
+          const campaignData = campagne.toJSON();
+          setLoadedCampagneNom(campaignData.nom_campagne);
+          const defaultPostcode = campaignData.code_postal_centre_prospection
+            || campaignData.code_postal_maison_mere
+            || undefined;
+          if (defaultPostcode) {
+            setFilters((currentFilters) => (
+              currentFilters.code_postal
+                ? currentFilters
+                : { ...currentFilters, code_postal: defaultPostcode }
+            ));
+          }
         }
       })
       .catch(() => {
@@ -43,7 +54,7 @@ export function useProspectInjection(campagneId: number | null) {
     return () => {
       isCancelled = true;
     };
-  }, [campagneId]);
+  }, [campagneId, setFilters]);
 
   const campagneNom = campagneId ? loadedCampagneNom : '';
 

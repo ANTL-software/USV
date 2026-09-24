@@ -75,6 +75,20 @@ export function CommandeDetailsActions({ viewModel }: CommandeDetailsActionsProp
             <IoPrint /><span>Réimprimer le bon de commande</span>
           </Button>
         </div>
+        {isVenteCampaign && <div className="aside-email-dispatch">
+          {commande.email_envoye_at && <div className="signed-order-sent-status">
+            <div className="sent-status-header">
+              <IoCheckmarkCircle className="sent-status-icon" />
+              <span className="sent-status-title">Bon de commande envoyé au prospect</span>
+            </div>
+            <p className="sent-status-details">Le {formatCommandeDateTime(commande.email_envoye_at)}</p>
+          </div>}
+          <Button style={commande.email_envoye_at ? 'grey' : 'gradient'}
+            onClick={viewModel.openProspectEmailModal} className="action-btn-aside action-btn-aside--email" type="button">
+            <IoMailOutline />
+            <span>{commande.email_envoye_at ? 'Renvoyer' : 'Envoyer'} le bon de commande au prospect</span>
+          </Button>
+        </div>}
         <div className="aside-divider" />
         <h4>Bon de commande signé</h4>
 

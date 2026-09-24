@@ -168,6 +168,7 @@ export {
   deleteVenteService,
   restoreVenteService,
   sendSignedOrderEmailService,
+  sendOrderToProspectEmailService,
 } from './vente.service.ts';
 export type { CommandeSearchResult } from './vente.service.ts';
 

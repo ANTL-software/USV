@@ -71,6 +71,7 @@ mock.module(apiModuleUrl, {
           objectifs: data.objectifs ?? null,
           budget: data.budget ?? null,
           code_postal_maison_mere: data.code_postal_maison_mere ?? null,
+          code_postal_centre_prospection: data.code_postal_centre_prospection ?? null,
           autoriser_mobile: data.autoriser_mobile ?? false,
           modes_paiement: data.modes_paiement,
           bon_commande_config: data.bon_commande_config,
@@ -99,6 +100,7 @@ mock.module(apiModuleUrl, {
           objectifs: data.objectifs ?? campaign.objectifs,
           budget: data.budget ?? campaign.budget,
           code_postal_maison_mere: data.code_postal_maison_mere ?? campaign.code_postal_maison_mere,
+          code_postal_centre_prospection: data.code_postal_centre_prospection ?? campaign.code_postal_centre_prospection,
         };
         return { data: { success: true, data: campaign } };
       }
@@ -145,6 +147,7 @@ test('le parcours campagne crée configure affecte transfère et retire les agen
     nom_campagne: 'MMA Entreprises',
     type_campagne: 'lead_b2b',
     date_debut: '2026-07-15',
+    code_postal_centre_prospection: '17000',
     modes_paiement: 'Virement',
     invoice_company_name: 'SAS MMA',
     invoice_email: 'facturation@mma.fr',
@@ -153,6 +156,7 @@ test('le parcours campagne crée configure affecte transfère et retire les agen
 
   assert.equal(created.id_campagne, 4);
   assert.equal(created.type_campagne, 'lead_b2b');
+  assert.equal(created.code_postal_centre_prospection, '17000');
   assert.equal(created.bon_commande_config?.invoice_recipient?.company_name, 'SAS MMA');
 
   await addAgentCampagneService(4, { id_employe: 9 });

@@ -11,6 +11,7 @@ export interface VigieCampaign {
   nom_campagne: string;
   type_campagne: CampaignVariant;
   autoriser_mobile: boolean;
+  code_postal_centre_prospection?: string | null;
   code_postal_maison_mere: string | null;
   ville: string | null;
 }

@@ -43,6 +43,7 @@ export { CommandeDetailsSummary } from './commandeDetailsSummary/index.ts';
 export { CommandeDetailsHistories } from './commandeDetailsHistories/index.ts';
 export { CommandeDetailsActions } from './commandeDetailsActions/index.ts';
 export { CommandeSignedOrderEmailModal } from './commandeSignedOrderEmailModal/index.ts';
+export { CommandeProspectEmailModal } from './commandeProspectEmailModal/index.ts';
 export { CommandeVenteDetails } from './commandeVenteDetails/index.ts';
 export { CommercialDocumentsManager } from './commercialDocumentsManager/index.ts';
 export { CommandesContent } from './commandesContent/index.ts';

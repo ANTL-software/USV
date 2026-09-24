@@ -46,6 +46,12 @@ export interface Vente {
   date_vente: string;
   date_acceptation?: string | null;
   frigo_rappel_at?: string | null;
+  email_envoye_at?: string | null;
+  prospect_email_sender?: {
+    configured: boolean;
+    name: string;
+    address: string;
+  };
   bon_commande_signe_envoye_at?: string | null;
   bon_commande_signe_envoye_a?: string | null;
   bon_commande_signe_envoye_par?: number | null;

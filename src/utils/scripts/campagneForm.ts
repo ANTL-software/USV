@@ -17,6 +17,7 @@ export interface CampagneFormState {
   objectifs: string;
   budget: string;
   code_postal_maison_mere: string;
+  code_postal_centre_prospection: string;
   autoriser_mobile: boolean;
   siret: string;
   tva: string;
@@ -81,6 +82,7 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   objectifs: '',
   budget: '',
   code_postal_maison_mere: '',
+  code_postal_centre_prospection: '',
   autoriser_mobile: false,
   siret: '',
   tva: '',
@@ -156,6 +158,7 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     objectifs: campagne.objectifs || '',
     budget: campagne.budget != null ? String(campagne.budget) : '',
     code_postal_maison_mere: campagne.code_postal_maison_mere || '',
+    code_postal_centre_prospection: campagne.code_postal_centre_prospection || '',
     autoriser_mobile: campagne.autoriser_mobile,
     siret: campagne.siret || '',
     tva: campagne.tva || '',
@@ -225,6 +228,9 @@ const parsePositivePrice = (value: string): number | null => {
 export function validateCampagneForm(form: CampagneFormState, campagneId: number | null = null): string | null {
   if (!form.nom_campagne.trim()) return 'Le nom de la campagne est requis';
   if (!form.date_debut) return 'La date de début est requise';
+  if (form.code_postal_centre_prospection && !/^\d{5}$/.test(form.code_postal_centre_prospection.trim())) {
+    return 'Le code postal du centre de prospection doit contenir 5 chiffres';
+  }
   if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
     if (form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
     if (campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID) {
@@ -266,6 +272,7 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
     objectifs: form.objectifs || undefined,
     budget: form.budget ? Number(form.budget) : undefined,
     code_postal_maison_mere: form.code_postal_maison_mere || undefined,
+    code_postal_centre_prospection: form.code_postal_centre_prospection.trim() || null,
     autoriser_mobile: form.autoriser_mobile,
     siret: form.siret || undefined,
     tva: form.tva || undefined,

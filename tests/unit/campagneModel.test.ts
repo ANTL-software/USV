@@ -14,6 +14,7 @@ test('CampagneModel conserve Cigales en variante vente pour le workflow historiq
     objectifs: null,
     budget: null,
     code_postal_maison_mere: null,
+    code_postal_centre_prospection: null,
     autoriser_mobile: false,
   });
 
@@ -30,6 +31,7 @@ test('CampagneModel conserve Cigales en variante vente pour le workflow historiq
     objectifs: null,
     budget: null,
     code_postal_maison_mere: null,
+    code_postal_centre_prospection: null,
     autoriser_mobile: false,
     agents_count: undefined,
     created_at: undefined,

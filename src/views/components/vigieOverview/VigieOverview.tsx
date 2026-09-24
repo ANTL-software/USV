@@ -12,10 +12,12 @@ export function VigieOverview({ state }: VigieOverviewProps): ReactElement | nul
   const { snapshot } = state;
   if (!snapshot) return null;
   const progress = Math.min(snapshot.objectif.taux_atteinte || 0, 100);
+  const prospectingPostcode = snapshot.campagne.code_postal_centre_prospection
+    || snapshot.campagne.code_postal_maison_mere;
   return (
     <>
       <div className="vigieView__period">
-        <div><strong>{snapshot.campagne.nom_campagne}</strong><span>Du {formatVigieDate(snapshot.periode.date_debut)} au {formatVigieDate(snapshot.periode.date_fin)} · actualisé à {new Date(snapshot.meta.donnees_actualisees_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>{snapshot.campagne.code_postal_maison_mere && <span>Point de référence proximité : {snapshot.campagne.ville || 'siège client'} ({snapshot.campagne.code_postal_maison_mere})</span>}</div>
+        <div><strong>{snapshot.campagne.nom_campagne}</strong><span>Du {formatVigieDate(snapshot.periode.date_debut)} au {formatVigieDate(snapshot.periode.date_fin)} · actualisé à {new Date(snapshot.meta.donnees_actualisees_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</span>{prospectingPostcode && <span>Centre de prospection : {prospectingPostcode}</span>}</div>
         <button className="vigieView__button vigieView__button--secondary" type="button" onClick={() => { void state.refresh(); }} disabled={state.isLoading}><IoRefreshOutline /> Actualiser</button>
       </div>
       <section className="vigieView__objective" aria-label="Objectif d’appels du jour">

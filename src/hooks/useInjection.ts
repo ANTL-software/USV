@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react';
+import type { SetStateAction } from 'react';
 import { getInjectionCountService, injectProspectsService } from '../API/services/index.ts';
 import { useAlert } from '../context/alert/index.ts';
 import type { InjectionFilters, InjectionResult } from '../utils/types/index.ts';
@@ -24,7 +25,7 @@ const saveFilters = (filters: InjectionFilters) => {
 
 interface UseInjectionReturn {
   filters: InjectionFilters;
-  setFilters: (filters: InjectionFilters) => void;
+  setFilters: (filters: SetStateAction<InjectionFilters>) => void;
   count: number | null;
   result: InjectionResult | null;
   isLoading: boolean;
@@ -40,9 +41,14 @@ export const useInjection = (): UseInjectionReturn => {
   const [result, setResult] = useState<InjectionResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const setFilters = useCallback((f: InjectionFilters) => {
-    setFiltersState(f);
-    saveFilters(f);
+  const setFilters = useCallback((nextFilters: SetStateAction<InjectionFilters>) => {
+    setFiltersState((currentFilters) => {
+      const resolvedFilters = typeof nextFilters === 'function'
+        ? nextFilters(currentFilters)
+        : nextFilters;
+      saveFilters(resolvedFilters);
+      return resolvedFilters;
+    });
   }, []);
 
   const loadCount = useCallback(async (idCampagne: number) => {

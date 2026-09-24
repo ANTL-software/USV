@@ -4,6 +4,7 @@ import {
   getProspectVentesService,
   getVenteByIdService,
   getVenteDocumentUrl,
+  sendOrderToProspectEmailService,
   sendSignedOrderEmailService,
   snoozeFrigoReminderService,
   updateVenteStatutService,
@@ -29,6 +30,14 @@ import {
   getCommandeStatusPresentation,
 } from '../utils/scripts/index.ts';
 import { useCommercialDocuments } from './useCommercialDocuments.ts';
+
+const DEFAULT_PROSPECT_EMAIL_MESSAGE = `Bonjour,
+
+Vous trouverez ci-joint le bon de commande correspondant à notre échange.
+
+Je vous invite à le signer et à me le retourner pour que nous puissions valider votre soutien.
+
+Je reste à votre disposition, en vous souhaitant une excellente journée.`;
 
 export function useCommandeDetails(idVente: number) {
   const { refreshNotifications } = useNotifications();
@@ -60,6 +69,11 @@ export function useCommandeDetails(idVente: number) {
   const [emailSubject, setEmailSubject] = useState('');
   const [emailMessage, setEmailMessage] = useState('');
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [isProspectEmailModalOpen, setIsProspectEmailModalOpen] = useState(false);
+  const [prospectRecipientEmail, setProspectRecipientEmail] = useState('');
+  const [prospectEmailSubject, setProspectEmailSubject] = useState('BON DE COMMANDE');
+  const [prospectEmailMessage, setProspectEmailMessage] = useState(DEFAULT_PROSPECT_EMAIL_MESSAGE);
+  const [isSendingProspectEmail, setIsSendingProspectEmail] = useState(false);
 
   const loadCommande = useCallback(async (): Promise<void> => {
     if (Number.isNaN(idVente)) {
@@ -257,6 +271,38 @@ export function useCommandeDetails(idVente: number) {
     }
   }, [commande, emailMessage, emailSubject, isSendingEmail, loadCommande, selectedRecipientEmail, senderEmail, senderName]);
 
+  const openProspectEmailModal = useCallback((): void => {
+    setProspectRecipientEmail(commande?.prospect?.email?.trim() || '');
+    setProspectEmailSubject('BON DE COMMANDE');
+    setProspectEmailMessage(DEFAULT_PROSPECT_EMAIL_MESSAGE);
+    setIsProspectEmailModalOpen(true);
+  }, [commande?.prospect?.email]);
+
+  const closeProspectEmailModal = useCallback((): void => {
+    if (!isSendingProspectEmail) setIsProspectEmailModalOpen(false);
+  }, [isSendingProspectEmail]);
+
+  const sendOrderToProspectEmail = useCallback(async (): Promise<void> => {
+    if (!commande?.prospect_email_sender?.configured || !prospectRecipientEmail.trim()
+      || !prospectEmailSubject.trim() || !prospectEmailMessage.trim() || isSendingProspectEmail) return;
+
+    setIsSendingProspectEmail(true);
+    try {
+      await sendOrderToProspectEmailService(commande.id_vente, {
+        recipient_email: prospectRecipientEmail.trim(),
+        subject: prospectEmailSubject.trim(),
+        message: prospectEmailMessage.trim(),
+      });
+      await showSuccess(`Bon de commande envoyé au prospect à ${prospectRecipientEmail.trim()}.`, 'Email envoyé');
+      setIsProspectEmailModalOpen(false);
+      await loadCommande();
+    } catch (requestError) {
+      await showError(requestError instanceof Error ? requestError.message : 'Impossible d’envoyer le bon de commande au prospect');
+    } finally {
+      setIsSendingProspectEmail(false);
+    }
+  }, [commande, isSendingProspectEmail, loadCommande, prospectEmailMessage, prospectEmailSubject, prospectRecipientEmail]);
+
   const prospectName = useMemo(() => getCommandeProspectName(commande), [commande]);
   const billingCompanyName = useMemo(() => getCommandeBillingCompanyName(commande), [commande]);
   const agentName = useMemo(() => getCommandeAgentName(commande), [commande]);
@@ -324,5 +370,16 @@ export function useCommandeDetails(idVente: number) {
     openEmailModal,
     closeEmailModal,
     sendSignedOrderEmail,
+    isProspectEmailModalOpen,
+    prospectRecipientEmail,
+    setProspectRecipientEmail,
+    prospectEmailSubject,
+    setProspectEmailSubject,
+    prospectEmailMessage,
+    setProspectEmailMessage,
+    isSendingProspectEmail,
+    openProspectEmailModal,
+    closeProspectEmailModal,
+    sendOrderToProspectEmail,
   };
 }

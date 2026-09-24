@@ -18,6 +18,7 @@ export class CampagneModel implements Campagne {
   objectifs: string | null;
   budget: number | null;
   code_postal_maison_mere: string | null;
+  code_postal_centre_prospection: string | null;
   autoriser_mobile: boolean;
   agents_count?: number;
   created_at?: string;
@@ -52,6 +53,7 @@ export class CampagneModel implements Campagne {
     this.objectifs = data.objectifs ?? null;
     this.budget = data.budget ?? null;
     this.code_postal_maison_mere = data.code_postal_maison_mere ?? null;
+    this.code_postal_centre_prospection = data.code_postal_centre_prospection ?? null;
     this.autoriser_mobile = data.autoriser_mobile ?? false;
     this.agents_count = data.agents_count;
     this.created_at = data.created_at;
@@ -100,6 +102,7 @@ export class CampagneModel implements Campagne {
       objectifs: this.objectifs,
       budget: this.budget,
       code_postal_maison_mere: this.code_postal_maison_mere,
+      code_postal_centre_prospection: this.code_postal_centre_prospection,
       autoriser_mobile: this.autoriser_mobile,
       agents_count: this.agents_count,
       created_at: this.created_at,
