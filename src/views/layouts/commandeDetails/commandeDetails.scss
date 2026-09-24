@@ -1137,6 +1137,13 @@
   color: #6b4f00;
 }
 
+.signedOrderEmailModal__recipient-summary {
+  margin: 0;
+  color: #374151;
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
 .signedOrderEmailModal__attachments-box {
   background: #f8fafc;
   border: 1px solid vars.$borderColor;

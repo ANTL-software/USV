@@ -13,7 +13,10 @@ interface EmailOption {
   label: string;
 }
 
-const emailSelectStyles = reactSelectStyles as StylesConfig<EmailOption, false>;
+const emailSelectStyles: StylesConfig<EmailOption, false> = {
+  ...(reactSelectStyles as StylesConfig<EmailOption, false>),
+  menuPortal: (base) => ({ ...base, zIndex: 1600 }),
+};
 
 interface CommandeProspectEmailModalProps {
   viewModel: ReturnType<typeof useCommandeDetails>;
@@ -33,6 +36,7 @@ export function CommandeProspectEmailModal({ viewModel }: CommandeProspectEmailM
     : null;
   const reference = commande.reference_doc || String(600000 + commande.id_vente).padStart(7, '0');
   const canSend = Boolean(sender?.configured && viewModel.prospectRecipientEmail.trim()
+    && !viewModel.prospectRecipientDraft.length
     && viewModel.prospectEmailSubject.trim() && viewModel.prospectEmailMessage.trim()
     && !viewModel.isSendingProspectEmail);
   const stopPropagation = (event: MouseEvent): void => event.stopPropagation();
@@ -71,8 +75,12 @@ export function CommandeProspectEmailModal({ viewModel }: CommandeProspectEmailM
           <CreatableSelect<EmailOption, false>
             inputId="prospectOrderRecipientEmail"
             value={selectedRecipient}
-            onChange={(option) => viewModel.setProspectRecipientEmail(option?.value ?? '')}
-            onCreateOption={(value) => viewModel.setProspectRecipientEmail(value.trim())}
+            inputValue={viewModel.prospectRecipientDraft}
+            onInputChange={(value, action) => {
+              if (action.action === 'input-change') viewModel.setProspectRecipientDraft(value);
+            }}
+            onChange={(option) => viewModel.selectProspectRecipientEmail(option?.value ?? '')}
+            onCreateOption={(value) => viewModel.selectProspectRecipientEmail(value)}
             options={recipientOptions}
             placeholder="Sélectionner ou saisir une adresse email..."
             styles={emailSelectStyles}
@@ -86,6 +94,13 @@ export function CommandeProspectEmailModal({ viewModel }: CommandeProspectEmailM
             isDisabled={viewModel.isSendingProspectEmail}
           />
         </label>
+        {viewModel.prospectRecipientDraft.length > 0
+          ? <p className="signedOrderEmailModal__configuration-warning">
+              Nouvelle adresse en cours de saisie. Sélectionnez « Utiliser … » pour confirmer le destinataire.
+            </p>
+          : <p className="signedOrderEmailModal__recipient-summary">
+              Destinataire de l’envoi : <strong>{viewModel.prospectRecipientEmail || 'aucune adresse sélectionnée'}</strong>
+            </p>}
 
         <label className="signedOrderEmailModal__field">
           <span className="field-label">Objet du mail :</span>

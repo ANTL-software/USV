@@ -281,7 +281,7 @@ export const sendSignedOrderEmailService = async (
 
 export const sendOrderToProspectEmailService = async (
   idVente: number,
-  payload: { recipient_email: string; subject: string; message: string },
+  payload: { recipient_email: string; confirmed_recipient_email: string; subject: string; message: string },
 ): Promise<void> => {
   const response: AxiosResponse<ApiResponse<unknown>> = await postRequest(
     `/ventes/${idVente}/send-to-prospect`, payload,

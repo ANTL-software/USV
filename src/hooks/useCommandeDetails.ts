@@ -71,6 +71,7 @@ export function useCommandeDetails(idVente: number) {
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isProspectEmailModalOpen, setIsProspectEmailModalOpen] = useState(false);
   const [prospectRecipientEmail, setProspectRecipientEmail] = useState('');
+  const [prospectRecipientDraft, setProspectRecipientDraft] = useState('');
   const [prospectEmailSubject, setProspectEmailSubject] = useState('BON DE COMMANDE');
   const [prospectEmailMessage, setProspectEmailMessage] = useState(DEFAULT_PROSPECT_EMAIL_MESSAGE);
   const [isSendingProspectEmail, setIsSendingProspectEmail] = useState(false);
@@ -273,6 +274,7 @@ export function useCommandeDetails(idVente: number) {
 
   const openProspectEmailModal = useCallback((): void => {
     setProspectRecipientEmail(commande?.prospect?.email?.trim() || '');
+    setProspectRecipientDraft('');
     setProspectEmailSubject(commande?.campagne?.bon_commande_config?.prospect_order_email?.subject?.trim() || 'BON DE COMMANDE');
     setProspectEmailMessage(commande?.campagne?.bon_commande_config?.prospect_order_email?.message?.trim() || DEFAULT_PROSPECT_EMAIL_MESSAGE);
     setIsProspectEmailModalOpen(true);
@@ -282,18 +284,33 @@ export function useCommandeDetails(idVente: number) {
     if (!isSendingProspectEmail) setIsProspectEmailModalOpen(false);
   }, [isSendingProspectEmail]);
 
+  const selectProspectRecipientEmail = useCallback((email: string): void => {
+    setProspectRecipientEmail(email.trim());
+    setProspectRecipientDraft('');
+  }, []);
+
   const sendOrderToProspectEmail = useCallback(async (): Promise<void> => {
-    if (!commande?.prospect_email_sender?.configured || !prospectRecipientEmail.trim()
+    if (!commande?.prospect_email_sender?.configured || !prospectRecipientEmail.trim() || prospectRecipientDraft.length
       || !prospectEmailSubject.trim() || !prospectEmailMessage.trim() || isSendingProspectEmail) return;
 
+    const recipientEmail = prospectRecipientEmail.trim();
+    const reference = commande.reference_doc || String(600000 + commande.id_vente).padStart(7, '0');
     setIsSendingProspectEmail(true);
     try {
+      const confirmed = await confirm(
+        `Envoyer le bon de commande ${reference} à ${recipientEmail} ?`,
+        'Confirmer le destinataire',
+        'Envoyer',
+        'Annuler',
+      );
+      if (!confirmed) return;
       await sendOrderToProspectEmailService(commande.id_vente, {
-        recipient_email: prospectRecipientEmail.trim(),
+        recipient_email: recipientEmail,
+        confirmed_recipient_email: recipientEmail,
         subject: prospectEmailSubject.trim(),
         message: prospectEmailMessage.trim(),
       });
-      await showSuccess(`Bon de commande envoyé au prospect à ${prospectRecipientEmail.trim()}.`, 'Email envoyé');
+      await showSuccess(`Bon de commande envoyé au prospect à ${recipientEmail}.`, 'Email envoyé');
       setIsProspectEmailModalOpen(false);
       await loadCommande();
     } catch (requestError) {
@@ -301,7 +318,7 @@ export function useCommandeDetails(idVente: number) {
     } finally {
       setIsSendingProspectEmail(false);
     }
-  }, [commande, isSendingProspectEmail, loadCommande, prospectEmailMessage, prospectEmailSubject, prospectRecipientEmail]);
+  }, [commande, isSendingProspectEmail, loadCommande, prospectEmailMessage, prospectEmailSubject, prospectRecipientDraft, prospectRecipientEmail]);
 
   const prospectName = useMemo(() => getCommandeProspectName(commande), [commande]);
   const billingCompanyName = useMemo(() => getCommandeBillingCompanyName(commande), [commande]);
@@ -372,7 +389,9 @@ export function useCommandeDetails(idVente: number) {
     sendSignedOrderEmail,
     isProspectEmailModalOpen,
     prospectRecipientEmail,
-    setProspectRecipientEmail,
+    prospectRecipientDraft,
+    setProspectRecipientDraft,
+    selectProspectRecipientEmail,
     prospectEmailSubject,
     setProspectEmailSubject,
     prospectEmailMessage,
