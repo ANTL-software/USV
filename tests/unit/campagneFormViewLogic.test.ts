@@ -86,6 +86,12 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
       lead_booking: {
         open_weekdays: [1, 4],
       },
+      prospect_order_email: {
+        sender_name: 'ESAT Les Cigales',
+        sender_email: 'lescigales@antl.fr',
+        subject: 'BON DE COMMANDE',
+        message: 'Bonjour,\nVeuillez signer le bon de commande.',
+      },
     },
   }));
 
@@ -98,6 +104,10 @@ test('la campagne API est convertie en état de formulaire sans valeurs implicit
   assert.equal(form.invoice_country, 'Belgique');
   assert.equal(form.lead_unit_price_ht, '92.5');
   assert.deepEqual(form.lead_booking_open_weekdays, [1, 4]);
+  assert.equal(form.prospect_order_sender_name, 'ESAT Les Cigales');
+  assert.equal(form.prospect_order_sender_email, 'lescigales@antl.fr');
+  assert.equal(form.prospect_order_subject, 'BON DE COMMANDE');
+  assert.equal(form.prospect_order_message, 'Bonjour,\nVeuillez signer le bon de commande.');
 });
 
 test('les champs email effectuent un aller-retour complet entre API, formulaire et payload', () => {
@@ -119,6 +129,26 @@ test('les champs email effectuent un aller-retour complet entre API, formulaire 
   assert.equal(payload.email_expediteur_envoi_commande, 'expediteur@antl.fr');
   assert.equal(payload.objet_envoi_commande, 'Votre commande');
   assert.equal(payload.message_envoi_commande, 'Bonjour, voici votre commande.');
+});
+
+test('la configuration du bon de commande envoyé au prospect est intégralement portée par la campagne', () => {
+  const form = buildCampagneFormState(createCampagne({
+    bon_commande_config: {
+      prospect_order_email: {
+        sender_name: 'ESAT Les Cigales',
+        sender_email: 'lescigales@antl.fr',
+        subject: 'BON DE COMMANDE',
+        message: 'Bonjour, merci de signer.',
+      },
+    },
+  }));
+
+  assert.deepEqual(buildCampagnePayload(form, 7).bon_commande_config?.prospect_order_email, {
+    sender_name: 'ESAT Les Cigales',
+    sender_email: 'lescigales@antl.fr',
+    subject: 'BON DE COMMANDE',
+    message: 'Bonjour, merci de signer.',
+  });
 });
 
 test('la validation exige le nom et la date de début', () => {
@@ -191,6 +221,7 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
       invoice_recipient: null,
       lead_billing: { unit_price_ht: 75 },
       lead_booking: { open_weekdays: [1, 2, 3, 4, 5, 6, 7] },
+      prospect_order_email: null,
     },
   });
 

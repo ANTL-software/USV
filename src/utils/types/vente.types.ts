@@ -36,6 +36,14 @@ export interface VenteCampagne {
   email_expediteur_envoi_commande?: string | null;
   objet_envoi_commande?: string | null;
   message_envoi_commande?: string | null;
+  bon_commande_config?: {
+    prospect_order_email?: {
+      sender_name?: string | null;
+      sender_email?: string | null;
+      subject?: string | null;
+      message?: string | null;
+    } | null;
+  } | null;
 }
 
 export interface Vente {

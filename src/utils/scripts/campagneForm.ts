@@ -28,6 +28,10 @@ export interface CampagneFormState {
   email_expediteur_envoi_commande: string;
   objet_envoi_commande: string;
   message_envoi_commande: string;
+  prospect_order_sender_name: string;
+  prospect_order_sender_email: string;
+  prospect_order_subject: string;
+  prospect_order_message: string;
   adresse: string;
   ville: string;
   telephone: string;
@@ -93,6 +97,10 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   email_expediteur_envoi_commande: '',
   objet_envoi_commande: '',
   message_envoi_commande: '',
+  prospect_order_sender_name: '',
+  prospect_order_sender_email: '',
+  prospect_order_subject: 'BON DE COMMANDE',
+  prospect_order_message: '',
   adresse: '',
   ville: '',
   telephone: '',
@@ -150,6 +158,7 @@ export function buildInvoiceRecipientForm(
 
 export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
   const leadBilling = campagne.bon_commande_config?.lead_billing;
+  const prospectOrderEmail = campagne.bon_commande_config?.prospect_order_email;
   return {
     nom_campagne: campagne.nom_campagne,
     type_campagne: normalizeCampaignVariant(campagne.type_campagne),
@@ -169,6 +178,10 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     email_expediteur_envoi_commande: campagne.email_expediteur_envoi_commande || '',
     objet_envoi_commande: campagne.objet_envoi_commande || '',
     message_envoi_commande: campagne.message_envoi_commande || '',
+    prospect_order_sender_name: prospectOrderEmail?.sender_name || '',
+    prospect_order_sender_email: prospectOrderEmail?.sender_email || '',
+    prospect_order_subject: prospectOrderEmail?.subject || 'BON DE COMMANDE',
+    prospect_order_message: prospectOrderEmail?.message || '',
     adresse: campagne.adresse || '',
     ville: campagne.ville || '',
     telephone: campagne.telephone || '',
@@ -218,6 +231,21 @@ export function buildInvoiceRecipientPayload(
     (value) => typeof value === 'string' && value.trim().length > 0,
   );
   return hasValue ? payload : null;
+}
+
+function buildProspectOrderEmailPayload(
+  form: CampagneFormState,
+): NonNullable<Campagne['bon_commande_config']>['prospect_order_email'] {
+  const payload = {
+    sender_name: form.prospect_order_sender_name.trim() || null,
+    sender_email: form.prospect_order_sender_email.trim() || null,
+    subject: form.prospect_order_subject.trim() || null,
+    message: form.prospect_order_message.trim() || null,
+  };
+  const hasCustomValue = Boolean(
+    payload.sender_name || payload.sender_email || payload.message || payload.subject !== 'BON DE COMMANDE',
+  );
+  return hasCustomValue ? payload : null;
 }
 
 const parsePositivePrice = (value: string): number | null => {
@@ -294,6 +322,7 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
       lead_booking: isLeadCampaign ? { open_weekdays: form.lead_booking_open_weekdays } : null,
+      prospect_order_email: buildProspectOrderEmailPayload(form),
     },
   };
 }

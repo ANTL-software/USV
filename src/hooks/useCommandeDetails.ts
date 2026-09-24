@@ -273,10 +273,10 @@ export function useCommandeDetails(idVente: number) {
 
   const openProspectEmailModal = useCallback((): void => {
     setProspectRecipientEmail(commande?.prospect?.email?.trim() || '');
-    setProspectEmailSubject('BON DE COMMANDE');
-    setProspectEmailMessage(DEFAULT_PROSPECT_EMAIL_MESSAGE);
+    setProspectEmailSubject(commande?.campagne?.bon_commande_config?.prospect_order_email?.subject?.trim() || 'BON DE COMMANDE');
+    setProspectEmailMessage(commande?.campagne?.bon_commande_config?.prospect_order_email?.message?.trim() || DEFAULT_PROSPECT_EMAIL_MESSAGE);
     setIsProspectEmailModalOpen(true);
-  }, [commande?.prospect?.email]);
+  }, [commande?.campagne?.bon_commande_config?.prospect_order_email?.message, commande?.campagne?.bon_commande_config?.prospect_order_email?.subject, commande?.prospect?.email]);
 
   const closeProspectEmailModal = useCallback((): void => {
     if (!isSendingProspectEmail) setIsProspectEmailModalOpen(false);

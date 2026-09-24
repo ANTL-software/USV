@@ -28,10 +28,18 @@ export interface LeadBookingConfig {
   open_weekdays: LeadBookingWeekday[];
 }
 
+export interface ProspectOrderEmailConfig {
+  sender_name?: string | null;
+  sender_email?: string | null;
+  subject?: string | null;
+  message?: string | null;
+}
+
 export interface BonCommandeConfig {
   invoice_recipient?: BonCommandeInvoiceRecipient | null;
   lead_billing?: LeadBillingConfig | null;
   lead_booking?: LeadBookingConfig | null;
+  prospect_order_email?: ProspectOrderEmailConfig | null;
   [key: string]: unknown;
 }
 

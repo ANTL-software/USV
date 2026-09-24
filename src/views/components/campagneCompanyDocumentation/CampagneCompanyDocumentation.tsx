@@ -21,6 +21,9 @@ export function CampagneCompanyDocumentation({ viewModel }: CampagneCompanyDocum
         <label>Nom expéditeur par défaut (bon signé)<input type="text" name="nom_expediteur_envoi_commande" value={form.nom_expediteur_envoi_commande} onChange={handleChange} placeholder="ex: Sonia HADID" /></label>
         <label>Email expéditeur par défaut (bon signé)<input type="email" name="email_expediteur_envoi_commande" value={form.email_expediteur_envoi_commande} onChange={handleChange} placeholder="expediteur@antl.fr" /></label>
         <label>Objet par défaut (bon signé)<input type="text" name="objet_envoi_commande" value={form.objet_envoi_commande} onChange={handleChange} placeholder="ex: Bon de commande signé" /></label>
+        <label>Nom expéditeur (bon au prospect)<input type="text" name="prospect_order_sender_name" value={form.prospect_order_sender_name} onChange={handleChange} placeholder="ex: ESAT Les Cigales" /></label>
+        <label>Email expéditeur (bon au prospect)<input type="email" name="prospect_order_sender_email" value={form.prospect_order_sender_email} onChange={handleChange} placeholder="expediteur@antl.fr" /></label>
+        <label>Objet par défaut (bon au prospect)<input type="text" name="prospect_order_subject" value={form.prospect_order_subject} onChange={handleChange} placeholder="BON DE COMMANDE" /></label>
         <label>Code postal maison mère<input type="text" name="code_postal_maison_mere" value={form.code_postal_maison_mere} onChange={handleChange} placeholder="ex: 75001" maxLength={10} /></label>
         <label className="campagneForm__label-full">Adresse complète<textarea name="adresse" value={form.adresse} onChange={handleChange} rows={2} placeholder="123 Rue de la République, 75001 Paris..." /></label>
         <label className="campagneForm__label">Ville<input type="text" name="ville" value={form.ville} onChange={handleChange} placeholder="Paris" /></label>
@@ -28,6 +31,7 @@ export function CampagneCompanyDocumentation({ viewModel }: CampagneCompanyDocum
         <label className="campagneForm__label">Pays<input type="text" name="pays" value={form.pays} onChange={handleChange} placeholder="France" /></label>
       </div>
       <label className="campagneForm__label-full">Message par défaut envoi commande signé<textarea name="message_envoi_commande" value={form.message_envoi_commande} onChange={handleChange} rows={4} placeholder="Message accompagnant le bon signé envoyé au partenaire..." /></label>
+      <label className="campagneForm__label-full">Message par défaut bon de commande au prospect<textarea name="prospect_order_message" value={form.prospect_order_message} onChange={handleChange} rows={4} placeholder="Message accompagnant le bon de commande envoyé au prospect..." /></label>
       <label className="campagneForm__label-full">Texte footer (personnalisé)<textarea name="footer_text" value={form.footer_text} onChange={handleChange} rows={2} placeholder="Texte personnalisé qui apparaîtra en bas des bons de commande..." /></label>
     </fieldset>
   );
