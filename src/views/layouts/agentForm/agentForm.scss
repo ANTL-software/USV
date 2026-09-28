@@ -263,3 +263,43 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+#agentForm .agentForm__progpa-kpis {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin: 1rem 0;
+}
+
+#agentForm .agentForm__progpa-kpi-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.9rem 1.1rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+}
+
+#agentForm .agentForm__progpa-kpi-card span {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: vars.$fontColorSecondary;
+}
+
+#agentForm .agentForm__progpa-kpi-card strong {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: vars.$fontColorPrimary;
+  margin: 0.15rem 0;
+}
+
+#agentForm .agentForm__progpa-kpi-card small {
+  font-size: 0.78rem;
+  color: #64748b;
+}
+
+@media (max-width: 600px) {
+  #agentForm .agentForm__progpa-kpis {
+    grid-template-columns: 1fr;
+  }
+}

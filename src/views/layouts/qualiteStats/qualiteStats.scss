@@ -206,12 +206,12 @@
   font-size: 0.85rem;
 }
 
-#qualiteStats .qualiteStats__steps-card,
+.qualiteStats__steps-card,
 #qualiteStats .qualiteStats__panel {
   padding: 1.25rem;
 }
 
-#qualiteStats .qualiteStats__section-heading,
+.qualiteStats__section-heading,
 #qualiteStats .qualiteStats__panel-header {
   display: flex;
   align-items: flex-start;
@@ -219,20 +219,20 @@
   gap: 1rem;
 }
 
-#qualiteStats .qualiteStats__section-heading h2,
-#qualiteStats .qualiteStats__section-heading p,
+.qualiteStats__section-heading h2,
+.qualiteStats__section-heading p,
 #qualiteStats .qualiteStats__panel-header h2,
 #qualiteStats .qualiteStats__panel-header p {
   margin: 0;
 }
 
-#qualiteStats .qualiteStats__section-heading h2,
+.qualiteStats__section-heading h2,
 #qualiteStats .qualiteStats__panel-header h2 {
   color: vars.$fontColorPrimary;
   font-size: 1.2rem;
 }
 
-#qualiteStats .qualiteStats__section-heading p,
+.qualiteStats__section-heading p,
 #qualiteStats .qualiteStats__panel-header p {
   margin-top: 0.25rem;
   color: vars.$fontColorSecondary;
@@ -240,7 +240,7 @@
   line-height: 1.45;
 }
 
-#qualiteStats .qualiteStats__section-heading > span {
+.qualiteStats__section-heading > span {
   flex-shrink: 0;
   padding: 0.45rem 0.7rem;
   border-radius: 999px;
@@ -250,14 +250,14 @@
   font-weight: 800;
 }
 
-#qualiteStats .qualiteStats__steps-grid {
+.qualiteStats__steps-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.75rem;
   margin-top: 1.1rem;
 }
 
-#qualiteStats .qualiteStats__step {
+.qualiteStats__step {
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -269,12 +269,12 @@
   background: #fbfcfe;
 }
 
-#qualiteStats .qualiteStats__step--followup {
+.qualiteStats__step--followup {
   background: linear-gradient(110deg, #fdf4ff, #faf5ff);
   border-color: #f0abfc;
 }
 
-#qualiteStats .qualiteStats__step-index {
+.qualiteStats__step-index {
   display: grid;
   width: 2rem;
   height: 2rem;
@@ -286,7 +286,7 @@
   font-weight: 850;
 }
 
-#qualiteStats .qualiteStats__step > div {
+.qualiteStats__step > div {
   display: grid;
   min-width: 0;
   grid-template-columns: auto 1fr;
@@ -294,12 +294,12 @@
   gap: 0.1rem 0.55rem;
 }
 
-#qualiteStats .qualiteStats__step strong {
+.qualiteStats__step strong {
   color: #0f172a;
   font-size: 1.35rem;
 }
 
-#qualiteStats .qualiteStats__step span:not(.qualiteStats__step-index) {
+.qualiteStats__step span:not(.qualiteStats__step-index) {
   overflow: hidden;
   color: #334155;
   font-size: 0.88rem;
@@ -308,7 +308,7 @@
   white-space: nowrap;
 }
 
-#qualiteStats .qualiteStats__step small {
+.qualiteStats__step small {
   grid-column: 1 / -1;
   color: #64748b;
 }
@@ -436,7 +436,7 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  #qualiteStats .qualiteStats__steps-grid {
+  .qualiteStats__steps-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
@@ -450,7 +450,7 @@
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  #qualiteStats .qualiteStats__steps-grid {
+  .qualiteStats__steps-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 

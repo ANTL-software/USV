@@ -1,7 +1,8 @@
-import type { ReactElement } from 'react';
+import type { CSSProperties, ReactElement } from 'react';
 import { IoArrowBack, IoSave } from 'react-icons/io5';
 import Select from 'react-select';
 import type { AgentFormViewModel } from '../../../hooks/index.ts';
+import { QUALITE_FOLLOWUP_COLOR, formatQualitePercent, getQualiteStepColor } from '../../../utils/scripts/index.ts';
 import { AgentPrimeGauge, BackToTop, Button, ColorPicker, Header, PasswordStrengthIndicator, SubNav } from '../index.ts';
 
 interface AgentFormContentProps { viewModel: AgentFormViewModel; }
@@ -129,6 +130,79 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 </div>
               )}
             </fieldset>
+
+            {isEdit && isCommercial && (
+              <fieldset className="agentForm__fieldset">
+                <legend>Statistiques ProgPA & Fiches traitées (mois en cours)</legend>
+                <p className="agentForm__fieldset-hint">
+                  Activité et progression du commercial sur le mois en cours, toutes campagnes confondues.
+                </p>
+                {isPrimeStatsLoading && (
+                  <div className="agentForm__prime-state">Chargement des statistiques...</div>
+                )}
+                {!isPrimeStatsLoading && primeStatsError && (
+                  <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
+                )}
+                {!isPrimeStatsLoading && !primeStatsError && primeStats?.progpa_stats && (
+                  <>
+                    <div className="agentForm__progpa-kpis">
+                      <article className="agentForm__progpa-kpi-card">
+                        <span>Fiches traitées</span>
+                        <strong>{primeStats.progpa_stats.synthese.prospects_uniques}</strong>
+                        <small>Prospects uniques contactés (toutes campagnes)</small>
+                      </article>
+                      <article className="agentForm__progpa-kpi-card">
+                        <span>Appels clôturés</span>
+                        <strong>{primeStats.progpa_stats.synthese.total_appels}</strong>
+                        <small>Appels de prospection & suivi</small>
+                      </article>
+                    </div>
+
+                    <section className="qualiteStats__steps-card">
+                      <div className="qualiteStats__section-heading">
+                        <div>
+                          <h2>Toutes les étapes</h2>
+                          <p>Le nombre correspond au niveau exact enregistré au closing.</p>
+                        </div>
+                        <span>Toutes les campagnes</span>
+                      </div>
+                      <div className="qualiteStats__steps-grid">
+                        {primeStats.progpa_stats.etapes.map((step) => (
+                          <article
+                            key={step.progpa}
+                            className="qualiteStats__step"
+                            style={{ '--step-color': getQualiteStepColor(step.progpa) } as CSSProperties}
+                          >
+                            <span className="qualiteStats__step-index">{step.progpa}</span>
+                            <div>
+                              <strong>{step.nombre}</strong>
+                              <span>{step.label}</span>
+                              <small>{formatQualitePercent(step.pourcentage)}</small>
+                            </div>
+                          </article>
+                        ))}
+                        <article
+                          className="qualiteStats__step qualiteStats__step--followup"
+                          style={{ '--step-color': QUALITE_FOLLOWUP_COLOR } as CSSProperties}
+                        >
+                          <span className="qualiteStats__step-index">5+</span>
+                          <div>
+                            <strong>{primeStats.progpa_stats.suivi_en_cours.nombre}</strong>
+                            <span>{primeStats.progpa_stats.suivi_en_cours.label}</span>
+                            <small>{formatQualitePercent(primeStats.progpa_stats.suivi_en_cours.pourcentage)}</small>
+                          </div>
+                        </article>
+                      </div>
+                    </section>
+                  </>
+                )}
+                {!isPrimeStatsLoading && !primeStatsError && !primeStats?.progpa_stats && (
+                  <div className="agentForm__prime-state">
+                    Aucune donnée de statistiques disponible pour le mois en cours.
+                  </div>
+                )}
+              </fieldset>
+            )}
 
             {isEdit && isCommercial && (
               <fieldset className="agentForm__fieldset">

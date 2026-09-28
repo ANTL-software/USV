@@ -1,3 +1,5 @@
+import type { QualiteProgpaStatsResponse } from './qualite.types.ts';
+
 // Aligné avec les types du repo script (source de vérité : Olympe API)
 
 export type TypePoste = 'direction' | 'commercial' | 'support' | 'rh' | 'technique' | 'adv' | 'autre';
@@ -78,6 +80,7 @@ export interface EmployeStats {
   ventes_jour_montant: number;
   prime: PrimeStats | null;
   primes_par_campagne?: EmployeCampaignPrimeStats[];
+  progpa_stats?: QualiteProgpaStatsResponse | null;
 }
 
 export interface EmployeCampaignPrimeStats {
