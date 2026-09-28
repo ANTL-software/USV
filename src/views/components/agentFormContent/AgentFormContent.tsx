@@ -9,7 +9,7 @@ interface AgentFormContentProps { viewModel: AgentFormViewModel; }
 export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactElement {
   const {
     form, setForm, existing,
-    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats,
+    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats, primeStatsByCampaign,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit, navigateBack,
@@ -134,7 +134,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
               <fieldset className="agentForm__fieldset">
                 <legend>Suivi de la prime</legend>
                 <p className="agentForm__fieldset-hint">
-                  Vue affichée au commercial sur le Dashboard du Script pour sa campagne active.
+                  Production mensuelle et prime par campagne du commercial.
                 </p>
                 {isPrimeStatsLoading && (
                   <div className="agentForm__prime-state">Chargement de la jauge...</div>
@@ -142,10 +142,23 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 {!isPrimeStatsLoading && primeStatsError && (
                   <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && primeStats?.prime && (
-                  <AgentPrimeGauge stats={primeStats} />
+                {!isPrimeStatsLoading && !primeStatsError && primeStatsByCampaign.length > 0 && (
+                  <div className="agentForm__prime-campaigns">
+                    {primeStatsByCampaign.map(({ id_campagne, nom_campagne, stats }) => (
+                      <section className="agentForm__prime-campaign" key={id_campagne}>
+                        <h2>{nom_campagne}</h2>
+                        {stats.prime ? (
+                          <AgentPrimeGauge stats={stats} />
+                        ) : (
+                          <div className="agentForm__prime-state">
+                            Sélectionnez un palier de prime pour afficher la jauge.
+                          </div>
+                        )}
+                      </section>
+                    ))}
+                  </div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && !primeStats?.prime && (
+                {!isPrimeStatsLoading && !primeStatsError && primeStatsByCampaign.length === 0 && !primeStats?.prime && (
                   <div className="agentForm__prime-state">
                     {activePrimeAssignment
                       ? 'Sélectionnez un palier de prime pour afficher la jauge.'

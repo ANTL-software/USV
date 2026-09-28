@@ -48,7 +48,7 @@ export function useAgentForm() {
   const [existing, setExisting]               = useState<Employe | null>(null);
   const [postes, setPostes]                   = useState<Poste[]>([]);
   const [niveauxPrime, setNiveauxPrime]       = useState<NiveauPrime[]>([]);
-  const [primeStats, setPrimeStats]             = useState<EmployeStats | null>(null);
+  const [primeStats, setPrimeStats]           = useState<EmployeStats | null>(null);
   const [isLoading, setIsLoading]             = useState(false);
   const [isFetching, setIsFetching]           = useState(isEdit);
   const [isPrimeStatsLoading, setIsPrimeStatsLoading] = useState(isEdit);
@@ -175,10 +175,11 @@ export function useAgentForm() {
   const activePrimeAssignment = existing?.campagnesAssignees?.[0] ?? null;
   const isCommercial = postes.find((poste) => String(poste.id_poste) === form.id_poste)?.type_poste === 'commercial';
   const primeObjectiveUnit = activePrimeAssignment?.campagne?.type_campagne === 'lead_b2b' ? 'leads' : '€';
+  const primeStatsByCampaign = primeStats?.primes_par_campagne ?? [];
 
   return {
     form, setForm, existing, postes, niveauxPrime,
-    activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats,
+    activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats, primeStatsByCampaign,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit,

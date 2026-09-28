@@ -77,6 +77,14 @@ export interface EmployeStats {
   ventes: number;
   ventes_jour_montant: number;
   prime: PrimeStats | null;
+  primes_par_campagne?: EmployeCampaignPrimeStats[];
+}
+
+export interface EmployeCampaignPrimeStats {
+  id_campagne: number;
+  nom_campagne: string;
+  type_campagne: 'vente' | 'lead_b2b' | string;
+  stats: EmployeStats;
 }
 
 export interface EmployeCampagneAssignment {

@@ -158,6 +158,29 @@
   color: vars.$errorColor;
   background: rgba(vars.$errorColor, 0.05);
 }
+
+#agentForm .agentForm__prime-campaigns {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+#agentForm .agentForm__prime-campaign {
+  padding-top: 1.25rem;
+  border-top: 1px solid vars.$borderColor;
+}
+
+#agentForm .agentForm__prime-campaign:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+#agentForm .agentForm__prime-campaign h2 {
+  margin: 0 0 0.75rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: vars.$fontColorPrimary;
+}
 #agentForm .agentForm__field .reactSelect__control {
   border-color: vars.$borderColor;
   border-radius: 8px;
