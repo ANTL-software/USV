@@ -266,7 +266,7 @@
 
 #agentForm .agentForm__progpa-kpis {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.85rem;
   margin: 1rem 0;
 }
@@ -298,8 +298,105 @@
   color: #64748b;
 }
 
+#agentForm .agentForm__progpa-steps-card {
+  padding: 1.1rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+
+#agentForm .agentForm__progpa-section-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+#agentForm .agentForm__progpa-section-heading h2,
+#agentForm .agentForm__progpa-section-heading p {
+  margin: 0;
+}
+
+#agentForm .agentForm__progpa-section-heading h2 {
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+}
+
+#agentForm .agentForm__progpa-section-heading p {
+  margin-top: 0.25rem;
+  color: vars.$fontColorSecondary;
+  font-size: 0.85rem;
+}
+
+#agentForm .agentForm__progpa-section-heading > span {
+  flex-shrink: 0;
+  padding: 0.35rem 0.6rem;
+  border-radius: 999px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+#agentForm .agentForm__progpa-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+#agentForm .agentForm__progpa-step {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid #e8edf4;
+  border-left: 4px solid var(--step-color);
+  border-radius: 10px;
+  background: #fbfcfe;
+}
+
+#agentForm .agentForm__progpa-step--followup {
+  background: linear-gradient(110deg, #fdf4ff, #faf5ff);
+  border-color: #f0abfc;
+}
+
+#agentForm .agentForm__progpa-step-index {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: 0 0 2rem;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--step-color);
+  color: #fff;
+  font-weight: 800;
+}
+
+#agentForm .agentForm__progpa-step > div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+#agentForm .agentForm__progpa-step strong {
+  color: vars.$fontColorPrimary;
+  font-size: 1rem;
+}
+
+#agentForm .agentForm__progpa-step span:not(.agentForm__progpa-step-index),
+#agentForm .agentForm__progpa-step small {
+  color: vars.$fontColorSecondary;
+  font-size: 0.78rem;
+}
+
 @media (max-width: 600px) {
   #agentForm .agentForm__progpa-kpis {
+    grid-template-columns: 1fr;
+  }
+
+  #agentForm .agentForm__progpa-steps-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -24,7 +24,7 @@ export const getEmployeStatsService = async (id: number): Promise<EmployeStats> 
   if (response.data.success && response.data.data) {
     return response.data.data;
   }
-  throw new Error(response.data.message || 'Impossible de récupérer la jauge de prime');
+  throw new Error(response.data.message || 'Impossible de récupérer les statistiques de l’employé');
 };
 
 export const updateEmployeService = async (

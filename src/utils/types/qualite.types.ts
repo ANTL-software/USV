@@ -47,15 +47,15 @@ export interface ProgpaParCommercialJour extends ProgpaParCommercial {
 
 export interface QualiteProgpaStatsResponse {
   filtres: {
-    id_campagne: number;
+    id_campagne: number | null;
     id_employe: number | null;
     date_debut: string;
     date_fin: string;
   };
   campagne: {
-    id_campagne: number;
+    id_campagne: number | null;
     nom_campagne: string;
-    type_campagne: 'vente' | 'lead_b2b';
+    type_campagne: 'vente' | 'lead_b2b' | 'toutes';
   };
   synthese: ProgpaSynthese;
   etapes: ProgpaEtape[];

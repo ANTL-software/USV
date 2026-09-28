@@ -2,7 +2,7 @@ import type { CSSProperties, ReactElement } from 'react';
 import { IoArrowBack, IoSave } from 'react-icons/io5';
 import Select from 'react-select';
 import type { AgentFormViewModel } from '../../../hooks/index.ts';
-import { QUALITE_FOLLOWUP_COLOR, formatQualitePercent, getQualiteStepColor } from '../../../utils/scripts/index.ts';
+import { QUALITE_FOLLOWUP_COLOR, formatQualitePercent, formatQualiteProgpa, getQualiteStepColor } from '../../../utils/scripts/index.ts';
 import { AgentPrimeGauge, BackToTop, Button, ColorPicker, Header, PasswordStrengthIndicator, SubNav } from '../index.ts';
 
 interface AgentFormContentProps { viewModel: AgentFormViewModel; }
@@ -133,7 +133,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
 
             {isEdit && isCommercial && (
               <fieldset className="agentForm__fieldset">
-                <legend>Statistiques ProgPA & Fiches traitées (mois en cours)</legend>
+                <legend>Volume d’appels & ProgPA (mois en cours)</legend>
                 <p className="agentForm__fieldset-hint">
                   Activité et progression du commercial sur le mois en cours, toutes campagnes confondues.
                 </p>
@@ -147,33 +147,38 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                   <>
                     <div className="agentForm__progpa-kpis">
                       <article className="agentForm__progpa-kpi-card">
-                        <span>Fiches traitées</span>
-                        <strong>{primeStats.progpa_stats.synthese.prospects_uniques}</strong>
-                        <small>Prospects uniques contactés (toutes campagnes)</small>
+                        <span>Volume d’appels</span>
+                        <strong>{primeStats.progpa_stats.synthese.total_appels}</strong>
+                        <small>Appels finalisés : prospection et suivi</small>
                       </article>
                       <article className="agentForm__progpa-kpi-card">
-                        <span>Appels clôturés</span>
-                        <strong>{primeStats.progpa_stats.synthese.total_appels}</strong>
-                        <small>Appels de prospection & suivi</small>
+                        <span>Fiches traitées</span>
+                        <strong>{primeStats.progpa_stats.synthese.prospects_uniques}</strong>
+                        <small>Prospects uniques, toutes campagnes</small>
+                      </article>
+                      <article className="agentForm__progpa-kpi-card">
+                        <span>ProgPA moyen</span>
+                        <strong>{formatQualiteProgpa(primeStats.progpa_stats.synthese.moyenne_progpa)}</strong>
+                        <small>Prospection uniquement, hors appels de suivi</small>
                       </article>
                     </div>
 
-                    <section className="qualiteStats__steps-card">
-                      <div className="qualiteStats__section-heading">
+                    <section className="agentForm__progpa-steps-card">
+                      <div className="agentForm__progpa-section-heading">
                         <div>
                           <h2>Toutes les étapes</h2>
                           <p>Le nombre correspond au niveau exact enregistré au closing.</p>
                         </div>
                         <span>Toutes les campagnes</span>
                       </div>
-                      <div className="qualiteStats__steps-grid">
+                      <div className="agentForm__progpa-steps-grid">
                         {primeStats.progpa_stats.etapes.map((step) => (
                           <article
                             key={step.progpa}
-                            className="qualiteStats__step"
+                            className="agentForm__progpa-step"
                             style={{ '--step-color': getQualiteStepColor(step.progpa) } as CSSProperties}
                           >
-                            <span className="qualiteStats__step-index">{step.progpa}</span>
+                            <span className="agentForm__progpa-step-index">{step.progpa}</span>
                             <div>
                               <strong>{step.nombre}</strong>
                               <span>{step.label}</span>
@@ -182,10 +187,10 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                           </article>
                         ))}
                         <article
-                          className="qualiteStats__step qualiteStats__step--followup"
+                          className="agentForm__progpa-step agentForm__progpa-step--followup"
                           style={{ '--step-color': QUALITE_FOLLOWUP_COLOR } as CSSProperties}
                         >
-                          <span className="qualiteStats__step-index">5+</span>
+                          <span className="agentForm__progpa-step-index">5+</span>
                           <div>
                             <strong>{primeStats.progpa_stats.suivi_en_cours.nombre}</strong>
                             <span>{primeStats.progpa_stats.suivi_en_cours.label}</span>

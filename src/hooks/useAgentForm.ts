@@ -92,7 +92,7 @@ export function useAgentForm() {
       try {
         setPrimeStats(await getEmployeStatsService(Number(id)));
       } catch (err) {
-        setPrimeStatsError(err instanceof Error ? err.message : 'Erreur de chargement de la jauge');
+        setPrimeStatsError(err instanceof Error ? err.message : 'Erreur de chargement des statistiques');
       } finally {
         setIsPrimeStatsLoading(false);
       }
