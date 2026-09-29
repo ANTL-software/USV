@@ -39,6 +39,8 @@ const INITIAL_FORM: AgentFormState = {
   couleur:            null,
 };
 
+const ALL_CAMPAIGNS_VALUE = 'all';
+
 export function useAgentForm() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -49,6 +51,7 @@ export function useAgentForm() {
   const [postes, setPostes]                   = useState<Poste[]>([]);
   const [niveauxPrime, setNiveauxPrime]       = useState<NiveauPrime[]>([]);
   const [primeStats, setPrimeStats]           = useState<EmployeStats | null>(null);
+  const [selectedStatsCampaignId, setSelectedStatsCampaignId] = useState(ALL_CAMPAIGNS_VALUE);
   const [isLoading, setIsLoading]             = useState(false);
   const [isFetching, setIsFetching]           = useState(isEdit);
   const [isPrimeStatsLoading, setIsPrimeStatsLoading] = useState(isEdit);
@@ -90,6 +93,7 @@ export function useAgentForm() {
       }
 
       try {
+        setSelectedStatsCampaignId(ALL_CAMPAIGNS_VALUE);
         setPrimeStats(await getEmployeStatsService(Number(id)));
       } catch (err) {
         setPrimeStatsError(err instanceof Error ? err.message : 'Erreur de chargement des statistiques');
@@ -176,10 +180,29 @@ export function useAgentForm() {
   const isCommercial = postes.find((poste) => String(poste.id_poste) === form.id_poste)?.type_poste === 'commercial';
   const primeObjectiveUnit = activePrimeAssignment?.campagne?.type_campagne === 'lead_b2b' ? 'leads' : '€';
   const primeStatsByCampaign = primeStats?.primes_par_campagne ?? [];
+  const progpaStatsByCampaign = primeStats?.progpa_stats_par_campagne ?? [];
+  const statsCampaignOptions = [
+    { value: ALL_CAMPAIGNS_VALUE, label: 'Toutes les campagnes' },
+    ...progpaStatsByCampaign.map((campaign) => ({
+      value: String(campaign.id_campagne),
+      label: campaign.nom_campagne,
+    })),
+  ];
+  const selectedProgpaStats = selectedStatsCampaignId === ALL_CAMPAIGNS_VALUE
+    ? primeStats?.progpa_stats ?? null
+    : progpaStatsByCampaign.find((campaign) => String(campaign.id_campagne) === selectedStatsCampaignId)?.stats ?? null;
+  const selectedCampaignLabel = statsCampaignOptions.find(
+    (campaign) => campaign.value === selectedStatsCampaignId,
+  )?.label ?? 'Toutes les campagnes';
+  const visiblePrimeStatsByCampaign = selectedStatsCampaignId === ALL_CAMPAIGNS_VALUE
+    ? primeStatsByCampaign
+    : primeStatsByCampaign.filter((campaign) => String(campaign.id_campagne) === selectedStatsCampaignId);
 
   return {
     form, setForm, existing, postes, niveauxPrime,
     activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats, primeStatsByCampaign,
+    selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions, selectedProgpaStats,
+    selectedCampaignLabel, visiblePrimeStatsByCampaign,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit,

@@ -37,6 +37,7 @@ export type {
   SeuilPrimeStats,
   PrimeStats,
   EmployeStats,
+  EmployeCampaignProgpaStats,
   EmployeCampaignPrimeStats,
   EmployeCampagneAssignment,
   Employe,

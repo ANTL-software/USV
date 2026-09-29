@@ -10,7 +10,9 @@ interface AgentFormContentProps { viewModel: AgentFormViewModel; }
 export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactElement {
   const {
     form, setForm, existing,
-    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats, primeStatsByCampaign,
+    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit,
+    selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions, selectedProgpaStats,
+    selectedCampaignLabel, visiblePrimeStatsByCampaign,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit, navigateBack,
@@ -132,6 +134,21 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
             </fieldset>
 
             {isEdit && isCommercial && (
+              <div className="agentForm__stats-campaign-filter">
+                <label htmlFor="stats-campaign-filter">Campagne affichée</label>
+                <Select
+                  inputId="stats-campaign-filter"
+                  options={statsCampaignOptions}
+                  value={statsCampaignOptions.find((campaign) => campaign.value === selectedStatsCampaignId) ?? null}
+                  onChange={(option) => setSelectedStatsCampaignId(option?.value ?? 'all')}
+                  isDisabled={isPrimeStatsLoading || !!primeStatsError}
+                  isClearable={false}
+                  classNamePrefix="reactSelect"
+                />
+              </div>
+            )}
+
+            {isEdit && isCommercial && (
               <fieldset className="agentForm__fieldset">
                 <legend>Volume d’appels & ProgPA (mois en cours)</legend>
                 <p className="agentForm__fieldset-hint">
@@ -143,22 +160,22 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 {!isPrimeStatsLoading && primeStatsError && (
                   <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && primeStats?.progpa_stats && (
+                {!isPrimeStatsLoading && !primeStatsError && selectedProgpaStats && (
                   <>
                     <div className="agentForm__progpa-kpis">
                       <article className="agentForm__progpa-kpi-card">
                         <span>Volume d’appels</span>
-                        <strong>{primeStats.progpa_stats.synthese.total_appels}</strong>
+                        <strong>{selectedProgpaStats.synthese.total_appels}</strong>
                         <small>Appels finalisés : prospection et suivi</small>
                       </article>
                       <article className="agentForm__progpa-kpi-card">
                         <span>Fiches traitées</span>
-                        <strong>{primeStats.progpa_stats.synthese.prospects_uniques}</strong>
-                        <small>Prospects uniques, toutes campagnes</small>
+                        <strong>{selectedProgpaStats.synthese.prospects_uniques}</strong>
+                        <small>Prospects uniques sur la campagne affichée</small>
                       </article>
                       <article className="agentForm__progpa-kpi-card">
                         <span>ProgPA moyen</span>
-                        <strong>{formatQualiteProgpa(primeStats.progpa_stats.synthese.moyenne_progpa)}</strong>
+                        <strong>{formatQualiteProgpa(selectedProgpaStats.synthese.moyenne_progpa)}</strong>
                         <small>Prospection uniquement, hors appels de suivi</small>
                       </article>
                     </div>
@@ -169,10 +186,10 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                           <h2>Toutes les étapes</h2>
                           <p>Le nombre correspond au niveau exact enregistré au closing.</p>
                         </div>
-                        <span>Toutes les campagnes</span>
+                        <span>{selectedCampaignLabel}</span>
                       </div>
                       <div className="agentForm__progpa-steps-grid">
-                        {primeStats.progpa_stats.etapes.map((step) => (
+                        {selectedProgpaStats.etapes.map((step) => (
                           <article
                             key={step.progpa}
                             className="agentForm__progpa-step"
@@ -192,16 +209,16 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                         >
                           <span className="agentForm__progpa-step-index">5+</span>
                           <div>
-                            <strong>{primeStats.progpa_stats.suivi_en_cours.nombre}</strong>
-                            <span>{primeStats.progpa_stats.suivi_en_cours.label}</span>
-                            <small>{formatQualitePercent(primeStats.progpa_stats.suivi_en_cours.pourcentage)}</small>
+                            <strong>{selectedProgpaStats.suivi_en_cours.nombre}</strong>
+                            <span>{selectedProgpaStats.suivi_en_cours.label}</span>
+                            <small>{formatQualitePercent(selectedProgpaStats.suivi_en_cours.pourcentage)}</small>
                           </div>
                         </article>
                       </div>
                     </section>
                   </>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && !primeStats?.progpa_stats && (
+                {!isPrimeStatsLoading && !primeStatsError && !selectedProgpaStats && (
                   <div className="agentForm__prime-state">
                     Aucune donnée de statistiques disponible pour le mois en cours.
                   </div>
@@ -221,9 +238,9 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 {!isPrimeStatsLoading && primeStatsError && (
                   <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && primeStatsByCampaign.length > 0 && (
+                {!isPrimeStatsLoading && !primeStatsError && visiblePrimeStatsByCampaign.length > 0 && (
                   <div className="agentForm__prime-campaigns">
-                    {primeStatsByCampaign.map(({ id_campagne, nom_campagne, stats }) => (
+                    {visiblePrimeStatsByCampaign.map(({ id_campagne, nom_campagne, stats }) => (
                       <section className="agentForm__prime-campaign" key={id_campagne}>
                         <h2>{nom_campagne}</h2>
                         {stats.prime ? (
@@ -237,9 +254,11 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                     ))}
                   </div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && primeStatsByCampaign.length === 0 && !primeStats?.prime && (
+                {!isPrimeStatsLoading && !primeStatsError && visiblePrimeStatsByCampaign.length === 0 && (
                   <div className="agentForm__prime-state">
-                    {activePrimeAssignment
+                    {selectedStatsCampaignId !== 'all'
+                      ? 'Aucune prime n’est configurée pour cette campagne.'
+                      : activePrimeAssignment
                       ? 'Sélectionnez un palier de prime pour afficher la jauge.'
                       : 'Aucune campagne active : la jauge de prime n’est pas disponible.'}
                   </div>

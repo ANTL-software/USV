@@ -271,6 +271,19 @@
   margin: 1rem 0;
 }
 
+#agentForm .agentForm__stats-campaign-filter {
+  max-width: 28rem;
+  margin: 0 0 1rem;
+}
+
+#agentForm .agentForm__stats-campaign-filter label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: vars.$fontColorPrimary;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
 #agentForm .agentForm__progpa-kpi-card {
   display: flex;
   flex-direction: column;
