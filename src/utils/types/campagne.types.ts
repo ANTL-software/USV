@@ -22,6 +22,10 @@ export interface LeadBillingConfig {
   large_company_price_ht?: number | null;
 }
 
+export interface PrimeConfig {
+  lead_value_eur?: number | null;
+}
+
 export type LeadBookingWeekday = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
 export interface LeadBookingConfig {
@@ -38,6 +42,7 @@ export interface ProspectOrderEmailConfig {
 export interface BonCommandeConfig {
   invoice_recipient?: BonCommandeInvoiceRecipient | null;
   lead_billing?: LeadBillingConfig | null;
+  prime?: PrimeConfig | null;
   lead_booking?: LeadBookingConfig | null;
   prospect_order_email?: ProspectOrderEmailConfig | null;
   [key: string]: unknown;

@@ -51,6 +51,7 @@ export interface CampagneFormState {
   lead_unit_price_ht: string;
   lead_small_company_price_ht: string;
   lead_large_company_price_ht: string;
+  lead_prime_value_eur: string;
   lead_booking_open_weekdays: LeadBookingWeekday[];
 }
 
@@ -120,6 +121,7 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   lead_unit_price_ht: '75',
   lead_small_company_price_ht: '75',
   lead_large_company_price_ht: '150',
+  lead_prime_value_eur: '150',
   lead_booking_open_weekdays: DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
 };
 
@@ -158,6 +160,7 @@ export function buildInvoiceRecipientForm(
 
 export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
   const leadBilling = campagne.bon_commande_config?.lead_billing;
+  const prime = campagne.bon_commande_config?.prime;
   const prospectOrderEmail = campagne.bon_commande_config?.prospect_order_email;
   return {
     nom_campagne: campagne.nom_campagne,
@@ -197,6 +200,7 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     lead_unit_price_ht: formatPrice(leadBilling?.unit_price_ht, 75),
     lead_small_company_price_ht: formatPrice(leadBilling?.small_company_price_ht, 75),
     lead_large_company_price_ht: formatPrice(leadBilling?.large_company_price_ht, 150),
+    lead_prime_value_eur: formatPrice(prime?.lead_value_eur, 150),
     lead_booking_open_weekdays: campagne.bon_commande_config?.lead_booking?.open_weekdays?.length
       ? campagne.bon_commande_config.lead_booking.open_weekdays
       : DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
@@ -260,6 +264,7 @@ export function validateCampagneForm(form: CampagneFormState, campagneId: number
     return 'Le code postal du centre de prospection doit contenir 5 chiffres';
   }
   if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
+    if (!parsePositivePrice(form.lead_prime_value_eur)) return 'La valeur de prime par lead doit être supérieure à 0';
     if (form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
     if (campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID) {
       if (!parsePositivePrice(form.lead_small_company_price_ht)) return 'Le tarif des entreprises de 5 salariés ou moins doit être supérieur à 0';
@@ -321,6 +326,7 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
     bon_commande_config: {
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
+      prime: isLeadCampaign ? { lead_value_eur: parsePositivePrice(form.lead_prime_value_eur) } : null,
       lead_booking: isLeadCampaign ? { open_weekdays: form.lead_booking_open_weekdays } : null,
       prospect_order_email: buildProspectOrderEmailPayload(form),
     },

@@ -13,26 +13,24 @@ interface AgentPrimeGaugeProps {
   stats: EmployeStats;
 }
 
+const getSalaryLevelLabel = (niveau: number): string => (
+  niveau === 1 ? 'Junior' : niveau === 2 ? 'Senior' : 'Expert'
+);
+
 export function AgentPrimeGauge({ stats }: AgentPrimeGaugeProps): ReactElement | null {
   const { prime } = stats;
   if (!prime) return null;
 
   const percentage = Math.min(prime.pourcentage_atteint, 100);
   const thresholds = sortPrimeThresholds(prime.paliers);
-  const isSalesCampaign = prime.type_campagne === 'vente';
 
   return (
     <div className="agentPrimeGauge">
       <div className="agentPrimeGauge__header">
         <div className="agentPrimeGauge__headerLeft">
-          <span className="agentPrimeGauge__level">{prime.libelle}</span>
+          <span className="agentPrimeGauge__level">{getSalaryLevelLabel(prime.niveau)}</span>
           <span className="agentPrimeGauge__monthlyStats">
-            {formatPrimeProduction(prime, stats.ventes_mois_count)}
-            {isSalesCampaign && (
-              <span className="agentPrimeGauge__pendingStats" title="Ventes en attente de validation ce mois-ci">
-                {' '}({stats.ventes_mois_en_attente_count} en attente · {formatPrimeAmount(stats.ventes_mois_en_attente_montant)})
-              </span>
-            )}
+            {formatPrimeProduction(prime)}
           </span>
         </div>
         <div className="agentPrimeGauge__headerRight">
@@ -40,7 +38,7 @@ export function AgentPrimeGauge({ stats }: AgentPrimeGaugeProps): ReactElement |
             Prime débloquée : {formatPrimeAmount(prime.prime_debloquee)}
           </span>
           <span className="agentPrimeGauge__objective">
-            Objectif 100 % : {formatPrimeObjective(prime.objectif, prime.unite_objectif)}
+            Objectif 100 % : {formatPrimeObjective(prime.objectif)}
           </span>
         </div>
       </div>
@@ -68,7 +66,7 @@ export function AgentPrimeGauge({ stats }: AgentPrimeGaugeProps): ReactElement |
             >
               <span className="agentPrimeGauge__labelPercentage">{threshold.seuil_pourcentage}%</span>
               <span className="agentPrimeGauge__labelObjective">
-                {formatPrimeObjective(threshold.objectif_palier, prime.unite_objectif)}
+                {formatPrimeObjective(threshold.objectif_palier)}
               </span>
               <span className="agentPrimeGauge__labelBonus">{formatPrimeBonus(threshold, prime.salaire_fixe)}</span>
             </div>
@@ -77,9 +75,9 @@ export function AgentPrimeGauge({ stats }: AgentPrimeGaugeProps): ReactElement |
       </div>
 
       <div className="agentPrimeGauge__progressText">
-        <span>{formatPrimeObjective(prime.valeur_realisee, prime.unite_objectif)}</span>
+        <span>{formatPrimeObjective(prime.valeur_realisee)}</span>
         <span className="agentPrimeGauge__percentageValue">{prime.pourcentage_atteint.toFixed(1)}%</span>
-        <span>{formatPrimeObjective(prime.objectif, prime.unite_objectif)}</span>
+        <span>{formatPrimeObjective(prime.objectif)}</span>
       </div>
     </div>
   );

@@ -79,9 +79,7 @@ export function useAgentForm() {
           date_embauche:      data.date_embauche || '',
           id_poste:           data.id_poste ? String(data.id_poste) : '',
           id_niveau_prime:    data.id_niveau_prime ? String(data.id_niveau_prime) : '',
-          objectif_prime:     data.campagnesAssignees?.[0]?.objectif_prime
-            ? String(data.campagnesAssignees[0].objectif_prime)
-            : '',
+          objectif_prime:     data.objectif_prime ? String(data.objectif_prime) : '8000',
           password:           '',
           password_confirm:   '',
           couleur:            data.couleur || '',
@@ -176,10 +174,7 @@ export function useAgentForm() {
     }
   };
 
-  const activePrimeAssignment = existing?.campagnesAssignees?.[0] ?? null;
   const isCommercial = postes.find((poste) => String(poste.id_poste) === form.id_poste)?.type_poste === 'commercial';
-  const primeObjectiveUnit = activePrimeAssignment?.campagne?.type_campagne === 'lead_b2b' ? 'leads' : '€';
-  const primeStatsByCampaign = primeStats?.primes_par_campagne ?? [];
   const progpaStatsByCampaign = primeStats?.progpa_stats_par_campagne ?? [];
   const statsCampaignOptions = [
     { value: ALL_CAMPAIGNS_VALUE, label: 'Toutes les campagnes' },
@@ -194,15 +189,11 @@ export function useAgentForm() {
   const selectedCampaignLabel = statsCampaignOptions.find(
     (campaign) => campaign.value === selectedStatsCampaignId,
   )?.label ?? 'Toutes les campagnes';
-  const visiblePrimeStatsByCampaign = selectedStatsCampaignId === ALL_CAMPAIGNS_VALUE
-    ? primeStatsByCampaign
-    : primeStatsByCampaign.filter((campaign) => String(campaign.id_campagne) === selectedStatsCampaignId);
-
   return {
     form, setForm, existing, postes, niveauxPrime,
-    activePrimeAssignment, isCommercial, primeObjectiveUnit, primeStats, primeStatsByCampaign,
+    isCommercial, primeStats,
     selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions, selectedProgpaStats,
-    selectedCampaignLabel, visiblePrimeStatsByCampaign,
+    selectedCampaignLabel,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit,

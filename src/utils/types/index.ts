@@ -38,7 +38,6 @@ export type {
   PrimeStats,
   EmployeStats,
   EmployeCampaignProgpaStats,
-  EmployeCampaignPrimeStats,
   EmployeCampagneAssignment,
   Employe,
   EmployeFilter,

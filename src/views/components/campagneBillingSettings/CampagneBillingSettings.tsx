@@ -29,6 +29,9 @@ export function CampagneBillingSettings({ viewModel }: CampagneBillingSettingsPr
       </fieldset>
       {isLeadCampaign && <fieldset className="campagneForm__fieldset">
         <legend>Tarification des leads</legend>
+        <div className="campagneForm__row">
+          <label>Valeur de prime par lead créé (€)<input type="number" name="lead_prime_value_eur" value={form.lead_prime_value_eur} onChange={handleChange} min="0.01" step="0.01" required /><span className="campagneForm__hint">Valeur ajoutée à l’objectif global du commercial dès la création du lead. Elle n’est pas liée au tarif de facturation.</span></label>
+        </div>
         {usesEmployeeCountLeadPricing ? <div className="campagneForm__row">
           <label>Tarif HT — 5 salariés ou moins<input type="number" name="lead_small_company_price_ht" value={form.lead_small_company_price_ht} onChange={handleChange} min="0.01" step="0.01" required /></label>
           <label>Tarif HT — plus de 5 salariés<input type="number" name="lead_large_company_price_ht" value={form.lead_large_company_price_ht} onChange={handleChange} min="0.01" step="0.01" required /></label>

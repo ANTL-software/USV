@@ -7,12 +7,16 @@ import { AgentPrimeGauge, BackToTop, Button, ColorPicker, Header, PasswordStreng
 
 interface AgentFormContentProps { viewModel: AgentFormViewModel; }
 
+const formatSalaryLevel = (niveau: { numero: number } | undefined): string => (
+  niveau?.numero === 1 ? 'Junior' : niveau?.numero === 2 ? 'Senior' : niveau?.numero === 3 ? 'Expert' : ''
+);
+
 export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactElement {
   const {
     form, setForm, existing,
-    postes, niveauxPrime, activePrimeAssignment, isCommercial, primeObjectiveUnit,
+    postes, niveauxPrime, isCommercial, primeStats,
     selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions, selectedProgpaStats,
-    selectedCampaignLabel, visiblePrimeStatsByCampaign,
+    selectedCampaignLabel,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
     handleChange, handleSubmit, navigateBack,
@@ -98,14 +102,14 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 <div className="agentForm__row">
                   <div className="agentForm__prime-fields">
                     <div className="agentForm__field">
-                      <label htmlFor="id_niveau_prime">Palier de prime</label>
+                      <label htmlFor="id_niveau_prime">Niveau</label>
                       <Select
                         inputId="id_niveau_prime"
                         options={[
                           { value: '', label: 'Aucun' },
-                          ...niveauxPrime.map(niveau => ({ value: String(niveau.id_niveau_prime), label: niveau.libelle }))
+                          ...niveauxPrime.map((niveau) => ({ value: String(niveau.id_niveau_prime), label: formatSalaryLevel(niveau) }))
                         ]}
-                        value={form.id_niveau_prime ? { value: form.id_niveau_prime, label: niveauxPrime.find(niveau => String(niveau.id_niveau_prime) === form.id_niveau_prime)?.libelle ?? '' } : { value: '', label: 'Aucun' }}
+                        value={form.id_niveau_prime ? { value: form.id_niveau_prime, label: formatSalaryLevel(niveauxPrime.find((niveau) => String(niveau.id_niveau_prime) === form.id_niveau_prime)) } : { value: '', label: 'Aucun' }}
                         onChange={opt => setForm(prev => ({ ...prev, id_niveau_prime: opt ? opt.value : '' }))}
                         isDisabled={isLoading}
                         isClearable
@@ -115,7 +119,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                       />
                     </div>
                     <div className="agentForm__field">
-                      <label htmlFor="objectif_prime">Objectif 100 % ({primeObjectiveUnit})</label>
+                      <label htmlFor="objectif_prime">Objectif global 100 % (€)</label>
                       <input
                         id="objectif_prime"
                         name="objectif_prime"
@@ -124,8 +128,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                         step="1"
                         value={form.objectif_prime}
                         onChange={handleChange}
-                        disabled={isLoading || !activePrimeAssignment}
-                        placeholder={activePrimeAssignment ? undefined : 'Affectez d’abord une campagne'}
+                        disabled={isLoading}
                       />
                     </div>
                   </div>
@@ -230,7 +233,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
               <fieldset className="agentForm__fieldset">
                 <legend>Suivi de la prime</legend>
                 <p className="agentForm__fieldset-hint">
-                  Production mensuelle et prime par campagne du commercial.
+                  Production mensuelle toutes campagnes confondues et prime globale du commercial.
                 </p>
                 {isPrimeStatsLoading && (
                   <div className="agentForm__prime-state">Chargement de la jauge...</div>
@@ -238,29 +241,12 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                 {!isPrimeStatsLoading && primeStatsError && (
                   <div className="agentForm__prime-state agentForm__prime-state--error">{primeStatsError}</div>
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && visiblePrimeStatsByCampaign.length > 0 && (
-                  <div className="agentForm__prime-campaigns">
-                    {visiblePrimeStatsByCampaign.map(({ id_campagne, nom_campagne, stats }) => (
-                      <section className="agentForm__prime-campaign" key={id_campagne}>
-                        <h2>{nom_campagne}</h2>
-                        {stats.prime ? (
-                          <AgentPrimeGauge stats={stats} />
-                        ) : (
-                          <div className="agentForm__prime-state">
-                            Sélectionnez un palier de prime pour afficher la jauge.
-                          </div>
-                        )}
-                      </section>
-                    ))}
-                  </div>
+                {!isPrimeStatsLoading && !primeStatsError && primeStats?.prime && (
+                  <AgentPrimeGauge stats={primeStats} />
                 )}
-                {!isPrimeStatsLoading && !primeStatsError && visiblePrimeStatsByCampaign.length === 0 && (
+                {!isPrimeStatsLoading && !primeStatsError && !primeStats?.prime && (
                   <div className="agentForm__prime-state">
-                    {selectedStatsCampaignId !== 'all'
-                      ? 'Aucune prime n’est configurée pour cette campagne.'
-                      : activePrimeAssignment
-                      ? 'Sélectionnez un palier de prime pour afficher la jauge.'
-                      : 'Aucune campagne active : la jauge de prime n’est pas disponible.'}
+                    Sélectionnez un palier de salaire pour afficher la jauge.
                   </div>
                 )}
               </fieldset>

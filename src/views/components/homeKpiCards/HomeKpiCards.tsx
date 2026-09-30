@@ -84,7 +84,7 @@ export function HomeKpiCards({ kpisState, access, onNavigate }: HomeKpiCardsProp
     },
     {
       id: 'rdv',
-      label: 'RDV B2B effectués',
+      label: 'RDV VALIDES',
       value: isLoading ? '...' : (kpis?.rdvClientsEffectues?.total ?? 0).toLocaleString('fr-FR'),
       trend: kpis?.rdvClientsEffectues?.trend ?? [],
       color: '#a78bfa',

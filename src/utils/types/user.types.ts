@@ -47,14 +47,19 @@ export interface PrimeStats {
   niveau: 1 | 2 | 3;
   code_niveau: 'palier_1' | 'palier_2' | 'palier_3';
   libelle: string;
-  type_campagne: 'vente' | 'lead_b2b';
-  unite_objectif: 'euro' | 'lead';
+  unite_objectif: 'euro';
   salaire_fixe: number;
   objectif: number;
   valeur_realisee: number;
   pourcentage_atteint: number;
   prime_debloquee: number;
   remuneration_totale: number;
+  production: {
+    ventes_mois_count: number;
+    ventes_mois_montant: number;
+    leads_mois_count: number;
+    leads_mois_valeur: number;
+  };
   paliers: SeuilPrimeStats[];
 }
 
@@ -79,7 +84,6 @@ export interface EmployeStats {
   ventes: number;
   ventes_jour_montant: number;
   prime: PrimeStats | null;
-  primes_par_campagne?: EmployeCampaignPrimeStats[];
   progpa_stats?: QualiteProgpaStatsResponse | null;
   progpa_stats_par_campagne?: EmployeCampaignProgpaStats[];
 }
@@ -91,19 +95,11 @@ export interface EmployeCampaignProgpaStats {
   stats: QualiteProgpaStatsResponse;
 }
 
-export interface EmployeCampaignPrimeStats {
-  id_campagne: number;
-  nom_campagne: string;
-  type_campagne: 'vente' | 'lead_b2b' | string;
-  stats: EmployeStats;
-}
-
 export interface EmployeCampagneAssignment {
   id_affectation: number;
   id_campagne: number;
   date_debut_affectation: string | null;
   date_fin_affectation: string | null;
-  objectif_prime: number;
   campagne?: {
     id_campagne: number;
     nom_campagne: string;
@@ -122,6 +118,7 @@ export interface Employe {
   id_poste?: number;
   id_departement?: number;
   id_niveau_prime?: number | null;
+  objectif_prime?: number;
   actif: boolean;
   role?: 'confirme' | 'debutant' | null;
   couleur?: string | null;
