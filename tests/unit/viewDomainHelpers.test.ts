@@ -58,7 +58,7 @@ function createLead(overrides: Partial<LeadClient> = {}): LeadClient {
   };
 }
 
-test('les helpers lead conservent l’identité du PDF et les snapshots de coordonnées', () => {
+test('les helpers lead privilégient l’interlocuteur du rendez-vous et les snapshots de coordonnées', () => {
   const lead = createLead({
     interlocuteur_nom: 'Décideur figé',
     telephone_contact_snapshot: '0611111111',
@@ -66,12 +66,25 @@ test('les helpers lead conservent l’identité du PDF et les snapshots de coord
   });
 
   assert.equal(formatLeadProspectLabel(lead), 'Entreprise Test');
-  assert.equal(resolveLeadContactName(lead), 'Alice DUPONT');
-  assert.equal(getLeadInterlocuteur(lead), 'Alice DUPONT');
+  assert.equal(resolveLeadContactName(lead), 'Décideur figé');
+  assert.equal(getLeadInterlocuteur(lead), 'Décideur figé');
   assert.equal(resolveLeadContactPhone(lead), '0611111111');
   assert.equal(resolveLeadContactEmail(lead), 'decision@client.fr');
   assert.equal(formatLeadProspectAddress(lead), '1 Rue De Paris, 75001 Paris, France');
   assert.equal(getLeadQualificationButtonClass('non_honore'), 'qualif-btn--non-honore');
+});
+
+test('les helpers lead ne répètent pas la raison sociale comme interlocuteur', () => {
+  const lead = createLead({
+    prospect: {
+      id_prospect: 8,
+      nom: 'LA ROCHELLE SANTE',
+      raison_sociale: 'LA ROCHELLE SANTE',
+      telephone: '0102030405',
+    },
+  });
+
+  assert.equal(resolveLeadContactName(lead), '—');
 });
 
 test('la qualification du nombre de salariés est affichée uniquement pour MMA', () => {

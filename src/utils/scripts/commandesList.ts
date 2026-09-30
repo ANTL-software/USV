@@ -5,6 +5,7 @@ import type {
   StatutVente,
   Vente,
 } from '../types/index.ts';
+import { resolveLeadContactName } from './leadClientDetails.ts';
 
 export type CommandesPeriodPreset = 'current_month' | 'previous_month' | 'custom';
 export type CommandesViewMode = 'actives' | 'corbeille';
@@ -271,12 +272,7 @@ export function getLeadAgentName(lead: LeadClient): string {
 }
 
 export function getLeadInterlocuteur(lead: LeadClient): string {
-  const prospect = lead.prospect;
-  const fullName = [prospect?.prenom, prospect?.nom]
-    .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
-    .join(' ');
-
-  return fullName || prospect?.nom_contact || '—';
+  return resolveLeadContactName(lead);
 }
 
 export function buildLeadCommandesSummary(stats: LeadClientStats): CommandesSummaryCard[] {

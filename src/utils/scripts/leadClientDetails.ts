@@ -57,11 +57,21 @@ export function formatLeadAgentLabel(lead: LeadClient): string {
 
 export function resolveLeadContactName(lead: LeadClient): string {
   const prospect = lead.prospect;
+  const leadContactName = lead.interlocuteur_nom?.trim()
+    || prospect?.decisionnaire_nom?.trim()
+    || prospect?.nom_contact?.trim();
+  if (leadContactName) {
+    return leadContactName;
+  }
+
   const fullName = [prospect?.prenom, prospect?.nom]
     .filter((value): value is string => typeof value === 'string' && value.trim().length > 0)
     .join(' ');
 
-  return fullName || prospect?.nom_contact || '—';
+  const isCompanyRepeatedAsContact = prospect?.raison_sociale?.trim().toLocaleUpperCase('fr-FR')
+    === prospect?.nom?.trim().toLocaleUpperCase('fr-FR');
+
+  return isCompanyRepeatedAsContact ? '—' : fullName || '—';
 }
 
 export function resolveLeadContactRole(lead: LeadClient): string {
