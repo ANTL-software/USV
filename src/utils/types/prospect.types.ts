@@ -164,6 +164,8 @@ export interface Prospect {
   date_dernier_contact?: string | null;
   cycle_achat_jours?: number | null;
   site_web?: string | null;
+  qualite_site_web?: string | null;
+  type_site_web?: string | null;
   linkedin_company_url?: string | null;
   linkedin_decisionnaire_url?: string | null;
   decisionnaire_nom?: string | null;
@@ -241,6 +243,9 @@ export interface ProspectUpdateData {
   region?: string | null;
   civilite?: string | null;
   telephone_contact?: string | null;
+  site_web?: string | null;
+  qualite_site_web?: string | null;
+  type_site_web?: string | null;
 }
 
 export interface ProspectCompletenessBlock {

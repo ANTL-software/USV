@@ -25,6 +25,9 @@ function buildProspectDraft(prospect: Prospect): ProspectUpdateData {
     region: prospect.region,
     civilite: prospect.civilite,
     telephone_contact: prospect.telephone_contact,
+    site_web: prospect.site_web,
+    qualite_site_web: prospect.qualite_site_web,
+    type_site_web: prospect.type_site_web,
   };
 }
 

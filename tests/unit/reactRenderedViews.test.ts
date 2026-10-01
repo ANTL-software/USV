@@ -390,6 +390,8 @@ test('le détail prospect est un rendu passif alimenté par son view-model', asy
   assert.match(html, /alice@example.com/);
   assert.match(html, /Statut global/);
   assert.match(html, /Statut campagne/);
+  assert.match(html, /Qualité du site/);
+  assert.match(html, /Type de site/);
   assert.match(html, /MARTIN Léa/);
 });
 

@@ -28,7 +28,7 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
   } = viewModel;
   if (!prospect || !presentation) return null;
 
-  const renderInput = (field: keyof ProspectUpdateData, value: string | null, type: 'text' | 'email' | 'tel' = 'text'): ReactElement => (
+  const renderInput = (field: keyof ProspectUpdateData, value: string | null | undefined, type: 'text' | 'email' | 'tel' = 'text'): ReactElement => (
     <input
       type={type}
       value={editedProspect[field] ?? value ?? ''}
@@ -125,7 +125,9 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
 
           <div className="prospectDetail__section prospectDetail__section--enrichment">
             <h3>Enrichissement public</h3>
-            <div className="detailRow"><span className="detailLabel">Site web</span><span className="detailValue">{prospect.site_web ? <a href={prospect.site_web} target="_blank" rel="noreferrer">{prospect.site_web}</a> : '—'}</span></div>
+            <div className="detailRow"><span className="detailLabel">Site web</span><span className="detailValue">{isEditing ? renderInput('site_web', prospect.site_web) : (prospect.site_web ? <a href={prospect.site_web} target="_blank" rel="noreferrer">{prospect.site_web}</a> : '—')}</span></div>
+            <div className="detailRow"><span className="detailLabel">Qualité du site</span><span className="detailValue">{isEditing ? renderInput('qualite_site_web', prospect.qualite_site_web) : renderValue(prospect.qualite_site_web)}</span></div>
+            <div className="detailRow"><span className="detailLabel">Type de site</span><span className="detailValue">{isEditing ? renderInput('type_site_web', prospect.type_site_web) : renderValue(prospect.type_site_web)}</span></div>
             <div className="detailRow"><span className="detailLabel">LinkedIn entreprise</span><span className="detailValue">{prospect.linkedin_company_url ? <a href={prospect.linkedin_company_url} target="_blank" rel="noreferrer">Ouvrir</a> : '—'}</span></div>
             <div className="detailRow"><span className="detailLabel">Décideur</span><span className="detailValue">{renderValue(prospect.decisionnaire_nom)}</span></div>
             <div className="detailRow"><span className="detailLabel">Fonction</span><span className="detailValue">{renderValue(prospect.decisionnaire_fonction)}</span></div>
