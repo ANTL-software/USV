@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { mapProspectCampagneRowToProspect } from '../../src/API/models/index.ts';
 
 import {
   buildIncidentDeclarationPayload,
@@ -30,7 +31,7 @@ import {
   groupIncidentComments,
   parseIncidentTags,
 } from '../../src/utils/scripts/index.ts';
-import type { Campagne, Employe, Incident, IncidentCommentaire, Prospect } from '../../src/utils/types/index.ts';
+import type { Campagne, Employe, Incident, IncidentCommentaire, Prospect, ProspectCampagneRow } from '../../src/utils/types/index.ts';
 
 const createProspect = (overrides: Partial<Prospect> = {}): Prospect => ({
   id_prospect: 8,
@@ -149,6 +150,35 @@ test('les présentations de prospect sont centralisées et campagne compatibles'
   assert.equal(getProspectTypeBadgeClass('Entreprise'), 'badge--entreprise');
   assert.equal(getProspectRelationBadgeClass(prospect.relation_commerciale_campagne), 'badge--client');
   assert.equal(getProspectRelationLabel(prospect.relation_commerciale_campagne), 'Client');
+});
+
+test('la file affiche seulement son agent de campagne même si un ancien propriétaire global existe', () => {
+  const row = {
+    id_prospection: 42,
+    id_prospect: 8,
+    id_campagne: 15,
+    statut: 'en_attente',
+    nb_tentatives: 0,
+    derniere_tentative: null,
+    date_eligibilite_queue: null,
+    motif_dernier_blocage_queue: null,
+    id_agent_assigne: null,
+    agentAssignee: null,
+    date_injection: '2026-10-01T09:00:00.000Z',
+    date_traitement: null,
+    prospect: {
+      ...createProspect(),
+      affecter_au_commercial: 5,
+      commercialAffecte: { id_employe: 5, nom: 'Agent MMA', prenom: null },
+    },
+  } satisfies ProspectCampagneRow;
+
+  assert.equal(mapProspectCampagneRowToProspect(row).agent_assigne, null);
+  assert.equal(mapProspectCampagneRowToProspect({
+    ...row,
+    id_agent_assigne: 8,
+    agentAssignee: { id_employe: 8, nom: 'Agent Creantl', prenom: null },
+  }).agent_assigne?.id_employe, 8);
 });
 
 test('les options campagne conservent la sélection globale en première position', () => {

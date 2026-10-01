@@ -79,15 +79,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
           fast_search: Boolean(debouncedSearch),
         };
         const result = await getAllProspectsService(filters);
-        const mappedData = result.data.map(p => ({
-          ...p,
-          agent_assigne: p.commercialAffecte ? {
-            id_employe: p.commercialAffecte.id_employe,
-            nom: p.commercialAffecte.nom,
-            prenom: p.commercialAffecte.prenom,
-          } : null
-        }));
-        setProspects(mappedData);
+        setProspects(result.data);
         setPagination(result.pagination);
       }
     } catch (err: unknown) {

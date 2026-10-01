@@ -220,6 +220,7 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
     bon_commande_config: {
       invoice_recipient: null,
       lead_billing: { unit_price_ht: 75 },
+      prime: { lead_value_eur: 150 },
       lead_booking: { open_weekdays: [1, 2, 3, 4, 5, 6, 7] },
       prospect_order_email: null,
     },

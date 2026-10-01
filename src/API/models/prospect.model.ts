@@ -25,11 +25,7 @@ export function mapProspectCampagneRowToProspect(row: ProspectCampagneRow): Pros
       id_employe: row.agentAssignee.id_employe,
       nom: row.agentAssignee.nom,
       prenom: row.agentAssignee.prenom,
-    } : (row.prospect.commercialAffecte ? {
-      id_employe: row.prospect.commercialAffecte.id_employe,
-      nom: row.prospect.commercialAffecte.nom,
-      prenom: row.prospect.commercialAffecte.prenom,
-    } : null),
+    } : null,
     date_injection: row.date_injection,
     date_traitement: row.date_traitement,
   };

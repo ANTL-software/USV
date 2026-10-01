@@ -801,7 +801,7 @@ test('la configuration trunk rend un compte mutualisé et son occupation dynamiq
   assert.match(html, /Activation en trois étapes/);
 });
 
-test('la fiche employé peut rendre la même jauge Lead B2B que le Dashboard Script', async () => {
+test('la fiche employé rend la jauge globale en euros comme le Dashboard Script', async () => {
   const AgentPrimeGauge = await loadComponent<{ stats: EmployeStats }>(
     '/src/views/components/agentPrimeGauge/AgentPrimeGauge.tsx',
     'AgentPrimeGauge',
@@ -829,28 +829,28 @@ test('la fiche employé peut rendre la même jauge Lead B2B que le Dashboard Scr
     prime: {
       niveau: 1,
       code_niveau: 'palier_1',
-      libelle: 'Palier 1',
-      type_campagne: 'lead_b2b',
-      unite_objectif: 'lead',
+      libelle: 'Junior',
+      unite_objectif: 'euro',
       salaire_fixe: 1500,
-      objectif: 35,
-      valeur_realisee: 32,
-      pourcentage_atteint: 91.4,
+      objectif: 5000,
+      valeur_realisee: 4800,
+      pourcentage_atteint: 96,
       prime_debloquee: 600,
       remuneration_totale: 2100,
+      production: { ventes_mois_count: 0, ventes_mois_montant: 0, leads_mois_count: 32, leads_mois_valeur: 4800 },
       paliers: [
         { seuil_pourcentage: 0, objectif_palier: 0, montant_prime: 0, montant_total: 1500, debloque: true },
-        { seuil_pourcentage: 75, objectif_palier: 26, montant_prime: 300, montant_total: 1800, debloque: true },
-        { seuil_pourcentage: 90, objectif_palier: 32, montant_prime: 600, montant_total: 2100, debloque: true },
-        { seuil_pourcentage: 100, objectif_palier: 35, montant_prime: 1200, montant_total: 2700, debloque: false },
+        { seuil_pourcentage: 75, objectif_palier: 3750, montant_prime: 300, montant_total: 1800, debloque: true },
+        { seuil_pourcentage: 90, objectif_palier: 4500, montant_prime: 600, montant_total: 2100, debloque: true },
+        { seuil_pourcentage: 100, objectif_palier: 5000, montant_prime: 1200, montant_total: 2700, debloque: false },
       ],
     },
   };
   const html = renderToStaticMarkup(createElement(AgentPrimeGauge, { stats }));
 
-  assert.match(html, /Palier 1/);
-  assert.match(html, /32 leads produits/);
+  assert.match(html, /Junior/);
+  assert.match(html, /32 leads/);
   assert.match(html, /Prime débloquée/);
-  assert.match(html, /Objectif 100 % : 35 leads/);
+  assert.match(html, /Objectif 100 % : 5(?:\s|&nbsp;|&#xA0;)000(?:\s|&nbsp;|&#xA0;)€/);
   assert.match(html, />0%<.*>75%<.*>90%<.*>100%</);
 });
