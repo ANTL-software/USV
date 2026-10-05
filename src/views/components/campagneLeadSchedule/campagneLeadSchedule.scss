@@ -1,0 +1,24 @@
+.lead-schedule { width: min(1000px, 94vw); max-height: 90vh; border: 0; border-radius: 16px; padding: 24px; color: #2c3e50; }
+.lead-schedule::backdrop { background: rgba(20, 15, 40, 0.6); }
+.lead-schedule__header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.lead-schedule__header button { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; padding: 0; border: 0; border-radius: 8px; background: transparent; color: #5a6c7d; font-size: 28px; flex-shrink: 0; }
+.lead-schedule__header button:hover { background: #f3f0ff; color: #7c3aed; }
+.lead-schedule__scroll { overflow: auto; max-height: 52vh; margin: 16px 0; }
+.lead-schedule__grid { width: 100%; min-width: 720px; border-spacing: 4px; text-align: center; }
+.lead-schedule__grid thead { position: sticky; top: 0; background: white; }
+.lead-schedule__grid button { width: 100%; border: 1px solid #ddd6fe; border-radius: 6px; background: #f8f9fa; padding: 8px; cursor: pointer; }
+.lead-schedule__grid button[aria-pressed='true'] { background: #7c3aed; color: white; border-color: #7c3aed; }
+.lead-schedule button:focus-visible { outline: 3px solid #a78bfa; outline-offset: 2px; }
+.lead-schedule__manual { display: flex; gap: 8px; align-items: center; }
+.lead-schedule__actions { display: flex; justify-content: flex-end; gap: 12px; }
+.lead-schedule__actions button { padding: 10px 16px; border-radius: 8px; border: 1px solid #7c3aed; cursor: pointer; }
+.lead-schedule__actions button:last-child { background: #7c3aed; color: white; }
+.lead-schedule[open] { display: flex; flex-direction: column; overflow: hidden; gap: 8px; }
+.lead-schedule p { margin: 4px 0; }
+.lead-schedule .lead-schedule__save-reminder { color: #c0392b; }
+.lead-schedule h2 { margin: 0; }
+.lead-schedule__scroll { flex: 1; min-height: 0; max-height: 40vh; }
+.lead-schedule .lead-schedule__manual { flex-direction: row; justify-content: flex-start; }
+.lead-schedule__manual input { width: auto; }
+#campagneForm .lead-schedule label.lead-schedule__manual { display: flex; flex-direction: row; align-items: center; gap: 8px; }
+#campagneForm .lead-schedule__manual input[type='checkbox'] { width: auto; margin: 0; flex-shrink: 0; }

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useLeadBookingSchedule } from './index.ts';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   getCampagneByIdService,
@@ -33,6 +34,14 @@ export function useCampagneForm() {
   const isEdit = !!id;
 
   const [form, setForm] = useState<CampagneFormState>(INITIAL_CAMPAGNE_FORM);
+  const leadSchedule = useLeadBookingSchedule(form, (slots, interval, allowManual) => {
+    setForm((previous) => ({ ...previous,
+      lead_booking_weekly_slots: slots,
+      lead_booking_interval_minutes: interval,
+      lead_booking_allow_manual_time: allowManual,
+      lead_booking_open_weekdays: [1, 2, 3, 4, 5, 6, 7],
+    }));
+  });
   const [existing, setExisting] = useState<Campagne | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(isEdit);
@@ -231,6 +240,7 @@ export function useCampagneForm() {
 
   return {
     form,
+    leadSchedule,
     existing,
     isEdit,
     isLoading,

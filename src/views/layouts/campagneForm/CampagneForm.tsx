@@ -14,6 +14,7 @@ import {
   CampagneGeneralFields,
   CampagneInvoiceRecipient,
   CampagneLogoModal,
+  CampagneLeadSchedule,
   Header,
   SubNav,
 } from '../../components/index.ts';
@@ -45,7 +46,7 @@ function CampagneForm(): ReactElement {
           {campaignForm.isEdit && <CampagneAgentsPanel viewModel={viewModel} />}
         </div>
       </div></main>
-      <BackToTop /><CampagneLogoModal viewModel={viewModel} />
+      <BackToTop /><CampagneLogoModal viewModel={viewModel} /><CampagneLeadSchedule viewModel={viewModel} />
     </div>
   );
 }

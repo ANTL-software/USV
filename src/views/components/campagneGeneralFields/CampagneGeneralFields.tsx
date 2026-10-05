@@ -17,6 +17,7 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
     handleChange,
     handleDeleteLogo,
     handleLeadBookingWeekdayChange,
+    leadSchedule,
     handleOpenLogoModal,
   } = viewModel.campaignForm;
   return (
@@ -56,8 +57,10 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
       </div>
       {isLeadCampaign && (
         <fieldset className="campagneForm__lead-booking-days">
-          <legend>Jours ouverts pour la prise de rendez-vous client</legend>
-          <div className="campagneForm__weekday-grid">
+          <legend>Disponibilités des rendez-vous client</legend>
+          <Button style="gradient" type="button" onClick={leadSchedule.open}>Choisir les créneaux ouverts aux rendez-vous</Button>
+          <span className="campagneForm__hint">La grille définit les heures de début autorisées pour chaque jour de la semaine.</span>
+          {form.lead_booking_weekly_slots == null && <div className="campagneForm__weekday-grid">
             {LEAD_BOOKING_WEEKDAY_OPTIONS.map((option) => (
               <label key={option.value} className="campagneForm__weekday-option">
                 <input
@@ -68,7 +71,7 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
                 <span>{option.label}</span>
               </label>
             ))}
-          </div>
+          </div>}
           <span className="campagneForm__hint">Les autres jours seront désactivés dans le calendrier du script vendeur.</span>
         </fieldset>
       )}

@@ -243,3 +243,5 @@ export { VigieSegments } from './vigieSegments/index.ts';
 export { ComparisonSection } from './comparisonSection/index.ts';
 export * from './addressAutocomplete/index.ts';
 export * from './addressEditor/index.ts';
+
+export * from './campagneLeadSchedule/index.ts';

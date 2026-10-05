@@ -245,3 +245,5 @@ export { useComparisonSection } from './useComparisonSection.ts';
 export * from './useAddressAutocomplete.ts';
 export * from './useEditableAddress.ts';
 export { useLeadContactEditor } from './useLeadContactEditor.ts';
+
+export * from './useLeadBookingSchedule.ts';

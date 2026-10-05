@@ -1251,3 +1251,10 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 | 2026-04-23 | Ajout Sprint C terminé (backend+script uniquement, USV non impacté) | AI Agent |
 | 2026-04-23 | Ajout structure complète, services API, patterns réutilisables | AI Agent |
 | 2026-04-22 | Création AGENTS.md avec design system USV | AI Agent |
+
+
+### Configuration hebdomadaire des rendez-vous lead — 2026-10-05
+
+- Les créneaux de tous les leads proviennent de `bon_commande_config.lead_booking.weekly_slots`, jamais d'une liste runtime liée à un ID de campagne. Les jours absents/vides sont fermés. Le champ `allow_manual_time` préserve uniquement la saisie libre historique lorsqu'il est explicitement vrai.
+- USV : `CampagneLeadSchedule` et `useLeadBookingSchedule` permettent la sélection de 08:00 à 19:00 avec un pas de 15/30/60 minutes. Annuler abandonne le brouillon; Appliquer met à jour le formulaire, puis l'enregistrement de la campagne persiste les changements. Les heures déjà sélectionnées restent visibles après un changement de pas.
+- La migration `20261005-configure-lead-weekly-booking-slots.js` doit précéder le déploiement Script/API; elle conserve les horaires existants et initialise Créantl aux horaires demandés. Le partage des réservations Swiss Life 12/14 reste inchangé. Les rappels commerciaux sont hors de cette configuration.

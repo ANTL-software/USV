@@ -6,6 +6,7 @@ import type {
   Employe,
   ModePaiement,
   LeadBookingWeekday,
+  LeadBookingConfig,
 } from '../types/index.ts';
 import { CAMPAIGN_VARIANTS, normalizeCampaignVariant } from './campaignVariants.ts';
 
@@ -53,6 +54,9 @@ export interface CampagneFormState {
   lead_large_company_price_ht: string;
   lead_prime_value_eur: string;
   lead_booking_open_weekdays: LeadBookingWeekday[];
+  lead_booking_allow_manual_time: boolean;
+  lead_booking_interval_minutes: 15 | 30 | 60;
+  lead_booking_weekly_slots: LeadBookingConfig['weekly_slots'];
 }
 
 export interface CampagneSelectOption {
@@ -123,6 +127,9 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   lead_large_company_price_ht: '150',
   lead_prime_value_eur: '150',
   lead_booking_open_weekdays: DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
+  lead_booking_allow_manual_time: false,
+  lead_booking_interval_minutes: 60,
+  lead_booking_weekly_slots: null,
 };
 
 export const MMA_LEAD_PRICING_CAMPAIGN_ID = 10;
@@ -201,6 +208,9 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     lead_small_company_price_ht: formatPrice(leadBilling?.small_company_price_ht, 75),
     lead_large_company_price_ht: formatPrice(leadBilling?.large_company_price_ht, 150),
     lead_prime_value_eur: formatPrice(prime?.lead_value_eur, 150),
+    lead_booking_allow_manual_time: campagne.bon_commande_config?.lead_booking?.allow_manual_time ?? false,
+    lead_booking_interval_minutes: campagne.bon_commande_config?.lead_booking?.interval_minutes ?? 60,
+    lead_booking_weekly_slots: campagne.bon_commande_config?.lead_booking?.weekly_slots ?? null,
     lead_booking_open_weekdays: campagne.bon_commande_config?.lead_booking?.open_weekdays?.length
       ? campagne.bon_commande_config.lead_booking.open_weekdays
       : DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
@@ -265,7 +275,7 @@ export function validateCampagneForm(form: CampagneFormState, campagneId: number
   }
   if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
     if (!parsePositivePrice(form.lead_prime_value_eur)) return 'La valeur de prime par lead doit être supérieure à 0';
-    if (form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
+    if (form.lead_booking_weekly_slots == null && form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
     if (campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID) {
       if (!parsePositivePrice(form.lead_small_company_price_ht)) return 'Le tarif des entreprises de 5 salariés ou moins doit être supérieur à 0';
       if (!parsePositivePrice(form.lead_large_company_price_ht)) return 'Le tarif des entreprises de plus de 5 salariés doit être supérieur à 0';
@@ -327,7 +337,12 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
       prime: isLeadCampaign ? { lead_value_eur: parsePositivePrice(form.lead_prime_value_eur) } : null,
-      lead_booking: isLeadCampaign ? { open_weekdays: form.lead_booking_open_weekdays } : null,
+      lead_booking: isLeadCampaign ? {
+        open_weekdays: form.lead_booking_open_weekdays,
+        allow_manual_time: form.lead_booking_allow_manual_time,
+        interval_minutes: form.lead_booking_interval_minutes,
+        weekly_slots: form.lead_booking_weekly_slots,
+      } : null,
       prospect_order_email: buildProspectOrderEmailPayload(form),
     },
   };

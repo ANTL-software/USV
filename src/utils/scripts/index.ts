@@ -673,3 +673,5 @@ export {
 } from './partenaireStatistics.ts';
 export * from './addressFormatting.ts';
 export * from './editableAddress.ts';
+
+export * from './leadBookingSchedule.ts';

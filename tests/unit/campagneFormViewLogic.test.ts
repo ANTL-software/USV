@@ -221,7 +221,7 @@ test('le payload campagne normalise les nombres modes et facturation tierce', ()
       invoice_recipient: null,
       lead_billing: { unit_price_ht: 75 },
       prime: { lead_value_eur: 150 },
-      lead_booking: { open_weekdays: [1, 2, 3, 4, 5, 6, 7] },
+      lead_booking: { open_weekdays: [1, 2, 3, 4, 5, 6, 7], allow_manual_time: false, interval_minutes: 60, weekly_slots: null },
       prospect_order_email: null,
     },
   });
@@ -267,7 +267,7 @@ test('une campagne Lead B2B exige et persiste au moins un jour ouvert', () => {
   }), 'Sélectionnez au moins un jour ouvert pour les rendez-vous client');
   assert.deepEqual(
     buildCampagnePayload({ ...swissLifeForm, lead_booking_open_weekdays: [1, 4] }).bon_commande_config?.lead_booking,
-    { open_weekdays: [1, 4] },
+    { open_weekdays: [1, 4], allow_manual_time: false, interval_minutes: 60, weekly_slots: null },
   );
 });
 
