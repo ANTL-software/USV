@@ -2,6 +2,7 @@ import { useState, type FormEvent, type ReactElement } from 'react';
 import { IoBusiness, IoCheckmark, IoClose, IoInformationCircle, IoPencil, IoPerson } from 'react-icons/io5';
 import type { AddressEditorViewModel, LeadClient } from '../../../utils/types/index.ts';
 import { AddressEditor } from '../addressEditor/index.ts';
+import { useLeadContactEditor } from '../../../hooks/index.ts';
 import {
   formatLeadAgentLabel,
   formatLeadDateTime,
@@ -19,9 +20,12 @@ interface LeadClientSummaryProps {
   notesUpdateLoading: boolean;
   onUpdateNotes: (notes: string) => Promise<boolean>;
   showEmployeeCountQualification: boolean;
+  contactUpdateLoading: boolean;
+  onUpdateContact: (nom: string, prenom: string) => Promise<boolean>;
 }
 
-export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification }: LeadClientSummaryProps): ReactElement {
+export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification, contactUpdateLoading, onUpdateContact }: LeadClientSummaryProps): ReactElement {
+  const contactEditor = useLeadContactEditor(lead, onUpdateContact);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(lead.notes ?? '');
 
@@ -49,7 +53,14 @@ export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onU
         <h3 className="section-title"><IoBusiness /> Client & contact</h3>
         <div className="details-grid">
           <div className="grid-item full-width"><span className="grid-label">Client</span><span className="grid-value grid-value--bold">{formatLeadProspectLabel(lead)}</span></div>
-          <div className="grid-item"><span className="grid-label">Interlocuteur</span><span className="grid-value leadClientDetails__contact"><IoPerson />{resolveLeadContactName(lead)}</span></div>
+          <div className="grid-item">
+            <div className="leadClientDetails__notes-label"><span className="grid-label">Interlocuteur</span><button type="button" className="leadClientDetails__notes-edit" onClick={contactEditor.start} disabled={contactUpdateLoading} aria-label="Modifier l’interlocuteur"><IoPencil /></button></div>
+            {contactEditor.editing ? <form className="leadClientDetails__notes-form" onSubmit={(event) => { void contactEditor.submit(event); }}>
+              <label>Nom<input value={contactEditor.nom} onChange={(event) => contactEditor.setNom(event.target.value)} required maxLength={100} disabled={contactUpdateLoading} /></label>
+              <label>Prénom<input value={contactEditor.prenom} onChange={(event) => contactEditor.setPrenom(event.target.value)} required maxLength={100} disabled={contactUpdateLoading} /></label>
+              <div className="leadClientDetails__notes-actions"><button type="button" onClick={contactEditor.cancel} disabled={contactUpdateLoading}><IoClose /> Annuler</button><button type="submit" disabled={contactUpdateLoading}><IoCheckmark /> Enregistrer</button></div>
+            </form> : <span className="grid-value leadClientDetails__contact"><IoPerson />{resolveLeadContactName(lead)}</span>}
+          </div>
           <div className="grid-item"><span className="grid-label">Fonction</span><span className="grid-value">{resolveLeadContactRole(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Téléphone</span><span className="grid-value">{resolveLeadContactPhone(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Email</span><span className="grid-value">{resolveLeadContactEmail(lead)}</span></div>

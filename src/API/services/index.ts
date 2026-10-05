@@ -197,6 +197,7 @@ export {
   getLeadClientsService,
   sendLeadClientEmailService,
   updateLeadClientNotesService,
+  updateLeadClientContactService,
   updateLeadClientStatusService,
 } from './lead.service.ts';
 export type { SendLeadEmailPayload } from './lead.service.ts';

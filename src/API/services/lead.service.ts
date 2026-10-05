@@ -158,6 +158,12 @@ export const updateLeadClientNotesService = async (
   throw new Error(response.data.message || 'Impossible de mettre à jour les notes du rendez-vous client');
 };
 
+export const updateLeadClientContactService = async (idLead: number, nom: string, prenom: string): Promise<LeadClient> => {
+  const response: AxiosResponse<ApiResponse<LeadClient>> = await patchRequest(`/leads/${idLead}/contact`, { nom, prenom });
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de modifier l’interlocuteur');
+};
+
 export const getLeadClientDocumentUrl = (idLead: number): string => {
   return `${getApiBaseUrl()}/leads/${idLead}/document.pdf`;
 };

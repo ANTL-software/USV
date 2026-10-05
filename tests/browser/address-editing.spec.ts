@@ -73,6 +73,12 @@ test('lead : édition explicite du prospect et saisie libre lorsque l’IGN ne r
   let lead = { id_lead: 501, id_prospect: 42, id_agent: 9, id_campagne: 10, date_rdv: '2026-09-15', heure_rdv: '10:00', motif: 'Prise de rendez-vous client', notes: '', statut: 'planifie', created_at: '2026-09-01', prospect, campagne: { id_campagne: 10, nom_campagne: 'MMA', type_campagne: 'lead_b2b' } };
   await installApiRoute(page, async (route, request) => {
     if (request.path === '/leads/501' && request.method === 'GET') { await fulfillJson(route, apiSuccess(lead)); return true; }
+    if (request.path === '/leads/501/contact' && request.method === 'PATCH') {
+      const payload = route.request().postDataJSON() as { nom: string; prenom: string };
+      expect(payload).toEqual({ nom: 'Giraud', prenom: 'Marie' });
+      lead = { ...lead, prospect: { ...lead.prospect, ...payload } };
+      await fulfillJson(route, apiSuccess({ ...lead, interlocuteur_nom: 'GIRAUD Marie' })); return true;
+    }
     if (request.path === '/leads/501/adresse') { patch = route.request().postDataJSON() as Record<string, string>; lead = { ...lead, prospect: { ...lead.prospect, ...patch } }; await fulfillJson(route, apiSuccess(lead)); return true; }
     if (request.path === '/leads/prospect/42') { await fulfillJson(route, apiSuccess([lead])); return true; }
     if (request.path === '/prospects/42/appels') { await fulfillJson(route, { ...apiSuccess([]), pagination: { page: 1, limit: 5, total: 0, totalPages: 1 } }); return true; }
@@ -82,6 +88,11 @@ test('lead : édition explicite du prospect et saisie libre lorsque l’IGN ne r
   await page.route('https://data.geopf.fr/**', (route) => fulfillJson(route, {}, 503));
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/operations/commandes/details/501?mode=lead');
+  await page.getByRole('button', { name: 'Modifier l’interlocuteur' }).click();
+  await page.getByLabel('Nom', { exact: true }).fill('Giraud');
+  await page.getByLabel('Prénom', { exact: true }).fill('Marie');
+  await page.getByRole('button', { name: 'Enregistrer', exact: true }).click();
+  await expect(page.getByText('GIRAUD Marie', { exact: true })).toBeVisible();
   const address = page.getByRole('region', { name: 'Adresse du prospect', exact: true });
   await address.getByRole('button', { name: 'Modifier Adresse du prospect' }).click();
   await address.getByRole('combobox').fill('ZONE ARTISANALE NON RÉPERTORIÉE');

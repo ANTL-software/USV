@@ -6,6 +6,7 @@ import {
   getProspectAppelsService,
   sendLeadClientEmailService,
   updateLeadClientNotesService,
+  updateLeadClientContactService,
   updateLeadClientStatusService,
   updateLeadAddressService,
 } from '../API/services/index.ts';
@@ -40,6 +41,7 @@ export function useLeadClientDetails(idLead: number) {
   const [leadHistoryError, setLeadHistoryError] = useState<string | null>(null);
   const [statusUpdateLoading, setStatusUpdateLoading] = useState<StatutRendezVous | null>(null);
   const [notesUpdateLoading, setNotesUpdateLoading] = useState(false);
+  const [contactUpdateLoading, setContactUpdateLoading] = useState(false);
 
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
   const [selectedRecipientEmail, setSelectedRecipientEmail] = useState('');
@@ -170,6 +172,22 @@ export function useLeadClientDetails(idLead: number) {
     }
   }, [lead]);
 
+  const updateLeadContact = async (nom: string, prenom: string): Promise<boolean> => {
+    if (!lead || contactUpdateLoading) return false;
+    try {
+      setContactUpdateLoading(true);
+      const updated = await updateLeadClientContactService(lead.id_lead, nom, prenom);
+      setLead((previous) => previous?.id_lead === updated.id_lead ? updated : previous);
+      await showSuccess('Interlocuteur mis à jour.');
+      return true;
+    } catch (updateError) {
+      await showError(updateError instanceof Error ? updateError.message : 'Erreur lors de la modification de l’interlocuteur');
+      return false;
+    } finally {
+      setContactUpdateLoading(false);
+    }
+  };
+
   const defaultEmailMessage = useMemo(() => {
     if (lead?.campagne?.message_envoi_commande) {
       return lead.campagne.message_envoi_commande;
@@ -274,6 +292,8 @@ export function useLeadClientDetails(idLead: number) {
     loadAppels,
     loading,
     notesUpdateLoading,
+    contactUpdateLoading,
+    updateLeadContact,
     openEmailModal,
     printLeadDocument,
     selectedRecipientEmail,

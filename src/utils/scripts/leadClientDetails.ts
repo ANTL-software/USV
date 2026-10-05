@@ -57,6 +57,14 @@ export function formatLeadAgentLabel(lead: LeadClient): string {
 
 export function resolveLeadContactName(lead: LeadClient): string {
   const prospect = lead.prospect;
+  const nom = prospect?.nom?.trim() ?? '';
+  const prenom = prospect?.prenom?.trim() ?? '';
+  const snapshot = lead.interlocuteur_nom?.trim() ?? '';
+  const normalize = (value: string): string => value.toLocaleUpperCase('fr-FR');
+  if (nom && prenom && normalize(nom) !== normalize(prospect?.raison_sociale?.trim() ?? '')
+    && (!snapshot || [nom, `${nom} ${prenom}`, `${prenom} ${nom}`].some((value) => normalize(value) === normalize(snapshot)))) {
+    return `${nom.toLocaleUpperCase('fr-FR')} ${prenom}`;
+  }
   const leadContactName = lead.interlocuteur_nom?.trim()
     || prospect?.decisionnaire_nom?.trim()
     || prospect?.nom_contact?.trim();

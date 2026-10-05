@@ -214,6 +214,20 @@
 #commandeDetails .leadClientDetails__notes-form {
   margin-top: 0.5em;
 }
+
+#commandeDetails .leadClientDetails__notes-form label {
+  display: grid;
+  gap: 0.4rem;
+  margin-bottom: 0.75rem;
+}
+
+#commandeDetails .leadClientDetails__notes-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+}
 #commandeDetails .leadClientDetails__notes-form textarea {
   width: 100%;
   min-height: 8rem;

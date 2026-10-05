@@ -87,6 +87,12 @@ test('les helpers lead ne répètent pas la raison sociale comme interlocuteur',
   assert.equal(resolveLeadContactName(lead), '—');
 });
 
+test('un snapshot contenant seulement le nom retrouve le prénom sans le doubler', () => {
+  const lead = createLead({ interlocuteur_nom: 'DUPONT' });
+  assert.equal(resolveLeadContactName(lead), 'DUPONT Alice');
+  assert.equal(resolveLeadContactName({ ...lead, interlocuteur_nom: 'Alice DUPONT' }), 'DUPONT Alice');
+});
+
 test('la qualification du nombre de salariés est affichée uniquement pour MMA', () => {
   assert.equal(shouldShowLeadEmployeeCountQualification(createLead({ id_campagne: 10 })), true);
   assert.equal(shouldShowLeadEmployeeCountQualification(createLead({ id_campagne: 11 })), false);

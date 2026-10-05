@@ -32,7 +32,7 @@ export function LeadClientDetailsContent({ viewModel }: LeadClientDetailsContent
         {lead.fiche_consultee_at && <span className="commandeDetails__email-open" title="Consultation du mail par notre client détectée lors du chargement de l’e-mail"><IoEye /> Consultation du mail par notre client détectée le {formatCommandeDateTime(lead.fiche_consultee_at)}</span>}
       </div>
       <div className="commandeDetails__content">
-        <div className="commandeDetails__left"><LeadClientSummary lead={lead} addressEditor={viewModel.addressEditor} notesUpdateLoading={viewModel.notesUpdateLoading} onUpdateNotes={viewModel.updateLeadNotes} showEmployeeCountQualification={viewModel.showEmployeeCountQualification} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>
+        <div className="commandeDetails__left"><LeadClientSummary lead={lead} addressEditor={viewModel.addressEditor} notesUpdateLoading={viewModel.notesUpdateLoading} onUpdateNotes={viewModel.updateLeadNotes} showEmployeeCountQualification={viewModel.showEmployeeCountQualification} contactUpdateLoading={viewModel.contactUpdateLoading} onUpdateContact={viewModel.updateLeadContact} /><LeadCallsHistory {...viewModel} /><LeadAppointmentsHistory {...viewModel} /></div>
         <LeadQualificationPanel {...viewModel} />
       </div>
       <LeadClientEmailModal viewModel={viewModel} />
