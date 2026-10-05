@@ -1258,3 +1258,15 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 - Les créneaux de tous les leads proviennent de `bon_commande_config.lead_booking.weekly_slots`, jamais d'une liste runtime liée à un ID de campagne. Les jours absents/vides sont fermés. Le champ `allow_manual_time` préserve uniquement la saisie libre historique lorsqu'il est explicitement vrai.
 - USV : `CampagneLeadSchedule` et `useLeadBookingSchedule` permettent la sélection de 08:00 à 19:00 avec un pas de 15/30/60 minutes. Annuler abandonne le brouillon; Appliquer met à jour le formulaire, puis l'enregistrement de la campagne persiste les changements. Les heures déjà sélectionnées restent visibles après un changement de pas.
 - La migration `20261005-configure-lead-weekly-booking-slots.js` doit précéder le déploiement Script/API; elle conserve les horaires existants et initialise Créantl aux horaires demandés. Le partage des réservations Swiss Life 12/14 reste inchangé. Les rappels commerciaux sont hors de cette configuration.
+
+### Créantl et agenda ANTL — 2026-10-05
+
+- La campagne 15 expose `creantl_booking.notify_external` par la case « Envoyer également la confirmation au prospect », désactivée par défaut. Les copies internes Théo/Nelly/Mehdi restent automatiques; l'envoi externe est séparé sans notes internes.
+- Les leads liés exposent `bookingAntl`; les bookings exposent `id_lead`. Les deux vues signalent le lien. Déplacement/annulation depuis /booking sont synchronisés par l'API. Les snapshots de civilité et raison sociale sont affichés sans modifier la fiche globale depuis l'agenda.
+
+### Création de leads depuis Booking — 2026-10-05
+
+- `BookingForm` propose « Rendez-vous Créantl ? »; le mode classique conserve ses champs et son endpoint. `BookingCreantlForm` est passif et `useBookingCreantlLead` orchestre configuration, recherche/préremplissage, disponibilités et création, avec erreurs locales et brouillon conservé en cas d’échec.
+- `bookingLead.service` utilise les routes dédiées `/bookings/creantl/*`, accessibles avec le seul droit booking. Le payload ne contient ni campagne, ni auteur, ni appel; l’API impose ces valeurs. Création d’une nouvelle entreprise ou sélection d’une fiche existante, puis même workflow lead/agenda que le script.
+- Le sélecteur `react-select` « Comment le prospect a connu antl ? » et les précisions libres sont des snapshots du lead, affichés dans les commandes. Le choix est explicite dans l’agenda; aucune origine supposée pour les anciens leads.
+- Scénarios Playwright `booking-creantl.spec.ts` : création, conflit 409 avec brouillon conservé, créneau occupé filtré, recherche de fiche existante, préremplissage et retour au mode classique. `booking-navigation.spec.ts` reste le garde-fou du rendez-vous manuel et des accès limités.

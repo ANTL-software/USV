@@ -249,6 +249,7 @@ export function useCampagneForm() {
     success,
     isLeadCampaign,
     usesEmployeeCountLeadPricing,
+    isCreantlCampaign: campagneId === 15,
     handleChange,
     handleModesPaiementChange,
     handleLeadBookingWeekdayChange,

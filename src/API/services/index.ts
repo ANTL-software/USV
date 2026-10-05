@@ -391,3 +391,5 @@ export {
 } from './commercialAgenda.service.ts';
 export * from './Address.service.ts';
 export * from './commercialAddress.service.ts';
+
+export * from './bookingLead.service.ts';

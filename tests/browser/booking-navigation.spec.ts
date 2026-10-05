@@ -55,15 +55,25 @@ test('un accès commerciaux isolé ne précharge ni Booking ni les notifications
 
   await installApiRoute(
     page,
-    async () => false,
+    async (route, request) => {
+      if (request.method === 'GET' && ['/supervision/home-kpis', '/campagnes'].includes(request.path)) {
+        await fulfillJson(route, { success: false, message: 'Accès refusé' }, 403);
+        return true;
+      }
+      if (request.method === 'GET' && request.path === '/employes/me/planning') {
+        await fulfillJson(route, apiSuccess({ date_debut: '2026-10-01', date_fin: '2026-10-31', assignations: [], events: [] }));
+        return true;
+      }
+      return false;
+    },
     unhandledRequests,
     COMMERCIAL_ONLY_USER,
   );
 
   await page.goto('/home');
 
-  await expect(page).toHaveURL(/\/commerciaux$/);
-  await expect(page.getByRole('heading', { name: 'Gestion commerciaux' })).toBeVisible();
+  await expect(page).toHaveURL(/\/commerciaux\/mon_planning$/);
+  await expect(page.getByRole('heading', { name: 'Voir mon planning' })).toBeVisible();
   await page.waitForTimeout(200);
 
   expect(restrictedRequests).toEqual([]);

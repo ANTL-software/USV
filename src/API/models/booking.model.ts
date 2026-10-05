@@ -3,6 +3,7 @@ import { getRoleColor } from '../../utils/scripts/index.ts';
 
 export class BookingModel implements Booking {
   id_booking: number;
+  id_lead?: number | null;
   id_employe: number;
   id_beneficiaire: number;
   debut: string;
@@ -17,6 +18,7 @@ export class BookingModel implements Booking {
 
   constructor(data: Booking) {
     this.id_booking = data.id_booking;
+    this.id_lead = data.id_lead;
     this.id_employe = data.id_employe;
     this.id_beneficiaire = data.id_beneficiaire;
     this.debut = data.debut;

@@ -70,6 +70,11 @@ export interface RendezVousItem {
   heure_rdv: string;
   motif: string | null;
   interlocuteur_nom?: string | null;
+  origine_contact?: string | null;
+  origine_contact_detail?: string | null;
+  interlocuteur_civilite?: string | null;
+  raison_sociale_snapshot?: string | null;
+  bookingAntl?: { id_booking: number; id_beneficiaire: number; debut: string; fin?: string | null; statut: string } | null;
   interlocuteur_role?: string | null;
   telephone_contact_snapshot?: string | null;
   email_contact_snapshot?: string | null;

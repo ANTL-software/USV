@@ -675,3 +675,6 @@ export * from './addressFormatting.ts';
 export * from './editableAddress.ts';
 
 export * from './leadBookingSchedule.ts';
+
+export * from './leadContactOrigin.ts';
+export * from './bookingLead.ts';

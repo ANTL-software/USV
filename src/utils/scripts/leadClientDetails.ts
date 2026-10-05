@@ -36,6 +36,7 @@ export function formatLeadDateTime(dateValue?: string | null, timeValue?: string
 }
 
 export function formatLeadProspectLabel(lead: LeadClient): string {
+  if (lead.raison_sociale_snapshot?.trim()) return lead.raison_sociale_snapshot.trim();
   if (!lead.prospect) {
     return '—';
   }
@@ -56,6 +57,7 @@ export function formatLeadAgentLabel(lead: LeadClient): string {
 }
 
 export function resolveLeadContactName(lead: LeadClient): string {
+  if (lead.id_campagne === 15 && lead.interlocuteur_nom?.trim()) return [lead.interlocuteur_civilite, lead.interlocuteur_civilite ? lead.interlocuteur_nom.trim().replace(/^(?:Monsieur|Madame|M\.|Mme\.?)\s+/i, '') : lead.interlocuteur_nom.trim()].filter(Boolean).join(' ');
   const prospect = lead.prospect;
   const nom = prospect?.nom?.trim() ?? '';
   const prenom = prospect?.prenom?.trim() ?? '';

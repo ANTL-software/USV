@@ -1,3 +1,4 @@
+import { useBookingCreantlLead, type BookingCreantlLeadViewModel } from './index.ts';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import type { BookingModel } from '../API/models/index.ts';
 import {
@@ -31,6 +32,7 @@ import type {
 import { useBookingContext } from './useBookingContext.ts';
 
 export interface BookingFormViewModel {
+  creantl: BookingCreantlLeadViewModel;
   close: () => void;
   employees: EmployeOption[];
   hourOptions: BookingTimeOption[];
@@ -126,6 +128,8 @@ export function useBookingCalendarView(): BookingCalendarViewModel {
   const [isConfirmingCancellation, setIsConfirmingCancellation] = useState(false);
   const [isCancelling, setIsCancelling] = useState(false);
   const today = formatBookingDateInput(new Date());
+  const leadCreated = useCallback(async (): Promise<void> => { setIsFormOpen(false); await fetchBookings(buildBookingMonthFilters(currentDate)); }, [fetchBookings, currentDate]);
+  const creantl = useBookingCreantlLead(isFormOpen, formState.date, today, leadCreated);
 
   useEffect(() => {
     void fetchBookings(buildBookingMonthFilters(currentDate));
@@ -141,8 +145,8 @@ export function useBookingCalendarView(): BookingCalendarViewModel {
   }, []);
 
   const closeForm = useCallback((): void => {
-    if (!isFormSubmitting) setIsFormOpen(false);
-  }, [isFormSubmitting]);
+    if (!isFormSubmitting && !creantl.isSubmitting) setIsFormOpen(false);
+  }, [isFormSubmitting, creantl.isSubmitting]);
 
   const updateFormField = useCallback(<K extends keyof BookingFormState>(field: K, value: BookingFormState[K]): void => {
     setFormState((previous) => {
@@ -256,16 +260,17 @@ export function useBookingCalendarView(): BookingCalendarViewModel {
       requestCancellation: () => setIsConfirmingCancellation(true),
     },
     form: {
+      creantl,
       close: closeForm,
       employees: employes,
       hourOptions: BOOKING_HOUR_OPTIONS,
       isOpen: isFormOpen,
-      isSubmitting: isFormSubmitting,
+      isSubmitting: isFormSubmitting || creantl.isSubmitting,
       loadingEmployees: loadingEmployes,
       minuteOptions: BOOKING_MINUTE_OPTIONS,
       portalTarget: typeof document === 'undefined' ? undefined : document.body,
       state: formState,
-      submit: submitForm,
+      submit: creantl.enabled ? creantl.submit : submitForm,
       today,
       updateField: updateFormField,
     },

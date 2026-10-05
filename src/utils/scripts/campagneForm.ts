@@ -55,6 +55,7 @@ export interface CampagneFormState {
   lead_prime_value_eur: string;
   lead_booking_open_weekdays: LeadBookingWeekday[];
   lead_booking_allow_manual_time: boolean;
+  creantl_booking_notify_external: boolean;
   lead_booking_interval_minutes: 15 | 30 | 60;
   lead_booking_weekly_slots: LeadBookingConfig['weekly_slots'];
 }
@@ -128,6 +129,7 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   lead_prime_value_eur: '150',
   lead_booking_open_weekdays: DEFAULT_LEAD_BOOKING_OPEN_WEEKDAYS,
   lead_booking_allow_manual_time: false,
+  creantl_booking_notify_external: false,
   lead_booking_interval_minutes: 60,
   lead_booking_weekly_slots: null,
 };
@@ -208,6 +210,7 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     lead_small_company_price_ht: formatPrice(leadBilling?.small_company_price_ht, 75),
     lead_large_company_price_ht: formatPrice(leadBilling?.large_company_price_ht, 150),
     lead_prime_value_eur: formatPrice(prime?.lead_value_eur, 150),
+    creantl_booking_notify_external: campagne.bon_commande_config?.creantl_booking?.notify_external ?? false,
     lead_booking_allow_manual_time: campagne.bon_commande_config?.lead_booking?.allow_manual_time ?? false,
     lead_booking_interval_minutes: campagne.bon_commande_config?.lead_booking?.interval_minutes ?? 60,
     lead_booking_weekly_slots: campagne.bon_commande_config?.lead_booking?.weekly_slots ?? null,
@@ -334,6 +337,7 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
     taux_commission_facturation: commissionRate,
     modes_paiement: modesPaiement,
     bon_commande_config: {
+      ...(campagneId === 15 ? { creantl_booking: { notify_external: form.creantl_booking_notify_external } } : {}),
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
       prime: isLeadCampaign ? { lead_value_eur: parsePositivePrice(form.lead_prime_value_eur) } : null,

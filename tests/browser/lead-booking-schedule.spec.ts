@@ -37,8 +37,11 @@ test('la grille hebdomadaire conserve les heures hors du pas et enregistre les f
   await page.screenshot({ path: '/tmp/antl-lead-schedule.png' });
   await dialog.getByRole('button', { name: 'Appliquer à la campagne' }).click();
   await expect(dialog).not.toBeVisible();
+  const externalConfirmation = page.getByLabel('Envoyer également la confirmation au prospect');
+  await expect(externalConfirmation).not.toBeChecked();
+  await externalConfirmation.check();
   await page.getByRole('button', { name: 'Mettre à jour', exact: true }).click();
   await expect.poll(() => saved).not.toBeNull();
-  expect(saved).toMatchObject({ bon_commande_config: { lead_booking: { interval_minutes: 30, allow_manual_time: false, weekly_slots: { 1: ['11:15'], 5: ['14:00', '18:00'] } } } });
+  expect(saved).toMatchObject({ bon_commande_config: { creantl_booking: { notify_external: true }, lead_booking: { interval_minutes: 30, allow_manual_time: false, weekly_slots: { 1: ['11:15'], 5: ['14:00', '18:00'] } } } });
   expect(unhandled).toEqual([]);
 });

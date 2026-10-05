@@ -47,6 +47,7 @@ export interface BonCommandeConfig {
   lead_billing?: LeadBillingConfig | null;
   prime?: PrimeConfig | null;
   lead_booking?: LeadBookingConfig | null;
+  creantl_booking?: { notify_external?: boolean } | null;
   prospect_order_email?: ProspectOrderEmailConfig | null;
   [key: string]: unknown;
 }

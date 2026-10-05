@@ -245,3 +245,4 @@ export * from './addressAutocomplete/index.ts';
 export * from './addressEditor/index.ts';
 
 export * from './campagneLeadSchedule/index.ts';
+export * from './bookingCreantlForm/index.ts';

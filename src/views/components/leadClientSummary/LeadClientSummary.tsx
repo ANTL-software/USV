@@ -4,6 +4,7 @@ import type { AddressEditorViewModel, LeadClient } from '../../../utils/types/in
 import { AddressEditor } from '../addressEditor/index.ts';
 import { useLeadContactEditor } from '../../../hooks/index.ts';
 import {
+  getLeadContactOriginLabel,
   formatLeadAgentLabel,
   formatLeadDateTime,
   formatLeadProspectAddress,
@@ -51,6 +52,7 @@ export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onU
     <>
       <section className="details-section card-style">
         <h3 className="section-title"><IoBusiness /> Client & contact</h3>
+        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Déplacez-le depuis l’agenda ANTL pour modifier sa date et son heure.</p>}
         <div className="details-grid">
           <div className="grid-item full-width"><span className="grid-label">Client</span><span className="grid-value grid-value--bold">{formatLeadProspectLabel(lead)}</span></div>
           <div className="grid-item">
@@ -69,12 +71,14 @@ export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onU
       </section>
       <section className="details-section card-style">
         <h3 className="section-title"><IoInformationCircle /> Informations du rendez-vous</h3>
+        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Déplacez-le depuis l’agenda ANTL pour modifier sa date et son heure.</p>}
         <div className="details-grid">
           <div className="grid-item"><span className="grid-label">Date de prise</span><span className="grid-value">{formatLeadDateTime(lead.created_at)}</span></div>
           <div className="grid-item"><span className="grid-label">Rendez-vous client</span><span className="grid-value">{formatLeadDateTime(lead.date_rdv, lead.heure_rdv)}</span></div>
           <div className="grid-item"><span className="grid-label">Commercial</span><span className="grid-value">{formatLeadAgentLabel(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Campagne</span><span className="grid-value">{lead.campagne?.nom_campagne ?? '—'}</span></div>
           {showEmployeeCountQualification && <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>}
+          {(lead.origine_contact || lead.origine_contact_detail) && <div className="grid-item full-width"><span className="grid-label">Comment le prospect a connu antl ?</span><span className="grid-value">{getLeadContactOriginLabel(lead.origine_contact)}{lead.origine_contact_detail && ` · ${lead.origine_contact_detail}`}</span></div>}
           <div className="grid-item full-width"><span className="grid-label">Motif</span><span className="grid-value">{lead.motif ?? '—'}</span></div>
           <div className="grid-item full-width">
             <div className="leadClientDetails__notes-label"><span className="grid-label">Notes du rendez-vous</span><button type="button" className="leadClientDetails__notes-edit" onClick={startNotesEdition} title="Modifier les notes" aria-label="Modifier les notes du rendez-vous"><IoPencil /></button></div>

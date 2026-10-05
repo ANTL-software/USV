@@ -553,3 +553,5 @@ export type {
 export type { ComparisonUnit, ComparisonMode, ComparisonValues, ComparisonMetric, ComparisonRow, ComparisonSection, ComparisonPeriod, ComparisonCampaign, ComparisonOptions, ComparisonFilters, MonthlyComparison } from './monthlyComparison.types.ts';
 export * from './address.types.ts';
 export * from './editableAddress.types.ts';
+
+export * from './bookingLead.types.ts';

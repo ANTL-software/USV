@@ -165,3 +165,8 @@
   opacity: 0.9;
   transform: translateY(-1px);
 }
+
+#bookingForm .bookingCreantlToggle { display: flex; align-items: center; gap: 0.6em; margin-bottom: 1.25em; font-weight: 600; }
+#bookingForm .bookingCreantlToggle input { width: auto; }
+#bookingForm .bookingCreantlForm > p { font-size: 0.9em; color: #5a6c7d; }
+#bookingForm .bookingCreantlForm select { width: 100%; padding: 0.65em; border: 1px solid #d1d5db; border-radius: 6px; }

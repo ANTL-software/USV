@@ -1,3 +1,5 @@
+import { IoClose } from 'react-icons/io5';
+import { BookingCreantlForm } from '../bookingCreantlForm/index.ts';
 import './bookingForm.scss';
 import type { ReactElement } from 'react';
 import Select from 'react-select';
@@ -10,8 +12,10 @@ export default function BookingForm({ viewModel }: Readonly<BookingFormProps>): 
   const { state } = viewModel;
   return <div id="bookingFormOverlay" onClick={viewModel.close}>
     <div id="bookingForm" onClick={(event) => event.stopPropagation()}>
-      <div className="formHeader"><h2>Nouveau rendez-vous</h2><button type="button" className="closeBtn" onClick={viewModel.close} aria-label="Fermer">✕</button></div>
+      <div className="formHeader"><h2>Nouveau rendez-vous</h2><button type="button" className="closeBtn" onClick={viewModel.close} aria-label="Fermer"><IoClose /></button></div>
       <div className="formBody">
+        <label className="bookingCreantlToggle"><input type="checkbox" checked={viewModel.creantl.enabled} onChange={(event) => viewModel.creantl.toggle(event.target.checked)} disabled={viewModel.isSubmitting} />Rendez-vous Créantl ?</label>
+        {viewModel.creantl.enabled ? <BookingCreantlForm viewModel={viewModel.creantl} /> : <>
         <div className="fieldGroup">
           <label>Employé ANTL *</label>
           <Select options={viewModel.employees} value={state.employe} onChange={(option) => viewModel.updateField('employe', option)} styles={bookingSelectStyles} placeholder="Sélectionner un employé..." isSearchable isClearable isLoading={viewModel.loadingEmployees} isDisabled={viewModel.isSubmitting} noOptionsMessage={() => 'Aucun employé trouvé'} loadingMessage={() => 'Chargement...'} menuPortalTarget={viewModel.portalTarget} menuPosition="fixed" />
@@ -37,6 +41,7 @@ export default function BookingForm({ viewModel }: Readonly<BookingFormProps>): 
         <div className="fieldGroup"><label htmlFor="personneExterne">Personne externe</label><input id="personneExterne" type="text" value={state.personneExterne} onChange={(event) => viewModel.updateField('personneExterne', event.target.value)} placeholder="Nom du client/prestataire..." disabled={viewModel.isSubmitting} /></div>
         <div className="fieldGroup"><label htmlFor="description">Description</label><textarea id="description" value={state.description} onChange={(event) => viewModel.updateField('description', event.target.value)} placeholder="Détails sur le RDV..." rows={3} disabled={viewModel.isSubmitting} /></div>
         {state.error && <p className="formError">{state.error}</p>}
+        </>}
       </div>
       <div className="formFooter"><button type="button" className="btnCancel" onClick={viewModel.close} disabled={viewModel.isSubmitting}>Annuler</button><button type="button" className="btnSubmit" onClick={() => void viewModel.submit()} disabled={viewModel.isSubmitting}>{viewModel.isSubmitting ? 'Création...' : 'Créer'}</button></div>
     </div>

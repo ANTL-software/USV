@@ -14,6 +14,7 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
     form,
     existing,
     isLeadCampaign,
+    isCreantlCampaign,
     handleChange,
     handleDeleteLogo,
     handleLeadBookingWeekdayChange,
@@ -75,6 +76,11 @@ export function CampagneGeneralFields({ viewModel }: CampagneGeneralFieldsProps)
           <span className="campagneForm__hint">Les autres jours seront désactivés dans le calendrier du script vendeur.</span>
         </fieldset>
       )}
+      {isCreantlCampaign && <fieldset>
+        <legend>Confirmation des rendez-vous Créantl</legend>
+        <label className="campagneForm__checkbox-label"><input type="checkbox" name="creantl_booking_notify_external" checked={form.creantl_booking_notify_external} onChange={handleChange} /><span>Envoyer également la confirmation au prospect</span></label>
+        <span className="campagneForm__hint">Désactivé par défaut. L’envoi externe utilise l’email saisi au rendez-vous, dans un message séparé sans les notes ni les copies internes.</span>
+      </fieldset>}
       <label className="campagneForm__label-full">Objectifs<textarea name="objectifs" value={form.objectifs} onChange={handleChange} rows={3} placeholder="Décrivez les objectifs de la campagne..." /></label>
 
       <fieldset className="campagneForm__fieldset campagneForm__fieldset--logo">

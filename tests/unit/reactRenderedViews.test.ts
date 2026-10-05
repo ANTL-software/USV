@@ -1,3 +1,4 @@
+import { createBookingLeadDraft } from '../../src/utils/scripts/bookingLead.ts';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import test, { after, before } from 'node:test';
@@ -223,6 +224,7 @@ test('Booking rend réellement le calendrier et son formulaire contrôlé', asyn
     personneExterne: 'Client Démo',
   };
   const form: BookingFormViewModel = {
+    creantl: { enabled: false, toggle: noop, draft: createBookingLeadDraft(), update: noop, selectedProspect: null, selectProspect: noop, prospects: [], search: '', setSearch: noop, config: null, loading: false, loadingProspects: false, loadingSlots: false, isSubmitting: false, error: '', today: '2026-07-16', submit: noopAsync, timeOptions: [], selectedTime: null, originOptions: [], selectedOrigin: null, selectAddress: noop },
     close: noop,
     employees: [{ label: 'Léa MARTIN', value: 4 }],
     hourOptions: BOOKING_HOUR_OPTIONS,

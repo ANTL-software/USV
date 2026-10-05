@@ -60,6 +60,7 @@ export interface BookingPayloadResult<T> {
 
 export interface Booking {
   id_booking: number;
+  id_lead?: number | null;
   id_employe: number;
   id_beneficiaire: number;
   debut: string; // ISO 8601 timestamp

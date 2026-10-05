@@ -11,6 +11,7 @@ export default function BookingDetailModal({ viewModel }: Readonly<BookingDetail
     <div id="bookingDetailModal" onClick={(event) => event.stopPropagation()}>
       <div className="modalHeader"><h2>Détail du rendez-vous</h2><button type="button" className="closeBtn" onClick={viewModel.close} aria-label="Fermer">✕</button></div>
       <div className="modalBody">
+        {booking.id_lead && <p>Lié au rendez-vous client Créantl #{booking.id_lead}. Les déplacements et annulations sont synchronisés.</p>}
         <div className="detailRow"><span className="detailLabel">Employé ANTL</span><span className="detailValue">#{booking.id_beneficiaire} {viewModel.employeeLabel}</span></div>
         {booking.personne_externe && <div className="detailRow"><span className="detailLabel">Personne externe</span><span className="detailValue">{booking.personne_externe}</span></div>}
         <div className="detailRow"><span className="detailLabel">Date</span><span className="detailValue capitalize">{viewModel.dateLabel}</span></div>
