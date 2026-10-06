@@ -35,7 +35,7 @@ test('le catalogue devis conserve des identifiants uniques et des contenus explo
   assert.equal(new Set(lineIds).size, lineIds.length);
   for (const template of QUOTE_TEMPLATES) {
     assert.ok(template.promise.length > 0);
-    assert.ok(template.assumptions.length > 0);
+    assert.ok(template.assumptions.every((assumption) => assumption.label.length > 0));
   }
 });
 

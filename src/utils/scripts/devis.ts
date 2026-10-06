@@ -44,6 +44,7 @@ export const BILLING_LABELS: Record<BillingRhythm, string> = {
   '50_50': '50% lancement / 50% livraison',
   acompte: 'Acompte puis échéancier',
   livraison: 'À la livraison',
+  ponctuel: 'Ponctuel',
 };
 
 export const getQuoteTimelineLabel = (timeline: string): string => (
@@ -116,10 +117,7 @@ export const QUOTE_TEMPLATES: QuoteTemplate[] = [
         mode: 'ponctuel',
       },
     ],
-    assumptions: [
-      { id: 'conquete-ass-1', label: 'Base prospects ou ciblage fournis ou validés avant lancement.' },
-      { id: 'conquete-ass-2', label: 'Facturation au rendez-vous réalisé.' },
-    ],
+    assumptions: [],
   },
   {
     id: 'fidelisation',
