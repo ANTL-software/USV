@@ -535,6 +535,7 @@ export {
   formatCurrency,
   getQuoteChecklistProgress,
   getQuoteEngagementMonths,
+  getQuoteTimelineLabel,
   getProjectQuoteTotals,
   getSelectedQuoteTemplates,
   getStatusTone,

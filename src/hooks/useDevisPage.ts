@@ -6,6 +6,7 @@ import {
   ENGAGEMENT_LABELS,
   buildProjectQuoteSections,
   getQuoteEngagementMonths,
+  getQuoteTimelineLabel,
 } from '../utils/scripts/index.ts';
 import { triggerBlobDownload } from '../utils/services/index.ts';
 import type { QuotePdfPayload } from '../utils/types/index.ts';
@@ -64,7 +65,7 @@ export function useDevisPage() {
         objective: devis.formState.objective.trim(),
       },
       terms: {
-        timeline_label: devis.formState.timeline.trim(),
+        timeline_label: getQuoteTimelineLabel(devis.formState.timeline.trim()),
         engagement_label: ENGAGEMENT_LABELS[devis.formState.engagement],
         engagement_months: getQuoteEngagementMonths(devis.formState.engagement),
         billing_label: BILLING_LABELS[devis.formState.billingRhythm],

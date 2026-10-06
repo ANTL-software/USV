@@ -43,7 +43,12 @@ export const BILLING_LABELS: Record<BillingRhythm, string> = {
   mensuel: 'Facturation mensuelle',
   '50_50': '50% lancement / 50% livraison',
   acompte: 'Acompte puis échéancier',
+  livraison: 'À la livraison',
 };
+
+export const getQuoteTimelineLabel = (timeline: string): string => (
+  Object.entries(TIMELINE_LABELS).find(([value]) => value === timeline)?.[1] ?? timeline
+);
 
 export const QUOTE_CAMPAIGN_TYPE_LABELS: Record<QuoteCampaignType, string> = {
   commercial: 'Commercial',

@@ -13,10 +13,17 @@ import {
   filterQuoteTemplates,
   getQuoteChecklistProgress,
   getQuoteEngagementMonths,
+  getQuoteTimelineLabel,
   getProjectQuoteTotals,
   getSelectedQuoteTemplates,
   toggleQuoteTemplateId,
 } from '../../src/utils/scripts/index.ts';
+
+test('le délai transmet le libellé choisi et conserve les saisies libres', () => {
+  assert.equal(getQuoteTimelineLabel('cadre'), 'Pas encore calé');
+  assert.equal(getQuoteTimelineLabel('30j'), 'Dans 30 jours');
+  assert.equal(getQuoteTimelineLabel('À réception des éléments'), 'À réception des éléments');
+});
 
 test('le catalogue devis conserve des identifiants uniques et des contenus exploitables', () => {
   const templateIds = QUOTE_TEMPLATES.map((template) => template.id);
