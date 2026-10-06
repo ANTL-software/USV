@@ -1270,3 +1270,11 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 - `bookingLead.service` utilise les routes dédiées `/bookings/creantl/*`, accessibles avec le seul droit booking. Le payload ne contient ni campagne, ni auteur, ni appel; l’API impose ces valeurs. Création d’une nouvelle entreprise ou sélection d’une fiche existante, puis même workflow lead/agenda que le script.
 - Le sélecteur `react-select` « Comment le prospect a connu antl ? » et les précisions libres sont des snapshots du lead, affichés dans les commandes. Le choix est explicite dans l’agenda; aucune origine supposée pour les anciens leads.
 - Scénarios Playwright `booking-creantl.spec.ts` : création, conflit 409 avec brouillon conservé, créneau occupé filtré, recherche de fiche existante, préremplissage et retour au mode classique. `booking-navigation.spec.ts` reste le garde-fou du rendez-vous manuel et des accès limités.
+
+## Journal du 06/10/2026 — Prospection web
+- Nouvelle vue /commercial/sites-prospection, carte Commercial et droit de poste `commercial/sites-prospection` (navigation et WithAuth).
+- Flux siteProspection.service.ts → siteProspection.model.ts → useSitesProspection → SitesProspectionContent/Filters/Table/DetailModal → layout commercial/SitesProspection. Contrats et helpers exposés par barrels.
+- Recherche, préfixe postal, agence, preuve, suivi, état entreprise ; tri postal initial avec inconnus en fin, pagination, fiche de preuves/sources et correction des champs. PATCH limité aux différences, révision pour éviter l’écrasement concurrent.
+- Tests navigateur : carte, route refusée sans permission, tri, filtre et correction ; tests de patch et URL.
+
+- La page reprend Facturation/Prospects : Header/SubNav/BackToTop dans le layout, Button/Loader/Modal partagés, `mixins.mainView`, `centeredContainer`, `card`, `formInput` et `formActions`, palette et ombres de variables.scss. Aucun sélecteur global de bouton ou champ sous le wrapper : les styles ciblent uniquement les classes sitesProspection.

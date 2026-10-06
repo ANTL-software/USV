@@ -110,6 +110,7 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
     name: 'Commercial',
     path: '/commercial',
     subsections: [
+      { id: 'sites-prospection', name: 'Prospection web', path: '/commercial/sites-prospection' },
       { id: 'publications-reseaux-sociaux', name: 'Posts réseaux sociaux', path: '/commercial/publications-reseaux-sociaux' },
       { id: 'facturation', name: 'Facturation', path: '/commercial/facturation' },
       { id: 'devis', name: 'Devis', path: '/commercial/devis' },
@@ -210,6 +211,7 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
   if (cleanPath === '/commercial' || cleanPath.startsWith('/commercial/')) {
     if (!hasAccessToSection(user, 'commercial')) return false;
     if (cleanPath === '/commercial') return true;
+    if (cleanPath.startsWith('/commercial/sites-prospection')) return hasAccessToSubsection(user, 'commercial', 'sites-prospection');
     if (cleanPath.startsWith('/commercial/publications-reseaux-sociaux')) {
       return hasAccessToSubsection(user, 'commercial', 'publications-reseaux-sociaux');
     }

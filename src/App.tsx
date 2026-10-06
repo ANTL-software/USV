@@ -35,6 +35,7 @@ import {
   CentreAppels as CentreAppelsWithAuth,
   CommandeDetails as CommandeDetailsWithAuth,
   CommandesList as CommandesListWithAuth,
+  SitesProspection as SitesProspectionWithAuth,
   Commercial as CommercialWithAuth,
   CommercialAgenda as CommercialAgendaWithAuth,
   Commerciaux as CommerciauxWithAuth,
@@ -160,6 +161,7 @@ function App(): ReactElement {
         <Route path={"commerciaux/mon_planning"} element={<MonPlanningWithAuth />}></Route>
         <Route path={"commerciaux/agenda-travail"} element={<CommercialAgendaWithAuth />}></Route>
         <Route path={"commercial"} element={<CommercialWithAuth />}></Route>
+        <Route path={"commercial/sites-prospection"} element={<SitesProspectionWithAuth />}></Route>
         <Route path={"commercial/facturation"} element={<FacturationWithAuth />}></Route>
         <Route path={"commercial/publications-reseaux-sociaux"} element={<SocialPublicationsWithAuth />}></Route>
         <Route path={"commercial/publications-reseaux-sociaux/historique"} element={<SocialPublicationHistoryWithAuth />}></Route>

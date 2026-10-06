@@ -20,6 +20,7 @@ export function CommercialHubContent({ viewModel }: CommercialHubContentProps): 
         </div>
         <div className="centreAppels__wrapper">
           <div className="centreAppels__row">
+            {access.sitesProspection && <button type="button" className="centreAppels__card" onClick={viewModel.navigateToSitesProspection}><div className="centreAppels__card-icon"><IoDocumentTextOutline /></div><h2>Prospection web</h2></button>}
             {access.socialPublications && <section className="centreAppels__card" onClick={viewModel.navigateToSocialPublications}><div className="centreAppels__card-icon"><IoMegaphoneOutline /></div><h2>Posts réseaux sociaux</h2></section>}
             {access.facturation && <section className="centreAppels__card" onClick={viewModel.navigateToFacturation}><div className="centreAppels__card-icon"><IoReceiptOutline /></div><h2>Facturation</h2></section>}
             {access.devis && <section className="centreAppels__card" onClick={viewModel.navigateToDevis}><div className="centreAppels__card-icon"><IoDocumentTextOutline /></div><h2>Devis</h2></section>}

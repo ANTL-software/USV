@@ -29,3 +29,5 @@ export {
   usesEmployeeCountLeadPricing,
 } from './facturation.model.ts';
 export { formatComparisonValue, comparisonDelta, comparisonMonthLabel, comparisonPeriodLabel, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, comparisonGroups, comparisonCards, comparisonSignals, comparisonTableRows, comparisonDisplayRow, comparisonCsv } from './monthlyComparison.model.ts';
+
+export { normalizeSiteProspection } from './siteProspection.model.ts';

@@ -679,3 +679,5 @@ export * from './leadBookingSchedule.ts';
 
 export * from './leadContactOrigin.ts';
 export * from './bookingLead.ts';
+
+export * from './siteProspection.ts';

@@ -43,7 +43,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
     'materiel',
     'telephonie',
   ],
-  commercial: ['publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
+  commercial: ['sites-prospection', 'publications-reseaux-sociaux', 'facturation', 'devis', 'configuration-antl'],
   incidents: ['declarer', 'qualifier', 'traiter', 'liste'],
   mail: ['mail_new', 'mail_list', 'mail_convert'],
   commerciaux: ['notes-direction', 'notes-direction-create', 'notes-direction-delete', 'mon_planning', 'agenda-travail'],

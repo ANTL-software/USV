@@ -393,3 +393,5 @@ export * from './Address.service.ts';
 export * from './commercialAddress.service.ts';
 
 export * from './bookingLead.service.ts';
+
+export { getSitesProspectionService, getSiteProspectionService, updateSiteProspectionService } from './siteProspection.service.ts';

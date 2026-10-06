@@ -1,0 +1,66 @@
+@use "../../../utils/styles/variables" as vars;
+@use "../../../utils/styles/mixins" as mixins;
+
+#sitesProspectionView { @include mixins.mainView; }
+#sitesProspectionView main { padding: 1.5em 1em 2.5em; }
+#sitesProspectionView .sitesProspection__container {
+ @include mixins.centeredContainer(100em);
+ display: flex;
+ flex-direction: column;
+ gap: 1.25em;
+}
+#sitesProspectionView .sitesProspection__hero,
+#sitesProspectionView .sitesProspection__filters {
+ @include mixins.card(1.1em, light);
+ background: rgba(255, 255, 255, .88);
+ border: 1px solid rgba(255, 255, 255, .6);
+ padding: 1.5em;
+}
+#sitesProspectionView .sitesProspection__hero { display: flex; justify-content: space-between; align-items: center; gap: 1em; }
+#sitesProspectionView .sitesProspection__hero h1 { margin: .1em 0 .35em; font-size: clamp(1.85rem, 2vw, 2.6rem); color: vars.$fontColorPrimary; }
+#sitesProspectionView .sitesProspection__eyebrow { margin: 0; text-transform: uppercase; letter-spacing: .08em; font-size: .78rem; font-weight: 700; color: vars.$utilsPrimary; }
+#sitesProspectionView .sitesProspection__subtitle { margin: 0; color: vars.$fontColorSecondary; line-height: 1.6; }
+#sitesProspectionView .sitesProspection__total { padding: .55em 1em; background: rgba(vars.$utilsPrimary, .1); border-radius: 2em; color: vars.$utilsPrimary; font-weight: 700; white-space: nowrap; }
+#sitesProspectionView .sitesProspection__filters { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1em; align-items: end; }
+#sitesProspectionView .sitesProspection__field { display: flex; flex-direction: column; gap: .4em; color: vars.$fontColorSecondary; font-size: .86rem; font-weight: 600; }
+#sitesProspectionView .sitesProspection__field input,
+#sitesProspectionView .sitesProspection__field select,
+#sitesProspectionView .sitesProspection__field textarea {
+ @include mixins.formInput("#sitesProspectionView .sitesProspection__field input, #sitesProspectionView .sitesProspection__field select, #sitesProspectionView .sitesProspection__field textarea");
+ width: 100%; box-sizing: border-box; min-height: 3rem; font-family: inherit; color: vars.$fontColorPrimary;
+}
+#sitesProspectionView .sitesProspection__field textarea { min-height: 6em; resize: vertical; }
+#sitesProspectionView .sitesProspection__hint { color: vars.$fontColorSecondary; font-size: .85em; margin: 0; }
+#sitesProspectionView .sitesProspection__error { padding: 1em; border-radius: 8px; color: vars.$errorColor; background: rgba(vars.$errorColor, .1); }
+#sitesProspectionView .sitesProspection__table { overflow-x: auto; border-radius: 12px; background: white; box-shadow: vars.$shadowLight; }
+#sitesProspectionView .sitesProspection__table table { border-collapse: collapse; width: 100%; font-size: .9em; }
+#sitesProspectionView .sitesProspection__table th { background: vars.$utilsGradient; color: white; text-align: left; padding: 1em; white-space: nowrap; }
+#sitesProspectionView .sitesProspection__table th button { background: transparent; color: inherit; border: 0; padding: 0; font: inherit; font-weight: 600; cursor: pointer; }
+#sitesProspectionView .sitesProspection__table td { padding: 1em; border-bottom: 1px solid vars.$borderColor; }
+#sitesProspectionView .sitesProspection__table tbody tr:hover { background: rgba(vars.$utilsPrimary, .04); }
+#sitesProspectionView .sitesProspection__table small { display: block; margin-top: .35em; color: vars.$fontColorSecondary; font-size: .8em; }
+#sitesProspectionView .sitesProspection__table a,
+#sitesProspectionView .sitesProspection__sources a { color: vars.$utilsPrimary; }
+#sitesProspectionView .sitesProspection__badge { display: inline-block; padding: .4em .75em; border-radius: 20px; font-size: .8em; background: vars.$greyBackground; }
+#sitesProspectionView .sitesProspection__badge--credit_direct,
+#sitesProspectionView .sitesProspection__badge--verifiee { background: rgba(vars.$successColor, .12); color: vars.$successColor; }
+#sitesProspectionView .sitesProspection__badge--signalee,
+#sitesProspectionView .sitesProspection__badge--contradictoire,
+#sitesProspectionView .sitesProspection__badge--historique { background: rgba(vars.$warningColor, .12); color: #996515; }
+#sitesProspectionView .sitesProspection__pagination { display: flex; justify-content: center; gap: 1em; align-items: center; flex-wrap: wrap; }
+#sitesProspectionView .sitesProspection__empty { padding: 2em; text-align: center; color: vars.$fontColorSecondary; }
+#sitesProspectionView .sitesProspection__formGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1em; }
+#sitesProspectionView .sitesProspection__detail fieldset { padding: 0; margin: 1em 0; border: 0; }
+#sitesProspectionView .sitesProspection__actions { @include mixins.formActions; }
+#sitesProspectionView .sitesProspection__sources { border-top: 1px solid vars.$borderColor; margin-top: 1.5em; padding-top: 1em; color: vars.$fontColorSecondary; }
+#sitesProspectionView .sitesProspection__sources h3 { color: vars.$fontColorPrimary; }
+#sitesProspectionView .sitesProspection__sources article { border-left: 3px solid vars.$utilsSecondary; padding: .75em 1em; margin: 1em 0; overflow-wrap: anywhere; background: vars.$greyBackground; }
+#sitesProspectionView .sitesProspection__srOnly { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+@media (max-width: vars.$tabletWidth) {
+ #sitesProspectionView .sitesProspection__filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: vars.$mobileWidth) {
+ #sitesProspectionView .sitesProspection__filters,
+ #sitesProspectionView .sitesProspection__formGrid { grid-template-columns: 1fr; }
+ #sitesProspectionView .sitesProspection__hero { align-items: flex-start; flex-direction: column; }
+}

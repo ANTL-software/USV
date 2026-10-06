@@ -5,7 +5,9 @@ import { useBookingCalendarView } from './useBookingCalendarView.ts';
 import type { BookingCalendarViewModel } from './useBookingCalendarView.ts';
 
 export interface CommercialPageViewModel {
+  navigateToSitesProspection: () => void;
   access: {
+    sitesProspection: boolean;
     configuration: boolean;
     devis: boolean;
     facturation: boolean;
@@ -96,12 +98,14 @@ export function useCommercialPage(): CommercialPageViewModel {
   const { user } = useUserContext();
   return {
     access: {
+      sitesProspection: hasAccessToSubsection(user, 'commercial', 'sites-prospection'),
       configuration: hasAccessToSubsection(user, 'commercial', 'configuration-antl'),
       devis: hasAccessToSubsection(user, 'commercial', 'devis'),
       facturation: hasAccessToSubsection(user, 'commercial', 'facturation'),
       socialPublications: hasAccessToSubsection(user, 'commercial', 'publications-reseaux-sociaux'),
     },
     navigateBack: () => void navigate('/home'),
+    navigateToSitesProspection: () => void navigate('/commercial/sites-prospection'),
     navigateToConfiguration: () => void navigate('/commercial/configuration-antl'),
     navigateToDevis: () => void navigate('/commercial/devis'),
     navigateToFacturation: () => void navigate('/commercial/facturation'),

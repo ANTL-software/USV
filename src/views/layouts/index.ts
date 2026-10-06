@@ -59,3 +59,5 @@ export { TelephonyManagement } from './telephonyManagement/index.ts';
 export { UpdateCourrier } from './updateCourrier/index.ts';
 export { VigieView } from './vigie/index.ts';
 export { QualiteComparatif } from './qualiteComparatif/index.ts';
+
+export { SitesProspection } from './commercial/index.ts';

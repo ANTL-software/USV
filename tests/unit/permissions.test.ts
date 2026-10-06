@@ -271,6 +271,7 @@ test('la matrice des postes recense chaque carte de hub comme sous-application',
 
   assert.deepEqual(bySection.get('mail'), ['mail_new', 'mail_list', 'mail_convert']);
   assert.deepEqual(bySection.get('commercial'), [
+    'sites-prospection',
     'publications-reseaux-sociaux',
     'facturation',
     'devis',

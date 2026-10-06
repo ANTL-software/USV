@@ -246,3 +246,8 @@ export * from './addressEditor/index.ts';
 
 export * from './campagneLeadSchedule/index.ts';
 export * from './bookingCreantlForm/index.ts';
+
+export { SitesProspectionContent } from './sitesProspectionContent/index.ts';
+export { SitesProspectionFilters } from './sitesProspectionFilters/index.ts';
+export { SitesProspectionTable } from './sitesProspectionTable/index.ts';
+export { SitesProspectionDetailModal } from './sitesProspectionDetailModal/index.ts';

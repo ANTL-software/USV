@@ -18,6 +18,7 @@ const EXPECTED_ROUTES = [
   'commerciaux/mon_planning',
   'commerciaux/agenda-travail',
   'commercial',
+  'commercial/sites-prospection',
   'commercial/facturation',
   'commercial/publications-reseaux-sociaux',
   'commercial/publications-reseaux-sociaux/historique',

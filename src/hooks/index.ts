@@ -248,3 +248,6 @@ export { useLeadContactEditor } from './useLeadContactEditor.ts';
 
 export * from './useLeadBookingSchedule.ts';
 export * from './useBookingCreantlLead.ts';
+
+export { useSitesProspection } from './useSitesProspection.ts';
+export type { SitesProspectionViewModel } from './useSitesProspection.ts';
