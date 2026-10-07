@@ -23,13 +23,13 @@ export function useCampagneFormView() {
   const campagneId = campaignForm.existing?.id_campagne ?? null;
   const campaignAgents = useCampagneAgents(campagneId);
   const { campagnes } = useCampagnes();
-  const { employes } = useEmployes();
+  const { employes, load: reloadEmployes, isLoading: employesLoading, error: employesError } = useEmployes();
   const [selectedAgent, setSelectedAgent] = useState<CampagneSelectOption | null>(null);
   const [transferDestinations, setTransferDestinations] = useState<Record<number, CampagneSelectOption | null>>({});
 
   const availableEmployes = useMemo(
-    () => getAvailableCampaignEmployes(employes, campaignAgents.agents),
-    [campaignAgents.agents, employes],
+    () => getAvailableCampaignEmployes(employes, campaignAgents.agents, campagneId),
+    [campaignAgents.agents, campagneId, employes],
   );
   const transferableCampaigns = useMemo(
     () => getTransferableCampaigns(campagnes, campagneId),
@@ -40,8 +40,8 @@ export function useCampagneFormView() {
     [campaignAgents.agents],
   );
   const availableEmployeOptions = useMemo(
-    () => buildCampaignEmployeOptions(availableEmployes),
-    [availableEmployes],
+    () => buildCampaignEmployeOptions(availableEmployes, campagnes),
+    [availableEmployes, campagnes],
   );
   const transferCampaignOptions = useMemo(
     () => buildTransferCampaignOptions(transferableCampaigns),
@@ -52,11 +52,22 @@ export function useCampagneFormView() {
     void navigate('/campagnes');
   }, [navigate]);
 
-  const handleAddAgent = useCallback((): void => {
-    if (!selectedAgent) return;
-    void campaignAgents.addAgent({ id_employe: Number(selectedAgent.value) });
-    setSelectedAgent(null);
-  }, [campaignAgents, selectedAgent]);
+  const handleAddAgent = useCallback(async (): Promise<void> => {
+    const employe = availableEmployes.find((item) => item.id_employe === Number(selectedAgent?.value));
+    if (!employe) return;
+    const source = employe.campagnesAssignees?.find((item) => item.date_fin_affectation === null);
+    const sourceCampaign = campagnes.find((item) => item.id_campagne === source?.id_campagne);
+    const success = await campaignAgents.addAgent(
+      { id_employe: employe.id_employe },
+      source ? { id_campagne: source.id_campagne, nom_campagne: source.campagne?.nom_campagne ?? sourceCampaign?.nom_campagne ?? `Campagne #${source.id_campagne}` } : undefined,
+      `${employe.prenom} ${employe.nom}`.trim(),
+      campaignForm.existing?.nom_campagne,
+    );
+    if (success) {
+      setSelectedAgent(null);
+      await reloadEmployes();
+    }
+  }, [availableEmployes, campaignAgents, campaignForm.existing, campagnes, reloadEmployes, selectedAgent]);
 
   const handleStartTransfer = useCallback((idEmploye: number): void => {
     campaignAgents.setTransferEnCours(idEmploye);
@@ -81,12 +92,12 @@ export function useCampagneFormView() {
       destinationId,
       agentName,
       destination.nom_campagne,
-    );
-  }, [campaignAgents, transferDestinations, transferableCampaigns]);
+    ).then(reloadEmployes);
+  }, [campaignAgents, reloadEmployes, transferDestinations, transferableCampaigns]);
 
   const handleRemoveAgent = useCallback((idEmploye: number, agentName: string): void => {
-    void campaignAgents.removeAgent(idEmploye, agentName || 'cet agent');
-  }, [campaignAgents]);
+    void campaignAgents.removeAgent(idEmploye, agentName || 'cet agent').then(reloadEmployes);
+  }, [campaignAgents, reloadEmployes]);
 
   const cancelTransfer = useCallback((): void => {
     campaignAgents.setTransferEnCours(null);
@@ -94,6 +105,8 @@ export function useCampagneFormView() {
 
   return {
     availableEmployeOptions,
+    employesLoading,
+    employesError,
     campaignAgents,
     campaignForm,
     cancelTransfer,

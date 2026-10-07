@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSitesProspectionService, getSiteProspectionService, updateSiteProspectionService } from '../API/services/index.ts';
-import { buildSiteEditPatch, createSiteEditForm, DEFAULT_SITE_QUERY, safeSiteLink, SITE_AGENCY_OPTIONS, SITE_EDIT_FIELDS, SITE_FOLLOWUP_OPTIONS, siteAgencyLabel, siteFollowupLabel, siteProofLabel, siteRequestError } from '../utils/scripts/index.ts';
+import { buildSiteEditPatch, createSiteEditForm, DEFAULT_SITE_QUERY, safeSiteLink, sitePhoneLabel, formatSitePhone, SITE_PHONE_OPTIONS, SITE_AGENCY_OPTIONS, SITE_EDIT_FIELDS, SITE_FOLLOWUP_OPTIONS, siteAgencyLabel, siteFollowupLabel, siteProofLabel, siteRequestError } from '../utils/scripts/index.ts';
 import type { SiteEditField, SiteEditForm, SiteProspection, SiteProspectionList, SiteProspectionQuery } from '../utils/types/index.ts';
 export function useSitesProspection() {
  const navigate = useNavigate();
@@ -34,12 +34,15 @@ export function useSitesProspection() {
  };
  const source = selected?.entreprise_sources;
  return {
-  query, loading, saving, error, success, selected, form, fields: SITE_EDIT_FIELDS, agencyOptions: SITE_AGENCY_OPTIONS, followupOptions: SITE_FOLLOWUP_OPTIONS,
-  total: data.total, rows: data.rows.map(site => ({ ...site, agencyLabel: siteAgencyLabel(site.agence_statut), followupLabel: siteFollowupLabel(site.suivi), siteLink: safeSiteLink(site.site_url) })),
+  query, loading, saving, error, success, selected, form, fields: SITE_EDIT_FIELDS, phoneOptions: SITE_PHONE_OPTIONS, agencyOptions: SITE_AGENCY_OPTIONS, followupOptions: SITE_FOLLOWUP_OPTIONS,
+  total: data.total, rows: data.rows.map(site => ({ ...site, phoneLabel: sitePhoneLabel(site.telephone_statut), phoneDisplay: formatSitePhone(site.telephone_fixe), agencyLabel: siteAgencyLabel(site.agence_statut), followupLabel: siteFollowupLabel(site.suivi), siteLink: safeSiteLink(site.site_url) })),
   page: query.page, pages: Math.max(1, Math.ceil(data.total / query.limit)),
   sourceLinks: source ? [['Registre officiel', source.annuaire_url || source.registry_source_url], ['Éditeur du site', source.site_source_url]].map(([label, url]) => ({ label: String(label), url: safeSiteLink(url) })).filter(link => link.url) : [],
   sourceAddress: typeof source?.site_address === 'string' ? source.site_address : '',
   sourceDate: typeof source?.registry_checked_at === 'string' ? source.registry_checked_at : '',
+  phoneLabel: sitePhoneLabel(selected?.telephone_statut || 'non_recherche'),
+  phoneSourceLink: safeSiteLink(selected?.telephone_source_url),
+  phoneProofs: (selected?.telephone_preuves || []).map(proof => ({ ...proof, display: formatSitePhone(proof.number), link: safeSiteLink(proof.source_url) })),
   proofs: (selected?.preuves || []).map(proof => ({ ...proof, label: siteProofLabel(proof.kind), link: safeSiteLink(proof.page_url), resourceLink: safeSiteLink(proof.resource_url) })),
   changeFilter, sort, open, close, save,
   reload: () => setRefresh(value => value + 1),

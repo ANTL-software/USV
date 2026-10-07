@@ -55,6 +55,7 @@ export function useCampagneAgents(idCampagne: number | null) {
   const [agents, setAgents] = useState<AgentAffecte[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [transferEnCours, setTransferEnCours] = useState<number | null>(null); // id_employe en cours de transfert
 
   const load = useCallback(async () => {
@@ -73,15 +74,34 @@ export function useCampagneAgents(idCampagne: number | null) {
 
   useEffect(() => { load(); }, [load]);
 
-  const addAgent = useCallback(async (data: AddAgentCampagneData) => {
-    if (!idCampagne) return;
+  const addAgent = useCallback(async (
+    data: AddAgentCampagneData,
+    source?: { id_campagne: number; nom_campagne: string },
+    agentName?: string,
+    destinationName?: string,
+  ): Promise<boolean> => {
+    if (!idCampagne || isSaving) return false;
+    setIsSaving(true);
     try {
-      await addAgentCampagneService(idCampagne, data);
+      if (source) {
+        const sourceName = source.nom_campagne;
+        if (!await confirm(
+          `${agentName} est sur la campagne ${sourceName}. Effectuer un transfert vers campagne ${destinationName} ?`,
+          'Confirmer le transfert', 'Oui', 'Annuler',
+        )) return false;
+        await transfererAgentService(source.id_campagne, data.id_employe, { id_campagne_destination: idCampagne });
+      } else {
+        await addAgentCampagneService(idCampagne, data);
+      }
       await load();
+      return true;
     } catch (err) {
       await showError(err instanceof Error ? err.message : 'Erreur', 'Erreur');
+      return false;
+    } finally {
+      setIsSaving(false);
     }
-  }, [idCampagne, load]);
+  }, [idCampagne, isSaving, load]);
 
   const removeAgent = useCallback(async (idEmploye: number, nom: string) => {
     if (!idCampagne) return;
@@ -106,7 +126,7 @@ export function useCampagneAgents(idCampagne: number | null) {
     }
   }, [idCampagne, load]);
 
-  return { agents, isLoading, error, addAgent, removeAgent, transferAgent, transferEnCours, setTransferEnCours };
+  return { agents, isLoading, isSaving, error, addAgent, removeAgent, transferAgent, transferEnCours, setTransferEnCours };
 }
 
 export function useCampagneProduits(idCampagne: number | null) {

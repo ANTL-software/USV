@@ -363,13 +363,14 @@ export function validateCampagneLogoFile(file: Pick<File, 'size' | 'type'>): str
 export function getAvailableCampaignEmployes(
   employes: Employe[],
   agents: AgentAffecte[],
+  campagneId: number | null = null,
 ): Employe[] {
   const assignedIds = new Set(agents.map((agent) => agent.id_employe));
   return employes.filter((employe) => {
-    const hasActiveCampaign = (employe.campagnesAssignees ?? []).some(
-      (assignment) => assignment.date_fin_affectation === null,
+    const isAssignedHere = (employe.campagnesAssignees ?? []).some(
+      (assignment) => assignment.date_fin_affectation === null && assignment.id_campagne === campagneId,
     );
-    return employe.actif && !hasActiveCampaign && !assignedIds.has(employe.id_employe);
+    return employe.actif && !isAssignedHere && !assignedIds.has(employe.id_employe);
   });
 }
 
@@ -395,11 +396,17 @@ export function sortCampaignAgents(agents: AgentAffecte[]): AgentAffecte[] {
   ));
 }
 
-export function buildCampaignEmployeOptions(employes: Employe[]): CampagneSelectOption[] {
-  return employes.map((employe) => ({
-    value: String(employe.id_employe),
-    label: `${employe.prenom} ${employe.nom}`.trim(),
-  }));
+export function buildCampaignEmployeOptions(employes: Employe[], campagnes: Campagne[] = []): CampagneSelectOption[] {
+  return employes.map((employe) => {
+    const assignment = employe.campagnesAssignees?.find((item) => item.date_fin_affectation === null);
+    const campaignName = assignment?.campagne?.nom_campagne
+      ?? campagnes.find((campaign) => campaign.id_campagne === assignment?.id_campagne)?.nom_campagne;
+    const name = `${employe.prenom} ${employe.nom}`.trim();
+    return {
+      value: String(employe.id_employe),
+      label: assignment ? `${name} — ${campaignName ?? `Campagne #${assignment.id_campagne}`}` : name,
+    };
+  });
 }
 
 export function buildTransferCampaignOptions(campagnes: Campagne[]): CampagneSelectOption[] {

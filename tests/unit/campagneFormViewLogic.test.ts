@@ -283,7 +283,7 @@ test('les fichiers logo sont bornés par taille et format', () => {
   );
 });
 
-test('les agents disponibles excluent les inactifs et toute affectation active, même dans une autre campagne', () => {
+test('les agents disponibles incluent ceux à transférer et excluent les inactifs et la campagne courante', () => {
   const assigned = createAgent(1, 'Zoé', 'Martin');
   const available = getAvailableCampaignEmployes([
     createEmploye(1),
@@ -307,11 +307,12 @@ test('les agents disponibles excluent les inactifs et toute affectation active, 
         date_fin_affectation: '2026-08-31',
       }],
     }),
-  ], [assigned]);
+  ], [assigned], 1);
 
-  assert.deepEqual(available.map(({ id_employe }) => id_employe), [2, 5]);
+  assert.deepEqual(available.map(({ id_employe }) => id_employe), [2, 4, 5]);
   assert.deepEqual(buildCampaignEmployeOptions(available), [
     { value: '2', label: 'Alice Durand' },
+    { value: '4', label: 'Prénom 4 Nom 4 — Campagne #9' },
     { value: '5', label: 'Lina Ancienne' },
   ]);
 });

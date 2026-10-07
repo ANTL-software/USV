@@ -14,6 +14,8 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
   const {
     availableEmployeOptions,
     campaignAgents,
+    employesLoading,
+    employesError,
     cancelTransfer,
     getAgentName,
     handleAddAgent,
@@ -36,15 +38,22 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
           <span className="campagneForm__agents-count">{sortedAgents.length}</span>
         </h2>
 
+        <p className="campagneForm__agents-help">Affectez un commercial à cette campagne. S’il travaille déjà sur une autre campagne, son transfert vous sera demandé.</p>
+        {(campaignAgents.error || employesError) && (
+          <p className="campagneForm__error" role="alert">{campaignAgents.error || employesError}</p>
+        )}
         <div className="campagneForm__agents-add">
           <Select<CampagneSelectOption>
             value={selectedAgent}
             onChange={setSelectedAgent}
             options={availableEmployeOptions}
-            isDisabled={availableEmployeOptions.length === 0}
+            isDisabled={employesLoading || campaignAgents.isLoading || campaignAgents.isSaving || availableEmployeOptions.length === 0}
+            isLoading={employesLoading}
+            aria-label="Commercial à affecter"
             isClearable
-            placeholder="Choisir un agent"
-            noOptionsMessage={() => 'Aucun agent disponible'}
+            placeholder="Choisir un commercial"
+            noOptionsMessage={() => 'Aucun commercial disponible'}
+            className="campagneForm__agents-select"
             classNamePrefix="reactSelect"
             menuPortalTarget={document.body}
             menuPosition="fixed"
@@ -53,9 +62,9 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
             style="gradient"
             type="button"
             onClick={handleAddAgent}
-            disabled={!selectedAgent}
+            disabled={!selectedAgent || employesLoading || campaignAgents.isLoading || campaignAgents.isSaving}
           >
-            Affecter
+            {campaignAgents.isSaving ? 'Affectation...' : 'Affecter'}
           </Button>
         </div>
 
@@ -89,6 +98,7 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
                             style="seaGreen"
                             type="button"
                             onClick={() => handleStartTransfer(agent.id_employe)}
+                            disabled={campaignAgents.isSaving}
                           >
                             <IoSwapHorizontal /> Transfert
                           </Button>
@@ -97,6 +107,7 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
                           style="red"
                           type="button"
                           onClick={() => handleRemoveAgent(agent.id_employe, agentName)}
+                          disabled={campaignAgents.isSaving}
                         >
                           Retirer
                         </Button>
@@ -111,6 +122,8 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
                           autoFocus
                           placeholder="— Campagne destination —"
                           noOptionsMessage={() => 'Aucune campagne disponible'}
+                          className="campagneForm__agents-select"
+                          aria-label={`Campagne destination pour ${agentName}`}
                           classNamePrefix="reactSelect"
                           menuPortalTarget={document.body}
                           menuPosition="fixed"
@@ -119,7 +132,7 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
                           style="gradient"
                           type="button"
                           onClick={() => handleConfirmTransfer(agent.id_employe, agentName)}
-                          disabled={!transferDestinations[agent.id_employe]?.value}
+                          disabled={!transferDestinations[agent.id_employe]?.value || campaignAgents.isSaving}
                         >
                           Confirmer
                         </Button>

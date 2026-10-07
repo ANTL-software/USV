@@ -7,7 +7,7 @@
   padding: 1.5em 1em;
 }
 #campagneForm .campagneForm__container {
-  @include mixins.centeredContainer(75em);
+  @include mixins.centeredContainer(100em);
 }
 #campagneForm .campagneForm__layout {
   display: flex;
@@ -23,8 +23,9 @@
 }
 @media (min-width: vars.$desktopWidth) {
   #campagneForm .campagneForm__layout {
-    flex-direction: row;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(28em, 1fr);
+    align-items: start;
   }
 }
 #campagneForm .campagneForm__form {
@@ -40,7 +41,8 @@
   }
 }
 #campagneForm .campagneForm__sidebar {
-  flex: 0 0 22em; // Largeur fixe de 22em pour la sidebar agents
+  min-width: 0;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -51,15 +53,8 @@
   #campagneForm .campagneForm__sidebar {
     position: sticky;
     top: 11dvh;
-    max-height: calc(100dvh - 12dvh);
-    overflow-y: auto;
+
     order: 2;
-  }
-}
-// Adapter pour les écrans plus petits
-@media (max-width: 1400px) {
-  #campagneForm .campagneForm__sidebar {
-    flex: 0 0 18em;
   }
 }
 #campagneForm .campagneForm__sidebar-actions {
@@ -216,11 +211,24 @@
 }
 #campagneForm .campagneForm__agents-add {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.75em;
   margin-bottom: 1em;
 }
-#campagneForm .campagneForm__agents-add .reactSelect__container {
-  flex: 1;
+#campagneForm .campagneForm__agents-select {
+  flex: 1 1 15em;
+  min-width: 0;
+  max-width: 100%;
+}
+#campagneForm .campagneForm__agents-help {
+  margin: 0 0 1em;
+  font-size: 0.88rem;
+  color: vars.$fontColorSecondary;
+}
+#campagneForm .campagneForm__agents-select .reactSelect__placeholder,
+#campagneForm .campagneForm__agents-select .reactSelect__single-value {
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 #campagneForm .campagneForm__agents-empty {
   color: vars.$fontColorSecondary;
@@ -259,7 +267,9 @@
   align-items: center;
   gap: 0.5em;
   flex-wrap: wrap;
-  flex: 1;
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 #campagneForm .campagneForm__agents-nom {
   font-size: 0.9rem;
@@ -279,7 +289,9 @@
   display: flex;
   align-items: center;
   gap: 0.4em;
-  flex-shrink: 0;
+  flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
 }
 #campagneForm .campagneForm__agents-transfer-row {
   display: flex;
@@ -289,9 +301,9 @@
   width: 100%;
   margin-top: 0.25em;
 }
-#campagneForm .campagneForm__agents-transfer-row .reactSelect__container {
-  flex: 1;
-  min-width: 200px;
+#campagneForm .campagneForm__agents-transfer-row .campagneForm__agents-select {
+  flex-basis: 100%;
+  width: 100%;
   font-size: 0.85rem;
 }
 // ─── Checkbox autoriser mobile ────────────────────────────────────────────────
@@ -591,13 +603,13 @@
 
 .campagneForm__doc-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1em;
 }
 
 @media (min-width: vars.$tabletWidth) {
   .campagneForm__doc-grid {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -613,4 +625,26 @@
   padding: 0.5em;
   background: vars.$greyBackground;
   border-radius: 6px;
+}
+
+@media (max-width: vars.$mobileWidth) {
+  #campagneForm .campagneForm__form fieldset,
+  #campagneForm .campagneForm__agents {
+    padding: 1em;
+    min-width: 0;
+  }
+  #campagneForm .campagneForm__row label {
+    min-width: 0;
+    flex-basis: 100%;
+  }
+  #campagneForm .campagneForm__doc-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  #campagneForm .campagneForm__actions {
+    flex-wrap: wrap;
+  }
+}
+
+#campagneForm .campagneForm__doc-grid label {
+  min-width: 0;
 }
