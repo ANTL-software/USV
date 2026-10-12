@@ -15,6 +15,8 @@ test('une adresse prospect saisie doit être validée puis confirmée avant tout
   const sale = {
     id_vente: 123,
     reference_doc: '0600123',
+    email_prospect_consulte_at: '2026-09-24T09:00:00.000Z',
+    bon_commande_signe_consulte_at: '2026-09-25T10:00:00.000Z',
     id_prospect: 42,
     id_agent: 9,
     id_campagne: 7,
@@ -57,6 +59,8 @@ test('une adresse prospect saisie doit être validée puis confirmée avant tout
   }, unhandled);
 
   await page.goto('/operations/commandes/details/123');
+  await expect(page.getByText(/Consultation de l’email au prospect détectée le/)).toContainText('24/09/2026');
+  await expect(page.getByText(/Consultation du mail par notre client détectée le/)).toContainText('25/09/2026');
   await page.getByRole('button', { name: 'Envoyer le bon de commande au prospect' }).click();
   const modal = page.locator('.signedOrderEmailModal__card').filter({ has: page.getByRole('heading', { name: 'Envoyer le bon de commande au prospect' }) });
   const sendButton = modal.getByRole('button', { name: 'Envoyer par mail' });

@@ -55,6 +55,7 @@ export interface Vente {
   date_acceptation?: string | null;
   frigo_rappel_at?: string | null;
   email_envoye_at?: string | null;
+  email_prospect_consulte_at?: string | null;
   prospect_email_sender?: {
     configured: boolean;
     name: string;

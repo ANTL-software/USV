@@ -67,6 +67,7 @@ export function CommandeVenteDetails({ idVente, onBack }: CommandeVenteDetailsPr
                 {statusPresentation.label}
               </span>
             )}
+            {commande.email_prospect_consulte_at && <span className="commandeDetails__email-open" title="Chargement de l’email détecté ; peut provenir du prospect, d’une copie ou d’un chargement automatique. Ne prouve pas la lecture du PDF."><IoEye /> Consultation de l’email au prospect détectée le {formatCommandeDateTime(commande.email_prospect_consulte_at)}</span>}
             {commande.bon_commande_signe_consulte_at && <span className="commandeDetails__email-open" title="Consultation du mail par notre client détectée lors du chargement de l’e-mail"><IoEye /> Consultation du mail par notre client détectée le {formatCommandeDateTime(commande.bon_commande_signe_consulte_at)}</span>}
           </div>
           <div className="commandeDetails__content">
