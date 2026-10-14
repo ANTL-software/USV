@@ -31,3 +31,4 @@ export {
 export { formatComparisonValue, comparisonDelta, comparisonMonthLabel, comparisonPeriodLabel, defaultComparisonMonths, defaultComparisonCampaign, comparisonDimension, comparisonGroups, comparisonCards, comparisonSignals, comparisonTableRows, comparisonDisplayRow, comparisonCsv } from './monthlyComparison.model.ts';
 
 export { normalizeSiteProspection } from './siteProspection.model.ts';
+export { isQuoteDraftSnapshot, parseLocalQuoteDrafts } from './quoteDraft.model.ts';

@@ -53,6 +53,8 @@ export function ProspectInjectionContent({ viewModel }: ProspectInjectionContent
             <h2>Injecter des prospects dans la campagne #{campagneId ?? '—'}{campagneNom ? ` — ${campagneNom}` : ''}</h2>
           </div>
 
+          <p>Les opt-out et refus définitifs sont exclus pendant six mois, y compris les doublons du téléphone principal. Après ce délai, ce formulaire permet leur réinjection dans une campagne n’ayant reçu aucun refus.</p>
+
           <form className="prospectInjection__form" onSubmit={(event) => { event.preventDefault(); countProspects(); }}>
             <fieldset>
               <legend>Filtres de sélection</legend>

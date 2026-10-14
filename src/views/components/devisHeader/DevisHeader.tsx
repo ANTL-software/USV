@@ -5,6 +5,7 @@ import type { QuoteCampaignType } from '../../../utils/types/index.ts';
 import { Button } from '../button/index.ts';
 
 interface DevisHeaderProps {
+  isEditing: boolean;
   campaignType: QuoteCampaignType;
   onBack: () => void;
   progressPercent: number;
@@ -12,6 +13,7 @@ interface DevisHeaderProps {
 }
 
 export function DevisHeader({
+  isEditing,
   campaignType,
   onBack,
   progressPercent,
@@ -26,16 +28,16 @@ export function DevisHeader({
         </Button>
       </div>
 
-      <section className="devisView__hero">
+      <section className={`devisView__hero${isEditing ? '' : ' devisView__hero--browse'}`}>
         <div>
           <p className="devisView__eyebrow">Commercial / Devis</p>
-          <h1>Préparer un devis de bout en bout</h1>
+          <h1>{isEditing ? 'Préparer un devis de bout en bout' : 'Créer ou reprendre un devis'}</h1>
           <p className="devisView__subtitle">
-            Sélectionnez les expertises, qualifiez le besoin client et composez une proposition commerciale chiffrée.
+            {isEditing ? 'Sélectionnez les expertises, qualifiez le besoin client et composez une proposition commerciale chiffrée.' : 'Commencez une nouvelle proposition ou retrouvez vos devis en cours.'}
           </p>
         </div>
 
-        <div className="devisView__hero-kpis">
+        {isEditing && <div className="devisView__hero-kpis">
           <div>
             <span>Modèle sélectionné</span>
             <strong>{selectedTemplateTitle || 'Aucun modèle'}</strong>
@@ -48,7 +50,7 @@ export function DevisHeader({
             <span>Modèle tarifaire</span>
             <strong>{QUOTE_CAMPAIGN_TYPE_LABELS[campaignType]}</strong>
           </div>
-        </div>
+        </div>}
       </section>
     </>
   );

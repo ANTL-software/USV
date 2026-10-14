@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import {
   DEFAULT_FORM,
   PROJECT_QUOTE_SECTIONS,
@@ -12,6 +12,7 @@ import {
   toggleQuoteTemplateId,
 } from '../utils/scripts/index.ts';
 import type {
+  QuoteDraftSnapshot,
   QuoteCampaignType,
   QuoteCustomClause,
   QuoteFormChangeHandler,
@@ -41,6 +42,25 @@ export function useDevisView() {
   const [thirdPartyServices, setThirdPartyServices] = useState<QuoteThirdPartyService[]>(() => (
     PROJECT_THIRD_PARTY_SERVICES.map((service) => ({ ...service }))
   ));
+
+  const snapshot = useMemo<QuoteDraftSnapshot>(() => ({
+    version: 1, selectedTemplateIds, formState, campaignType,
+    commercialCommissionRate: commercialCommissionRate ?? null,
+    appointmentRate: appointmentRate ?? null, appointmentDescription,
+    customClauses, projectSections, thirdPartyServices,
+  }), [selectedTemplateIds, formState, campaignType, commercialCommissionRate, appointmentRate,
+    appointmentDescription, customClauses, projectSections, thirdPartyServices]);
+  const restoreSnapshot = useCallback((saved: QuoteDraftSnapshot): void => {
+    setSelectedTemplateIds([...saved.selectedTemplateIds]);
+    setFormState({ ...saved.formState });
+    setCampaignType(saved.campaignType);
+    setCommercialCommissionRate(saved.commercialCommissionRate ?? undefined);
+    setAppointmentRate(saved.appointmentRate ?? undefined);
+    setAppointmentDescription(saved.appointmentDescription);
+    setCustomClauses(saved.customClauses.map(clause => ({ ...clause, amount: clause.amount ?? undefined })));
+    setProjectSections(saved.projectSections.map(section => ({ ...section, lines: section.lines.map(line => ({ ...line, amount: line.amount ?? undefined })) })));
+    setThirdPartyServices(saved.thirdPartyServices.map(service => ({ ...service })));
+  }, []);
 
   const visibleTemplates = useMemo(
     () => filterQuoteTemplates(QUOTE_TEMPLATES, familyFilter),
@@ -199,6 +219,8 @@ export function useDevisView() {
   };
 
   return {
+    snapshot,
+    restoreSnapshot,
     addCustomClause,
     addProjectLine,
     addThirdPartyService,

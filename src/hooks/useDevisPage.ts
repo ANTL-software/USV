@@ -11,12 +11,14 @@ import {
 import { triggerBlobDownload } from '../utils/services/index.ts';
 import type { QuotePdfPayload } from '../utils/types/index.ts';
 import { useAlert } from './useAlert.ts';
+import { useQuoteDrafts } from './useQuoteDrafts.ts';
 import { useDevisView } from './useDevisView.ts';
 
 export function useDevisPage() {
   const navigate = useNavigate();
   const { showError } = useAlert();
   const devis = useDevisView();
+  const drafts = useQuoteDrafts(devis.snapshot, devis.restoreSnapshot);
   const [isGeneratingQuote, setIsGeneratingQuote] = useState(false);
   const navigateBack = useCallback((): void => {
     void navigate('/commercial');
@@ -93,6 +95,7 @@ export function useDevisPage() {
 
   return {
     ...devis,
+    drafts,
     navigateBack,
     generateQuote,
     isGeneratingQuote,

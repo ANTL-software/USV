@@ -841,3 +841,57 @@
   width: 100%;
   justify-content: center;
 }
+.devisView__draft-workspace { border: 0; padding: 0; margin: 0; min-width: 0; }
+.devisView__draft-legend { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+
+#devisView .devisView__drafts { overflow: visible; position: relative; z-index: 2; }
+.devisView__drafts-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.devisView__drafts-heading { display: flex; align-items: center; gap: .85rem; }
+.devisView__drafts-heading h2 { margin: 0 0 .25rem; color: vars.$fontColorPrimary; font-size: 1.25rem; }
+.devisView__drafts-heading p { margin: 0; color: vars.$fontColorSecondary; font-size: .9rem; }
+.devisView__drafts-icon { display: grid; place-items: center; width: 2.8rem; height: 2.8rem; flex-shrink: 0; border-radius: .9rem; background: #ede9fe; color: vars.$utilsPrimary; font-size: 1.5rem; }
+#devisView .devisView__drafts-new { border: 1px solid vars.$utilsPrimary; color: vars.$utilsDark; min-height: 2.8rem; font-weight: 600; padding: .65rem 1rem; }
+.devisView__drafts-picker { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 1rem; margin: 1.25rem 0; padding: 1.15rem; border-radius: 1rem; background: #f7f5ff; border: 1px solid #e8e1ff; }
+.devisView__drafts-select { min-width: 0; }
+.devisView__drafts-select label { display: block; margin-bottom: .55rem; font-size: .9rem; font-weight: 600; color: vars.$fontColorPrimary; }
+.devisView__drafts-caption { margin: .55rem 0 0; font-size: .8rem; color: vars.$fontColorSecondary; }
+#devisView .devisView__drafts-resume { margin-top: 1.65rem; min-height: 3rem; padding: .75rem 1.25rem; font-weight: 700; box-shadow: 0 4px 12px rgba(124, 58, 237, .2); }
+.devisView__drafts-option { display: grid; gap: .2rem; }
+.devisView__drafts-option span { font-size: .8rem; opacity: .8; }
+.devisView__drafts-current { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.devisView__drafts-save-info { display: flex; gap: .5rem .75rem; align-items: center; flex-wrap: wrap; flex: 1; min-width: 12rem; }
+.devisView__drafts-save-info strong { color: vars.$fontColorPrimary; font-size: .9rem; }
+.devisView__drafts-save-info p { flex-basis: 100%; margin: 0; font-size: .8rem; color: vars.$fontColorSecondary; }
+.devisView__drafts-status { display: inline-flex; align-items: center; gap: .35rem; border-radius: 2rem; padding: .35rem .6rem; font-size: .75rem; font-weight: 600; background: #f1f5f9; color: vars.$fontColorSecondary; }
+.devisView__drafts-status--saved { background: #ecfdf5; color: #047857; }
+.devisView__drafts-status--pending { background: #ede9fe; color: vars.$utilsDark; }
+.devisView__drafts-status--warning { background: #fff7ed; color: #9a3412; }
+.devisView__drafts-secondary { display: flex; align-items: center; gap: .75rem; flex-wrap: wrap; }
+#devisView .devisView__drafts-save { border: 1px solid #c4b5fd; color: vars.$utilsDark; min-height: 2.5rem; font-size: .85rem; }
+.devisView__drafts-more { position: relative; }
+.devisView__drafts-more summary { cursor: pointer; font-size: .85rem; color: vars.$fontColorSecondary; padding: .6rem; border-radius: .5rem; }
+.devisView__drafts-more summary:focus-visible { outline: 2px solid vars.$utilsPrimary; outline-offset: 2px; }
+.devisView__drafts-menu { position: absolute; right: 0; top: calc(100% + .5rem); z-index: 20; min-width: 16rem; display: grid; gap: .25rem; padding: .5rem; border-radius: .75rem; background: vars.$whiteBackground; box-shadow: vars.$shadowMedium; border: 1px solid vars.$borderColor; }
+#devisView .devisView__drafts-menu button { justify-content: flex-start; padding: .75rem; font-size: .85rem; box-shadow: none; }
+#devisView .devisView__drafts-delete { color: vars.$errorColor; }
+.devisView__drafts-alert { display: flex; align-items: start; gap: .75rem; flex-wrap: wrap; margin-top: 1rem; padding: 1rem; border-radius: .75rem; background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; }
+.devisView__drafts-alert > div:first-of-type { flex: 1; min-width: 12rem; }
+.devisView__drafts-alert p { margin: .3rem 0; font-size: .85rem; }
+.devisView__drafts-alert summary { cursor: pointer; font-size: .8rem; }
+.devisView__drafts-recovery { display: flex; gap: .5rem; flex-wrap: wrap; }
+#devisView .devisView__drafts-recovery button { border: 1px solid #fed7aa; min-height: 2.5rem; font-size: .85rem; }
+#devisView .devisView__drafts button:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+@media (max-width: vars.$mobileWidth) {
+  .devisView__drafts-picker { grid-template-columns: minmax(0, 1fr); }
+  #devisView .devisView__drafts-resume { margin-top: 0; width: 100%; }
+  .devisView__drafts-current { align-items: flex-start; }
+  .devisView__drafts-secondary { width: 100%; justify-content: space-between; }
+}
+#devisView .devisView__drafts-resume { color: white; }
+#devisView .devisView__drafts button span,
+#devisView .devisView__drafts button svg { color: inherit; }
+.devisView__drafts-name { display: grid; gap: .5rem; margin: 1.25rem 0; }
+.devisView__drafts-name > span { font-weight: 600; font-size: .95rem; color: vars.$fontColorPrimary; }
+.devisView__drafts-name input { @include mixins.formInput(".devisView__drafts-name input"); width: 100%; box-sizing: border-box; }
+.devisView__drafts-name small { color: vars.$fontColorSecondary; font-size: .8rem; }
+#devisView .devisView__hero--browse { grid-template-columns: minmax(0, 1fr); }

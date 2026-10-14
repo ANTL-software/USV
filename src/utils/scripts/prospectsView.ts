@@ -163,7 +163,7 @@ export function buildProspectDetailPresentation(prospect: Prospect): ProspectDet
       ? formatProspectQueueBlockReason(prospect.motif_blocage_queue_actuel || prospect.motif_dernier_blocage_queue)
       : null,
     queueEligibilityAt: prospect.date_eligibilite_queue ? formatProspectDateTime(prospect.date_eligibilite_queue) : null,
-    optoutLabel: 'Opt-out global (legacy)',
+    optoutLabel: 'Opt-out global',
     optoutSince: prospect.optout_date ? formatProspectDate(prospect.optout_date) : null,
     showGlobalAlerts: Boolean(prospect.est_doublon || prospect.blacklist || prospect.optout),
     statusHeading: hasCampaignContext ? 'Statut global' : 'Statut actuel',

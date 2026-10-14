@@ -251,3 +251,5 @@ export * from './useBookingCreantlLead.ts';
 
 export { useSitesProspection } from './useSitesProspection.ts';
 export type { SitesProspectionViewModel } from './useSitesProspection.ts';
+export { useQuoteDrafts } from './useQuoteDrafts.ts';
+export type { QuoteDraftsViewModel } from './useQuoteDrafts.ts';

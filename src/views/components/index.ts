@@ -251,3 +251,4 @@ export { SitesProspectionContent } from './sitesProspectionContent/index.ts';
 export { SitesProspectionFilters } from './sitesProspectionFilters/index.ts';
 export { SitesProspectionTable } from './sitesProspectionTable/index.ts';
 export { SitesProspectionDetailModal } from './sitesProspectionDetailModal/index.ts';
+export { DevisDrafts } from './devisDrafts/index.ts';
