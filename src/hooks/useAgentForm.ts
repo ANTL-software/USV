@@ -8,10 +8,16 @@ import {
   getPostesService,
   getPaliersPrimeService,
 } from '../API/services/index.ts';
-import type { Employe, EmployeStats, NiveauPrime, Poste } from '../utils/types/index.ts';
-import { sanitizePhoneNumber } from '../utils/scripts/index.ts';
+import type { AddressSelectionResult, Employe, EmployeStats, NiveauPrime, Poste } from '../utils/types/index.ts';
+import { normalizeEditableAddress, sanitizePhoneNumber } from '../utils/scripts/index.ts';
 
 interface AgentFormState {
+  adresse: string;
+  complement_adresse: string;
+  code_postal: string;
+  ville: string;
+  pays: string;
+
   nom:                 string;
   prenom:              string;
   email:               string;
@@ -26,6 +32,12 @@ interface AgentFormState {
 }
 
 const INITIAL_FORM: AgentFormState = {
+  adresse: '',
+  complement_adresse: '',
+  code_postal: '',
+  ville: '',
+  pays: '',
+
   nom:                '',
   prenom:             '',
   email:              '',
@@ -72,6 +84,12 @@ export function useAgentForm() {
         const data = agent.toJSON ? agent.toJSON() : agent as unknown as Employe;
         setExisting(data);
         setForm({
+          adresse: data.adresse || '',
+          complement_adresse: data.complement_adresse || '',
+          code_postal: data.code_postal || '',
+          ville: data.ville || '',
+          pays: data.pays || '',
+
           nom:                data.nom || '',
           prenom:             data.prenom || '',
           email:              data.email || '',
@@ -110,6 +128,15 @@ export function useAgentForm() {
 
 
 
+  const changeAddress = (value: string): void => {
+    setForm((previous) => ({ ...previous, adresse: value }));
+    setError(null);
+  };
+  const selectAddress = (address: AddressSelectionResult): void => {
+    setForm((previous) => ({ ...previous, adresse: address.adresse, code_postal: address.code_postal, ville: address.ville, pays: address.pays }));
+    setError(null);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -133,10 +160,11 @@ export function useAgentForm() {
       }
     }
 
+    const address = { ...normalizeEditableAddress(form), complement_adresse: form.complement_adresse.trim() };
     setIsLoading(true);
     try {
       if (isEdit) {
-        const updateData: Record<string, string | number | null> = {};
+        const updateData: Record<string, string | number | null> = { ...address };
         if (form.nom)       updateData.nom       = form.nom;
         if (form.prenom)    updateData.prenom    = form.prenom;
         if (form.email)     updateData.email     = form.email;
@@ -153,6 +181,7 @@ export function useAgentForm() {
         setTimeout(() => navigate('/operations/employes'), 2000);
       } else {
         const result = await createEmployeService({
+          ...address,
           nom:                form.nom,
           prenom:             form.prenom,
           password:           form.password,
@@ -196,7 +225,7 @@ export function useAgentForm() {
     selectedCampaignLabel,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
-    handleChange, handleSubmit,
+    handleChange, handleSubmit, changeAddress, selectAddress,
     navigateBack: () => void navigate('/operations/employes'),
   };
 }

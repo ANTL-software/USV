@@ -49,7 +49,7 @@ test('le droit contrôle la carte et l’accès direct à la route', async ({ pa
 
 test('numéro fixe, preuve publique et correction limitée au téléphone', async ({ page }) => {
  const patches: Record<string, unknown>[] = [];
- const record = { ...site, telephone_fixe: '0145678901', telephone_type: 'fixe', telephone_statut: 'site_public', telephone_source_url: 'https://www.immp.fr/contact', telephone_preuves: [{ number: '0145678901', type: 'fixe', source_url: 'https://www.immp.fr/contact', checked_at: '2026-10-07', mode: 'site_public', excerpt: 'Standard : 01 45 67 89 01', eligible: true, excluded_reason: '' }] };
+ const record = { ...site, telephone_fixe: '0145678901', telephone_type: 'fixe', telephone_statut: 'site_public', telephone_source_url: 'https://www.immp.fr/contact', telephone_preuves: [{ number: '0145678901', type: 'fixe', source_url: 'https://www.immp.fr/contact', checked_at: '2026-10-07', mode: 'site_public', excerpt: 'Standard : 01 45 67 89 01', eligible: true, excluded_reason: '', ownership_role: 'entreprise', ownership_basis: 'Contact concordant', cross_site_count: 3, cross_company_count: 1, cross_site_signal: 'standard_partage' }, { number: '0157324218', type: 'fixe', source_url: 'https://www.immp.fr/mentions-legales', checked_at: '2026-10-08', mode: 'page_indexee', excerpt: 'Téléphone hébergement', eligible: false, excluded_reason: 'numéro de prestataire recoupé entre sites', ownership_role: 'hebergeur', cross_site_count: 181, cross_company_count: 181, cross_site_signal: 'prestataire_documente', provider_name: 'Microsoft Azure', provider_source_url: 'https://www.lbpam.com/fr/mentions-legales/mentions-legales' }] };
  await installApiRoute(page, async (route, request) => {
   if (request.path === '/sites-prospection') { await fulfillJson(route, apiSuccess({ rows: [record], total: 1, page: 1, limit: 50 })); return true; }
   if (request.path === '/sites-prospection/1' && request.method === 'GET') { await fulfillJson(route, apiSuccess(record)); return true; }
@@ -61,9 +61,14 @@ test('numéro fixe, preuve publique et correction limitée au téléphone', asyn
  await page.getByRole('button', { name: 'Ouvrir immp.fr' }).click();
  const dialog = page.getByRole('dialog');
  await expect(dialog.getByText('Standard : 01 45 67 89 01')).toBeVisible();
+ await expect(dialog.getByText(/3 sites · 1 identité distincte · Standard partagé/)).toBeVisible();
+ await expect(dialog.getByText(/Hébergeur · Microsoft Azure/)).toBeVisible();
+ await expect(dialog.getByRole('link', { name: 'Source du prestataire ↗' })).toHaveAttribute('href', 'https://www.lbpam.com/fr/mentions-legales/mentions-legales');
  await dialog.getByLabel('Téléphone fixe', { exact: true }).fill('0982123456');
  await dialog.getByRole('button', { name: 'Enregistrer', exact: true }).click();
  await expect.poll(() => patches.length).toBe(1);
  expect(patches[0]).toEqual({ revision: 0, telephone_fixe: '0982123456' });
  await expect(dialog.getByText(/Corrigé manuellement/)).toBeVisible();
+ await dialog.getByText(/Hébergeur · Microsoft Azure/).scrollIntoViewIfNeeded();
+ await page.screenshot({ path: '/tmp/usv-phone-ownership-detail.png', fullPage: true });
 });

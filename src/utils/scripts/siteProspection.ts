@@ -1,4 +1,4 @@
-import type { SiteEditField, SiteEditForm, SiteEditPatch, SiteProspection, SiteProspectionQuery } from '../types/index.ts';
+import type { SiteEditField, SiteEditForm, SiteEditPatch, SitePhoneProof, SiteProspection, SiteProspectionQuery } from '../types/index.ts';
 export const SITE_AGENCY_OPTIONS = [
  ['credit_direct', 'Crédit lu sur le site'], ['credit_indexe', 'Crédit dans une page indexée'], ['portfolio', 'Portfolio agence'],
  ['historique', 'Signal historique seulement'], ['inconnue', 'Agence inconnue'], ['contradictoire', 'Preuves contradictoires'],
@@ -6,6 +6,13 @@ export const SITE_AGENCY_OPTIONS = [
 ];
 export const SITE_PHONE_OPTIONS = [['non_recherche', 'Non recherché'], ['site_public', 'Publié sur le site'], ['indexe_a_confirmer', 'Page indexée — à confirmer'], ['plusieurs_numeros', 'Plusieurs numéros — à choisir'], ['mobile_uniquement', 'Mobile uniquement trouvé'], ['non_trouve', 'Aucun fixe trouvé'], ['site_inaccessible', 'Site inaccessible'], ['diffusion_restreinte', 'Diffusion restreinte'], ['corrige_manuellement', 'Corrigé manuellement']];
 export function sitePhoneLabel(value: string): string { return SITE_PHONE_OPTIONS.find(([key]) => key === value)?.[1] || value; }
+export function sitePhoneOwnership(proof: SitePhoneProof): { roleLabel: string; recurrenceLabel: string } {
+ const roles: Record<string, string> = { entreprise: 'Contact de l’entreprise', hebergeur: 'Hébergeur', developpeur: 'Agence / développeur', prestataire: 'Prestataire recoupé', tiers: 'Tiers / support', fax: 'Fax', reference_technique: 'Référence technique', inconnu: 'Propriétaire à confirmer' };
+ const signals: Record<string, string> = { prestataire_documente: 'Prestataire identifié par les sources', recurrence_a_examiner: 'Récurrence à examiner, sans attribution certaine à une agence', standard_partage: 'Standard partagé entre sites' };
+ const count = proof.cross_site_count || 0;
+ const identities = proof.cross_company_count || 0;
+ return { roleLabel: roles[proof.ownership_role || ''] || '', recurrenceLabel: count > 1 ? `${count} sites · ${identities} ${identities === 1 ? 'identité distincte' : 'identités distinctes'} · ${signals[proof.cross_site_signal || ''] || 'Rattachement à examiner'}` : '' };
+}
 export function formatSitePhone(value: string | null): string { return value?.replace(/(\d{2})(?=\d)/g, '$1 ') || ''; }
 export const SITE_FOLLOWUP_OPTIONS = [['a_contacter', 'À contacter'], ['contacte', 'Contacté'], ['interesse', 'Intéressé'], ['a_rappeler', 'À rappeler'], ['client', 'Client'], ['non_interesse', 'Non intéressé']];
 export const SITE_EDIT_FIELDS: Array<{ key: SiteEditField; label: string; max: number }> = [

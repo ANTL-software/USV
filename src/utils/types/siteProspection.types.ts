@@ -1,5 +1,9 @@
 export interface SiteProof { kind: string; page_url: string; excerpt: string; fetched_at?: string; resource_url?: string }
-export interface SitePhoneProof { number: string; type: string; source_url: string; checked_at: string; mode: string; excerpt: string; eligible: boolean; excluded_reason: string; source_freshness?: string; match_basis?: string }
+export interface SitePhoneProof {
+ number: string; type: string; source_url: string; checked_at: string; mode: string; excerpt: string; eligible: boolean; excluded_reason: string;
+ source_freshness?: string; match_basis?: string; ownership_role?: string; ownership_basis?: string;
+ cross_site_count?: number; cross_company_count?: number; cross_site_signal?: string; provider_name?: string; provider_source_url?: string;
+}
 export interface SiteProspection {
  id_site: number; domain: string; site_url: string; entreprise: string | null; siren: string | null;
  adresse: string | null; code_postal: string | null; ville: string | null; etat_entreprise: string | null;

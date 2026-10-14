@@ -59,7 +59,8 @@ test('une adresse prospect saisie doit être validée puis confirmée avant tout
   }, unhandled);
 
   await page.goto('/operations/commandes/details/123');
-  await expect(page.getByText(/Consultation de l’email au prospect détectée le/)).toContainText('24/09/2026');
+  await expect(page.getByRole('heading', { name: 'Commande 0600123' })).toBeVisible();
+  await expect(page.getByText(/Consultation de l’email au prospect détectée le/)).toHaveCount(0);
   await expect(page.getByText(/Consultation du mail par notre client détectée le/)).toContainText('25/09/2026');
   await page.getByRole('button', { name: 'Envoyer le bon de commande au prospect' }).click();
   const modal = page.locator('.signedOrderEmailModal__card').filter({ has: page.getByRole('heading', { name: 'Envoyer le bon de commande au prospect' }) });
