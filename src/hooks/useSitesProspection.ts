@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getSitesProspectionService, getSiteProspectionService, updateSiteProspectionService } from '../API/services/index.ts';
-import { buildSiteEditPatch, createSiteEditForm, DEFAULT_SITE_QUERY, safeSiteLink, sitePhoneLabel, formatSitePhone, SITE_PHONE_OPTIONS, SITE_AGENCY_OPTIONS, SITE_EDIT_FIELDS, SITE_FOLLOWUP_OPTIONS, siteAgencyLabel, siteFollowupLabel, siteProofLabel, siteRequestError } from '../utils/scripts/index.ts';
+import { buildSiteEditPatch, createSiteEditForm, DEFAULT_SITE_QUERY, safeSiteLink, sitePhoneLabel, sitePhoneOwnership, formatSitePhone, SITE_PHONE_OPTIONS, SITE_AGENCY_OPTIONS, SITE_EDIT_FIELDS, SITE_FOLLOWUP_OPTIONS, siteAgencyLabel, siteFollowupLabel, siteProofLabel, siteRequestError } from '../utils/scripts/index.ts';
 import type { SiteEditField, SiteEditForm, SiteProspection, SiteProspectionList, SiteProspectionQuery } from '../utils/types/index.ts';
 export function useSitesProspection() {
  const navigate = useNavigate();
@@ -42,7 +42,7 @@ export function useSitesProspection() {
   sourceDate: typeof source?.registry_checked_at === 'string' ? source.registry_checked_at : '',
   phoneLabel: sitePhoneLabel(selected?.telephone_statut || 'non_recherche'),
   phoneSourceLink: safeSiteLink(selected?.telephone_source_url),
-  phoneProofs: (selected?.telephone_preuves || []).map(proof => ({ ...proof, display: formatSitePhone(proof.number), link: safeSiteLink(proof.source_url) })),
+  phoneProofs: (selected?.telephone_preuves || []).map(proof => ({ ...proof, ...sitePhoneOwnership(proof), display: formatSitePhone(proof.number), link: safeSiteLink(proof.source_url), providerLink: safeSiteLink(proof.provider_source_url) })),
   proofs: (selected?.preuves || []).map(proof => ({ ...proof, label: siteProofLabel(proof.kind), link: safeSiteLink(proof.page_url), resourceLink: safeSiteLink(proof.resource_url) })),
   changeFilter, sort, open, close, save,
   reload: () => setRefresh(value => value + 1),
