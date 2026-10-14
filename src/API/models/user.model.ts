@@ -9,6 +9,12 @@ export class UserModel implements Employe {
   prenom: string;
   email?: string;
   telephone?: string;
+  adresse?: string | null;
+  complement_adresse?: string | null;
+  code_postal?: string | null;
+  ville?: string | null;
+  pays?: string | null;
+
   date_embauche?: string;
   id_poste?: number;
   id_departement?: number;
@@ -41,6 +47,12 @@ export class UserModel implements Employe {
     this.prenom = data.prenom;
     this.email = data.email;
     this.telephone = data.telephone;
+    this.adresse = data.adresse ?? null;
+    this.complement_adresse = data.complement_adresse ?? null;
+    this.code_postal = data.code_postal ?? null;
+    this.ville = data.ville ?? null;
+    this.pays = data.pays ?? null;
+
     this.date_embauche = data.date_embauche;
     this.id_poste = data.id_poste;
     this.id_departement = data.id_departement;
@@ -86,6 +98,12 @@ export class UserModel implements Employe {
       prenom: this.prenom,
       email: this.email,
       telephone: this.telephone,
+      adresse: this.adresse,
+      complement_adresse: this.complement_adresse,
+      code_postal: this.code_postal,
+      ville: this.ville,
+      pays: this.pays,
+
       date_embauche: this.date_embauche,
       id_poste: this.id_poste,
       id_departement: this.id_departement,

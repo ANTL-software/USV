@@ -369,6 +369,7 @@ export function useCommandeDetails(idVente: number) {
     deliveryAddress,
     paymentLabel,
     statusPresentation,
+    prospectEmailOpenedAt: commande?.id_campagne === 7 ? null : commande?.email_prospect_consulte_at,
     isEmailModalOpen,
     selectedRecipientEmail,
     setSelectedRecipientEmail,

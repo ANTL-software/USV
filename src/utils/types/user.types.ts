@@ -114,6 +114,12 @@ export interface Employe {
   prenom: string;
   email?: string;
   telephone?: string;
+  adresse?: string | null;
+  complement_adresse?: string | null;
+  code_postal?: string | null;
+  ville?: string | null;
+  pays?: string | null;
+
   date_embauche?: string;
   id_poste?: number;
   id_departement?: number;
@@ -176,6 +182,12 @@ export interface PartenaireExternePayload {
 export type EmployeFilter = 'actifs' | 'inactifs' | 'tous';
 
 export interface CreateEmployeData {
+  adresse?: string | null;
+  complement_adresse?: string | null;
+  code_postal?: string | null;
+  ville?: string | null;
+  pays?: string | null;
+
   nom: string;
   prenom: string;
   password: string;

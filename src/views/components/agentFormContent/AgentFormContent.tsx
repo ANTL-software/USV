@@ -3,6 +3,7 @@ import { IoArrowBack, IoSave } from 'react-icons/io5';
 import Select from 'react-select';
 import type { AgentFormViewModel } from '../../../hooks/index.ts';
 import { QUALITE_FOLLOWUP_COLOR, formatQualitePercent, formatQualiteProgpa, getQualiteStepColor } from '../../../utils/scripts/index.ts';
+import { AddressAutocomplete } from '../addressAutocomplete/index.ts';
 import { AgentPrimeGauge, BackToTop, Button, ColorPicker, Header, PasswordStrengthIndicator, SubNav } from '../index.ts';
 
 interface AgentFormContentProps { viewModel: AgentFormViewModel; }
@@ -19,7 +20,7 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
     selectedCampaignLabel,
     isEdit, isLoading, isFetching, isPrimeStatsLoading,
     error, success, primeStatsError,
-    handleChange, handleSubmit, navigateBack,
+    handleChange, handleSubmit, navigateBack, changeAddress, selectAddress,
   } = viewModel;
 
 
@@ -134,6 +135,22 @@ export function AgentFormContent({ viewModel }: AgentFormContentProps): ReactEle
                   </div>
                 </div>
               )}
+            </fieldset>
+
+            <fieldset className="agentForm__fieldset">
+              <legend>Adresse postale</legend>
+              <div className="agentForm__field">
+                <AddressAutocomplete id="employee-address" label="Adresse" value={form.adresse} onChange={changeAddress} onSelectAddress={selectAddress} disabled={isLoading} />
+              </div>
+              <div className="agentForm__field">
+                <label htmlFor="complement_adresse">Complément d’adresse</label>
+                <input id="complement_adresse" name="complement_adresse" maxLength={255} value={form.complement_adresse} onChange={handleChange} disabled={isLoading} placeholder="Bâtiment, appartement, étage…" />
+              </div>
+              <div className="agentForm__row">
+                <div className="agentForm__field"><label htmlFor="code_postal">Code postal</label><input id="code_postal" name="code_postal" maxLength={10} value={form.code_postal} onChange={handleChange} disabled={isLoading} /></div>
+                <div className="agentForm__field"><label htmlFor="ville">Ville</label><input id="ville" name="ville" maxLength={100} value={form.ville} onChange={handleChange} disabled={isLoading} /></div>
+              </div>
+              <div className="agentForm__field"><label htmlFor="pays">Pays</label><input id="pays" name="pays" maxLength={100} value={form.pays} onChange={handleChange} disabled={isLoading} /></div>
             </fieldset>
 
             {isEdit && isCommercial && (
