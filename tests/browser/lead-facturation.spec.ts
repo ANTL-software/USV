@@ -290,7 +290,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
         ...apiSuccess([{ ...lead, statut: 'effectue' as const }]),
         agents: [BOOKING_EMPLOYEE],
         pagination: { page: currentPage, limit: 20, total: 41, totalPages: 3 },
-        stats: { total: 41, planifies: 10, effectues: 20, annules: 3, reportes: 5, nonHonores: 3 },
+        stats: { total: 41, planifies: 10, effectues: 20, annules: 3, reportes: 5, nonHonores: 3, montants: { valides: { count: 20, total_montant: 2000 }, enAttente: { count: 10, total_montant: 1000 } } },
       });
       return true;
     }
