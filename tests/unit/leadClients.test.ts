@@ -41,7 +41,7 @@ declare global {
   var capturedLeadPatchPayload: { statut: string } | undefined;
 }
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APICalls.ts', {
+mock.module(new URL('../../src/API/APICalls.ts', import.meta.url).href, {
   namedExports: {
     getRequest: async (url: string): Promise<AxiosLikeResponse<LeadApiResponse>> => {
       globalThis.capturedLeadUrl = url;
@@ -105,7 +105,7 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
   }
 });
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/utils/scripts/index.ts', {
+mock.module(new URL('../../src/utils/scripts/index.ts', import.meta.url).href, {
   namedExports: {
     getApiBaseUrl: (): string => 'http://localhost:8800/api',
   }
