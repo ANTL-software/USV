@@ -145,7 +145,7 @@ test('les phases, prestations et services tiers se restaurent intégralement', a
   expect(updated.thirdPartyServices).toEqual(saved.thirdPartyServices);
   expect(updated.selectedTemplateIds).toEqual(saved.selectedTemplateIds);
   await page.evaluate(() => window.scrollTo(0, 0));
-  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: '/private/tmp/usv-devis-drafts-ux.png', animations: 'disabled' });
+  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: 'test-results/usv-devis-drafts-ux.png', animations: 'disabled' });
 });
 
 test('une saisie interrompue avant la temporisation reste récupérable, puis supprimable', async ({ page }) => {
@@ -194,7 +194,7 @@ test('le sélecteur recherche un ancien devis et la reprise reste une action exp
   await page.getByRole('region', { name: 'Brouillons de devis' }).scrollIntoViewIfNeeded();
   await expect(page.getByRole('button', { name: 'Changer de devis', exact: true })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
-  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: '/private/tmp/usv-devis-drafts-mobile.png', animations: 'disabled' });
+  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: 'test-results/usv-devis-drafts-mobile.png', animations: 'disabled' });
 });
 
 test('créer, nommer et reprendre sont trois étapes explicites, sans mélange des devis', async ({ page }) => {
@@ -225,5 +225,5 @@ test('créer, nommer et reprendre sont trois étapes explicites, sans mélange d
   await page.reload();
   await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
   await expect(page.getByLabel('Nom du devis', { exact: true })).toHaveValue('Zoenoe — Version corrigée');
-  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: '/private/tmp/usv-devis-workflow-edit.png', animations: 'disabled' });
+  await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: 'test-results/usv-devis-workflow-edit.png', animations: 'disabled' });
 });

@@ -15,8 +15,8 @@ test('navigation, tri postal, filtre et correction d’agence avec conservation 
  const navStyle = await page.locator('#subNav button').first().evaluate(element => { const style = getComputedStyle(element); return [style.borderRadius, style.backgroundColor, style.padding, style.fontSize]; });
  await page.getByRole('button', { name: 'Prospection web' }).click();
  await expect(page.getByRole('heading', { name: 'Prospection web' })).toBeVisible();
- expect(await page.locator('#header button').first().evaluate(element => { const style = getComputedStyle(element); return [style.borderRadius, style.backgroundColor, style.padding, style.fontSize]; })).toEqual(headerStyle);
- expect(await page.locator('#subNav button').first().evaluate(element => { const style = getComputedStyle(element); return [style.borderRadius, style.backgroundColor, style.padding, style.fontSize]; })).toEqual(navStyle);
+ await expect.poll(async () => await page.locator('#header button').first().evaluate(element => { const style = getComputedStyle(element); return [style.borderRadius, style.backgroundColor, style.padding, style.fontSize]; })).toEqual(headerStyle);
+ await expect.poll(async () => await page.locator('#subNav button').first().evaluate(element => { const style = getComputedStyle(element); return [style.borderRadius, style.backgroundColor, style.padding, style.fontSize]; })).toEqual(navStyle);
  await expect(page.getByRole('cell', { name: '17290 LE THOU', exact: true })).toBeVisible();
  expect(queries[0].get('sort')).toBe('code_postal'); expect(queries[0].get('direction')).toBe('ASC');
  await page.getByRole('button', { name: /Code postal/ }).click();

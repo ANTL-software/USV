@@ -181,6 +181,7 @@ export async function installApiRoute(
   unhandledRequests: string[],
   authenticatedUser: Employe = ADMIN_USER,
 ): Promise<void> {
+  page.on('pageerror', (error) => console.error('[browser pageerror]', error.message));
   await page.route('**/api/**', async (route) => {
     if (await handleCommonApiRequest(route, authenticatedUser)) return;
 

@@ -26,6 +26,7 @@ const RENDEZ_VOUS = {
 };
 
 test('le manager consulte, déplace et annule sans réaffecter le rendez-vous', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-09-16T10:00:00Z'));
   const mutationPayloads: Array<Record<string, unknown>> = [];
   const paths: string[] = [];
   await installApiRoute(page, async (route, request) => {
