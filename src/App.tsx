@@ -225,7 +225,7 @@ function App(): ReactElement {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      <Analytics />
+      {import.meta.env.PROD && <Analytics />}
 
       {/* Notification hors ligne globale */}
       <div className="offline-notice">

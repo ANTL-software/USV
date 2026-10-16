@@ -54,7 +54,7 @@ const incident = {
 
 globalThis.incidentServiceRequests = [];
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APICalls.ts', {
+mock.module(new URL('../../src/API/APICalls.ts', import.meta.url).href, {
   namedExports: {
     getRequest: async (
       url: string,

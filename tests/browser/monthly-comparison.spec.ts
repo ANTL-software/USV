@@ -4,6 +4,7 @@ import { comparisonFixture } from '../fixtures/monthlyComparison.ts';
 test.setTimeout(60000);
 
 test('hub, comparaison, explorations, exports et variantes', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-09-10T15:30:00Z'));
   const requests: URLSearchParams[] = []; const unhandled: string[] = [];
   await installApiRoute(page, async (route, request) => {
     if (request.path === '/supervision/qualite/comparatif/options') {

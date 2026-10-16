@@ -207,6 +207,6 @@ test('le droit matériel seul masque le bouton et bloque la route téléphonie',
   await expect(page.getByRole('button', { name: 'Gestion de la téléphonie' })).toHaveCount(0);
 
   await page.goto('/operations/materiel/telephonie');
-  await expect(page).toHaveURL(/\/operations$/);
+  await expect(page).toHaveURL(/\/operations\/materiel$/);
   expect(unhandledRequests).toEqual([]);
 });

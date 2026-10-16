@@ -24,7 +24,7 @@ declare global {
 }
 
 // Mock the imported APICalls and utils modules using their absolute URLs with extensions
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APICalls.ts', {
+mock.module(new URL('../../src/API/APICalls.ts', import.meta.url).href, {
   namedExports: {
     getRequest: async (url: string): Promise<AxiosLikeResponse<EnregistrementsApiResponse>> => {
       globalThis.capturedUrl = url;
@@ -46,7 +46,7 @@ mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/API/APIC
   }
 });
 
-mock.module('file:///Users/ndecr_/working_directory--local/antl/USV/src/utils/scripts/index.ts', {
+mock.module(new URL('../../src/utils/scripts/index.ts', import.meta.url).href, {
   namedExports: {
     getApiBaseUrl: () => {
       return 'http://localhost:8800/api';

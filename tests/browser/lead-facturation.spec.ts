@@ -200,7 +200,7 @@ test('le détail lead et la facturation gardent leurs workflows navigateur', asy
   await expect(page.getByRole('heading', { name: 'Facturation campagnes' })).toBeVisible();
   await expect(page.getByText('Configuration facture')).toBeVisible();
   await expect(page.getByText('Complète', { exact: true })).toBeVisible();
-  await expect(page.getByText('CA validé', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Assiette ventes HT', { exact: true }).first()).toBeVisible();
   await page.getByRole('button', { name: 'Envoyer la facture par email' }).click();
 
   const invoiceModal = page.locator('.facturationView__modal');
@@ -290,7 +290,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
         ...apiSuccess([{ ...lead, statut: 'effectue' as const }]),
         agents: [BOOKING_EMPLOYEE],
         pagination: { page: currentPage, limit: 20, total: 41, totalPages: 3 },
-        stats: { total: 41, planifies: 10, effectues: 20, annules: 3, reportes: 5, nonHonores: 3 },
+        stats: { total: 41, planifies: 10, effectues: 20, annules: 3, reportes: 5, nonHonores: 3, montants: { valides: { count: 20, total_montant: 2000 }, enAttente: { count: 10, total_montant: 1000 } } },
       });
       return true;
     }
@@ -357,7 +357,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   }, unhandledRequests);
 
   const selectFilterOption = async (filterLabel: string, optionLabel: string): Promise<void> => {
-    const filter = page.locator('.commandesList__filter-group').filter({ hasText: filterLabel }).first();
+    const filter = page.locator('.commandesList__filter-group').filter({ has: page.locator('label').filter({ hasText: new RegExp(`^${filterLabel}$`) }) }).first();
     await filter.getByRole('combobox').locator('..').click();
     await page.getByRole('option', { name: optionLabel, exact: true }).click();
   };

@@ -93,6 +93,10 @@ test('les statistiques ProgPA se pilotent par campagne, période et TLV', async 
       return true;
     }
 
+    if (request.method === 'GET' && /^\/supervision\/campagne\/\d+\/agents$/.test(request.path)) {
+      await fulfillJson(route, apiSuccess([])); return true;
+    }
+
     if (request.method === 'GET' && request.path === '/supervision/qualite/progpa') {
       const params = new URLSearchParams(request.search);
       statsRequests.push(params);

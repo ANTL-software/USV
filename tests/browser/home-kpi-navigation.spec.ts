@@ -20,7 +20,7 @@ const HOME_KPIS: HomeKpiData = {
 const KPI_NAVIGATION_CASES = [
   { label: 'Commandes validées', path: '/operations/commandes' },
   { label: 'CA du mois (Ventes)', path: '/operations/commandes' },
-  { label: 'RDV B2B effectués', path: '/operations/commandes' },
+  { label: 'RDV VALIDES', path: '/operations/commandes' },
   { label: 'CA du mois (RDV)', path: '/operations/commandes' },
   { label: 'Commerciaux en ligne', path: '/supervision' },
   { label: 'Incidents ouverts', path: '/incidents/traitement' },
