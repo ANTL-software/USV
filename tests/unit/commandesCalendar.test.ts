@@ -45,3 +45,20 @@ test('la saisie manuelle ne rouvre pas un jour fermé par une grille explicite',
   assert.equal(closed.dayClasses.get('2026-10-19'), 'commandesCalendar__day--locked');
   assert.equal(closed.backgrounds.some((event) => event.kind === 'free'), false);
 });
+test('un lead effectué conserve son occupation après qualification : trois RDV AXA de novembre', () => {
+  const leads = [
+    { ...lead, id_lead: 2784, date_rdv: '2026-11-03', heure_rdv: '10:00:00', statut: 'effectue' as const },
+    { ...lead, id_lead: 2783, date_rdv: '2026-11-04', heure_rdv: '09:00:00', statut: 'effectue' as const },
+    { ...lead, id_lead: 2782, date_rdv: '2026-11-05', heure_rdv: '15:00:00', statut: 'effectue' as const },
+  ];
+  const model = buildCommandesCalendarEvents({ ...data, leads,
+    occupied_slots: leads.map(({ date_rdv, heure_rdv }) => ({ date_rdv, heure_rdv })),
+    lead_booking: { open_weekdays: [2, 3, 4], interval_minutes: 60, weekly_slots: { 2: ['10:00', '15:00'], 3: ['09:00', '11:00'], 4: ['10:00', '15:00'] } },
+  }, '2026-11-03', '2026-11-05', 'month');
+  for (const date of ['2026-11-03', '2026-11-04', '2026-11-05']) {
+    assert.equal(model.events.find((event) => event.id === `summary-${date}`)?.title, '1 libre / 2 créneaux');
+  }
+  assert.equal(model.events.find((event) => event.id === 'summary-2026-11-03')?.tooltip, 'Créneaux libres : 15:00');
+  assert.equal(model.events.find((event) => event.id === 'summary-2026-11-04')?.tooltip, 'Créneaux libres : 11:00');
+  assert.equal(model.events.find((event) => event.id === 'summary-2026-11-05')?.tooltip, 'Créneaux libres : 10:00');
+});

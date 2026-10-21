@@ -4,7 +4,7 @@ import { apiSuccess, fulfillJson, installApiRoute, SALES_CAMPAIGN, BOOKING_EMPLO
 const config = { open_weekdays: [1, 2, 3, 4, 5], interval_minutes: 60, weekly_slots: { 1: ['10:00', '11:15'], 2: ['10:00'], 3: ['10:00'], 4: ['10:00'], 5: ['10:00'] } };
 const campaign = { ...SALES_CAMPAIGN, id_campagne: 12, nom_campagne: 'Swiss Life', type_campagne: 'lead_b2b', bon_commande_config: { lead_booking: config } };
 const secondCampaign = { ...campaign, id_campagne: 15, nom_campagne: 'Créantl' };
-const lead = { id_lead: 501, id_campagne: 12, id_agent: 9, id_prospect: 42, date_rdv: '2026-10-19', heure_rdv: '10:00:00', statut: 'planifie', motif: 'Prise de rendez-vous client', entreprise_plus_de_cinq_salaries: false, raison_sociale_snapshot: 'Entreprise calendrier', interlocuteur_nom: 'Marie Giraud', telephone_contact_snapshot: '0555000000', created_at: '2026-08-01', campagne: campaign, agent: BOOKING_EMPLOYEE, prospect: { id_prospect: 42, nom: 'Giraud', prenom: 'Marie', raison_sociale: 'Entreprise calendrier' } };
+const lead = { id_lead: 501, id_campagne: 12, id_agent: 9, id_prospect: 42, date_rdv: '2026-10-19', heure_rdv: '10:00:00', statut: 'effectue', motif: 'Prise de rendez-vous client', entreprise_plus_de_cinq_salaries: false, raison_sociale_snapshot: 'Entreprise calendrier', interlocuteur_nom: 'Marie Giraud', telephone_contact_snapshot: '0555000000', created_at: '2026-08-01', campagne: campaign, agent: BOOKING_EMPLOYEE, prospect: { id_prospect: 42, nom: 'Giraud', prenom: 'Marie', raison_sociale: 'Entreprise calendrier' } };
 
 test('onglets, disponibilité, filtres, recherche hors période et retour de fiche', async ({ page }) => {
   test.setTimeout(60000);
