@@ -4,6 +4,7 @@ import type {
   StatutRendezVous,
   StatutVente,
   Vente,
+  CommandesCalendarSnapshot,
 } from '../types/index.ts';
 import { resolveLeadContactName } from './leadClientDetails.ts';
 
@@ -34,6 +35,7 @@ export interface DateBounds {
 }
 
 export interface CommandesListSnapshot {
+  calendar?: CommandesCalendarSnapshot;
   agentId: number | null;
   campagneId: number;
   dateDebut: string;
@@ -112,6 +114,15 @@ export function readCommandesListNavigationState(
 
   return {
     commandesList: {
+      ...(isRecord(snapshot.calendar)
+        && (snapshot.calendar.campaignId === null || isOptionalPositiveInteger(snapshot.calendar.campaignId))
+        && typeof snapshot.calendar.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(snapshot.calendar.date)
+        && Number.isFinite(Date.parse(snapshot.calendar.date))
+        && ['month', 'week', 'day'].includes(String(snapshot.calendar.view))
+        && typeof snapshot.calendar.statut === 'string' && LEAD_STATUSES.has(snapshot.calendar.statut)
+        && isOptionalPositiveInteger(snapshot.calendar.agentId)
+        && typeof snapshot.calendar.search === 'string'
+        ? { calendar: snapshot.calendar as unknown as CommandesCalendarSnapshot } : {}),
       agentId,
       campagneId,
       dateDebut,

@@ -681,3 +681,4 @@ export * from './leadContactOrigin.ts';
 export * from './bookingLead.ts';
 
 export * from './siteProspection.ts';
+export * from './commandesCalendar.ts';

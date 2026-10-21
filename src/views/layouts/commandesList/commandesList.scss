@@ -465,3 +465,18 @@
   font-size: 0.9em;
   font-weight: 500;
 }
+
+// Les onglets prolongent le panneau comme des feuilles de dossier.
+#commandesList .commandesList__header { margin-bottom: 1em; }
+#commandesList .commandesList__tabs { display: flex; align-items: flex-end; gap: 0.4em; padding-left: 0.6em; isolation: isolate; }
+#commandesList .commandesList__tabs > button { position: relative; padding: 1em 1.7em 0.9em; border: 1px solid #d6d0e5; border-bottom: 0; border-radius: 14px 14px 0 0; background: #e6e1ee; color: #64748b; font: inherit; font-weight: 600; cursor: pointer; transform: translateY(1px); }
+#commandesList .commandesList__tabs > button[aria-selected="true"] { z-index: 2; padding-top: 1.2em; background: #fff; color: vars.$utilsDark; border-top: 3px solid vars.$utilsPrimary; box-shadow: 0 -5px 16px rgba(53, 30, 92, 0.04); }
+#commandesList .commandesList__tabs > button[aria-selected="true"]::after { content: ''; position: absolute; bottom: -2px; left: 0; right: 0; height: 3px; background: #fff; }
+#commandesList .commandesList__tabs > button:focus-visible { outline: 3px solid #a78bfa; outline-offset: -5px; }
+#commandesList .commandesList__tabs .commandesList__notificationBadge { top: 0.5em; right: 0.3em; }
+#commandesList .commandesList__sheet { position: relative; z-index: 1; border: 1px solid #d6d0e5; border-radius: 12px; background: #fff; padding: 1.4em; box-shadow: 0 8px 30px rgba(53, 30, 92, 0.04); }
+@media (max-width: 767px) {
+  #commandesList .commandesList__tabs { gap: 0.25em; padding-left: 0.35em; }
+  #commandesList .commandesList__tabs > button { padding: 0.9em 0.8em; font-size: 0.85rem; }
+  #commandesList .commandesList__sheet { padding: 0.7em; }
+}

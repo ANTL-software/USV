@@ -1,0 +1,54 @@
+@use "../../../utils/styles/variables" as vars;
+
+.commandesCalendar__filters { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 1em; padding: 1em; background: #f8fafc; border-radius: 10px; margin-bottom: 1em; }
+.commandesCalendar__campaign { grid-column: 1 / -1; }
+.commandesCalendar__legend { display: flex; align-items: center; flex-wrap: wrap; gap: 0.8em 1.3em; margin: 1.25em 0; font-size: 0.82rem; color: vars.$fontColorSecondary; }
+.commandesCalendar__legend span { display: inline-flex; align-items: center; gap: 0.4em; }
+.commandesCalendar__legend i { width: 1em; height: 1em; border-radius: 3px; display: inline-block; border: 1px solid #cbd5e1; }
+.commandesCalendar__swatch--free { background: #dcfce7; }
+.commandesCalendar__swatch--lead { background: #7c3aed; }
+.commandesCalendar__swatch--locked { background: #e2e8f0; }
+.commandesCalendar__swatch--occupied { background: #fed7aa; }
+.commandesCalendar__legend button { margin-left: auto; padding: 0.5em 0.8em; border: 1px solid #cbd5e1; background: white; border-radius: 6px; cursor: pointer; font: inherit; }
+.commandesCalendar__grid .rbc-calendar { height: 780px; color: vars.$fontColorPrimary; font-family: inherit; }
+.commandesCalendar__grid .rbc-time-view { background: #e2e8f0; }
+.commandesCalendar__grid .rbc-time-header, .commandesCalendar__grid .rbc-time-gutter { background: white; }
+.commandesCalendar__grid .rbc-day-bg { background: #fff; }
+.commandesCalendar__grid .rbc-day-bg.commandesCalendar__day--locked { background: repeating-linear-gradient(135deg, #e2e8f0, #e2e8f0 5px, #e8edf3 5px, #e8edf3 10px); }
+.commandesCalendar__grid .rbc-day-bg.commandesCalendar__day--open { background: #f0fdf4; }
+.commandesCalendar__grid .rbc-today { box-shadow: inset 0 0 0 2px #a78bfa; }
+.commandesCalendar__grid .rbc-off-range-bg { opacity: 0.55; }
+.commandesCalendar__grid .rbc-event { background: #7c3aed; border: 1px solid #6d28d9; border-radius: 5px; font-size: 0.8rem; padding: 3px 5px; }
+.commandesCalendar__grid .rbc-background-event { opacity: 1; border: 0; border-radius: 0; padding: 0; }
+.commandesCalendar__grid .rbc-background-event.commandesCalendar__event--free { background: #dcfce7; color: #166534; }
+.commandesCalendar__grid .rbc-background-event.commandesCalendar__event--occupied { background: #fed7aa; color: #9a3412; }
+.commandesCalendar__grid .rbc-background-event .rbc-event-content { font-size: 0.65rem; }
+.commandesCalendar__grid .rbc-event.commandesCalendar__event--summary { background: transparent; border: 0; color: #166534; font-size: 0.72rem; cursor: default; padding-left: 0; }
+.commandesCalendar__grid .rbc-event.commandesCalendar__event--cancelled { background: #fee2e2; border-color: #fca5a5; color: #991b1b; text-decoration: line-through; }
+.commandesCalendar__grid .rbc-event.commandesCalendar__event--highlight { outline: 3px solid #f59e0b; outline-offset: 1px; }
+.commandesCalendar__grid .rbc-toolbar { gap: 0.6em; margin-bottom: 1em; }
+.commandesCalendar__grid .rbc-toolbar-label { text-transform: capitalize; font-weight: 700; }
+.commandesCalendar__grid .rbc-toolbar button { cursor: pointer; padding: 0.55em 0.9em; }
+.commandesCalendar__grid .rbc-toolbar button.rbc-active { background: #ede9fe; color: #5b21b6; border-color: #a78bfa; box-shadow: none; }
+.commandesCalendar__grid .rbc-header { padding: 0.75em 0; font-size: 0.8rem; }
+.commandesCalendar__grid--unknown .rbc-time-view { background: #fff; }
+.commandesCalendar__results { padding: 1em; margin-bottom: 1em; border: 1px solid #ddd6fe; background: #faf5ff; border-radius: 8px; max-height: 340px; overflow-y: auto; }
+.commandesCalendar__results p { margin: 0 0 0.75em; font-size: 0.85rem; }
+.commandesCalendar__result { display: flex; justify-content: space-between; gap: 1em; width: 100%; padding: 0.7em; margin: 0.4em 0; text-align: left; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font: inherit; cursor: pointer; }
+.commandesCalendar__result:hover { background: #ede9fe; }
+.commandesCalendar__result span { font-size: 0.85em; }
+@media (max-width: 767px) {
+  .commandesCalendar__filters { grid-template-columns: 1fr; }
+  .commandesCalendar__grid .rbc-calendar { height: 650px; font-size: 0.8rem; }
+  .commandesCalendar__result { flex-direction: column; gap: 0.25em; }
+  .commandesCalendar__grid .rbc-toolbar { flex-direction: column; }
+}
+.commandesCalendar__grid .rbc-day-bg.commandesCalendar__day--full { background: #fff7ed; }
+.commandesCalendar__grid .rbc-event.commandesCalendar__event--lead { color: #fff; }
+.commandesCalendar__grid .rbc-event.commandesCalendar__event--lead.commandesCalendar__event--cancelled { color: #991b1b; }
+.commandesCalendar__grid .rbc-event-content { color: inherit; }
+.commandesCalendar__grid .rbc-event-label { color: inherit; }
+.commandesCalendar__rdv-label { display: flex; width: 100%; min-width: 0; overflow: hidden; white-space: nowrap; color: inherit; }
+.commandesCalendar__rdv-prefix { flex-shrink: 0; white-space: pre; color: inherit; }
+.commandesCalendar__rdv-company { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: inherit; }
+.commandesCalendar__grid .commandesCalendar__event--lead .rbc-event-label { display: none; }

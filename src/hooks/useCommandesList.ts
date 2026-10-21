@@ -52,7 +52,7 @@ const DEFAULT_LEAD_STATS: LeadClientStats = {
 
 const PAGE_LIMIT = 20;
 
-export function useCommandesList(initialSnapshot: CommandesListSnapshot | null = null) {
+export function useCommandesList(initialSnapshot: CommandesListSnapshot | null = null, enabled = true) {
   const venteContext = useContext(VenteContext);
   const { campagnes } = useCampagnes();
 
@@ -121,7 +121,7 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
   const isCrossCampaignSearch = searchQuery.trim().length >= 2;
 
   useEffect(() => {
-    if (!isCrossCampaignSearch) {
+    if (!enabled || !isCrossCampaignSearch) {
       setSearchResults([]);
       setSearchPagination(null);
       setSearchError(null);
@@ -151,7 +151,7 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
       cancelled = true;
       window.clearTimeout(timeoutId);
     };
-  }, [isCrossCampaignSearch, searchPage, searchQuery]);
+  }, [enabled, isCrossCampaignSearch, searchPage, searchQuery]);
 
   const loadLeadClients = useCallback(async (
     campagneId: number,
@@ -259,12 +259,13 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
   }, [load]);
 
   useEffect(() => {
-    if (!isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || isLeadCampaign) {
+    if (!enabled || !isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || isLeadCampaign) {
       return;
     }
 
     load();
   }, [
+    enabled,
     filters.campagne,
     filters.statut,
     filters.agent,
@@ -280,12 +281,12 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
   ]);
 
   useEffect(() => {
-    if (!isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || !isLeadCampaign) {
+    if (!enabled || !isListInitialized || !filters.campagne || !hasResolvedSelectedCampaign || !isLeadCampaign) {
       return;
     }
 
     void loadLeadClients(filters.campagne, leadFilters);
-  }, [filters.campagne, hasResolvedSelectedCampaign, isLeadCampaign, isListInitialized, leadFilters, loadLeadClients]);
+  }, [enabled, filters.campagne, hasResolvedSelectedCampaign, isLeadCampaign, isListInitialized, leadFilters, loadLeadClients]);
 
   useEffect(() => {
     if (isLeadCampaign && vueMode !== 'actives') {
@@ -625,6 +626,7 @@ export function useCommandesList(initialSnapshot: CommandesListSnapshot | null =
   }), [averageValidatedAmount, statsAnnuleesAmount, statsAnnuleesCount, statsEnAttenteAmount, statsEnAttenteCount, statsFrigoAmount, statsFrigoCount, statsValideesAmount, statsValideesCount, totalVentesCount]);
 
   return {
+    campagnes,
     agentOptions,
     averageValidatedAmount,
     campagneOptions,

@@ -258,7 +258,7 @@ test('la liste lead surligne uniquement les fiches dont le mail reste à envoyer
   }, unhandledRequests);
 
   await page.goto('/operations/commandes');
-  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
   const leadLegend = page.getByLabel('Légende des couleurs d’envoi');
   await expect(leadLegend).toContainText('Fiche de rendez-vous à envoyer au client');
   await expect(leadLegend).toContainText('Fiche de rendez-vous envoyée au client');
@@ -363,10 +363,10 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   };
 
   await page.goto('/operations/commandes');
-  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
 
   await selectFilterOption('Campagne', 'MMA');
-  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
   await selectFilterOption('Statut', 'Effectué');
   await selectFilterOption('Commercial', 'Alice AGENT');
   await selectFilterOption('Période', 'Mois précédent');
@@ -376,7 +376,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   await expect(page.getByRole('heading', { name: 'Rendez-vous client L-00501' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour', exact: true }).click();
 
-  await expect(page.getByRole('heading', { name: 'Rendez-vous client', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
   await expect(page.locator('.commandesList__filter-group--campaign')).toContainText('MMA');
   await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Statut' }).first()).toContainText('Effectué');
   await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Commercial' }).first()).toContainText('Alice AGENT');
@@ -387,7 +387,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   await expect.poll(() => new URLSearchParams(latestLeadListSearch).get('agent')).toBe('9');
 
   await selectFilterOption('Campagne', 'Les Cigales');
-  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
   await selectFilterOption('Statut', 'Validée');
   await selectFilterOption('Commercial', 'Alice AGENT');
   await selectFilterOption('Période', 'Mois précédent');
@@ -397,7 +397,7 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   await expect(page.getByRole('heading', { name: 'Commande #701' })).toBeVisible();
   await page.getByRole('button', { name: 'Retour', exact: true }).click();
 
-  await expect(page.getByRole('heading', { name: 'Commandes', exact: true })).toBeVisible();
+  await expect(page.getByRole('tab', { name: 'Commandes', exact: true })).toBeVisible();
   await expect(page.locator('.commandesList__filter-group--campaign')).toContainText('Les Cigales');
   await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Statut' }).first()).toContainText('Validée');
   await expect(page.locator('.commandesList__filter-group').filter({ hasText: 'Commercial' }).first()).toContainText('Alice AGENT');
