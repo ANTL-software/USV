@@ -132,9 +132,10 @@ export const getRequest: (url: string, config?: Record<string, unknown>) => Prom
 export const postRequest = async <T, R>(
   url: string,
   data: T,
+  requestConfig: Record<string, unknown> = {},
 ): Promise<AxiosResponse<R>> => {
   try {
-    const config: Record<string, unknown> = {};
+    const config: Record<string, unknown> = { ...requestConfig };
     
     // Si ce n'est pas du FormData, définir JSON comme Content-Type
     if (!(data instanceof FormData)) {

@@ -1,10 +1,35 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Route } from "@playwright/test";
 import {
   apiSuccess,
-  fulfillJson,
-  installApiRoute,
+  fulfillJson as fulfillApiJson,
+  installApiRoute as installBaseRoute,
   SALES_CAMPAIGN,
 } from "./support.ts";
+const asyncResults = new Map<string, { kind: string; result: unknown }>();
+async function fulfillJson(route: Route, body: ReturnType<typeof apiSuccess>): Promise<void> {
+  if (route.request().method() === "POST" && route.request().url().includes("/jobs/")) {
+    const id = "22222222-2222-4222-8222-222222222222";
+    const kind = route.request().url().endsWith("preview") ? "preview" : "execute";
+    asyncResults.set(id, { kind, result: body.data });
+    await fulfillApiJson(route, apiSuccess({ id, kind, status: "queued", result: null, error: null }), 202);
+    return;
+  }
+  await fulfillApiJson(route, body);
+}
+async function installApiRoute(...args: Parameters<typeof installBaseRoute>): Promise<void> {
+  const [page, handler, unhandled, user] = args;
+  await installBaseRoute(page, async (route, request) => {
+    if (request.method === "GET" && /\/targeting\/jobs\/[^/]+$/.test(request.path)) {
+      const id = request.path.split("/").at(-1) || "";
+      const stored = asyncResults.get(id);
+      if (stored) {
+        await fulfillApiJson(route, apiSuccess({ id, ...stored, status: "completed", error: null }));
+        return true;
+      }
+    }
+    return handler(route, request);
+  }, unhandled, user);
+}
 const fields = [
   {
     field: "departement",
@@ -48,7 +73,7 @@ test("ciblage multi-départements, inconnus, invalidation de l’analyse et retr
       await fulfillJson(route, apiSuccess([]));
       return true;
     }
-    if (request.path.endsWith("/targeting/preview")) {
+    if (request.path.endsWith("/targeting/jobs/preview")) {
       requests.push(route.request().postDataJSON() as Record<string, unknown>);
       await fulfillJson(
         route,
@@ -203,7 +228,7 @@ test("une autre sélection reste facultative et les exclusions s’appliquent à
       await fulfillJson(route, apiSuccess([]));
       return true;
     }
-    if (request.path.endsWith("/targeting/preview")) {
+    if (request.path.endsWith("/targeting/jobs/preview")) {
       submitted = route.request().postDataJSON() as Record<string, unknown>;
       await fulfillJson(
         route,
@@ -351,7 +376,7 @@ test("les activités à écarter se choisissent dans la base et le motif d’une
       await fulfillJson(route, apiSuccess([]));
       return true;
     }
-    if (request.path.endsWith("/targeting/preview")) {
+    if (request.path.endsWith("/targeting/jobs/preview")) {
       submitted = route.request().postDataJSON() as Record<string, unknown>;
       if (attempts++ === 0) {
         await route.fulfill({

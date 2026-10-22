@@ -97,6 +97,13 @@ export interface TargetingRequest {
   nom: string;
   allow_all: boolean;
 }
+export interface TargetingJob<T> {
+  id: string;
+  kind: "preview" | "execute";
+  status: "queued" | "completed" | "failed";
+  result: T | null;
+  error: { message: string; statusCode: number } | null;
+}
 export interface GuidedTargetingSelection {
   profiles: TargetingCriterion[][];
   exclusions: TargetingCriterion[];

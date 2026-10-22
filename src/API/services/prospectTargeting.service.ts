@@ -16,6 +16,7 @@ import type {
   TargetingResult,
   TargetingRow,
   TargetingHistory,
+  TargetingJob,
 } from "../../utils/types/index.ts";
 interface Response<T> {
   success: boolean;
@@ -55,12 +56,31 @@ export const previewTargeting = (
   id: number,
   request: TargetingRequest,
 ): Promise<TargetingPreview> =>
-  read(postRequest(`${base(id)}/preview`, request));
+  followJob<TargetingPreview>(id, read(postRequest(`${base(id)}/jobs/preview`, request, { timeout: 15000 })));
 export const executeTargeting = (
   id: number,
   operation: string,
 ): Promise<TargetingResult> =>
-  read(postRequest(`${base(id)}/operations/${operation}/execute`, {}));
+  followJob<TargetingResult>(id, read(postRequest(`${base(id)}/operations/${operation}/jobs/execute`, {}, { timeout: 15000 })));
+async function followJob<T>(campaign: number, requested: Promise<TargetingJob<T>>): Promise<T> {
+  let job = await requested;
+  const deadline = Date.now() + 35 * 60 * 1000;
+  let failures = 0;
+  while (job.status === "queued") {
+    if (Date.now() >= deadline) throw new Error("Le suivi a été interrompu. Le traitement peut continuer ; vérifiez l’historique avant de confirmer à nouveau.");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    try {
+      job = await read<TargetingJob<T>>(getRequest(`${base(campaign)}/jobs/${job.id}`, { timeout: 10000 }));
+      failures = 0;
+    } catch {
+      failures += 1;
+      if (failures >= 3) throw new Error("Le suivi est indisponible. Le traitement peut continuer ; vérifiez l’historique avant de confirmer à nouveau.");
+    }
+  }
+  if (job.status === "failed") throw new Error(job.error?.message || "Le traitement a échoué.");
+  if (job.status !== "completed" || job.result == null) throw new Error("Résultat du traitement indisponible.");
+  return job.result;
+}
 export const getTargetingRows = (
   id: number,
   operation: string,
