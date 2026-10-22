@@ -1,18 +1,28 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect } from "react";
 import {
   getAllProspectsCountService,
   getAllProspectsService,
   getProspectsCampagneService,
   getQueueProspectsCountService,
   purgeProspectsService,
-} from '../API/services/index.ts';
-import type { Campagne, Prospect, ProspectFilters, ProspectsCount } from '../utils/types/index.ts';
-import { mapProspectCampagneRowToProspect } from '../API/models/index.ts';
-import { useAlert } from './useAlert.ts';
+} from "../API/services/index.ts";
+import type {
+  Campagne,
+  Prospect,
+  ProspectFilters,
+  ProspectsCount,
+} from "../utils/types/index.ts";
+import { mapProspectCampagneRowToProspect } from "../API/models/index.ts";
+import { useAlert } from "./useAlert.ts";
 
 export interface UseProspectsReturn {
   prospects: Prospect[];
-  pagination: { page: number; limit: number; total: number; totalPages: number } | null;
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  } | null;
   totalProspectsDb: number | null;
   campaignCounts: ProspectsCount | null;
   isLoading: boolean;
@@ -35,16 +45,27 @@ const PROSPECT_SEARCH_DEBOUNCE_MS = 350;
 export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   const { showConfirm, showError, showSuccess } = useAlert();
   const [prospects, setProspects] = useState<Prospect[]>([]);
-  const [pagination, setPagination] = useState<{ page: number; limit: number; total: number | null; totalPages: number | null } | null>(null);
+  const [pagination, setPagination] = useState<{
+    page: number;
+    limit: number;
+    total: number | null;
+    totalPages: number | null;
+  } | null>(null);
   const [totalProspectsDb, setTotalProspectsDb] = useState<number | null>(null);
-  const [campaignCounts, setCampaignCounts] = useState<ProspectsCount | null>(null);
-  const [filteredProspectsTotal, setFilteredProspectsTotal] = useState<number | null>(null);
+  const [campaignCounts, setCampaignCounts] = useState<ProspectsCount | null>(
+    null,
+  );
+  const [filteredProspectsTotal, setFilteredProspectsTotal] = useState<
+    number | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(null);
+  const [selectedCampagne, setSelectedCampagne] = useState<Campagne | null>(
+    null,
+  );
   const [currentPage, setCurrentPage] = useState(1);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [isPurging, setIsPurging] = useState(false);
 
@@ -62,12 +83,17 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
     try {
       if (selectedCampagne) {
-        const result = await getProspectsCampagneService(selectedCampagne.id_campagne, {
-          page: currentPage,
-          limit: PROSPECTS_PER_PAGE,
-          search: debouncedSearch || undefined,
-        });
-        const mappedProspects = result.data.map(mapProspectCampagneRowToProspect);
+        const result = await getProspectsCampagneService(
+          selectedCampagne.id_campagne,
+          {
+            page: currentPage,
+            limit: PROSPECTS_PER_PAGE,
+            search: debouncedSearch || undefined,
+          },
+        );
+        const mappedProspects = result.data.map(
+          mapProspectCampagneRowToProspect,
+        );
         setProspects(mappedProspects);
         setPagination(result.pagination);
       } else {
@@ -83,7 +109,10 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
         setPagination(result.pagination);
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Erreur lors du chargement des prospects';
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Erreur lors du chargement des prospects";
       setError(msg);
       setProspects([]);
       setPagination(null);
@@ -107,7 +136,9 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
     const loadCampaignCounts = async (): Promise<void> => {
       try {
-        const counts = await getQueueProspectsCountService(selectedCampagne.id_campagne);
+        const counts = await getQueueProspectsCountService(
+          selectedCampagne.id_campagne,
+        );
         if (!cancelled) setCampaignCounts(counts);
       } catch {
         if (!cancelled) setCampaignCounts(null);
@@ -115,7 +146,9 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     };
 
     void loadCampaignCounts();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [selectedCampagne, refreshKey]);
 
   useEffect(() => {
@@ -149,7 +182,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     };
   }, [debouncedSearch, selectedCampagne, refreshKey]);
 
-  const resolvedPagination: UseProspectsReturn['pagination'] = selectedCampagne
+  const resolvedPagination: UseProspectsReturn["pagination"] = selectedCampagne
     ? pagination && pagination.total !== null && pagination.totalPages !== null
       ? {
           page: pagination.page,
@@ -181,7 +214,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
   }, []);
 
   const refresh = useCallback(() => {
-    setRefreshKey(k => k + 1);
+    setRefreshKey((k) => k + 1);
   }, []);
 
   const purgeSelectedCampagne = useCallback(async (): Promise<boolean> => {
@@ -190,7 +223,7 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
     }
 
     const confirmed = await showConfirm(
-      `Êtes-vous sûr de vouloir vider la table d'appel pour la campagne "${selectedCampagne.nom_campagne}" ? Tous les prospects seront retirés de la file d'appels. Cette action est irréversible.\n\n⚠️ Note : Les rendez-vous déjà pris avec ces prospects resteront visibles dans les calendriers et pourront toujours être honorés.`,
+      `Êtes-vous sûr de vouloir vider la table d'appel pour la campagne "${selectedCampagne.nom_campagne}" ? Tous les prospects seront retirés de la file d'appels. Les rappels de l’agenda des commerciaux liés à ces fiches seront annulés. Les leads et rendez-vous clients sont conservés.`,
       "Vider la table d'appel",
     );
     if (!confirmed) {
@@ -199,7 +232,15 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
 
     setIsPurging(true);
     try {
-      await purgeProspectsService(selectedCampagne.id_campagne);
+      const result = await purgeProspectsService(selectedCampagne.id_campagne);
+      if (!result.purged) {
+        await showError(
+          `${result.removed} fiches retirées. ${result.remaining} fiches restent en table d’appel ; relancez l’analyse.`,
+          "Retrait partiel",
+        );
+        refresh();
+        return true;
+      }
       await showSuccess(
         "Tous les prospects ont été retirés de la file d'appels.",
         "File d'appels vidée",
@@ -208,8 +249,10 @@ export const useProspects = (campagnes: Campagne[]): UseProspectsReturn => {
       return true;
     } catch (purgeError) {
       await showError(
-        purgeError instanceof Error ? purgeError.message : "Impossible de vider la file d'appels.",
-        'Erreur',
+        purgeError instanceof Error
+          ? purgeError.message
+          : "Impossible de vider la file d'appels.",
+        "Erreur",
       );
       return false;
     } finally {

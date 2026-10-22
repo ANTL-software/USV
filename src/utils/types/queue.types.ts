@@ -1,12 +1,7 @@
-import type { QueueBlockReason } from './prospect.types.ts';
+import type { QueueBlockReason } from "./prospect.types.ts";
 
 export type StatutProspection =
-  | 'en_attente'
-  | 'assigne'
-  | 'en_cours'
-  | 'traite'
-  | 'rappeler'
-  | 'refuse';
+  "en_attente" | "assigne" | "en_cours" | "traite" | "rappeler" | "refuse";
 
 export interface QueueCount {
   statut: StatutProspection;
@@ -39,7 +34,7 @@ export interface CallInProgress {
   agent_prenom: string;
   duree_secondes: number;
   origine_appel: string;
-  telephony_provider?: 'twilio' | 'asterisk';
+  telephony_provider?: "twilio" | "asterisk";
   provider_call_id?: string | null;
   twilio_call_sid?: string;
   prospect_call_sid?: string;
@@ -73,13 +68,13 @@ export interface InjectionFilters {
   code_postal?: string;
   rayon_km?: number;
   secteur?: string;
-  type_prospect?: 'Particulier' | 'Entreprise';
-  types_prospect?: Array<'Particulier' | 'Entreprise'>;
+  type_prospect?: "Particulier" | "Entreprise";
+  types_prospect?: Array<"Particulier" | "Entreprise">;
   limit?: number;
   source?: string;
   sources?: string[];
-  relation_commerciale?: 'prospect' | 'client' | 'lead_genere';
-  relations_commerciales?: Array<'prospect' | 'client' | 'lead_genere'>;
+  relation_commerciale?: "prospect" | "client" | "lead_genere";
+  relations_commerciales?: Array<"prospect" | "client" | "lead_genere">;
   code_naf?: string;
   codes_naf?: string[];
   effectif_min?: number;
@@ -107,7 +102,10 @@ export interface ProspectCampagneRow {
   nb_tentatives: number;
   derniere_tentative: string | null;
   date_eligibilite_queue: string | null;
-  motif_dernier_blocage_queue: Exclude<QueueBlockReason, 'college_lycee_ete'> | null;
+  motif_dernier_blocage_queue: Exclude<
+    QueueBlockReason,
+    "college_lycee_ete"
+  > | null;
   motif_blocage_queue_actuel?: QueueBlockReason | null;
   est_college_lycee?: boolean;
   id_agent_assigne: number | null;
@@ -120,13 +118,13 @@ export interface ProspectCampagneRow {
   date_traitement: string | null;
   prospect: {
     id_prospect: number;
-    type_prospect: 'Particulier' | 'Entreprise';
+    type_prospect: "Particulier" | "Entreprise";
     nom: string;
     prenom: string | null;
     raison_sociale: string | null;
     email: string | null;
     telephone: string;
-    type_telephone: 'mobile' | 'fixe' | 'voip' | 'inconnu';
+    type_telephone: "mobile" | "fixe" | "voip" | "inconnu";
     adresse: string | null;
     code_postal: string | null;
     ville: string | null;
@@ -148,7 +146,7 @@ export interface ProspectCampagneRow {
       nom: string;
       prenom: string | null;
     } | null;
-    relation_commerciale_campagne?: import('./prospect.types.ts').RelationCommercialeCampagne;
+    relation_commerciale_campagne?: import("./prospect.types.ts").RelationCommercialeCampagne;
     created_at: string;
     updated_at: string;
   };
@@ -175,6 +173,17 @@ export interface CampaignAgentStats {
 }
 
 export interface GlobalStats {
-  campaignStats: { id_campagne: number; nom_campagne: string; statut: string | null; count: number }[];
+  campaignStats: {
+    id_campagne: number;
+    nom_campagne: string;
+    statut: string | null;
+    count: number;
+  }[];
   agentStats: CampaignAgentStats[];
+}
+
+export interface CampaignPurgeResult {
+  purged: boolean;
+  remaining: number;
+  removed: number;
 }

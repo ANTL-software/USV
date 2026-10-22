@@ -254,3 +254,7 @@ export type { SitesProspectionViewModel } from './useSitesProspection.ts';
 export { useQuoteDrafts } from './useQuoteDrafts.ts';
 export type { QuoteDraftsViewModel } from './useQuoteDrafts.ts';
 export * from './useCommandesCalendar.ts';
+
+export { useProspectTargetingEditor } from './useProspectTargetingEditor.ts';
+
+export * from "./useProspectTargetingValues.ts";

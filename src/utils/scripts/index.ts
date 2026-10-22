@@ -682,3 +682,7 @@ export * from './bookingLead.ts';
 
 export * from './siteProspection.ts';
 export * from './commandesCalendar.ts';
+
+export * from './prospectTargeting.ts';
+
+export * from './prospectTargetingGuided.ts';

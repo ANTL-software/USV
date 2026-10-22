@@ -10,7 +10,7 @@ async function installDraftApi(page: Page, options: { offline?: boolean; conflic
   await installApiRoute(page, async (route, request) => {
     if (request.path === '/devis/brouillons' && request.method === 'GET') {
       if (options.offline) { await fulfillJson(route, { success: false, message: 'Serveur indisponible' }, 503); return true; }
-      await fulfillJson(route, apiSuccess([...drafts.values()].map(({ snapshot: _snapshot, ...summary }) => summary))); return true;
+      await fulfillJson(route, apiSuccess([...drafts.values()].map(({ id, title, revision, created_at, updated_at }) => ({ id, title, revision, created_at, updated_at })))); return true;
     }
     if (request.path.startsWith('/devis/brouillons/')) {
       const id = request.path.split('/').at(-1)!;

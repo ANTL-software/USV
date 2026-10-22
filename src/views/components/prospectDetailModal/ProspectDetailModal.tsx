@@ -20,6 +20,9 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
     changeField,
     selectAddress,
     save,
+    confirmWorkforce,
+    workforceMin,
+    workforceMax,
     close,
     presentation,
     prospect,
@@ -68,6 +71,13 @@ export default function ProspectDetailModal({ viewModel }: Readonly<ProspectDeta
         </div>
 
         <div className="modalBody">
+          <div className="prospectDetail__section">
+            <h3>Effectif</h3>
+            <label>Minimum<input aria-label="Effectif minimum" type="number" min={0} disabled={!isEditing} value={workforceMin} onChange={e => changeField('effectif_min', e.target.value)} /></label>
+            <label>Maximum<input aria-label="Effectif maximum" type="number" min={0} disabled={!isEditing} value={workforceMax} onChange={e => changeField('effectif_max', e.target.value)} /></label>
+            <p>Origine : {prospect.effectif_origine || 'historique indéterminé'}</p>
+            {!isEditing && <button type="button" disabled={isSubmitting} onClick={() => void confirmWorkforce()}>Confirmer l’effectif actuel</button>}
+          </div>
           <div className="prospectDetail__section">
             <h3>Identité</h3>
             <div className="detailRow">

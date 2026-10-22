@@ -253,3 +253,9 @@ export { SitesProspectionTable } from './sitesProspectionTable/index.ts';
 export { SitesProspectionDetailModal } from './sitesProspectionDetailModal/index.ts';
 export { DevisDrafts } from './devisDrafts/index.ts';
 export * from './commandesCalendar/index.ts';
+
+export { ProspectTargetingEditor } from './prospectTargetingEditor/index.ts';
+
+export { ProspectTargetingPreview } from './prospectTargetingPreview/index.ts';
+
+export { ProspectTargetingCriterion } from './prospectTargetingCriterion/index.ts';

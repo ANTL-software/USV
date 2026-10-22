@@ -144,3 +144,38 @@
   justify-content: center;
   padding-top: 1em;
 }
+#prospectInjection .targetingPanel { background: white; border: 1px solid #ddd6eb; border-radius: 12px; padding: 1.25rem; margin: 1.25rem 0; min-width: 0; }
+#prospectInjection .targetingGrid, #prospectInjection .targetingCriterion, #prospectInjection .targetingGroup, #prospectInjection .targetingSaved { display: flex; gap: 1rem; align-items: flex-end; flex-wrap: wrap; }
+#prospectInjection .targetingCriterion { padding: 1rem; margin-top: .75rem; background: #f8f7fc; border-left: 3px solid #a78bfa; }
+#prospectInjection .targetingGroup { padding: .75rem; margin-top: 1rem; background: #eee9fb; border-radius: 8px; }
+#prospectInjection .targetingSaved { padding: .75rem 0; border-bottom: 1px solid #eee; }
+#prospectInjection .targetingPanel label { display: flex; flex-direction: column; gap: .35rem; font-size: .9rem; min-width: 150px; }
+#prospectInjection .targetingPanel label > input { padding: .6rem; border: 1px solid #cfc8db; border-radius: 6px; max-width: 100%; }
+#prospectInjection .targetingPanel input[type="checkbox"] { width: 18px; height: 18px; }
+#prospectInjection .targetingPanel .targetingCheck { flex-direction: row; align-items: center; margin: .75rem 0; }
+#prospectInjection .targetingWorkforce { flex: 1; display: flex; gap: .75rem; flex-wrap: wrap; }
+#prospectInjection small { display: block; color: #615b6c; max-width: 36rem; }
+#prospectInjection .targetingDepth2 { margin-left: 1rem; }
+#prospectInjection .targetingDepth3, #prospectInjection .targetingDepth4 { margin-left: 2rem; }
+#prospectInjection .targetingSummary { padding: 1rem; background: #f5f1ff; line-height: 1.6; overflow-wrap: anywhere; }
+#prospectInjection .targetingTable { overflow-x: auto; }
+#prospectInjection table { border-collapse: collapse; width: 100%; }
+#prospectInjection th, #prospectInjection td { padding: .75rem; border-bottom: 1px solid #eee; text-align: left; }
+#prospectInjection .targetingError { background: #fff0f0; color: #9d2424; padding: 1rem; }
+
+#prospectInjection .targetingSelect { min-width: 200px; max-width: 100%; }
+#prospectInjection .targetingIntro { margin: 2rem 0 1rem; }
+#prospectInjection .targetingIntro h2, #prospectInjection .targetingFamily h3 { margin: 0 0 .5rem; }
+#prospectInjection .targetingFamily { margin: 1rem 0 1.5rem; }
+#prospectInjection .targetingFamily h3 { color: #625487; font-size: .95rem; }
+#prospectInjection .targetingChoice { padding: 1rem; background: #f8f7fc; border-radius: 8px; margin: .75rem 0; display: flex; flex-direction: column; gap: .75rem; }
+#prospectInjection .targetingChoice__heading, #prospectInjection .targetingStarters, #prospectInjection .targetingAddFilter { display: flex; gap: .75rem; align-items: flex-end; flex-wrap: wrap; }
+#prospectInjection .targetingStarters p { flex-basis: 100%; }
+#prospectInjection .targetingAddFilter > label { flex: 1; max-width: 40rem; }
+#prospectInjection .targetingChoice__heading > button { margin-left: auto; border: 0; background: transparent; text-decoration: underline; cursor: pointer; color: #625487; }
+#prospectInjection .targetingProfileSentence { background: #f4f0ff; padding: .75rem; border-radius: 6px; }
+#prospectInjection .targetingAlternative { padding: .5rem 1.25rem 1rem; }
+#prospectInjection .targetingExclusions { border-color: #e4c9c0; }
+#prospectInjection .targetingExclusions .targetingChoice { background: #fff8f4; }
+#prospectInjection .targetingReview { line-height: 1.7; }
+#prospectInjection .targetingEmpty { color: #6a6570; }

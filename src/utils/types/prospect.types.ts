@@ -102,6 +102,11 @@ export interface Prospect {
   nom_contact?: string | null;
   responsable?: string | null;
   effectif?: string | number | null;
+  effectif_min?: number | null;
+  effectif_max?: number | null;
+  effectif_origine?: string;
+  effectif_confirme_at?: string | null;
+  effectif_confirme_par?: number | null;
   effectif_libelle?: string | null;
   effectif_enrichi?: string | number | null;
   effectif_enrichi_nature?: string | null;
@@ -224,6 +229,10 @@ export interface ProspectFilters {
 }
 
 export interface ProspectUpdateData {
+  effectif?: number | null;
+  effectif_min?: number | null;
+  effectif_max?: number | null;
+  effectif_libelle?: string | null;
   type_prospect?: TypeProspect;
   nom?: string;
   prenom?: string | null;

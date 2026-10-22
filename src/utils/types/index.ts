@@ -376,6 +376,7 @@ export type {
   CampaignAgentStats,
   GlobalStats,
   SupervisionAgentOption,
+  CampaignPurgeResult,
 } from './queue.types.ts';
 
 export type {
@@ -559,3 +560,5 @@ export * from './bookingLead.types.ts';
 export type { SiteProof, SitePhoneProof, SiteProspection, SiteProspectionList, SiteProspectionQuery, SiteEditField, SiteEditForm, SiteEditPatch } from './siteProspection.types.ts';
 export type { QuoteDraftSnapshot, QuoteDraftSummary, QuoteDraft, LocalQuoteDraft } from './quoteDraft.types.ts';
 export * from './commandesCalendar.types.ts';
+
+export * from './prospectTargeting.types.ts';

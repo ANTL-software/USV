@@ -397,3 +397,5 @@ export * from './bookingLead.service.ts';
 export { getSitesProspectionService, getSiteProspectionService, updateSiteProspectionService } from './siteProspection.service.ts';
 export { readLocalQuoteDrafts, writeLocalQuoteDrafts, removeLocalQuoteDraft, listQuoteDrafts, getQuoteDraft, saveQuoteDraft, deleteQuoteDraft, quoteDraftError } from './quoteDraft.service.ts';
 export * from './commandesCalendar.service.ts';
+
+export * from './prospectTargeting.service.ts';

@@ -39,7 +39,8 @@ export function ProspectsViewHeader({ viewModel }: ProspectsViewHeaderProps): Re
           {viewModel.selectedCampagne && (
             <>
               <Button style="gradient" onClick={viewModel.navigateToInjection}><IoAddCircleOutline /><span>Injecter des prospects</span></Button>
-              <Button style="red" onClick={() => void viewModel.purgeCampaign()} disabled={viewModel.isPurging} className="prospectsView__purge"><IoTrashOutline /><span>Vider la table d&apos;appel</span></Button>
+              <Button style="grey" onClick={viewModel.navigateToWithdrawal}><IoTrashOutline /><span>Retirer des prospects</span></Button>
+              <details><summary>Actions avancées</summary><Button style="red" onClick={viewModel.navigateToWithdrawal}>Vider la table d’appel avec prévisualisation</Button></details>
             </>
           )}
         </div>

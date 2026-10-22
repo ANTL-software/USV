@@ -60,6 +60,7 @@ export function useProspectsViewPage() {
     navigateBack,
     navigateToEnrichment,
     navigateToInjection,
+    navigateToWithdrawal: () => { if (prospectsState.selectedCampagne) void navigate(`/operations/prospect/${prospectsState.selectedCampagne.id_campagne}/inject?action=withdraw`); },
     nextPage,
     previousPage,
     prospectDetail,
