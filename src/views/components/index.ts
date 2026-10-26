@@ -259,3 +259,5 @@ export { ProspectTargetingEditor } from './prospectTargetingEditor/index.ts';
 export { ProspectTargetingPreview } from './prospectTargetingPreview/index.ts';
 
 export { ProspectTargetingCriterion } from './prospectTargetingCriterion/index.ts';
+
+export { ScriptSupportFields } from './scriptSupportFields/index.ts';

@@ -53,6 +53,7 @@ const EXPECTED_ROUTES = [
   'operations/prospects/enrichissement',
   'campagnes',
   'campagnes/new',
+  'campagnes/:id/supports/:support',
   'campagnes/:id',
   'operations/prospect/:id/inject',
   'incidents',

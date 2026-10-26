@@ -227,10 +227,8 @@ test('la comparaison enrichissement expose téléphones et effectifs avant valid
 });
 
 test('les périodes et libellés Vigie restent déterministes', () => {
-  const range = buildVigieDateRange('7d');
-  const start = new Date(`${range.dateDebut}T12:00:00`);
-  const end = new Date(`${range.dateFin}T12:00:00`);
-  assert.equal((end.getTime() - start.getTime()) / 86_400_000, 6);
+  const range = buildVigieDateRange('7d', new Date('2026-10-26T12:00:00Z'));
+  assert.deepEqual(range, { dateDebut: '2026-10-20', dateFin: '2026-10-26' });
   assert.equal(buildVigieDateRange('since-june').dateDebut, '2026-06-01');
 
   const action = {

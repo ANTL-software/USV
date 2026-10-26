@@ -562,3 +562,5 @@ export type { QuoteDraftSnapshot, QuoteDraftSummary, QuoteDraft, LocalQuoteDraft
 export * from './commandesCalendar.types.ts';
 
 export * from './prospectTargeting.types.ts';
+
+export type { ScriptSupportKind, ScriptSupportItem, ScriptSupport } from './scriptSupport.types.ts';

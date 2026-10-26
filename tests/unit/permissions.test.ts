@@ -390,3 +390,12 @@ test('le comparatif mensuel exige son droit dédié et le hub qualité', () => {
   const allowed = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyste', permissions: { operations: { enabled: true, subsections: ['qualite', 'qualite-comparatif'] } } } });
   assert.equal(hasAccessToPath(allowed, '/operations/qualite/comparatif'), true);
 });
+
+test('les trois supports de campagne héritent uniquement du droit Campagnes', () => {
+  const allowed = createUser({ poste: { id_poste: 21, libelle_poste: 'Campagnes', permissions: { operations: { enabled: true, subsections: ['campagnes'] } } } });
+  const denied = createUser({ poste: { id_poste: 22, libelle_poste: 'Prospects', permissions: { operations: { enabled: true, subsections: ['prospects'] } } } });
+  for (const kind of ['plan-appel', 'objections', 'qui-sommes-nous']) {
+    assert.equal(hasAccessToPath(allowed, `/campagnes/7/supports/${kind}`), true);
+    assert.equal(hasAccessToPath(denied, `/campagnes/7/supports/${kind}`), false);
+  }
+});

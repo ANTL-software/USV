@@ -91,6 +91,7 @@ export {
   formatPhoneNumber,
   formatPersonDisplayName,
   getApiBaseUrl,
+  getParisCalendarDate,
   getAntlConfigurationRibUrl,
   getCampagneLogoUrl,
   getEmployePhotoUrl,

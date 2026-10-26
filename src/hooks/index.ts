@@ -258,3 +258,6 @@ export * from './useCommandesCalendar.ts';
 export { useProspectTargetingEditor } from './useProspectTargetingEditor.ts';
 
 export * from "./useProspectTargetingValues.ts";
+
+export { useScriptSupportEditor } from './useScriptSupportEditor.ts';
+export type { ScriptSupportEditorModel } from './useScriptSupportEditor.ts';

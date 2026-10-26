@@ -61,3 +61,5 @@ export { VigieView } from './vigie/index.ts';
 export { QualiteComparatif } from './qualiteComparatif/index.ts';
 
 export { SitesProspection } from './commercial/index.ts';
+
+export { ScriptSupport } from './scriptSupport/index.ts';

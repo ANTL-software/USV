@@ -11,6 +11,7 @@ interface IButtonProps {
   disabled?: boolean;
   onClick?: (event: MouseEvent<HTMLButtonElement>) => void;
   className?: string;
+  "aria-label"?: string;
 }
 
 export default function Button({
@@ -19,12 +20,14 @@ export default function Button({
   type = "button",
   disabled = false,
   onClick,
+  "aria-label": ariaLabel,
   className = ""
 }: Readonly<IButtonProps>): ReactElement {
   const buttonClassName = `${style}Button ${className}`.trim();
 
   return (
     <button
+      aria-label={ariaLabel}
       className={buttonClassName}
       onClick={onClick}
       type={type}

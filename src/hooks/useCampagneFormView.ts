@@ -116,6 +116,7 @@ export function useCampagneFormView() {
     handleRemoveAgent,
     handleStartTransfer,
     navigateToCampaigns,
+    openSupport: (kind: 'plan-appel' | 'objections' | 'qui-sommes-nous') => { if (campagneId) void navigate(`/campagnes/${campagneId}/supports/${kind}`); },
     selectedAgent,
     setSelectedAgent,
     setTransferDestination,

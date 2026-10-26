@@ -399,3 +399,5 @@ export { readLocalQuoteDrafts, writeLocalQuoteDrafts, removeLocalQuoteDraft, lis
 export * from './commandesCalendar.service.ts';
 
 export * from './prospectTargeting.service.ts';
+
+export { getScriptSupport, saveScriptSupport } from './scriptSupport.service.ts';

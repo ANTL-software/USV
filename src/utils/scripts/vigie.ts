@@ -1,3 +1,4 @@
+import { getParisCalendarDate } from './utils.ts';
 import type { VigieAction, VigieDateRange, VigieHourlyPerformance, VigieSegmentDimension, VigieWeekdayPerformance } from '../types/index.ts';
 
 export interface SelectOption<T> {
@@ -36,20 +37,11 @@ export const VIGIE_STATUS_LABELS: Record<VigieAction['statut'], string> = {
   consommee: 'Consommée',
 };
 
-const toIsoDate = (date: Date): string => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-};
-
-export function buildVigieDateRange(period: VigiePeriodKey): VigieDateRange {
-  const end = new Date();
-  const start = new Date(end);
-  if (period === 'today') return { dateDebut: toIsoDate(end), dateFin: toIsoDate(end) };
-  if (period === 'since-june') return { dateDebut: '2026-06-01', dateFin: toIsoDate(end) };
-  start.setDate(start.getDate() - (period === '30d' ? 29 : 6));
-  return { dateDebut: toIsoDate(start), dateFin: toIsoDate(end) };
+export function buildVigieDateRange(period: VigiePeriodKey, now: Date = new Date()): VigieDateRange {
+  const dateFin = getParisCalendarDate(0, now);
+  if (period === 'today') return { dateDebut: dateFin, dateFin };
+  if (period === 'since-june') return { dateDebut: '2026-06-01', dateFin };
+  return { dateDebut: getParisCalendarDate(period === '30d' ? -29 : -6, now), dateFin };
 }
 
 export const formatVigieNumber = (value: number): string => value.toLocaleString('fr-FR');
@@ -67,6 +59,7 @@ export const formatVigieDistance = (value: number | null): string => value === n
   : `${value.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} km`;
 export const formatVigieDate = (value: string): string => new Date(`${value}T12:00:00`).toLocaleDateString('fr-FR');
 export const formatVigieDateTime = (value: string): string => new Date(value).toLocaleString('fr-FR', {
+  timeZone: 'Europe/Paris',
   day: '2-digit',
   month: '2-digit',
   hour: '2-digit',

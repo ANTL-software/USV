@@ -32,6 +32,11 @@ export function CampagneAgentsPanel({ viewModel }: CampagneAgentsPanelProps): Re
 
   return (
     <aside className="campagneForm__sidebar">
+      <nav aria-label="Supports de la campagne" className="campagneForm__supports">
+        <Button style="gradient" type="button" onClick={() => viewModel.openSupport('plan-appel')}>Plan d’appel</Button>
+        <Button style="gradient" type="button" onClick={() => viewModel.openSupport('objections')}>Objections</Button>
+        <Button style="gradient" type="button" onClick={() => viewModel.openSupport('qui-sommes-nous')}>Qui sommes-nous ?</Button>
+      </nav>
       <section className="campagneForm__agents">
         <h2>
           Agents affectés
