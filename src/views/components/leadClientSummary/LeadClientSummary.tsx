@@ -2,7 +2,7 @@ import { useState, type FormEvent, type ReactElement } from 'react';
 import { IoBusiness, IoCheckmark, IoClose, IoInformationCircle, IoPencil, IoPerson } from 'react-icons/io5';
 import type { AddressEditorViewModel, LeadClient } from '../../../utils/types/index.ts';
 import { AddressEditor } from '../addressEditor/index.ts';
-import { useLeadContactEditor } from '../../../hooks/index.ts';
+import { useLeadContactEditor, type useLeadScheduleEditor } from '../../../hooks/index.ts';
 import {
   getLeadContactOriginLabel,
   formatLeadAgentLabel,
@@ -16,6 +16,7 @@ import {
 } from '../../../utils/scripts/index.ts';
 
 interface LeadClientSummaryProps {
+  scheduleEditor: ReturnType<typeof useLeadScheduleEditor>;
   addressEditor: AddressEditorViewModel;
   lead: LeadClient;
   notesUpdateLoading: boolean;
@@ -25,7 +26,7 @@ interface LeadClientSummaryProps {
   onUpdateContact: (nom: string, prenom: string) => Promise<boolean>;
 }
 
-export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification, contactUpdateLoading, onUpdateContact }: LeadClientSummaryProps): ReactElement {
+export function LeadClientSummary({ scheduleEditor, lead, addressEditor, notesUpdateLoading, onUpdateNotes, showEmployeeCountQualification, contactUpdateLoading, onUpdateContact }: LeadClientSummaryProps): ReactElement {
   const contactEditor = useLeadContactEditor(lead, onUpdateContact);
   const [isEditingNotes, setIsEditingNotes] = useState(false);
   const [notesDraft, setNotesDraft] = useState(lead.notes ?? '');
@@ -52,7 +53,7 @@ export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onU
     <>
       <section className="details-section card-style">
         <h3 className="section-title"><IoBusiness /> Client & contact</h3>
-        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Déplacez-le depuis l’agenda ANTL pour modifier sa date et son heure.</p>}
+        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Le déplacement du rendez-vous synchronise également l’agenda ANTL.</p>}
         <div className="details-grid">
           <div className="grid-item full-width"><span className="grid-label">Client</span><span className="grid-value grid-value--bold">{formatLeadProspectLabel(lead)}</span></div>
           <div className="grid-item">
@@ -71,10 +72,18 @@ export function LeadClientSummary({ lead, addressEditor, notesUpdateLoading, onU
       </section>
       <section className="details-section card-style">
         <h3 className="section-title"><IoInformationCircle /> Informations du rendez-vous</h3>
-        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Déplacez-le depuis l’agenda ANTL pour modifier sa date et son heure.</p>}
+        {lead.bookingAntl && <p>Lié au rendez-vous #{lead.bookingAntl.id_booking} de l’agenda ANTL. Le déplacement du rendez-vous synchronise également l’agenda ANTL.</p>}
         <div className="details-grid">
           <div className="grid-item"><span className="grid-label">Date de prise</span><span className="grid-value">{formatLeadDateTime(lead.created_at)}</span></div>
-          <div className="grid-item"><span className="grid-label">Rendez-vous client</span><span className="grid-value">{formatLeadDateTime(lead.date_rdv, lead.heure_rdv)}</span></div>
+          <div className="grid-item">
+            <div className="leadClientDetails__notes-label"><span className="grid-label">Rendez-vous client</span><button type="button" className="leadClientDetails__notes-edit" onClick={scheduleEditor.start} disabled={scheduleEditor.saving} aria-label="Modifier la date et l’heure du rendez-vous"><IoPencil /></button></div>
+            {scheduleEditor.editing ? <form className="leadClientDetails__notes-form" onSubmit={(event) => { void scheduleEditor.submit(event); }}>
+              <label>Date du rendez-vous<input type="date" value={scheduleEditor.date} onChange={(event) => scheduleEditor.setDate(event.target.value)} required disabled={scheduleEditor.saving} /></label>
+              <label>Heure du rendez-vous<input type="time" value={scheduleEditor.time} onChange={(event) => scheduleEditor.setTime(event.target.value)} required disabled={scheduleEditor.saving} /></label>
+              <p>Dérogation de supervision : choisissez librement la date et l’heure convenues avec le client.</p>
+              <div className="leadClientDetails__notes-actions"><button type="button" onClick={scheduleEditor.cancel} disabled={scheduleEditor.saving}><IoClose /> Annuler</button><button type="submit" disabled={scheduleEditor.saving}><IoCheckmark /> {scheduleEditor.saving ? 'Enregistrement…' : 'Enregistrer'}</button></div>
+            </form> : <span className="grid-value">{formatLeadDateTime(lead.date_rdv, lead.heure_rdv)}</span>}
+          </div>
           <div className="grid-item"><span className="grid-label">Commercial</span><span className="grid-value">{formatLeadAgentLabel(lead)}</span></div>
           <div className="grid-item"><span className="grid-label">Campagne</span><span className="grid-value">{lead.campagne?.nom_campagne ?? '—'}</span></div>
           {showEmployeeCountQualification && <div className="grid-item"><span className="grid-label">Entreprise + de 5 salariés</span><span className="grid-value">{lead.entreprise_plus_de_cinq_salaries ? 'Oui' : 'Non'}</span></div>}

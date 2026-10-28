@@ -529,6 +529,12 @@ test('la fiche détail affiche le nombre de salariés pour MMA uniquement', asyn
     campagne: { id_campagne: 10, nom_campagne: 'MMA' },
   };
   const commonProps = {
+    scheduleEditor: {
+      editing: false, saving: false, date: '', time: '',
+      start: () => {}, cancel: () => {}, setDate: () => {}, setTime: () => {}, submit: async (): Promise<void> => {},
+    },
+    contactUpdateLoading: false,
+    onUpdateContact: async (): Promise<boolean> => true,
     lead,
     addressEditor: {
       editing: false, saving: false, error: '', draft: { adresse: '', code_postal: '', ville: '', pays: 'France' },

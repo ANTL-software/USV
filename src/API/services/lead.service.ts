@@ -191,3 +191,9 @@ export const sendLeadClientEmailService = async (
 
   throw new Error(response.data.message || "Impossible d'envoyer la fiche rendez-vous par email");
 };
+
+export const updateLeadClientScheduleService = async (idLead: number, date_rdv: string, heure_rdv: string): Promise<LeadClient> => {
+  const response: AxiosResponse<ApiResponse<LeadClient>> = await patchRequest(`/leads/${idLead}/horaire`, { date_rdv, heure_rdv });
+  if (response.data.success && response.data.data) return response.data.data;
+  throw new Error(response.data.message || 'Impossible de déplacer le rendez-vous client');
+};
