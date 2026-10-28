@@ -6,13 +6,11 @@ import type { CommercialActivityFilter, MonthlyCommercial, MonthlyCommercialStat
 
 export function useMonthlyCommercial() {
   const navigate = useNavigate();
-  const [commercials, setCommercials] = useState<MonthlyCommercial[]>([]);
+  const [directoryResult, setDirectoryResult] = useState<{ revision: number; data: MonthlyCommercial[]; error: string | null } | null>(null);
   const [activity, setActivity] = useState<CommercialActivityFilter>('active');
   const [selectedId, setSelectedId] = useState<number | null>(null);
-  const [directoryLoading, setDirectoryLoading] = useState(true);
-  const [directoryError, setDirectoryError] = useState<string | null>(null);
   const [directoryRevision, setDirectoryRevision] = useState(0);
-  const [result, setResult] = useState<{ key: string; data: MonthlyCommercialStats | null; loading: boolean; error: string | null } | null>(null);
+  const [result, setResult] = useState<{ key: string; data: MonthlyCommercialStats | null; error: string | null } | null>(null);
   const [statsRevision, setStatsRevision] = useState(0);
   const [selectedStatsCampaignId, setSelectedStatsCampaignId] = useState('all');
   const [campaigns, setCampaigns] = useState<MonthlyCommercialCampaign[]>([]);
@@ -23,32 +21,34 @@ export function useMonthlyCommercial() {
 
   useEffect(() => {
     let active = true;
-    setDirectoryLoading(true);
-    setDirectoryError(null);
-    getMonthlyCommercialsService().then((data) => { if (active) setCommercials(data); })
-      .catch((error: unknown) => { if (active) setDirectoryError(error instanceof Error ? error.message : 'Impossible de charger les commerciaux'); })
-      .finally(() => { if (active) setDirectoryLoading(false); });
+    getMonthlyCommercialsService().then((data) => {
+      if (active) setDirectoryResult({ revision: directoryRevision, data, error: null });
+    }).catch((error: unknown) => {
+      if (active) setDirectoryResult({ revision: directoryRevision, data: [], error: error instanceof Error ? error.message : 'Impossible de charger les commerciaux' });
+    });
     return () => { active = false; };
   }, [directoryRevision]);
 
+  const commercials = directoryResult?.data ?? [];
+  const directoryLoading = directoryResult?.revision !== directoryRevision;
+  const directoryError = directoryResult?.revision === directoryRevision ? directoryResult.error : null;
   const visibleCommercials = commercials.filter((commercial) => activity === 'all' || commercial.actif === (activity === 'active'));
   const selectedCommercial = visibleCommercials.find(({ id_employe }) => id_employe === selectedId) ?? null;
   const effectiveId = selectedCommercial?.id_employe ?? null;
-  const requestKey = `${effectiveId}:${month}:${selectedStatsCampaignId}`;
+  const requestKey = `${effectiveId}:${month}:${selectedStatsCampaignId}:${statsRevision}`;
   const primeStats = result?.key === requestKey ? result.data : null;
   const primeStatsError = result?.key === requestKey ? result.error : null;
-  const isPrimeStatsLoading = effectiveId !== null && !periodError && (result?.key !== requestKey || result.loading);
+  const isPrimeStatsLoading = effectiveId !== null && !periodError && result?.key !== requestKey;
   useEffect(() => {
     let active = true;
     if (effectiveId === null || periodError) return;
-    setResult({ key: requestKey, data: null, loading: true, error: null });
     getMonthlyCommercialStatsService(effectiveId, month, selectedStatsCampaignId).then((stats) => {
       if (active) {
-        setResult({ key: requestKey, data: stats, loading: false, error: null });
+        setResult({ key: requestKey, data: stats, error: null });
         setCampaigns(stats.campagnes);
       }
     }).catch((error: unknown) => {
-      if (active) setResult({ key: requestKey, data: null, loading: false, error: error instanceof Error ? error.message : 'Impossible de charger le suivi mensuel' });
+      if (active) setResult({ key: requestKey, data: null, error: error instanceof Error ? error.message : 'Impossible de charger le suivi mensuel' });
     });
     return () => { active = false; };
   }, [effectiveId, month, selectedStatsCampaignId, requestKey, periodError, statsRevision]);
