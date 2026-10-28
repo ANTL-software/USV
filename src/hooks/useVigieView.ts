@@ -13,6 +13,7 @@ import type {
   VigieSegmentDimension,
 } from '../utils/types/index.ts';
 import {
+  getErrorMessage,
   getTopVigieContactDays,
   getTopVigieContactHours,
   type SelectOption,
@@ -20,6 +21,7 @@ import {
   type VigiePeriodKey,
 } from '../utils/scripts/index.ts';
 import { useCampagneAgents, useCampagnes } from './useCampagnes.ts';
+import { useAlert } from './useAlert.ts';
 import { useVigie } from './useVigie.ts';
 
 export interface UseVigieViewOptions {
@@ -27,6 +29,11 @@ export interface UseVigieViewOptions {
 }
 
 export function useVigieView(options?: UseVigieViewOptions) {
+  const { showSuccess, showError } = useAlert();
+  const notifyAction = useCallback((message: string, tone: 'success' | 'error') => {
+    if (tone === 'success') void showSuccess(message, 'Action Vigie enregistrée');
+    else void showError(message, 'Action Vigie non aboutie');
+  }, [showError, showSuccess]);
   const { campagnes, isLoading: campagnesLoading } = useCampagnes();
   const [selectedCampaignId, setSelectedCampaignId] = useState<number | null>(null);
   const [period, setPeriod] = useState<VigiePeriodKey>('today');
@@ -108,18 +115,16 @@ export function useVigieView(options?: UseVigieViewOptions) {
       setPendingAction(actionKey);
       setActionMessage(null);
       await createVigieActionService(selectedCampaignId, data);
-      setActionMessage(successMessage);
-      setActionMessageTone('success');
+      notifyAction(successMessage, 'success');
       await refresh();
       return true;
     } catch (actionError) {
-      setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’enregistrer cette action.');
-      setActionMessageTone('error');
+      notifyAction(getErrorMessage(actionError, 'Impossible d’enregistrer cette action.'), 'error');
       return false;
     } finally {
       setPendingAction(null);
     }
-  }, [refresh, selectedCampaignId]);
+  }, [notifyAction, refresh, selectedCampaignId]);
 
   const validateRecommendation = useCallback(async (recommendation: VigieRecommendation): Promise<void> => {
     await submitAction({
@@ -169,17 +174,15 @@ export function useVigieView(options?: UseVigieViewOptions) {
         id_agent_cible: batchPriorityAgentId,
         id_prospects: selectedCandidates.map((candidate) => candidate.id_prospect),
       });
-      setActionMessage(`${selectedCandidates.length} fiche(s) envoyée(s) dans la file prioritaire du commercial, dans l’ordre du classement.`);
-      setActionMessageTone('success');
+      notifyAction(`${selectedCandidates.length} fiche(s) envoyée(s) dans la file prioritaire du commercial, dans l’ordre du classement.`, 'success');
       setSelectedProspectIds([]);
       await refresh();
     } catch (actionError) {
-      setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’enregistrer le lot prioritaire.');
-      setActionMessageTone('error');
+      notifyAction(getErrorMessage(actionError, 'Impossible d’enregistrer le lot prioritaire.'), 'error');
     } finally {
       setPendingAction(null);
     }
-  }, [batchPriorityAgentId, refresh, selectedCampaignId, selectedCandidates]);
+  }, [batchPriorityAgentId, notifyAction, refresh, selectedCampaignId, selectedCandidates]);
 
   const submitManualPriority = useCallback(async (): Promise<void> => {
     if (!selectedCampaignId || !manualPriorityAgentId || !manualPriorityTelephone.trim() || !manualPriorityReason.trim()) return;
@@ -191,34 +194,30 @@ export function useVigieView(options?: UseVigieViewOptions) {
         telephone_prospect: manualPriorityTelephone.trim(),
         motif_rappel_force: manualPriorityReason.trim(),
       });
-      setActionMessage('Numéro injecté : il sera appelé en priorité dès le prochain passage disponible du commercial, après les rappels échus.');
-      setActionMessageTone('success');
+      notifyAction('Numéro injecté : il sera appelé en priorité dès le prochain passage disponible du commercial, après les rappels échus.', 'success');
       setManualPriorityTelephone('');
       setManualPriorityReason('');
       await refresh();
     } catch (actionError) {
-      setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’injecter ce numéro.');
-      setActionMessageTone('error');
+      notifyAction(getErrorMessage(actionError, 'Impossible d’injecter ce numéro.'), 'error');
     } finally {
       setPendingAction(null);
     }
-  }, [manualPriorityAgentId, manualPriorityReason, manualPriorityTelephone, refresh, selectedCampaignId]);
+  }, [manualPriorityAgentId, manualPriorityReason, manualPriorityTelephone, notifyAction, refresh, selectedCampaignId]);
 
   const cancelAction = useCallback(async (action: VigieAction): Promise<void> => {
     if (!selectedCampaignId) return;
     try {
       setPendingAction(`cancel-${action.id_vigie_action}`);
       await cancelVigieActionService(selectedCampaignId, action.id_vigie_action);
-      setActionMessage('Priorité annulée. Elle ne sera plus distribuée au commercial.');
-      setActionMessageTone('success');
+      notifyAction('Priorité annulée. Elle ne sera plus distribuée au commercial.', 'success');
       await refresh();
     } catch (actionError) {
-      setActionMessage(actionError instanceof Error ? actionError.message : 'Impossible d’annuler cette action.');
-      setActionMessageTone('error');
+      notifyAction(getErrorMessage(actionError, 'Impossible d’annuler cette action.'), 'error');
     } finally {
       setPendingAction(null);
     }
-  }, [refresh, selectedCampaignId]);
+  }, [notifyAction, refresh, selectedCampaignId]);
 
   return {
     actionMessage,

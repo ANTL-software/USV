@@ -6,7 +6,7 @@ export function useQualiteStatsPage() {
   const navigate = useNavigate();
   const stats = useQualiteStatsView();
   const navigateBack = useCallback((): void => {
-    void navigate('/operations/qualite');
+    void navigate('/operations/statistiques');
   }, [navigate]);
 
   return {

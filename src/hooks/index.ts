@@ -263,3 +263,7 @@ export { useScriptSupportEditor } from './useScriptSupportEditor.ts';
 export type { ScriptSupportEditorModel } from './useScriptSupportEditor.ts';
 
 export { useLeadScheduleEditor } from './useLeadScheduleEditor.ts';
+
+export { useStatistiquesPage, type StatistiquesPageViewModel } from './useStatistiquesPage.ts';
+
+export { useMonthlyCommercial, type MonthlyCommercialViewModel } from './useMonthlyCommercial.ts';

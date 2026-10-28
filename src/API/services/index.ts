@@ -402,3 +402,5 @@ export * from './commandesCalendar.service.ts';
 export * from './prospectTargeting.service.ts';
 
 export { getScriptSupport, saveScriptSupport } from './scriptSupport.service.ts';
+
+export { getMonthlyCommercialsService, getMonthlyCommercialStatsService } from './monthlyCommercial.service.ts';

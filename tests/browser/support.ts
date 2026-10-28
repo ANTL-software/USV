@@ -37,6 +37,7 @@ export const ADMIN_USER = {
         subsections: [
           'supervision',
           'vigie',
+          'suivi-mensuel-commercial',
           'commandes',
           'campagnes',
           'prospects',

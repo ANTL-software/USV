@@ -111,8 +111,9 @@ test('les statistiques ProgPA se pilotent par campagne, période et TLV', async 
   }, unhandledRequests);
 
   await page.goto('/operations/qualite/statistiques');
+  await expect(page).toHaveURL('/operations/statistiques/progpa');
 
-  await expect(page.getByRole('heading', { name: 'Statistiques ProgPA' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Statistique progPA' })).toBeVisible();
   await expect(page.getByText('Détail journalier par commercial')).toBeVisible();
   await expect(page.locator('.qualiteStats__step')).toHaveCount(7);
   await expect(page.locator('.qualiteStats__table tbody tr')).toHaveCount(2);

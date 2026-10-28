@@ -88,7 +88,8 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
     aliases: ['/campagnes', '/prospects', '/produits', '/paniers'],
     subsections: [
       { id: 'supervision', name: 'Supervision', path: '/supervision' },
-      { id: 'vigie', name: 'Vigie', path: '/operations/vigie' },
+      { id: 'suivi-mensuel-commercial', name: 'Statistiques — Suivis mensuel commercial', path: '/operations/statistiques/suivi-mensuel-commercial' },
+      { id: 'vigie', name: 'Statistiques — Vigie', path: '/operations/statistiques/vigie' },
       { id: 'commandes', name: 'Commandes', path: '/operations/commandes' },
       { id: 'campagnes', name: 'Campagnes', path: '/campagnes' },
       { id: 'prospects', name: 'Prospects', path: '/operations/prospects' },
@@ -96,8 +97,8 @@ export const SECTIONS_CONFIG: SectionConfig[] = [
       { id: 'qualite', name: 'Qualité', path: '/operations/qualite' },
       { id: 'qualite-signalements', name: 'Qualité — Signalements', path: '/operations/qualite/signalements' },
       { id: 'qualite-ecoutes', name: 'Qualité — Écoutes', path: '/operations/qualite/ecoutes' },
-      { id: 'qualite-statistiques', name: 'Qualité — Statistiques', path: '/operations/qualite/statistiques' },
-      { id: 'qualite-comparatif', name: 'Qualité — Comparatif mensuel', path: '/operations/qualite/comparatif' },
+      { id: 'qualite-statistiques', name: 'Statistiques — Statistique progPA', path: '/operations/statistiques/progpa' },
+      { id: 'qualite-comparatif', name: 'Statistiques — Comparatif mensuel', path: '/operations/statistiques/comparatif' },
       { id: 'demandes-absence', name: 'Demandes d’absence', path: '/operations/demandes-absence' },
       { id: 'employes', name: 'Employés', path: '/operations/employes' },
       { id: 'postes', name: 'Postes & planning', path: '/operations/postes' },
@@ -267,16 +268,28 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
       return hasAccessToSection(user, ACCESS_MANAGEMENT_PERMISSION);
     }
     if (cleanPath === '/operations') return true;
-    if (cleanPath.startsWith('/operations/vigie')) return hasAccessToSubsection(user, 'operations', 'vigie');
+    if (cleanPath === '/operations/statistiques/suivi-mensuel-commercial') return hasAccessToSubsection(user, 'operations', 'suivi-mensuel-commercial');
+    if (cleanPath === '/operations/statistiques') {
+      return ['vigie', 'qualite-statistiques', 'qualite-comparatif', 'suivi-mensuel-commercial'].some(
+        (id) => hasAccessToSubsection(user, 'operations', id),
+      );
+    }
+    // Old bookmarks follow the same authorization as the canonical route.
+    const legacyStatisticsPaths: Record<string, string> = {
+      '/operations/vigie': '/operations/statistiques/vigie',
+      '/operations/qualite/statistiques': '/operations/statistiques/progpa',
+      '/operations/qualite/comparatif': '/operations/statistiques/comparatif',
+    };
+    if (legacyStatisticsPaths[cleanPath]) return hasAccessToPath(user, legacyStatisticsPaths[cleanPath]);
+    if (cleanPath.startsWith('/operations/statistiques/vigie')) return hasAccessToSubsection(user, 'operations', 'vigie');
     if (cleanPath.startsWith('/supervision')) return hasAccessToSubsection(user, 'operations', 'supervision');
     if (cleanPath.startsWith('/operations/commandes')) return hasAccessToSubsection(user, 'operations', 'commandes');
     if (cleanPath.startsWith('/campagnes')) return hasAccessToSubsection(user, 'operations', 'campagnes');
     if (cleanPath.startsWith('/operations/prospects') || cleanPath.startsWith('/prospects/import') || cleanPath.includes('/inject')) return hasAccessToSubsection(user, 'operations', 'prospects');
     if (cleanPath.startsWith('/produits') || cleanPath.startsWith('/paniers')) return hasAccessToSubsection(user, 'operations', 'produits');
     if (cleanPath === '/operations/qualite') return hasAccessToSubsection(user, 'operations', 'qualite');
-    if (cleanPath.startsWith('/operations/qualite/comparatif')) {
-      return hasAccessToSubsection(user, 'operations', 'qualite')
-        && hasAccessToSubsection(user, 'operations', 'qualite-comparatif');
+    if (cleanPath.startsWith('/operations/statistiques/comparatif')) {
+      return hasAccessToSubsection(user, 'operations', 'qualite-comparatif');
     }
     if (cleanPath.startsWith('/operations/qualite/signalements')) {
       return hasAccessToSubsection(user, 'operations', 'qualite')
@@ -286,9 +299,8 @@ export function hasAccessToPath(user: Employe | null, path: string): boolean {
       return hasAccessToSubsection(user, 'operations', 'qualite')
         && hasAccessToSubsection(user, 'operations', 'qualite-ecoutes');
     }
-    if (cleanPath.startsWith('/operations/qualite/statistiques')) {
-      return hasAccessToSubsection(user, 'operations', 'qualite')
-        && hasAccessToSubsection(user, 'operations', 'qualite-statistiques');
+    if (cleanPath.startsWith('/operations/statistiques/progpa')) {
+      return hasAccessToSubsection(user, 'operations', 'qualite-statistiques');
     }
     if (cleanPath.startsWith('/operations/demandes-absence')) return hasAccessToSubsection(user, 'operations', 'demandes-absence');
     if (cleanPath.startsWith('/operations/employes')) return hasAccessToSubsection(user, 'operations', 'employes');

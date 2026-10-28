@@ -261,3 +261,7 @@ export { ProspectTargetingPreview } from './prospectTargetingPreview/index.ts';
 export { ProspectTargetingCriterion } from './prospectTargetingCriterion/index.ts';
 
 export { ScriptSupportFields } from './scriptSupportFields/index.ts';
+
+export { StatistiquesHubContent } from './statistiquesHubContent/index.ts';
+
+export { MonthlyCommercialContent } from './monthlyCommercial/index.ts';

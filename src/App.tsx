@@ -83,6 +83,8 @@ import {
   QualiteEcoutes as QualiteEcoutesWithAuth,
   QualiteStats as QualiteStatsWithAuth,
   QualiteComparatif as QualiteComparatifWithAuth,
+  MonthlyCommercial as MonthlyCommercialWithAuth,
+  Statistiques as StatistiquesWithAuth,
   SupervisionView as SupervisionViewWithAuth,
   TelephonyManagement as TelephonyManagementWithAuth,
   TacheForm as TacheFormWithAuth,
@@ -90,6 +92,11 @@ import {
   UpdateCourrier as UpdateCourrierWithAuth,
   VigieView as VigieViewWithAuth,
 } from "./views/layouts/index.ts";
+
+function StatisticsRedirect({ to }: { to: string }): ReactElement {
+  const { search, hash } = useLocation();
+  return <Navigate to={`${to}${search}${hash}`} replace />;
+}
 
 // Component to manage body classes based on current route
 function BodyClassManager(): ReactElement | null {
@@ -169,7 +176,12 @@ function App(): ReactElement {
         <Route path={"commercial/devis"} element={<DevisWithAuth />}></Route>
         <Route path={"commercial/configuration-antl"} element={<AntlConfigurationWithAuth />}></Route>
         <Route path={"operations"} element={<CentreAppelsWithAuth />}></Route>
-        <Route path={"operations/vigie"} element={<VigieViewWithAuth />}></Route>
+        <Route path="operations/statistiques/suivi-mensuel-commercial" element={<MonthlyCommercialWithAuth />} />
+        <Route path="operations/statistiques" element={<StatistiquesWithAuth />} />
+        <Route path="operations/vigie" element={<StatisticsRedirect to="/operations/statistiques/vigie" />} />
+        <Route path="operations/qualite/statistiques" element={<StatisticsRedirect to="/operations/statistiques/progpa" />} />
+        <Route path="operations/qualite/comparatif" element={<StatisticsRedirect to="/operations/statistiques/comparatif" />} />
+        <Route path={"operations/statistiques/vigie"} element={<VigieViewWithAuth />}></Route>
         <Route path={"operations/demandes-absence"} element={<AbsenceDemandesWithAuth />}></Route>
         <Route path={"operations/employes"} element={<AgentsListWithAuth />}></Route>
         <Route path={"operations/partenaires-externes"} element={<PartenairesExternesWithAuth />}></Route>
@@ -189,8 +201,8 @@ function App(): ReactElement {
         <Route path={"operations/commandes"} element={<CommandesListWithAuth />}></Route>
         <Route path={"operations/commandes/details/:id"} element={<CommandeDetailsWithAuth />}></Route>
         <Route path={"operations/qualite/signalements"} element={<ProspectsSignalesWithAuth />}></Route>
-        <Route path={"operations/qualite/statistiques"} element={<QualiteStatsWithAuth />}></Route>
-        <Route path={"operations/qualite/comparatif"} element={<QualiteComparatifWithAuth />}></Route>
+        <Route path={"operations/statistiques/progpa"} element={<QualiteStatsWithAuth />}></Route>
+        <Route path={"operations/statistiques/comparatif"} element={<QualiteComparatifWithAuth />}></Route>
         <Route path={"operations/qualite/ecoutes"} element={<QualiteEcoutesWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>

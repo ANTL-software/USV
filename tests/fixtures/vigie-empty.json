@@ -1,0 +1,94 @@
+{
+  "campagne": {
+    "id_campagne": 7,
+    "nom_campagne": "Campagne test",
+    "type_campagne": "vente",
+    "autoriser_mobile": true
+  },
+  "periode": {
+    "date_debut": "2026-10-22",
+    "date_fin": "2026-10-28",
+    "fuseau": "Europe/Paris"
+  },
+  "objectif": {
+    "appels_par_agent": 200,
+    "appels_aujourdhui": 0,
+    "agents_ayant_appele": 0,
+    "agents_affectes_actifs": 0,
+    "objectif_jour": 0,
+    "taux_atteinte": null,
+    "methode": "Objectif brut = 200 appels × commerciaux ayant déjà appelé aujourd’hui. Il n’est pas proratisé selon l’heure."
+  },
+  "summary": {
+    "appels": 0,
+    "prospects_appeles": 0,
+    "decroches": 0,
+    "taux_decroche": null,
+    "contacts_humains": 0,
+    "taux_contact_humain": null,
+    "aboutis": 0,
+    "taux_abouti": null,
+    "classifications_manquantes": 0,
+    "taux_classification_complete": null,
+    "fiches_pretes": 0,
+    "rappels_reserves": 0,
+    "jours_couverture_file": null
+  },
+  "resultat_metier": {
+    "type": "bon_de_commande",
+    "libelle": "Bon de commande",
+    "libelle_pluriel": "Bons de commande",
+    "total": 0,
+    "lies_a_un_appel": 0,
+    "validations": 0,
+    "envois_traces": 0,
+    "valeur_nominale": 0,
+    "statuts": [],
+    "regle_metier": "Tout bon de commande créé compte comme résultat positif, y compris s’il est en attente, annulé ou au frigo. La validation reste un indicateur secondaire.",
+    "pour_1000_appels": null,
+    "taux_liaison_appel": null,
+    "taux_validation": null,
+    "taux_envoi_trace": null
+  },
+  "statuts_appels": [],
+  "creneaux_horaires": [],
+  "contacts_par_jour": [],
+  "agents": [],
+  "segments": [],
+  "qualite_fichier": {
+    "fiches_file": 0,
+    "sans_secteur_brut": 0,
+    "sans_segment_exploitable": 0,
+    "sans_code_postal": 0,
+    "sans_code_naf": 0,
+    "sans_contact_nomme": 0,
+    "mobiles": 0,
+    "doublons": 0,
+    "blacklists": 0,
+    "numeros_invalides": 0
+  },
+  "scoring": {
+    "version": "vigie-relative-v2",
+    "nature": "score_de_priorisation_relatif",
+    "disclaimer": "Ce score P1–P5 classe les fiches éligibles entre elles. La proximité avec l’adresse de la campagne pèse au maximum 10 points : c’est une hypothèse d’optimisation à mesurer, pas une causalité ni une probabilité de vente. Aucune action n’est déclenchée sans validation humaine.",
+    "distribution": [],
+    "candidats": []
+  },
+  "recommandations": [
+    {
+      "key": "file-vide",
+      "niveau": "alerte",
+      "titre": "Préparer une nouvelle injection",
+      "detail": "Aucune fiche immédiatement distribuable et aucun rappel réservé ne restent dans cette campagne.",
+      "preuve": "File disponible vide",
+      "action_suggeree": "preparation_injection",
+      "valeur_suggeree": "Nouvelle injection qualifiée"
+    }
+  ],
+  "meta": {
+    "donnees_actualisees_at": "2026-10-28T15:04:57.986Z",
+    "assistant": "moteur_de_regles_v1",
+    "automatisation": false,
+    "message": "Les recommandations sont calculées par des règles transparentes. Seul un humain peut enregistrer une action."
+  }
+}

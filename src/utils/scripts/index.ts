@@ -687,3 +687,5 @@ export * from './commandesCalendar.ts';
 export * from './prospectTargeting.ts';
 
 export * from './prospectTargetingGuided.ts';
+
+export { getMonthlyCommercialMonth, isMonthlyCommercialMonthValid, formatMonthlyCommercialMonth } from './monthlyCommercial.ts';

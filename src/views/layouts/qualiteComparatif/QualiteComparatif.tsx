@@ -7,7 +7,7 @@ import { BackToTop, Button, ComparisonSection, Header, SubNav } from '../../comp
 function QualiteComparatif() {
   const vm = useMonthlyComparison();
   return <div id="qualiteComparatif"><Header /><SubNav /><main className="comparison__wrapper">
-    <div><Button style="back" onClick={vm.navigateBack}><IoArrowBack /><span>Retour à la qualité</span></Button></div>
+    <div><Button style="back" onClick={vm.navigateBack}><IoArrowBack /><span>Retour aux statistiques</span></Button></div>
     <header className="comparison__hero"><div><span className="comparison__eyebrow"><IoGitCompareOutline /> Observatoire commercial</span><h1>Comprendre ce qui change.</h1><p>Du premier appel au résultat commercial : comparez vos mois, identifiez les écarts et explorez les données qui les expliquent.</p></div><div className="comparison__hero-aside"><strong>Comparatif mensuel</strong><span>Campagne par campagne<br />Données réelles · heure de Paris</span></div></header>
     <form className="comparison__filters" onSubmit={(event) => { event.preventDefault(); vm.apply(); }} aria-label="Filtres du comparatif">
       <label>Campagne<select aria-label="Campagne" id="comparison-campaign" value={vm.draft.campaign} onChange={(event) => vm.changeCampaign(event.target.value)} disabled={!vm.options}><option value="0" disabled>Choisir une campagne</option>{vm.options?.campaigns.map((campaign) => <option key={campaign.id} value={campaign.id}>{campaign.name}</option>)}</select></label>

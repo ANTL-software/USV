@@ -84,7 +84,7 @@ export function useMonthlyComparison() {
     changeMode: (value: string) => setDraft((previous) => ({ ...previous, mode: comparisonMode(value) })),
     swap: () => { setMonthDate(referenceDate); setReferenceDate(monthDate); setDraft((previous) => ({ ...previous, month: previous.reference, reference: previous.month })); },
     apply, retry: () => options ? setApplied((previous) => previous ? { ...previous } : null) : setRevision((value) => value + 1),
-    navigateBack: () => void navigate('/operations/qualite'),
+    navigateBack: () => void navigate('/operations/statistiques'),
     exportAll: () => { if (data) monthlyComparisonService.downloadCsv(comparisonCsv(data), `comparatif-${data.campaign.id}-${data.periods.current.month}-${data.periods.reference.month}.csv`); },
   };
 }

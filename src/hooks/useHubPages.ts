@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { hasAccessToSubsection } from '../utils/scripts/index.ts';
+import { hasAccessToPath, hasAccessToSubsection } from '../utils/scripts/index.ts';
 import { useUserContext } from './useUserContext.ts';
 import { useBookingCalendarView } from './useBookingCalendarView.ts';
 import type { BookingCalendarViewModel } from './useBookingCalendarView.ts';
@@ -44,7 +44,7 @@ export interface CentreAppelsPageViewModel {
     qualite: boolean;
     demandesAbsence: boolean;
     supervision: boolean;
-    vigie: boolean;
+    statistiques: boolean;
   };
   navigateBack: () => void;
   navigateToCampagnes: () => void;
@@ -57,7 +57,7 @@ export interface CentreAppelsPageViewModel {
   navigateToProspects: () => void;
   navigateToQualite: () => void;
   navigateToSupervision: () => void;
-  navigateToVigie: () => void;
+  navigateToStatistiques: () => void;
 }
 
 export interface IncidentsHubPageViewModel {
@@ -76,16 +76,12 @@ export interface IncidentsHubPageViewModel {
 
 export interface QualitePageViewModel {
   access: {
-    comparatif: boolean;
     ecoutes: boolean;
     signalements: boolean;
-    statistiques: boolean;
   };
   navigateBack: () => void;
   navigateToEcoutes: () => void;
   navigateToSignalements: () => void;
-  navigateToStatistiques: () => void;
-  navigateToComparatif: () => void;
 }
 
 export interface BookingPageViewModel {
@@ -144,7 +140,7 @@ export function useCentreAppelsPage(): CentreAppelsPageViewModel {
       prospects: hasAccessToSubsection(user, 'operations', 'prospects'),
       qualite: hasAccessToSubsection(user, 'operations', 'qualite'),
       supervision: hasAccessToSubsection(user, 'operations', 'supervision'),
-      vigie: hasAccessToSubsection(user, 'operations', 'vigie'),
+      statistiques: hasAccessToPath(user, '/operations/statistiques'),
     },
     navigateBack: () => void navigate('/home'),
     navigateToCampagnes: () => void navigate('/campagnes'),
@@ -157,7 +153,7 @@ export function useCentreAppelsPage(): CentreAppelsPageViewModel {
     navigateToProspects: () => void navigate('/operations/prospects'),
     navigateToQualite: () => void navigate('/operations/qualite'),
     navigateToSupervision: () => void navigate('/supervision'),
-    navigateToVigie: () => void navigate('/operations/vigie'),
+    navigateToStatistiques: () => void navigate('/operations/statistiques'),
   };
 }
 
@@ -186,14 +182,10 @@ export function useQualitePage(): QualitePageViewModel {
     access: {
       ecoutes: hasAccessToSubsection(user, 'operations', 'qualite-ecoutes'),
       signalements: hasAccessToSubsection(user, 'operations', 'qualite-signalements'),
-      statistiques: hasAccessToSubsection(user, 'operations', 'qualite-statistiques'),
-      comparatif: hasAccessToSubsection(user, 'operations', 'qualite-comparatif'),
     },
     navigateBack: () => void navigate('/operations'),
     navigateToEcoutes: () => void navigate('/operations/qualite/ecoutes'),
     navigateToSignalements: () => void navigate('/operations/qualite/signalements'),
-    navigateToStatistiques: () => void navigate('/operations/qualite/statistiques'),
-    navigateToComparatif: () => void navigate('/operations/qualite/comparatif'),
   };
 }
 

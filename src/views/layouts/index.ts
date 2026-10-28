@@ -63,3 +63,7 @@ export { QualiteComparatif } from './qualiteComparatif/index.ts';
 export { SitesProspection } from './commercial/index.ts';
 
 export { ScriptSupport } from './scriptSupport/index.ts';
+
+export { Statistiques } from './statistiques/index.ts';
+
+export { MonthlyCommercial } from './monthlyCommercial/index.ts';

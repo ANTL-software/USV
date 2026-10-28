@@ -181,7 +181,7 @@ export function HomeVigieAside({ vigieState, onNavigate }: HomeVigieAsideProps):
       )}
 
       <div className="homeVigie__footer">
-        <button type="button" onClick={() => onNavigate('/operations/vigie')}>
+        <button type="button" onClick={() => onNavigate('/operations/statistiques/vigie')}>
           Ouvrir la vigie complète →
         </button>
       </div>

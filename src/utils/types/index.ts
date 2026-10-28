@@ -564,3 +564,5 @@ export * from './commandesCalendar.types.ts';
 export * from './prospectTargeting.types.ts';
 
 export type { ScriptSupportKind, ScriptSupportItem, ScriptSupport } from './scriptSupport.types.ts';
+
+export type { MonthlyCommercial, CommercialActivityFilter, MonthlyCommercialPeriodPreset, MonthlyCommercialCampaign, MonthlyCommercialStats } from './monthlyCommercial.types.ts';

@@ -279,6 +279,7 @@ test('la matrice des postes recense chaque carte de hub comme sous-application',
   ]);
   assert.deepEqual(bySection.get('operations'), [
     'supervision',
+    'suivi-mensuel-commercial',
     'vigie',
     'commandes',
     'campagnes',
@@ -382,8 +383,8 @@ test('le module traitement ouvre uniquement les routes traitement', () => {
   assert.equal(hasAccessToPath(intervenant, '/incidents/traitement/12'), true);
   assert.equal(hasAccessToPath(intervenant, '/incidents/liste'), false);
 });
-test('le comparatif mensuel exige son droit dédié et le hub qualité', () => {
-  for (const subsections of [[], ['qualite'], ['qualite-comparatif'], ['qualite', 'qualite-statistiques']]) {
+test('le comparatif mensuel exige son droit dédié indépendamment de qualité', () => {
+  for (const subsections of [[], ['qualite'], ['vigie'], ['qualite', 'qualite-statistiques']]) {
     const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyste', permissions: { operations: { enabled: true, subsections } } } });
     assert.equal(hasAccessToPath(user, '/operations/qualite/comparatif'), false);
   }
@@ -398,4 +399,39 @@ test('les trois supports de campagne héritent uniquement du droit Campagnes', (
     assert.equal(hasAccessToPath(allowed, `/campagnes/7/supports/${kind}`), true);
     assert.equal(hasAccessToPath(denied, `/campagnes/7/supports/${kind}`), false);
   }
+});
+
+test('le hub statistiques et ses routes respectent chaque droit dédié', () => {
+  const routes = [
+    ['vigie', '/operations/statistiques/vigie', '/operations/vigie'],
+    ['qualite-statistiques', '/operations/statistiques/progpa', '/operations/qualite/statistiques'],
+    ['qualite-comparatif', '/operations/statistiques/comparatif', '/operations/qualite/comparatif'],
+  ];
+  for (const [permission, canonical] of routes) {
+    const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyste', permissions: { operations: { enabled: true, subsections: [permission] } } } });
+    assert.equal(hasAccessToPath(user, '/operations/statistiques'), true);
+    for (const [, path, legacy] of routes) {
+      assert.equal(hasAccessToPath(user, path), path === canonical);
+      assert.equal(hasAccessToPath(user, legacy), path === canonical);
+    }
+    assert.equal(hasAccessToPath(user, '/operations/qualite'), false);
+    assert.equal(SECTIONS_CONFIG.find(({ id }) => id === 'operations')?.subsections.find(({ id }) => id === permission)?.path, canonical);
+  }
+  for (const enabled of [false, true]) {
+    const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Sans statistiques', permissions: { operations: { enabled, subsections: ['qualite'] } } } });
+    assert.equal(hasAccessToPath(user, '/operations/statistiques'), false);
+  }
+});
+
+test('le suivi mensuel commercial exige son droit propre et ouvre le hub sans gestion RH', () => {
+  const path = '/operations/statistiques/suivi-mensuel-commercial';
+  for (const subsections of [[], ['employes'], ['vigie'], ['qualite-statistiques']]) {
+    const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Ops', permissions: { operations: { enabled: true, subsections } } } });
+    assert.equal(hasAccessToPath(user, path), false);
+  }
+  const user = createUser({ poste: { id_poste: 1, libelle_poste: 'Analyse', permissions: { operations: { enabled: true, subsections: ['suivi-mensuel-commercial'] } } } });
+  assert.equal(hasAccessToPath(user, path), true);
+  assert.equal(hasAccessToPath(user, '/operations/statistiques'), true);
+  assert.equal(hasAccessToPath(user, '/operations/employes/9'), false);
+  assert.equal(hasAccessToPath(user, '/operations/employes/details/9'), false);
 });

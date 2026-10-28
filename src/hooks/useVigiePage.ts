@@ -7,7 +7,7 @@ export function useVigiePage() {
   const navigate = useNavigate();
   const vigie = useVigieView();
   const navigateBack = useCallback((): void => {
-    void navigate('/operations');
+    void navigate('/operations/statistiques');
   }, [navigate]);
   return { navigateBack, vigie };
 }

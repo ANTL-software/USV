@@ -53,7 +53,7 @@ export function VigieActions({ state }: VigieActionsProps): ReactElement {
               placeholder={state.campaignAgentsLoading ? 'Chargement des agents...' : 'Choisir un commercial...'}
               isLoading={state.campaignAgentsLoading} isDisabled={state.campaignAgentsLoading}
             />
-            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.manualPriorityReason.trim() || !state.manualPriorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>Injecter et prioriser ce numéro</button>
+            <button className="vigieView__button vigieView__button--secondary" type="button" disabled={!state.manualPriorityTelephone.trim() || !state.manualPriorityReason.trim() || !state.manualPriorityAgentId || state.pendingAction === 'priorite-manuelle'} onClick={() => { void state.submitManualPriority(); }}>{state.pendingAction === 'priorite-manuelle' ? 'Injection en cours…' : 'Injecter et prioriser ce numéro'}</button>
           </div>
         </div>
       </div>

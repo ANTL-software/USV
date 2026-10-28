@@ -29,6 +29,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
   operations: [
     'supervision',
     'vigie',
+    'suivi-mensuel-commercial',
     'commandes',
     'campagnes',
     'prospects',
@@ -37,6 +38,7 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
     'qualite-signalements',
     'qualite-ecoutes',
     'qualite-statistiques',
+    'qualite-comparatif',
     'demandes-absence',
     'employes',
     'postes',
@@ -52,7 +54,6 @@ const DEFAULT_SUBSECTIONS_BY_SECTION: Record<string, string[]> = {
 const QUALITY_SUBSECTIONS = [
   'qualite-signalements',
   'qualite-ecoutes',
-  'qualite-statistiques',
 ];
 
 const INITIAL_FORM: PosteFormState = {

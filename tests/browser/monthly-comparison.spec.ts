@@ -16,7 +16,7 @@ test('hub, comparaison, explorations, exports et variantes', async ({ page }) =>
     }
     return false;
   }, unhandled);
-  await page.goto('/operations/qualite');
+  await page.goto('/operations/statistiques');
   await page.getByRole('button', { name: /Comparatif mensuel/ }).click();
   await expect(page.getByRole('heading', { name: 'Comprendre ce qui change.' })).toBeVisible();
   await expect(page.getByLabel('Base de comparaison')).toHaveValue('business');
@@ -72,19 +72,22 @@ test('erreur initiale, reprise et écran mobile sans débordement', async ({ pag
   }, []);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/operations/qualite/comparatif');
+  await expect(page).toHaveURL(/\/operations\/statistiques\/comparatif/);
   await expect(page.getByRole('alert')).toContainText('n’a pas pu être chargé');
   fail = false;
   await page.getByRole('button', { name: 'Réessayer' }).click();
   await expect(page.locator('.comparison__kpi')).toHaveCount(8);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.evaluate(() => window.scrollTo(0, 0));
-  await expect(page.getByRole('button', { name: 'Retour à la qualité' })).toBeInViewport();
+  await expect(page.getByRole('button', { name: 'Retour aux statistiques' })).toBeInViewport();
   await page.screenshot({ path: 'test-results/monthly-comparison-mobile.png', fullPage: true });
   await page.setViewportSize({ width: 1440, height: 1000 });
   await page.evaluate(() => window.scrollTo(0, 0));
-  const back = await page.getByRole('button', { name: 'Retour à la qualité' }).boundingBox();
+  const back = await page.getByRole('button', { name: 'Retour aux statistiques' }).boundingBox();
   const nav = await page.locator('#subNav').boundingBox();
   expect(back!.y).toBeGreaterThanOrEqual(nav!.y + nav!.height);
+  await page.getByRole('button', { name: 'Retour aux statistiques' }).click();
+  await expect(page).toHaveURL('/operations/statistiques');
   await page.screenshot({ path: 'test-results/monthly-comparison-desktop.png', fullPage: true });
 });
 
@@ -95,9 +98,9 @@ test('accès direct et carte refusés sans droit comparatif', async ({ page }) =
     if (request.path.includes('/comparatif')) { calls++; await fulfillJson(route, { success: false }, 403); return true; }
     return false;
   }, [], user);
-  await page.goto('/operations/qualite');
+  await page.goto('/operations/statistiques');
   await expect(page.getByRole('button', { name: /Comparatif mensuel/ })).toHaveCount(0);
-  await page.goto('/operations/qualite/comparatif');
+  await page.goto('/operations/statistiques/comparatif');
   await expect(page.getByRole('heading', { name: 'Comprendre ce qui change.' })).toHaveCount(0);
   expect(calls).toBe(0);
 });

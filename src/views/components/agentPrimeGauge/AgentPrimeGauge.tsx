@@ -10,7 +10,7 @@ import {
 import './agentPrimeGauge.scss';
 
 interface AgentPrimeGaugeProps {
-  stats: EmployeStats;
+  stats: Pick<EmployeStats, 'prime'>;
 }
 
 const getSalaryLevelLabel = (niveau: number): string => (

@@ -2,13 +2,12 @@ import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   getEmployeByIdService,
-  getEmployeStatsService,
   createEmployeService,
   updateEmployeService,
   getPostesService,
   getPaliersPrimeService,
 } from '../API/services/index.ts';
-import type { AddressSelectionResult, Employe, EmployeStats, NiveauPrime, Poste } from '../utils/types/index.ts';
+import type { AddressSelectionResult, Employe, NiveauPrime, Poste } from '../utils/types/index.ts';
 import { normalizeEditableAddress, sanitizePhoneNumber } from '../utils/scripts/index.ts';
 
 interface AgentFormState {
@@ -51,8 +50,6 @@ const INITIAL_FORM: AgentFormState = {
   couleur:            null,
 };
 
-const ALL_CAMPAIGNS_VALUE = 'all';
-
 export function useAgentForm() {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -62,12 +59,8 @@ export function useAgentForm() {
   const [existing, setExisting]               = useState<Employe | null>(null);
   const [postes, setPostes]                   = useState<Poste[]>([]);
   const [niveauxPrime, setNiveauxPrime]       = useState<NiveauPrime[]>([]);
-  const [primeStats, setPrimeStats]           = useState<EmployeStats | null>(null);
-  const [selectedStatsCampaignId, setSelectedStatsCampaignId] = useState(ALL_CAMPAIGNS_VALUE);
   const [isLoading, setIsLoading]             = useState(false);
   const [isFetching, setIsFetching]           = useState(isEdit);
-  const [isPrimeStatsLoading, setIsPrimeStatsLoading] = useState(isEdit);
-  const [primeStatsError, setPrimeStatsError]   = useState<string | null>(null);
   const [error, setError]                     = useState<string | null>(null);
   const [success, setSuccess]                 = useState<string | null>(null);
 
@@ -108,14 +101,6 @@ export function useAgentForm() {
         setIsFetching(false);
       }
 
-      try {
-        setSelectedStatsCampaignId(ALL_CAMPAIGNS_VALUE);
-        setPrimeStats(await getEmployeStatsService(Number(id)));
-      } catch (err) {
-        setPrimeStatsError(err instanceof Error ? err.message : 'Erreur de chargement des statistiques');
-      } finally {
-        setIsPrimeStatsLoading(false);
-      }
     };
     load();
   }, [id, isEdit]);
@@ -204,27 +189,11 @@ export function useAgentForm() {
   };
 
   const isCommercial = postes.find((poste) => String(poste.id_poste) === form.id_poste)?.type_poste === 'commercial';
-  const progpaStatsByCampaign = primeStats?.progpa_stats_par_campagne ?? [];
-  const statsCampaignOptions = [
-    { value: ALL_CAMPAIGNS_VALUE, label: 'Toutes les campagnes' },
-    ...progpaStatsByCampaign.map((campaign) => ({
-      value: String(campaign.id_campagne),
-      label: campaign.nom_campagne,
-    })),
-  ];
-  const selectedProgpaStats = selectedStatsCampaignId === ALL_CAMPAIGNS_VALUE
-    ? primeStats?.progpa_stats ?? null
-    : progpaStatsByCampaign.find((campaign) => String(campaign.id_campagne) === selectedStatsCampaignId)?.stats ?? null;
-  const selectedCampaignLabel = statsCampaignOptions.find(
-    (campaign) => campaign.value === selectedStatsCampaignId,
-  )?.label ?? 'Toutes les campagnes';
   return {
     form, setForm, existing, postes, niveauxPrime,
-    isCommercial, primeStats,
-    selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions, selectedProgpaStats,
-    selectedCampaignLabel,
-    isEdit, isLoading, isFetching, isPrimeStatsLoading,
-    error, success, primeStatsError,
+    isCommercial,
+    isEdit, isLoading, isFetching,
+    error, success,
     handleChange, handleSubmit, changeAddress, selectAddress,
     navigateBack: () => void navigate('/operations/employes'),
   };

@@ -25,7 +25,12 @@ const EXPECTED_ROUTES = [
   'commercial/devis',
   'commercial/configuration-antl',
   'operations',
+  'operations/statistiques/suivi-mensuel-commercial',
+  'operations/statistiques',
   'operations/vigie',
+  'operations/qualite/statistiques',
+  'operations/qualite/comparatif',
+  'operations/statistiques/vigie',
   'operations/demandes-absence',
   'operations/employes',
   'operations/partenaires-externes',
@@ -45,8 +50,8 @@ const EXPECTED_ROUTES = [
   'operations/commandes',
   'operations/commandes/details/:id',
   'operations/qualite/signalements',
-  'operations/qualite/statistiques',
-  'operations/qualite/comparatif',
+  'operations/statistiques/progpa',
+  'operations/statistiques/comparatif',
   'operations/qualite/ecoutes',
   'operations/qualite',
   'operations/prospects',
@@ -83,7 +88,7 @@ const EXPECTED_ROUTES = [
   '*',
 ] as const;
 
-test('le manifeste de routes reste identique au point de départ de la refactorisation', async () => {
+test('le manifeste de routes inclut les hubs et sous-vues autorisés', async () => {
   const source = await readFile('src/App.tsx', 'utf8');
   const routes = Array.from(
     source.matchAll(/<Route\s+path=(?:\{["']([^"']+)["']\}|["']([^"']+)["'])/g),
