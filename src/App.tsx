@@ -32,6 +32,7 @@ import {
   BookingPage as BookingPageWithAuth,
   CampagneForm as CampagneFormWithAuth,
   ScriptSupport,
+  ProspectTransfer,
   CampagnesList as CampagnesListWithAuth,
   CentreAppels as CentreAppelsWithAuth,
   CommandeDetails as CommandeDetailsWithAuth,
@@ -206,6 +207,7 @@ function App(): ReactElement {
         <Route path={"operations/qualite/ecoutes"} element={<QualiteEcoutesWithAuth />}></Route>
         <Route path={"operations/qualite"} element={<QualiteWithAuth />}></Route>
         <Route path={"operations/prospects"} element={<ProspectsViewWithAuth />}></Route>
+        <Route path="operations/prospects/transfert" element={<ProspectTransfer />} />
         <Route path={"operations/prospects/enrichissement"} element={<ProspectEnrichmentWithAuth />}></Route>
         <Route path={"campagnes"} element={<CampagnesListWithAuth />}></Route>
         <Route path={"campagnes/new"} element={<CampagneFormWithAuth />}></Route>

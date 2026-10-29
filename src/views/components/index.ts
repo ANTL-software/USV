@@ -265,3 +265,7 @@ export { ScriptSupportFields } from './scriptSupportFields/index.ts';
 export { StatistiquesHubContent } from './statistiquesHubContent/index.ts';
 
 export { MonthlyCommercialContent } from './monthlyCommercial/index.ts';
+
+export { ProspectTransferForm } from './prospectTransferForm/index.ts';
+
+export { ProspectTransferReview } from './prospectTransferReview/index.ts';

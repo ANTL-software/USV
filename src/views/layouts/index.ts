@@ -67,3 +67,5 @@ export { ScriptSupport } from './scriptSupport/index.ts';
 export { Statistiques } from './statistiques/index.ts';
 
 export { MonthlyCommercial } from './monthlyCommercial/index.ts';
+
+export { ProspectTransfer } from './prospectTransfer/index.ts';

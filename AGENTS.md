@@ -1288,3 +1288,11 @@ Toute création d'un menu ou sous-menu impose l'ajout du droit correspondant dan
 - Déploiement : migration Olympe `20261014120000-quote-drafts.js` avant API puis USV. Tests navigateur `devis-drafts.spec.ts` : sauvegarde incomplète, rechargement/reprise, tarifs et génération, panne réseau, concurrence et contrôle d’accès.
 
 - Workflow devis : la page commence en mode choix (créer ou reprendre). « Nouveau devis » ouvre la rédaction vierge et masque le sélecteur ; « Changer de devis » conserve/synchronise la saisie et revient au choix. Un champ « Nom du devis » indépendant du client est sauvegardé dans `snapshot.draftName` (version 1, facultatif pour les anciens brouillons). Les reprises réouvrent l’éditeur et les copies reçoivent un nom distinct.
+
+### Transfert de portefeuille — 2026-10-29
+
+- `/operations/prospects/transfert` réutilise le droit `operations/prospects`. Source : commerciaux actifs ou inactifs ; destinataire : commercial actif affecté aux campagnes concernées.
+- `useProspectTransfer` orchestre filtres, compteurs, prévisualisation et confirmation ; `useProspectTransferHistory` charge le journal paginé. Les composants restent de présentation.
+- Les appels, notes, ventes, primes, leads clients et rendez-vous terminés conservent leurs auteurs. Seuls les propriétaires courants et rendez-vous vivants sont transférés, avec leurs alertes non lues.
+- Le journal conserve le précédent commercial et les snapshots. « Préparer la restitution » inverse les commerciaux et limite la sélection aux fiches du lot encore détenues par le destinataire. Un ancien salarié doit être réactivé avant de recevoir un portefeuille.
+- Le parcours navigateur est couvert par `tests/browser/prospect-transfer.spec.ts`.

@@ -267,3 +267,7 @@ export { useLeadScheduleEditor } from './useLeadScheduleEditor.ts';
 export { useStatistiquesPage, type StatistiquesPageViewModel } from './useStatistiquesPage.ts';
 
 export { useMonthlyCommercial, type MonthlyCommercialViewModel } from './useMonthlyCommercial.ts';
+
+export { useProspectTransfer } from './useProspectTransfer.ts';
+export type { ProspectTransferViewModel } from './useProspectTransfer.ts';
+export { useProspectTransferHistory } from './useProspectTransferHistory.ts';

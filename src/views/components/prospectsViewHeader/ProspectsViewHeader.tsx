@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import { IoAddCircleOutline, IoTrashOutline } from 'react-icons/io5';
-import { MdArrowBack } from 'react-icons/md';
+import { MdArrowForward, MdArrowBack } from 'react-icons/md';
 import Select from 'react-select';
 import type { ProspectsViewPageViewModel } from '../../../hooks/index.ts';
 import { Button } from '../index.ts';
@@ -36,6 +36,7 @@ export function ProspectsViewHeader({ viewModel }: ProspectsViewHeaderProps): Re
             </>
           )}
           <Button style="grey" onClick={viewModel.navigateToEnrichment}><span>Enrichissement de donnée Prospect</span></Button>
+          <Button style="grey" onClick={viewModel.navigateToTransfer}><MdArrowForward /><span>Transférer des prospects</span></Button>
           {viewModel.selectedCampagne && (
             <>
               <Button style="gradient" onClick={viewModel.navigateToInjection}><IoAddCircleOutline /><span>Injecter des prospects</span></Button>

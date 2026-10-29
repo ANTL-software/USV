@@ -1,0 +1,26 @@
+@use '../../../utils/styles/mixins' as mixins;
+@use '../../../utils/styles/variables' as vars;
+#prospectTransfer { @include mixins.mainView; }
+#prospectTransfer main { padding: 1.5rem 1rem; }
+.prospectTransfer__container { @include mixins.centeredContainer(1200px); display: grid; gap: 1rem; }
+.prospectTransfer__container > .backButton { justify-self: start; }
+.prospectTransfer__card { @include mixins.card(12px, light); padding: 1.5rem; }
+.prospectTransfer__card fieldset { border: 0; padding: 0; min-width: 0; }
+.prospectTransfer__card legend { font-size: 1.2rem; font-weight: 600; margin-bottom: 1rem; }
+.prospectTransfer__card label { display: block; margin-bottom: .4rem; }
+.prospectTransfer__direction { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; gap: 1rem; }
+.prospectTransfer__direction > svg { color: vars.$utilsPrimary; font-size: 2rem; margin-top: 1rem; }
+.prospectTransfer__filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+.prospectTransfer__filters select, .prospectTransfer__selection input[type='number'] { padding: .6rem .75rem; border: 1px solid vars.$borderColor; border-radius: 6px; background: white; font: inherit; width: 100%; min-height: 38px; }
+.prospectTransfer__counts { display: flex; flex-wrap: wrap; gap: 1.5rem; padding: 1rem; margin: 1rem 0; background: vars.$greyBackground; border-radius: 8px; }
+.prospectTransfer__selection { display: flex; align-items: center; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+.prospectTransfer__error, .prospectTransfer__success { padding: 1rem; border-radius: 8px; }
+.prospectTransfer__error { background: #fee2e2; color: #991b1b; }
+.prospectTransfer__success { background: #dcfce7; color: #166534; }
+.prospectTransfer__table { overflow-x: auto; margin: 1rem 0; }
+.prospectTransfer__table table { width: 100%; border-collapse: collapse; }
+.prospectTransfer__table th, .prospectTransfer__table td { text-align: left; padding: .75rem; border-bottom: 1px solid vars.$borderColor; }
+@media (max-width: 768px) {
+  .prospectTransfer__direction { grid-template-columns: 1fr; }
+  .prospectTransfer__direction > svg { transform: rotate(90deg); justify-self: center; margin: 0; }
+}

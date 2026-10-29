@@ -55,6 +55,7 @@ const EXPECTED_ROUTES = [
   'operations/qualite/ecoutes',
   'operations/qualite',
   'operations/prospects',
+  'operations/prospects/transfert',
   'operations/prospects/enrichissement',
   'campagnes',
   'campagnes/new',
