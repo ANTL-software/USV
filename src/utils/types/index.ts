@@ -565,6 +565,6 @@ export * from './prospectTargeting.types.ts';
 
 export type { ScriptSupportKind, ScriptSupportItem, ScriptSupport } from './scriptSupport.types.ts';
 
-export type { MonthlyCommercial, CommercialActivityFilter, MonthlyCommercialPeriodPreset, MonthlyCommercialCampaign, MonthlyCommercialStats } from './monthlyCommercial.types.ts';
+export type { MonthlyCommercial, CommercialActivityFilter, MonthlyCommercialPeriodPreset, MonthlyCommercialCampaign, MonthlyCommercialStats, MonthlyPrimeClosure, MonthlyPrimeAdjustment } from './monthlyCommercial.types.ts';
 
-export type { TransferCommercial, TransferCampaign, TransferOptions, TransferCriteria, TransferCounts, TransferSummary, TransferPreview, TransferResult, TransferHistory } from './prospectTransfer.types.ts';
+export type { TransferCommercial, TransferCampaign, TransferOptions, TransferCriteria, TransferPreviewRequest, TransferCounts, TransferSummary, TransferPreview, TransferResult, TransferHistory } from './prospectTransfer.types.ts';

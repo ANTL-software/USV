@@ -22,4 +22,13 @@ export interface MonthlyCommercialStats {
   progpa_stats: QualiteProgpaStatsResponse;
   production_campagne: (PrimeStats['production'] & { valeur_realisee: number }) | null;
   prime: PrimeStats | null;
+  cloture?: MonthlyPrimeClosure;
+}
+
+export interface MonthlyPrimeAdjustment {
+  id: string; montant: number; motif: string; id_auteur: number | null; auteur_nom: string; created_at: string;
+}
+export interface MonthlyPrimeClosure {
+  frozen: true; scheduled_for: string; captured_at: string; source: 'automatique' | 'reconstitution';
+  ajustements: MonthlyPrimeAdjustment[]; total_ajustements: number; prime_initiale: number; prime_finale: number;
 }

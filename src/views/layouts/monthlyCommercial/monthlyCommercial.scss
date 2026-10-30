@@ -204,3 +204,9 @@
 
 #monthlyCommercial .monthlyCommercial__month-year { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; }
 #monthlyCommercial .monthlyCommercial__month-year > div { min-width: 0; }
+
+.monthlyCommercial__adjustments-table { overflow-x: auto; }
+.monthlyCommercial__adjustments-table table { width: 100%; border-collapse: collapse; }
+.monthlyCommercial__adjustments-table th, .monthlyCommercial__adjustments-table td { text-align: left; padding: .6rem; vertical-align: top; white-space: pre-wrap; overflow-wrap: anywhere; }
+.monthlyCommercial__adjustment-form { display: grid; gap: .75rem; }
+.monthlyCommercial__adjustment-form input, .monthlyCommercial__adjustment-form textarea { width: 100%; padding: .6rem; font: inherit; }

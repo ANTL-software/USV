@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useMonthlyPrimeAdjustments } from './useMonthlyPrimeAdjustments.ts';
+import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getMonthlyCommercialsService, getMonthlyCommercialStatsService } from '../API/services/index.ts';
 import { getMonthlyCommercialMonth, isMonthlyCommercialMonthValid, formatMonthlyCommercialMonth } from '../utils/scripts/index.ts';
@@ -91,8 +92,10 @@ export function useMonthlyCommercial() {
     { value: 'all', label: 'Toutes les campagnes' },
     ...campaigns.map(({ id_campagne, nom_campagne }) => ({ value: String(id_campagne), label: nom_campagne })),
   ];
+  const refreshStats = useCallback(() => setStatsRevision(value => value + 1), []);
+  const adjustments = useMonthlyPrimeAdjustments(effectiveId, month, Boolean(primeStats?.cloture?.frozen), refreshStats);
   return {
-    activity, selectActivity, selectedCommercial, selectCommercial, directoryLoading, directoryError,
+    adjustments, activity, selectActivity, selectedCommercial, selectCommercial, directoryLoading, directoryError,
     activityOptions: [{ value: 'active' as const, label: 'Actifs' }, { value: 'inactive' as const, label: 'Inactifs' }, { value: 'all' as const, label: 'Tous' }],
     commercialOptions: visibleCommercials.map(({ id_employe, nom, prenom }) => ({ value: id_employe, label: `${prenom} ${nom}`.trim() })),
     primeStats, isPrimeStatsLoading, primeStatsError, selectedStatsCampaignId, setSelectedStatsCampaignId, statsCampaignOptions,

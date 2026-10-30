@@ -435,3 +435,11 @@ test('le suivi mensuel commercial exige son droit propre et ouvre le hub sans ge
   assert.equal(hasAccessToPath(user, '/operations/employes/9'), false);
   assert.equal(hasAccessToPath(user, '/operations/employes/details/9'), false);
 });
+
+test('le transfert utilise le droit Prospects présenté dans le formulaire des postes', () => {
+  assert.ok(SECTIONS_CONFIG.find(section => section.id === 'operations')?.subsections.some(section => section.id === 'prospects'));
+  for (const [enabled, subsections, expected] of [[true, ['prospects'], true], [false, ['prospects'], false], [true, ['commandes'], false]] as const) {
+    const user = createUser({ poste: { id_poste: 5, libelle_poste: 'Poste configuré', permissions: { operations: { enabled, subsections: [...subsections] } } } });
+    assert.equal(hasAccessToPath(user, '/operations/prospects/transfert'), expected);
+  }
+});

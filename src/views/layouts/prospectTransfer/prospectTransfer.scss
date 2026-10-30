@@ -24,3 +24,7 @@
   .prospectTransfer__direction { grid-template-columns: 1fr; }
   .prospectTransfer__direction > svg { transform: rotate(90deg); justify-self: center; margin: 0; }
 }
+
+.prospectTransfer__motif { margin: 1rem 0; }
+.prospectTransfer__motif textarea { width: 100%; padding: .6rem .75rem; border: 1px solid vars.$borderColor; border-radius: 6px; font: inherit; }
+.prospectTransfer__motifText { white-space: pre-wrap; overflow-wrap: anywhere; min-width: 12rem; }

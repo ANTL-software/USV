@@ -214,3 +214,40 @@ test('mois courant, précédent, mois libre et campagnes sans activité gardent 
   await page.keyboard.press('Escape');
   expect(requests.length).toBe(count);
 });
+
+for (const manage of [false, true]) {
+  test(`clôture immuable et ajustement ${manage ? 'avec' : 'sans'} droit employés`, async ({ page }) => {
+    const adjustments: { id: string; montant: number; motif: string; auteur_nom: string; created_at: string }[] = [];
+    const user = { ...reader, poste: { ...reader.poste, permissions: { operations: { enabled: true, subsections: ['suivi-mensuel-commercial', ...(manage ? ['employes'] : [])] } } } };
+    await installApiRoute(page, async (route, request) => {
+      if (request.path === '/employes/suivi-mensuel/commerciaux') { await fulfillJson(route, apiSuccess(commercials)); return true; }
+      if (request.path === '/employes/suivi-mensuel/9/ajustements') {
+        const payload = route.request().postDataJSON() as { request_id: string; montant: string; motif: string };
+        expect(manage).toBe(true);
+        adjustments.push({ id: payload.request_id, montant: Number(payload.montant), motif: payload.motif, auteur_nom: 'Responsable RH', created_at: '2026-10-30T12:00:00Z' });
+        await fulfillJson(route, apiSuccess({})); return true;
+      }
+      if (request.path === '/employes/suivi-mensuel/9/stats') {
+        const total = adjustments.reduce((sum, item) => sum + item.montant, 0);
+        await fulfillJson(route, apiSuccess({ ...stats(), cloture: { frozen: true, scheduled_for: '2026-10-01T06:00:00Z', captured_at: '2026-10-01T06:00:00Z', source: 'automatique', prime_initiale: 600, total_ajustements: total, prime_finale: 600 + total, ajustements: adjustments } })); return true;
+      }
+      return false;
+    }, [], user);
+    await page.goto(path);
+    await page.getByLabel('Commercial', { exact: true }).click();
+    await page.getByRole('option', { name: 'Alice TEST' }).click();
+    const panel = page.locator('fieldset').filter({ hasText: 'Clôture et ajustements de prime' });
+    await expect(panel).toContainText('600');
+    if (!manage) { await expect(page.getByLabel('Ajustement en euros')).toHaveCount(0); return; }
+    await page.getByLabel('Ajustement en euros').fill('-650');
+    const submit = page.getByRole('button', { name: 'Enregistrer l’ajustement' });
+    await expect(submit).toBeDisabled();
+    await page.getByLabel('Motif de l’ajustement').fill('Correction manuelle validée');
+    await submit.click();
+    await expect(panel).toContainText('Responsable RH');
+    await expect(panel).toContainText('Correction manuelle validée');
+    await expect(panel).toContainText('-50');
+    await expect(panel).toContainText('600');
+    expect(adjustments).toHaveLength(1);
+  });
+}
