@@ -403,6 +403,6 @@ export * from './prospectTargeting.service.ts';
 
 export { getScriptSupport, saveScriptSupport } from './scriptSupport.service.ts';
 
-export { getMonthlyCommercialsService, getMonthlyCommercialStatsService } from './monthlyCommercial.service.ts';
+export { getMonthlyCommercialsService, getMonthlyCommercialStatsService, addMonthlyPrimeAdjustmentService } from './monthlyCommercial.service.ts';
 
 export { getTransferOptions, getTransferCounts, previewTransfer, executeTransfer, getTransferHistory } from './ProspectTransfer.service.ts';

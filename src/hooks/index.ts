@@ -271,3 +271,5 @@ export { useMonthlyCommercial, type MonthlyCommercialViewModel } from './useMont
 export { useProspectTransfer } from './useProspectTransfer.ts';
 export type { ProspectTransferViewModel } from './useProspectTransfer.ts';
 export { useProspectTransferHistory } from './useProspectTransferHistory.ts';
+
+export { useMonthlyPrimeAdjustments } from './useMonthlyPrimeAdjustments.ts';

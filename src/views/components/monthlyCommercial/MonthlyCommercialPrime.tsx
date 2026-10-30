@@ -18,7 +18,7 @@ export function MonthlyCommercialPrime({ viewModel }: { viewModel: MonthlyCommer
                 <legend>Suivi de la prime</legend>
                 <p className="monthlyCommercial__fieldset-hint">
                   Production de {periodLabel}, toutes campagnes confondues, et prime globale du commercial.
-                  Calcul selon le niveau, l’objectif et le barème actuellement configurés.
+                  {primeStats?.cloture ? 'Calcul initial figé ; les ajustements sont présentés séparément.' : 'Calcul selon le niveau, l’objectif et le barème actuellement configurés.'}
                 </p>
                 {isPrimeStatsLoading && (
                   <div className="monthlyCommercial__prime-state">Chargement de la jauge...</div>

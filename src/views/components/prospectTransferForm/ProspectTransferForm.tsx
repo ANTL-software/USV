@@ -20,6 +20,10 @@ export function ProspectTransferForm({ vm }: { vm: ProspectTransferViewModel }) 
         <div><label htmlFor="transfer-rdv">Rendez-vous à reprendre</label><select id="transfer-rdv" value={vm.criteria.rendez_vous} onChange={e => vm.change('rendez_vous', e.target.value as 'all' | 'yes' | 'no')}><option value="all">Avec ou sans rendez-vous</option><option value="yes">Avec rendez-vous ou rappel Vigie</option><option value="no">Sans rendez-vous ni rappel Vigie</option></select></div>
         <div><label htmlFor="transfer-sale">Commandes du prospect</label><select id="transfer-sale" value={vm.criteria.commande} onChange={e => vm.change('commande', e.target.value as 'all' | 'none' | 'en_attente' | 'frigo')}><option value="all">Toutes les situations</option><option value="en_attente">Avec commande en attente</option><option value="frigo">Avec commande au frigo</option><option value="none">Sans commande en attente ni au frigo</option></select></div>
       </div>
+      <div className="prospectTransfer__motif">
+        <label htmlFor="transfer-motif">Motif du transfert (obligatoire)</label>
+        <textarea id="transfer-motif" required value={vm.motif} maxLength={2000} rows={3} onChange={e => vm.changeMotif(e.target.value)} />
+      </div>
       <Button style="grey" onClick={vm.resetFilters}>Réinitialiser les filtres / tout le portefeuille</Button>
       <div className="prospectTransfer__counts" aria-live="polite">
         {vm.counting ? 'Comptage en cours…' : vm.counts ? <><strong>{vm.counts.total.toLocaleString('fr-FR')} prospects au total</strong><strong>{vm.counts.filtered.toLocaleString('fr-FR')} avec les filtres</strong></> : 'Choisir un commercial source pour compter son portefeuille.'}

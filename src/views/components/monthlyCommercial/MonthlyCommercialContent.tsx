@@ -4,7 +4,7 @@ import { createReactSelectStyles } from '../../../utils/styles/index.ts';
 import { MdArrowBack } from 'react-icons/md';
 import type { MonthlyCommercialViewModel } from '../../../hooks/index.ts';
 import { BackToTop, Button, Header, SubNav } from '../index.ts';
-import { MonthlyCommercialActivity, MonthlyCommercialPrime, MonthlyCommercialPeriod } from './index.ts';
+import { MonthlyCommercialActivity, MonthlyCommercialPrime, MonthlyCommercialPeriod, MonthlyCommercialAdjustments } from './index.ts';
 
 const activityStyles = createReactSelectStyles<{ value: CommercialActivityFilter; label: string }, false>();
 const commercialStyles = createReactSelectStyles<{ value: number; label: string }, false>();
@@ -24,7 +24,7 @@ export function MonthlyCommercialContent({ viewModel: vm }: { viewModel: Monthly
     {!vm.directoryLoading && !vm.directoryError && !vm.selectedCommercial && <p className="monthlyCommercial__empty">Sélectionnez un commercial pour consulter son suivi mensuel.</p>}
     {vm.selectedCommercial && !vm.periodError && <section className="monthlyCommercial__panels" aria-label={`Suivi de ${vm.selectedCommercial.prenom} ${vm.selectedCommercial.nom}`}>
       {vm.primeStatsError && <div role="alert">{vm.primeStatsError}<Button style="back" onClick={vm.retryStats}>Réessayer</Button></div>}
-      <MonthlyCommercialActivity viewModel={vm} /><MonthlyCommercialPrime viewModel={vm} />
+      <MonthlyCommercialActivity viewModel={vm} /><MonthlyCommercialPrime viewModel={vm} /><MonthlyCommercialAdjustments viewModel={vm} />
     </section>}
   </div></main><BackToTop /></div>;
 }
