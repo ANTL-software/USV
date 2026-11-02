@@ -43,6 +43,7 @@ export const BILLING_LABELS: Record<BillingRhythm, string> = {
   mensuel: 'Facturation mensuelle',
   '50_50': '50% lancement / 50% livraison',
   acompte: 'Acompte puis échéancier',
+  commande: 'À la commande',
   livraison: 'À la livraison',
   ponctuel: 'Ponctuel',
 };
