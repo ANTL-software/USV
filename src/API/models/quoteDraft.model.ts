@@ -6,7 +6,7 @@ const list = (value: unknown, check: (item: unknown) => boolean): boolean => Arr
 const form = (value: unknown): value is QuoteFormState => object(value)
   && ['companyName', 'contactName', 'contactRole', 'email', 'phone', 'needSummary', 'objective', 'timeline', 'commercialConditions'].every(key => text(value[key]))
   && ['<3k', '3k_8k', '8k_15k', '15k+'].includes(String(value.budgetBand))
-  && ['mensuel', '50_50', 'acompte', 'livraison', 'ponctuel'].includes(String(value.billingRhythm))
+  && ['mensuel', '50_50', 'acompte', 'commande', 'livraison', 'ponctuel'].includes(String(value.billingRhythm))
   && ['1_mois_reconduction', '3_mois', '6_mois', 'mission_unique'].includes(String(value.engagement));
 export function isQuoteDraftSnapshot(value: unknown): value is QuoteDraftSnapshot {
   return object(value) && value.version === 1 && (value.draftName === undefined || (text(value.draftName) && value.draftName.length <= 255)) && form(value.formState)
