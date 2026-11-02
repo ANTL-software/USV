@@ -23,9 +23,10 @@ export function useMonthlyPrimeAdjustments(idEmploye: number | null, month: stri
     setStored({ ...state, requestId, busy: true, error: null, success: null });
     try {
       await addMonthlyPrimeAdjustmentService(idEmploye, { mois: month, request_id: requestId, montant: normalizedAmount, motif: state.motif.trim() });
-      if (currentKey.current === key) { setStored({ ...initial(key), success: 'Ajustement enregistré.' }); onSaved(); }
+      setStored(previous => previous.key === key ? { ...initial(key), success: 'Ajustement enregistré.' } : previous);
+      if (currentKey.current === key) onSaved();
     } catch (error) {
-      if (currentKey.current === key) setStored({ ...state, requestId, busy: false, error: getErrorMessage(error, 'Impossible d’enregistrer l’ajustement'), success: null });
+      setStored(previous => previous.key === key ? { ...state, requestId, busy: false, error: getErrorMessage(error, 'Impossible d’enregistrer l’ajustement'), success: null } : previous);
     } finally { submitting.current = false; }
   };
   return { ...state, canManage, canSubmit: valid && closed && canManage && !state.busy, changeAmount: (value: string) => change('amount', value), changeMotif: (value: string) => change('motif', value), submit };
