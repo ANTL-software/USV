@@ -55,6 +55,22 @@ export const getQuoteTimelineLabel = (timeline: string): string => (
 export const QUOTE_CAMPAIGN_TYPE_LABELS: Record<QuoteCampaignType, string> = {
   commercial: 'Commercial',
   qualified_appointment: 'Rendez-vous qualifié',
+  client_account: 'Compte client',
+};
+
+export const QUOTE_UNIT_PRICING_LABELS = {
+  qualified_appointment: {
+    title: 'Tarification au rendez-vous qualifié',
+    label: 'Rendez-vous',
+    descriptionLabel: 'Description du rendez-vous',
+    defaultDescription: 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
+  },
+  client_account: {
+    title: 'Tarification au compte client',
+    label: 'Compte client',
+    descriptionLabel: 'Description du compte client',
+    defaultDescription: 'Tarif unitaire facturé pour chaque compte client.',
+  },
 };
 
 export const ENGAGEMENT_LABELS: Record<Engagement, string> = {
@@ -612,7 +628,7 @@ export const buildQuotePricingLines = (
   commercialCommissionRate: number | undefined,
   appointmentRate: number | undefined,
   customClauses: QuoteCustomClause[],
-  appointmentDescription = 'Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.',
+  appointmentDescription?: string,
 ): QuotePdfPayload['lines'] => {
   if (campaignType === 'commercial') {
     if (commercialCommissionRate === undefined) return [];
@@ -627,10 +643,11 @@ export const buildQuotePricingLines = (
     }];
   }
 
+  const unitPricing = QUOTE_UNIT_PRICING_LABELS[campaignType];
   const appointmentLine = appointmentRate === undefined ? [] : [{
-    id: 'qualified-appointment-base',
-    label: 'Rendez-vous',
-    description: appointmentDescription,
+    id: campaignType === 'client_account' ? 'client-account-base' : 'qualified-appointment-base',
+    label: unitPricing.label,
+    description: appointmentDescription ?? unitPricing.defaultDescription,
     mode: 'ponctuel' as const,
     included: false,
     amount: appointmentRate,

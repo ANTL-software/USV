@@ -5,7 +5,7 @@ export type BudgetBand = '<3k' | '3k_8k' | '8k_15k' | '15k+';
 export type Timeline = 'urgent' | '30j' | '60j' | 'cadre';
 export type BillingRhythm = 'mensuel' | '50_50' | 'acompte' | 'commande' | 'livraison' | 'ponctuel';
 export type Engagement = '1_mois_reconduction' | '3_mois' | '6_mois' | 'mission_unique';
-export type QuoteCampaignType = 'commercial' | 'qualified_appointment';
+export type QuoteCampaignType = 'commercial' | 'qualified_appointment' | 'client_account';
 export type QuotePricingModel = QuoteCampaignType | 'project_delivery';
 
 export type QuoteCustomClause = {

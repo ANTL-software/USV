@@ -2,7 +2,7 @@ import type { ReactElement } from 'react';
 import { MdAdd, MdClose, MdFactCheck } from 'react-icons/md';
 import Select from 'react-select';
 import type { StylesConfig } from 'react-select';
-import { QUOTE_CAMPAIGN_TYPE_LABELS } from '../../../utils/scripts/index.ts';
+import { QUOTE_CAMPAIGN_TYPE_LABELS, QUOTE_UNIT_PRICING_LABELS } from '../../../utils/scripts/index.ts';
 import { devisSelectStyles } from '../../../utils/styles/index.ts';
 import type {
   QuoteCampaignType,
@@ -89,6 +89,8 @@ export function DevisOfferComposition({
   onUpdateProjectSectionTitle,
   onUpdateThirdPartyService,
 }: DevisOfferCompositionProps): ReactElement {
+  const unitPricing = QUOTE_UNIT_PRICING_LABELS[campaignType === 'client_account' ? 'client_account' : 'qualified_appointment'];
+
   if (isProjectQuote) {
     return (
       <article className="devisView__panel">
@@ -255,11 +257,11 @@ export function DevisOfferComposition({
       ) : (
         <div className="devisView__pricing-model">
           <div className="devisView__section-title">
-            <strong>Tarification au rendez-vous qualifié</strong>
+            <strong>{unitPricing.title}</strong>
             <span>Définissez le tarif unitaire, puis ajoutez les conditions particulières nécessaires.</span>
           </div>
           <label className="devisView__pricing-line">
-            <span>Rendez-vous</span>
+            <span>{unitPricing.label}</span>
             <div>
               <input
                 min="0"
@@ -274,7 +276,7 @@ export function DevisOfferComposition({
           <label className="devisView__field devisView__appointment-description">
             <span>Description</span>
             <input
-              aria-label="Description du rendez-vous"
+              aria-label={unitPricing.descriptionLabel}
               type="text"
               value={appointmentDescription}
               onChange={(event) => onAppointmentDescriptionChange(event.target.value)}

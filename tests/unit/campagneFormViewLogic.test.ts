@@ -340,3 +340,13 @@ test('les agents sont triés par leur nom affiché sans muter la liste source', 
   assert.deepEqual(sorted.map(getCampaignAgentName), ['Alice Durand', 'Zoé Martin']);
   assert.deepEqual(source.map(getCampaignAgentName), ['Zoé Martin', 'Alice Durand']);
 });
+
+
+test('la variante Compte client est conservée en création et en édition', () => {
+  const createdForm = { ...INITIAL_CAMPAGNE_FORM, nom_campagne: 'Comptes clients', date_debut: '2026-11-04', type_campagne: 'client_account' };
+  assert.equal(validateCampagneForm(createdForm), null);
+  assert.equal(buildCampagnePayload(createdForm).type_campagne, 'client_account');
+  const editedForm = buildCampagneFormState(createCampagne({ type_campagne: 'client_account' }));
+  assert.equal(editedForm.type_campagne, 'client_account');
+  assert.equal(buildCampagnePayload(editedForm).type_campagne, 'client_account');
+});
