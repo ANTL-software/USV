@@ -8,9 +8,20 @@ export type Engagement = '1_mois_reconduction' | '3_mois' | '6_mois' | 'mission_
 export type QuoteCampaignType = 'commercial' | 'qualified_appointment' | 'client_account';
 export type QuotePricingModel = QuoteCampaignType | 'project_delivery';
 
+export type QuoteFlexibleService = {
+  id: string;
+  label: string;
+  description: string;
+  pricing: 'fixed' | 'variable';
+  amountKind: 'currency' | 'percentage';
+  amount: number | undefined;
+  condition: string;
+};
+
 export type QuoteCustomClause = {
   id: string;
   label: string;
+  description?: string;
   amount: number | undefined;
   included: boolean;
 };
@@ -118,11 +129,13 @@ export type QuotePdfPayload = {
     included: boolean;
     amount: number;
     amount_kind: 'currency' | 'percentage';
+    pricing_basis?: 'fixed' | 'variable' | 'unit';
   }>;
   assumptions: string[];
   project_sections?: Array<{
     id: string;
     title: string;
+    show_title?: boolean;
     lines: Array<{
       id: string;
       label: string;
@@ -130,6 +143,7 @@ export type QuotePdfPayload = {
       included: boolean;
       amount: number;
       amount_kind?: 'currency' | 'percentage';
+      pricing_basis?: 'fixed' | 'variable' | 'unit';
     }>;
   }>;
   third_party_services?: QuoteThirdPartyService[];

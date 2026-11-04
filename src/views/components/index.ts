@@ -269,3 +269,7 @@ export { MonthlyCommercialContent } from './monthlyCommercial/index.ts';
 export { ProspectTransferForm } from './prospectTransferForm/index.ts';
 
 export { ProspectTransferReview } from './prospectTransferReview/index.ts';
+
+export { DevisFlexibleServices } from './devisFlexibleServices/index.ts';
+
+export { DevisSectionHeading } from './devisSectionHeading/index.ts';

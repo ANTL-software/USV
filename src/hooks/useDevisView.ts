@@ -1,16 +1,19 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useQuoteServiceBlocks } from './useQuoteServiceBlocks.ts';
 import {
   DEFAULT_FORM,
+  DEFAULT_COMMISSION_DESCRIPTION,
+  getQuoteBaseLineLabel,
   QUOTE_UNIT_PRICING_LABELS,
   PROJECT_QUOTE_SECTIONS,
   PROJECT_THIRD_PARTY_SERVICES,
   buildProjectQuotePricingLines,
   buildQuotePricingLines,
   QUOTE_TEMPLATES,
-  filterQuoteTemplates,
+  buildFlexibleQuoteLines,
+  getQuoteFixedTotals,
   getQuoteChecklistProgress,
   getSelectedQuoteTemplates,
-  toggleQuoteTemplateId,
 } from '../utils/scripts/index.ts';
 import type {
   QuoteDraftSnapshot,
@@ -21,13 +24,17 @@ import type {
   QuoteProjectLine,
   QuoteProjectSection,
   QuoteThirdPartyService,
-  TemplateFamily,
+  QuoteFlexibleService,
 } from '../utils/types/index.ts';
 
 export function useDevisView() {
-  const initialTemplate = QUOTE_TEMPLATES[0];
-  const [familyFilter, setFamilyFilter] = useState<TemplateFamily | 'all'>('all');
-  const [selectedTemplateIds, setSelectedTemplateIds] = useState<string[]>([initialTemplate.id]);
+  const serviceBlocks = useQuoteServiceBlocks();
+  const restoreServiceBlocks = serviceBlocks.restore;
+  const [conquestSectionTitle, setConquestSectionTitle] = useState('');
+  const [flexibleSectionTitle, setFlexibleSectionTitle] = useState('');
+  const [conquestLineLabel, setConquestLineLabel] = useState<string | undefined>();
+  const [commercialCommissionDescription, setCommercialCommissionDescription] = useState(DEFAULT_COMMISSION_DESCRIPTION);
+  const [flexibleServices, setFlexibleServices] = useState<QuoteFlexibleService[]>([]);
   const [formState, setFormState] = useState<QuoteFormState>(DEFAULT_FORM);
   const [campaignType, setCampaignType] = useState<QuoteCampaignType>('qualified_appointment');
   const [commercialCommissionRate, setCommercialCommissionRate] = useState<number | undefined>();
@@ -44,15 +51,45 @@ export function useDevisView() {
     PROJECT_THIRD_PARTY_SERVICES.map((service) => ({ ...service }))
   ));
 
+  const conquestQuoteLines = useMemo(
+    () => buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses, appointmentDescription, conquestLineLabel, commercialCommissionDescription)
+      .map((line) => ({ ...line, pricing_basis: 'unit' as const })),
+    [appointmentRate, appointmentDescription, campaignType, commercialCommissionRate, customClauses, conquestLineLabel, commercialCommissionDescription],
+  );
+  const projectQuoteLines = useMemo(() => buildProjectQuotePricingLines(projectSections), [projectSections]);
+  const flexibleQuoteLines = useMemo(() => buildFlexibleQuoteLines(flexibleServices), [flexibleServices]);
+  const isProjectQuote = projectQuoteLines.length > 0;
+  const allConquestQuoteLines = useMemo(() => [...conquestQuoteLines, ...serviceBlocks.groups.flatMap(group => group.lines)], [conquestQuoteLines, serviceBlocks.groups]);
+  const isConquestQuote = allConquestQuoteLines.length > 0;
+  const selectedTemplateIds = useMemo(() => [
+    ...(isConquestQuote ? ['conquete'] : []), ...(isProjectQuote ? ['conception'] : []),
+  ], [isConquestQuote, isProjectQuote]);
+  const selectedTemplates = useMemo(() => getSelectedQuoteTemplates(QUOTE_TEMPLATES, selectedTemplateIds), [selectedTemplateIds]);
+  const quoteLines = useMemo(() => [...allConquestQuoteLines, ...flexibleQuoteLines, ...projectQuoteLines],
+    [allConquestQuoteLines, projectQuoteLines, flexibleQuoteLines]);
+  const fixedTotals = useMemo(() => getQuoteFixedTotals(quoteLines), [quoteLines]);
+  const hasFixedLines = quoteLines.some((line) => !line.included && line.amount_kind === 'currency' && (!line.pricing_basis || line.pricing_basis === 'fixed'));
+  const hasConditionalLines = quoteLines.some((line) => line.pricing_basis === 'variable' || line.pricing_basis === 'unit');
+  const checklist = getQuoteChecklistProgress(formState, quoteLines.length);
+  const selectedAssumptions = selectedTemplates.flatMap((template) => template.assumptions);
+  const selectedTemplateTitle = [...selectedTemplates.map((template) => template.title), ...(flexibleQuoteLines.length ? ['Prestations libres et primes'] : [])].join(' + ');
+  const selectedTemplatePromise = 'Les prestations renseignées ci-dessous composent votre proposition.';
+
   const snapshot = useMemo<QuoteDraftSnapshot>(() => ({
     version: 1, selectedTemplateIds, formState, campaignType,
+    ...(serviceBlocks.blocks.length ? { additionalServiceBlocks: serviceBlocks.blocks } : {}),
+    conquestSectionTitle, flexibleSectionTitle, conquestLineLabel, commercialCommissionDescription,
     commercialCommissionRate: commercialCommissionRate ?? null,
     appointmentRate: appointmentRate ?? null, appointmentDescription,
-    customClauses, projectSections, thirdPartyServices,
-  }), [selectedTemplateIds, formState, campaignType, commercialCommissionRate, appointmentRate,
-    appointmentDescription, customClauses, projectSections, thirdPartyServices]);
+    customClauses, projectSections, thirdPartyServices, flexibleServices,
+  }), [serviceBlocks.blocks, selectedTemplateIds, formState, campaignType, commercialCommissionRate, appointmentRate,
+    appointmentDescription, customClauses, projectSections, thirdPartyServices, flexibleServices, conquestSectionTitle, flexibleSectionTitle, conquestLineLabel, commercialCommissionDescription]);
   const restoreSnapshot = useCallback((saved: QuoteDraftSnapshot): void => {
-    setSelectedTemplateIds([...saved.selectedTemplateIds]);
+    restoreServiceBlocks(saved.additionalServiceBlocks ?? []);
+    setConquestSectionTitle(saved.conquestSectionTitle ?? '');
+    setFlexibleSectionTitle(saved.flexibleSectionTitle ?? '');
+    setConquestLineLabel(saved.conquestLineLabel);
+    setCommercialCommissionDescription(saved.commercialCommissionDescription ?? DEFAULT_COMMISSION_DESCRIPTION);
     setFormState({ ...saved.formState });
     setCampaignType(saved.campaignType);
     setCommercialCommissionRate(saved.commercialCommissionRate ?? undefined);
@@ -61,60 +98,26 @@ export function useDevisView() {
     setCustomClauses(saved.customClauses.map(clause => ({ ...clause, amount: clause.amount ?? undefined })));
     setProjectSections(saved.projectSections.map(section => ({ ...section, lines: section.lines.map(line => ({ ...line, amount: line.amount ?? undefined })) })));
     setThirdPartyServices(saved.thirdPartyServices.map(service => ({ ...service })));
-  }, []);
+    setFlexibleServices((saved.flexibleServices ?? []).map(service => ({ ...service, amount: service.amount ?? undefined })));
+  }, [restoreServiceBlocks]);
 
-  const visibleTemplates = useMemo(
-    () => filterQuoteTemplates(QUOTE_TEMPLATES, familyFilter),
-    [familyFilter],
-  );
-  const selectedTemplates = useMemo(
-    () => getSelectedQuoteTemplates(QUOTE_TEMPLATES, selectedTemplateIds),
-    [selectedTemplateIds],
-  );
-  const isProjectQuote = selectedTemplateIds.includes('conception');
-  const isConquestQuote = selectedTemplateIds.includes('conquete');
-  const conquestQuoteLines = useMemo(
-    () => (isConquestQuote
-      ? buildQuotePricingLines(campaignType, commercialCommissionRate, appointmentRate, customClauses, appointmentDescription)
-      : []),
-    [appointmentRate, appointmentDescription, campaignType, commercialCommissionRate, customClauses, isConquestQuote],
-  );
-  const projectQuoteLines = useMemo(
-    () => (isProjectQuote ? buildProjectQuotePricingLines(projectSections) : []),
-    [isProjectQuote, projectSections],
-  );
-  const quoteLines = useMemo(
-    () => [...conquestQuoteLines, ...projectQuoteLines],
-    [conquestQuoteLines, projectQuoteLines],
-  );
-  const checklist = useMemo(
-    () => getQuoteChecklistProgress(formState, quoteLines.length),
-    [formState, quoteLines.length],
-  );
-  const selectedAssumptions = useMemo(
-    () => selectedTemplates.flatMap((template) => template.assumptions),
-    [selectedTemplates],
-  );
-  const documentTemplates = useMemo(
-    () => (isProjectQuote
-      ? selectedTemplates.filter((template) => template.id === 'conception')
-      : selectedTemplates),
-    [isProjectQuote, selectedTemplates],
-  );
-  const selectedTemplatePromise = useMemo(
-    () => documentTemplates.map((template) => template.promise).join(' '),
-    [documentTemplates],
-  );
-  const selectedTemplateTitle = useMemo(
-    () => documentTemplates.map((template) => template.title).join(' + '),
-    [documentTemplates],
-  );
-
-  const handleTemplateToggle = (templateId: string): void => {
-    const template = QUOTE_TEMPLATES.find((entry) => entry.id === templateId);
-    if (!template) return;
-    setSelectedTemplateIds((previous) => toggleQuoteTemplateId(previous, templateId));
+  const addFlexibleService = (): void => {
+    setFlexibleServices((previous) => [...previous, {
+      id: `service-${Date.now()}-${previous.length}`, label: '', description: '', pricing: 'fixed',
+      amountKind: 'currency', amount: undefined, condition: '',
+    }]);
   };
+  const updateFlexibleService = <Field extends keyof Omit<QuoteFlexibleService, 'id'>>(
+    id: string, field: Field, value: QuoteFlexibleService[Field],
+  ): void => {
+    setFlexibleServices((previous) => previous.map((service) => service.id === id
+      ? { ...service, [field]: value, ...(field === 'pricing' && value === 'fixed' ? { amountKind: 'currency' as const } : {}) }
+      : service));
+  };
+  const removeFlexibleService = (id: string): void => setFlexibleServices((previous) => previous.filter((service) => service.id !== id));
+  const addProjectSection = (): void => setProjectSections((previous) => [...previous, {
+    id: `phase-${Date.now()}`, title: '', lines: [{ id: `line-${Date.now()}`, label: '', description: '', amount: undefined, included: false, isCustom: true }],
+  }]);
 
   const handleFormChange: QuoteFormChangeHandler = <Field extends keyof QuoteFormState>(
     field: Field,
@@ -138,6 +141,7 @@ export function useDevisView() {
     setCustomClauses((previous) => [...previous, {
       id: `custom-clause-${Date.now()}-${previous.length}`,
       label: '',
+      description: '',
       amount: undefined,
       included: false,
     }]);
@@ -231,8 +235,20 @@ export function useDevisView() {
   };
 
   return {
+    additionalServiceBlocks: serviceBlocks.presentations,
+    additionalServiceGroups: serviceBlocks.groups,
+    addServiceBlock: serviceBlocks.add,
+    allConquestQuoteLines,
     snapshot,
     restoreSnapshot,
+    conquestSectionTitle,
+    flexibleSectionTitle,
+    conquestBaseLineLabel: conquestLineLabel ?? getQuoteBaseLineLabel(campaignType),
+    commercialCommissionDescription,
+    setConquestSectionTitle,
+    setFlexibleSectionTitle,
+    setConquestLineLabel,
+    setCommercialCommissionDescription,
     addCustomClause,
     addProjectLine,
     addThirdPartyService,
@@ -242,10 +258,8 @@ export function useDevisView() {
     commercialCommissionRate,
     conquestQuoteLines,
     customClauses,
-    familyFilter,
     formState,
     handleFormChange,
-    handleTemplateToggle,
     progressPercent: checklist.percent,
     projectSections,
     quoteLines,
@@ -261,7 +275,6 @@ export function useDevisView() {
     setAppointmentDescription,
     setCampaignType: handleCampaignTypeChange,
     setCommercialCommissionRate,
-    setFamilyFilter,
     thirdPartyServices,
     isProjectQuote,
     isConquestQuote,
@@ -269,7 +282,15 @@ export function useDevisView() {
     updateProjectLine,
     updateProjectSectionTitle,
     updateThirdPartyService,
-    visibleTemplates,
+    flexibleServices,
+    flexibleQuoteLines,
+    addFlexibleService,
+    updateFlexibleService,
+    removeFlexibleService,
+    addProjectSection,
+    fixedTotals,
+    hasFixedLines,
+    hasConditionalLines,
   };
 }
 

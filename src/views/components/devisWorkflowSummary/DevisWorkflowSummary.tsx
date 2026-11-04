@@ -1,9 +1,9 @@
 import type { ReactElement } from 'react';
 
 const WORKFLOW_STEPS = [
-  { label: 'Étape 1', title: 'Choisir le modèle adapté', tone: 'primary' },
-  { label: 'Étape 2', title: 'Renseigner le contexte client', tone: 'success' },
-  { label: 'Étape 3', title: 'Composer le périmètre', tone: 'warning' },
+  { label: 'Étape 1', title: 'Renseigner le contexte client', tone: 'primary' },
+  { label: 'Étape 2', title: 'Composer les prestations', tone: 'success' },
+  { label: 'Étape 3', title: 'Définir les conditions', tone: 'warning' },
   { label: 'Étape 4', title: 'Valider le récap avant PDF', tone: 'muted' },
 ] as const;
 

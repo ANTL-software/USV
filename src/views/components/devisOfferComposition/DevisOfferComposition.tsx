@@ -12,8 +12,16 @@ import type {
   QuoteThirdPartyService,
 } from '../../../utils/types/index.ts';
 import { Button } from '../button/index.ts';
+import { DevisSectionHeading } from '../devisSectionHeading/index.ts';
 
 interface DevisOfferCompositionProps {
+  conquestSectionTitle: string;
+  conquestBaseLineLabel: string;
+  commercialCommissionDescription: string;
+  conquestLineCount: number;
+  onConquestSectionTitleChange: (title: string) => void;
+  onConquestLineLabelChange: (label: string) => void;
+  onCommercialCommissionDescriptionChange: (description: string) => void;
   appointmentRate: number | undefined;
   appointmentDescription: string;
   campaignType: QuoteCampaignType;
@@ -25,6 +33,7 @@ interface DevisOfferCompositionProps {
   thirdPartyServices: QuoteThirdPartyService[];
   onAddCustomClause: () => void;
   onAddProjectLine: (sectionId: string) => void;
+  onAddProjectSection: () => void;
   onAddThirdPartyService: () => void;
   onAppointmentRateChange: (amount: number | undefined) => void;
   onAppointmentDescriptionChange: (description: string) => void;
@@ -65,6 +74,13 @@ const campaignTypeOptions: CampaignTypeOption[] = Object.entries(QUOTE_CAMPAIGN_
 const getOptionalAmount = (value: string): number | undefined => (value === '' ? undefined : Number(value));
 
 export function DevisOfferComposition({
+  conquestSectionTitle,
+  conquestBaseLineLabel,
+  commercialCommissionDescription,
+  conquestLineCount,
+  onConquestSectionTitleChange,
+  onConquestLineLabelChange,
+  onCommercialCommissionDescriptionChange,
   appointmentRate,
   appointmentDescription,
   campaignType,
@@ -76,6 +92,7 @@ export function DevisOfferComposition({
   thirdPartyServices,
   onAddCustomClause,
   onAddProjectLine,
+  onAddProjectSection,
   onAddThirdPartyService,
   onAppointmentRateChange,
   onAppointmentDescriptionChange,
@@ -106,15 +123,9 @@ export function DevisOfferComposition({
           <p className="devisView__project-description-help">Dans chaque description, une ligne correspond à une puce dans le devis.</p>
           {projectSections.map((section) => (
             <section key={section.id} className="devisView__project-section">
-              <div className="devisView__project-section-heading">
-                <input
-                  aria-label="Intitulé de la phase"
-                  placeholder={section.titlePlaceholder || 'Intitulé de la phase'}
-                  value={section.title}
-                  onChange={(event) => onUpdateProjectSectionTitle(section.id, event.target.value)}
-                />
-                <span>{section.lines.filter((line) => line.included || line.amount !== undefined).length} prestation(s) retenue(s)</span>
-              </div>
+              <DevisSectionHeading label="Intitulé de la phase" value={section.title}
+                lineCount={section.lines.filter((line) => line.included || line.amount !== undefined).length}
+                onChange={(title) => onUpdateProjectSectionTitle(section.id, title)} />
 
               <div className="devisView__project-lines">
                 {section.lines.map((line) => (
@@ -166,7 +177,7 @@ export function DevisOfferComposition({
                 ))}
               </div>
 
-              <Button style="white" className="devisView__add-clause" onClick={() => onAddProjectLine(section.id)}>
+              <Button style="seaGreen" className="devisView__add-clause devisView__add-action" onClick={() => onAddProjectLine(section.id)}>
                 <MdAdd />
                 <span>Ajouter une prestation</span>
               </Button>
@@ -198,9 +209,15 @@ export function DevisOfferComposition({
               </div>
             ))}
           </div>
-          <Button style="white" className="devisView__add-clause" onClick={onAddThirdPartyService}>
+          <Button style="seaGreen" className="devisView__add-clause devisView__add-action" onClick={onAddThirdPartyService}>
             <MdAdd />
             <span>Ajouter un service tiers</span>
+          </Button>
+        </div>
+        <div className="devisView__section-actions devisView__section-actions--phase">
+          <p>Structurez une autre partie de l’offre avec une nouvelle phase.</p>
+          <Button style="seaGreen" className="devisView__add-action" onClick={onAddProjectSection}>
+            <MdAdd aria-hidden="true" /><span>Ajouter une phase</span>
           </Button>
         </div>
       </article>
@@ -217,6 +234,15 @@ export function DevisOfferComposition({
         </div>
       </div>
 
+      <section className="devisView__project-section">
+      <DevisSectionHeading label="Intitulé du bloc de prestations" value={conquestSectionTitle}
+        lineCount={conquestLineCount} onChange={onConquestSectionTitleChange} />
+      <p className="devisView__project-description-help">Le titre est libre. Seul un intitulé saisi sera repris dans le document.</p>
+      <label className="devisView__field">
+        <span>Intitulé de la prestation</span>
+        <input aria-label="Intitulé de la prestation tarifée" maxLength={255} value={conquestBaseLineLabel}
+          onChange={(event) => onConquestLineLabelChange(event.target.value)} />
+      </label>
       <label className="devisView__field devisView__campaign-type">
         <span>Type de campagne</span>
         <Select<CampaignTypeOption, false>
@@ -253,6 +279,11 @@ export function DevisOfferComposition({
               <small>%</small>
             </div>
           </label>
+          <label className="devisView__field devisView__appointment-description">
+            <span>Description de la prestation</span>
+            <textarea aria-label="Description de la commission" rows={3} maxLength={2000} value={commercialCommissionDescription}
+              onChange={(event) => onCommercialCommissionDescriptionChange(event.target.value)} />
+          </label>
         </div>
       ) : (
         <div className="devisView__pricing-model">
@@ -275,9 +306,10 @@ export function DevisOfferComposition({
           </label>
           <label className="devisView__field devisView__appointment-description">
             <span>Description</span>
-            <input
+            <textarea
               aria-label={unitPricing.descriptionLabel}
-              type="text"
+              rows={3}
+              maxLength={2000}
               value={appointmentDescription}
               onChange={(event) => onAppointmentDescriptionChange(event.target.value)}
             />
@@ -291,6 +323,15 @@ export function DevisOfferComposition({
                   placeholder="Clause tarifaire"
                   value={clause.label}
                   onChange={(event) => onUpdateCustomClause(clause.id, 'label', event.target.value)}
+                />
+                <textarea
+                  className="devisView__clause-description"
+                  aria-label="Description de la clause"
+                  placeholder="Description, livrables et conditions particulières"
+                  rows={2}
+                  maxLength={2000}
+                  value={clause.description ?? ''}
+                  onChange={(event) => onUpdateCustomClause(clause.id, 'description', event.target.value)}
                 />
                 <input
                   aria-label="Montant de la clause"
@@ -316,12 +357,13 @@ export function DevisOfferComposition({
             ))}
           </div>
 
-          <Button style="white" className="devisView__add-clause" onClick={onAddCustomClause}>
+          <Button style="seaGreen" className="devisView__add-clause devisView__add-action" onClick={onAddCustomClause}>
             <MdAdd />
             <span>Ajouter une clause</span>
           </Button>
         </div>
       )}
+      </section>
     </article>
   );
 }

@@ -505,6 +505,7 @@ export type {
   QuoteCampaignType,
   QuotePricingModel,
   QuoteCustomClause,
+  QuoteFlexibleService,
   QuoteFormChangeHandler,
   QuoteFormState,
   QuoteLine,
@@ -558,7 +559,7 @@ export * from './editableAddress.types.ts';
 export * from './bookingLead.types.ts';
 
 export type { SiteProof, SitePhoneProof, SiteProspection, SiteProspectionList, SiteProspectionQuery, SiteEditField, SiteEditForm, SiteEditPatch } from './siteProspection.types.ts';
-export type { QuoteDraftSnapshot, QuoteDraftSummary, QuoteDraft, LocalQuoteDraft } from './quoteDraft.types.ts';
+export type { QuoteServiceBlock, QuoteDraftSnapshot, QuoteDraftSummary, QuoteDraft, LocalQuoteDraft } from './quoteDraft.types.ts';
 export * from './commandesCalendar.types.ts';
 
 export * from './prospectTargeting.types.ts';
