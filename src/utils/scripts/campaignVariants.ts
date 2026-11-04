@@ -1,6 +1,7 @@
 export const CAMPAIGN_VARIANTS = {
   vente: 'vente',
   lead_b2b: 'lead_b2b',
+  client_account: 'client_account',
 } as const;
 
 export type CampaignVariant = keyof typeof CAMPAIGN_VARIANTS;
@@ -8,9 +9,11 @@ export type CampaignVariant = keyof typeof CAMPAIGN_VARIANTS;
 export const CAMPAIGN_VARIANT_OPTIONS = [
   { value: CAMPAIGN_VARIANTS.vente, label: 'Vente' },
   { value: CAMPAIGN_VARIANTS.lead_b2b, label: 'Lead B2B' },
+  { value: CAMPAIGN_VARIANTS.client_account, label: 'Compte client' },
 ] as const;
 
 export function normalizeCampaignVariant(value: string | null | undefined): CampaignVariant {
+  if (value === CAMPAIGN_VARIANTS.client_account) return CAMPAIGN_VARIANTS.client_account;
   if (value === CAMPAIGN_VARIANTS.lead_b2b) {
     return CAMPAIGN_VARIANTS.lead_b2b;
   }

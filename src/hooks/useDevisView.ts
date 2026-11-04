@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react';
 import {
   DEFAULT_FORM,
+  QUOTE_UNIT_PRICING_LABELS,
   PROJECT_QUOTE_SECTIONS,
   PROJECT_THIRD_PARTY_SERVICES,
   buildProjectQuotePricingLines,
@@ -31,7 +32,7 @@ export function useDevisView() {
   const [campaignType, setCampaignType] = useState<QuoteCampaignType>('qualified_appointment');
   const [commercialCommissionRate, setCommercialCommissionRate] = useState<number | undefined>();
   const [appointmentRate, setAppointmentRate] = useState<number | undefined>();
-  const [appointmentDescription, setAppointmentDescription] = useState('Tarif unitaire facturé pour chaque rendez-vous qualifié réalisé.');
+  const [appointmentDescription, setAppointmentDescription] = useState(QUOTE_UNIT_PRICING_LABELS.qualified_appointment.defaultDescription);
   const [customClauses, setCustomClauses] = useState<QuoteCustomClause[]>([]);
   const [projectSections, setProjectSections] = useState<QuoteProjectSection[]>(() => (
     PROJECT_QUOTE_SECTIONS.map((section) => ({
@@ -120,6 +121,17 @@ export function useDevisView() {
     value: QuoteFormState[Field],
   ): void => {
     setFormState((previous) => ({ ...previous, [field]: value }));
+  };
+
+  const handleCampaignTypeChange = (nextType: QuoteCampaignType): void => {
+    setAppointmentDescription((description) => {
+      const isDefaultDescription = Object.values(QUOTE_UNIT_PRICING_LABELS)
+        .some((labels) => labels.defaultDescription === description);
+      return nextType !== 'commercial' && isDefaultDescription
+        ? QUOTE_UNIT_PRICING_LABELS[nextType].defaultDescription
+        : description;
+    });
+    setCampaignType(nextType);
   };
 
   const addCustomClause = (): void => {
@@ -247,7 +259,7 @@ export function useDevisView() {
     selectedTemplates,
     setAppointmentRate,
     setAppointmentDescription,
-    setCampaignType,
+    setCampaignType: handleCampaignTypeChange,
     setCommercialCommissionRate,
     setFamilyFilter,
     thirdPartyServices,

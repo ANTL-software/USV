@@ -227,3 +227,37 @@ test('créer, nommer et reprendre sont trois étapes explicites, sans mélange d
   await expect(page.getByLabel('Nom du devis', { exact: true })).toHaveValue('Zoenoe — Version corrigée');
   await page.getByRole('region', { name: 'Brouillons de devis' }).screenshot({ path: 'test-results/usv-devis-workflow-edit.png', animations: 'disabled' });
 });
+
+
+test('le compte client conserve les tarifs et clauses, se restaure et génère les bons libellés', async ({ page }) => {
+  const api = await installDraftApi(page);
+  await page.goto('/commercial/devis');
+  await page.getByRole('button', { name: 'Nouveau devis', exact: true }).click();
+  await page.getByLabel('Entreprise', { exact: true }).fill('Comptes clients');
+  await page.getByRole('spinbutton', { name: /Rendez-vous/ }).fill('150');
+  await page.locator('.devisView__campaign-type .react-select__control').click();
+  await page.getByRole('option', { name: 'Compte client', exact: true }).click();
+  await expect(page.getByText('Tarification au compte client', { exact: true })).toBeVisible();
+  await expect(page.getByRole('spinbutton', { name: /Compte client/ })).toHaveValue('150');
+  await expect(page.getByLabel('Description du compte client')).toHaveValue('Tarif unitaire facturé pour chaque compte client.');
+  await page.getByLabel('Description du compte client').fill('Compte validé par le client');
+  await page.getByRole('button', { name: 'Ajouter une clause' }).click();
+  await page.getByLabel('Intitulé de la clause').fill('Compte premium');
+  await page.getByLabel('Montant de la clause').fill('250');
+  await expect.poll(() => [...api.drafts.values()][0]?.snapshot.customClauses[0]?.amount).toBe(250);
+  await page.reload();
+  await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
+  await expect(page.getByRole('spinbutton', { name: /Compte client/ })).toHaveValue('150');
+  await expect(page.getByLabel('Description du compte client')).toHaveValue('Compte validé par le client');
+  await page.locator('.devisView__campaign-type .react-select__control').click();
+  await page.getByRole('option', { name: 'Rendez-vous qualifié', exact: true }).click();
+  await expect(page.getByLabel('Description du rendez-vous')).toHaveValue('Compte validé par le client');
+  await page.locator('.devisView__campaign-type .react-select__control').click();
+  await page.getByRole('option', { name: 'Compte client', exact: true }).click();
+  await page.getByRole('button', { name: 'Éditer le devis', exact: true }).click();
+  await expect.poll(() => api.generated.length).toBe(1);
+  expect(api.generated[0]).toMatchObject({ pricing_model: 'client_account', lines: [
+    expect.objectContaining({ label: 'Compte client', amount: 150, amount_kind: 'currency', description: 'Compte validé par le client' }),
+    expect.objectContaining({ label: 'Compte premium', amount: 250, amount_kind: 'currency' }),
+  ] });
+});
