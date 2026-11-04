@@ -129,3 +129,16 @@ test('engagement et checklist pilotent une progression déterministe', () => {
     percent: 80,
   });
 });
+
+
+test('les intitulés et descriptions de Conquête restent libres avec les mêmes règles tarifaires', () => {
+  const lines = buildQuotePricingLines('client_account', undefined, 185, [
+    { id: 'clause', label: 'Ciblage complémentaire', description: 'Analyse et qualification de la base transmise.', amount: 65, included: false },
+  ], 'Livraison après validation du compte.', 'Compte professionnel accepté');
+  assert.equal(lines[0].label, 'Compte professionnel accepté');
+  assert.equal(lines[1].description, 'Analyse et qualification de la base transmise.');
+  const commission = buildQuotePricingLines('commercial', 7.5, undefined, [], undefined, 'Apport commercial', 'Taux appliqué au CA HT encaissé.');
+  assert.equal(commission[0].description, 'Taux appliqué au CA HT encaissé.');
+  assert.equal(commission[0].label, 'Apport commercial');
+  assert.equal(commission[0].amount_kind, 'percentage');
+});

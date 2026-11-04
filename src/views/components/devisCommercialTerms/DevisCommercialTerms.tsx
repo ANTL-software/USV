@@ -57,7 +57,7 @@ export function DevisCommercialTerms({
       <div className="devisView__panel-header">
         <MdHandshake />
         <div>
-          <h2>4. Conditions commerciales</h2>
+          <h2>3. Conditions commerciales</h2>
           <p>Définissez le calendrier, l’engagement et le rythme de facturation.</p>
         </div>
       </div>

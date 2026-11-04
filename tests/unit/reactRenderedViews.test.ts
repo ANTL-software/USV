@@ -451,10 +451,10 @@ test('Devis conserve ses étapes et ses actions après extraction en composants'
   }));
 
   assert.match(summaryHtml, /Étape 1/);
-  assert.match(summaryHtml, /Choisir le modèle adapté/);
+  assert.match(summaryHtml, /Renseigner le contexte client/);
   assert.match(summaryHtml, /Valider le récap avant PDF/);
   assert.match(previewHtml, /Entreprise Démo/);
-  assert.match(previewHtml, /Rendez-vous qualifié/);
+  assert.match(previewHtml, /Cycle client/);
   assert.match(previewHtml, /Rendez-vous/);
   assert.match(previewHtml, /Éditer le devis/);
 });

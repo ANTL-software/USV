@@ -511,10 +511,8 @@
 #devisView .devisView__project-section-heading input {
   @include mixins.formInput("#devisView .devisView__project-section-heading input");
   min-height: 2.55rem;
-  padding: 0.4em 0;
-  border-width: 0 0 1px;
-  border-radius: 0;
-  background: transparent;
+  padding: 0.65em 0.8em;
+  background: vars.$whiteBackground;
   color: vars.$fontColorPrimary;
   font-size: 1rem;
   font-weight: 700;
@@ -895,3 +893,162 @@
 .devisView__drafts-name input { @include mixins.formInput(".devisView__drafts-name input"); width: 100%; box-sizing: border-box; }
 .devisView__drafts-name small { color: vars.$fontColorSecondary; font-size: .8rem; }
 #devisView .devisView__hero--browse { grid-template-columns: minmax(0, 1fr); }
+
+#devisView .devisView__accordion {
+  border: 1px solid vars.$borderColor;
+  border-radius: 1em;
+  background: vars.$whiteBackground;
+  padding: 1em;
+}
+#devisView .devisView__accordion > summary {
+  cursor: pointer;
+  color: vars.$utilsPrimary;
+  font-size: 1.1em;
+  font-weight: 700;
+  padding: 0.5em;
+}
+#devisView .devisView__accordion > summary span {
+  color: vars.$fontColorSecondary;
+  font-size: 0.8em;
+  font-weight: 400;
+  margin-left: 0.75em;
+}
+#devisView .devisView__accordion > summary:focus-visible {
+  outline: 2px solid vars.$utilsPrimary;
+  outline-offset: 3px;
+}
+#devisView .devisView__flexible-services {
+  gap: 1.25em;
+}
+#devisView .devisView__flexible-service {
+  min-width: 0;
+  margin: 0;
+  background: vars.$whiteBackground;
+  border: 1px solid vars.$borderColor;
+  border-radius: 0.75em;
+  padding: 1em;
+  display: grid;
+  gap: 1em;
+}
+
+#devisView .devisView__clause-description {
+  @include mixins.formInput("#devisView .devisView__clause-description");
+  grid-column: 1 / -1;
+  grid-row: 2;
+  width: 100%;
+  resize: vertical;
+}
+
+#devisView .devisView__workspace,
+#devisView .devisView__main,
+#devisView .devisView__sidebar,
+#devisView .devisView__project-section {
+  min-width: 0;
+}
+#devisView .devisView__main,
+#devisView .devisView__sidebar,
+#devisView .devisView__project-section {
+  grid-template-columns: minmax(0, 1fr);
+}
+#devisView .devisView__project-section input,
+#devisView .devisView__project-section textarea {
+  min-width: 0;
+  max-width: 100%;
+}
+#devisView .devisView__pricing-line {
+  flex-wrap: wrap;
+}
+#devisView .devisView__project-section-heading input {
+  flex-basis: 15rem;
+}
+
+
+#devisView .devisView__accordion > summary {
+  margin-bottom: 0.65rem;
+}
+#devisView .devisView__section-description {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  line-height: 1.6;
+}
+#devisView .devisView__flexible-service legend {
+  padding: 0 0.5em;
+  color: vars.$utilsDark;
+  font-weight: 700;
+}
+#devisView .devisView__section-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1em;
+  padding-top: 0.5em;
+}
+#devisView .devisView__section-actions--phase {
+  margin-top: 1.5em;
+  padding-top: 1.25em;
+  border-top: 1px solid vars.$borderColor;
+  justify-content: space-between;
+}
+#devisView .devisView__section-actions--phase p {
+  margin: 0;
+  color: vars.$fontColorSecondary;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  flex: 1 1 15rem;
+}
+#devisView .devisView__add-action {
+  min-height: 2.75rem;
+  padding: 0.75em 1.1em;
+  gap: 0.5em;
+  font-weight: 700;
+  line-height: 1.35;
+  max-width: 100%;
+  white-space: normal;
+}
+#devisView .devisView__add-action svg {
+  flex-shrink: 0;
+  font-size: 1.25em;
+}
+#devisView .devisView__service-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 0.85em;
+  border-top: 1px solid vars.$borderColor;
+}
+#devisView .devisView__remove-service {
+  min-height: 2.5rem;
+  padding: 0.65em 0.9em;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  box-shadow: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+#devisView .devisView__remove-service:hover {
+  background: #fff1f2;
+}
+@media (max-width: vars.$mobileWidth) {
+  #devisView .devisView__section-actions > button,
+  #devisView .devisView__service-actions > button,
+  #devisView .devisView__add-clause {
+    width: 100%;
+  }
+}
+#devisView .devisView__add-action,
+#devisView .devisView__add-action span,
+#devisView .devisView__add-action svg,
+#devisView .devisView__add-action svg path {
+  color: vars.$whiteBackground;
+}
+#devisView .devisView__remove-service span,
+#devisView .devisView__remove-service svg {
+  color: inherit;
+}
+
+#devisView .devisView__add-action svg path:not([fill="none"]) {
+  fill: vars.$whiteBackground;
+}
+#devisView .devisView__remove-service svg path:not([fill="none"]) {
+  color: inherit;
+  fill: currentColor;
+}

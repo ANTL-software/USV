@@ -443,6 +443,13 @@ export const DEFAULT_FORM: QuoteFormState = {
   commercialConditions: '',
 };
 
+export const QUOTE_SECTION_TITLE_SUGGESTIONS = QUOTE_TEMPLATES.map((template) => template.title);
+export const QUOTE_SECTION_TITLE_PLACEHOLDER = `Ex. ${QUOTE_SECTION_TITLE_SUGGESTIONS.join(', ')}`;
+export const DEFAULT_COMMISSION_DESCRIPTION = 'Commission appliquée au montant HT de chaque vente conclue.';
+export const getQuoteBaseLineLabel = (campaignType: QuoteCampaignType): string => (
+  campaignType === 'commercial' ? 'Commission par vente' : QUOTE_UNIT_PRICING_LABELS[campaignType].label
+);
+
 export const PROJECT_QUOTE_SECTIONS: QuoteProjectSection[] = [
   {
     id: 'architecture',
@@ -629,13 +636,15 @@ export const buildQuotePricingLines = (
   appointmentRate: number | undefined,
   customClauses: QuoteCustomClause[],
   appointmentDescription?: string,
+  baseLineLabel?: string,
+  commissionDescription = DEFAULT_COMMISSION_DESCRIPTION,
 ): QuotePdfPayload['lines'] => {
   if (campaignType === 'commercial') {
     if (commercialCommissionRate === undefined) return [];
     return [{
       id: 'commercial-commission',
-      label: 'Commission par vente',
-      description: 'Commission appliquée au montant HT de chaque vente conclue.',
+      label: baseLineLabel ?? getQuoteBaseLineLabel(campaignType),
+      description: commissionDescription,
       mode: 'ponctuel',
       included: false,
       amount: commercialCommissionRate,
@@ -646,7 +655,7 @@ export const buildQuotePricingLines = (
   const unitPricing = QUOTE_UNIT_PRICING_LABELS[campaignType];
   const appointmentLine = appointmentRate === undefined ? [] : [{
     id: campaignType === 'client_account' ? 'client-account-base' : 'qualified-appointment-base',
-    label: unitPricing.label,
+    label: baseLineLabel ?? getQuoteBaseLineLabel(campaignType),
     description: appointmentDescription ?? unitPricing.defaultDescription,
     mode: 'ponctuel' as const,
     included: false,
@@ -658,7 +667,7 @@ export const buildQuotePricingLines = (
     .map((clause) => ({
       id: clause.id,
       label: clause.label.trim(),
-      description: 'Clause tarifaire personnalisée.',
+      description: clause.description?.trim() || 'Clause tarifaire personnalisée.',
       mode: 'ponctuel' as const,
       included: clause.included,
       amount: clause.amount ?? 0,

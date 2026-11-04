@@ -13,7 +13,9 @@ import { Button } from '../button/index.ts';
 interface DevisPreviewProps {
   form: QuoteFormState;
   campaignType: QuoteCampaignType;
-  isProjectQuote: boolean;
+  fixedTotals?: { ht: number; ttc: number };
+  hasFixedLines?: boolean;
+  hasConditionalLines?: boolean;
   quoteLines: QuotePdfPayload['lines'];
   selectedTemplatePromise: string;
   selectedTemplateTitle: string;
@@ -24,17 +26,15 @@ interface DevisPreviewProps {
 export function DevisPreview({
   form,
   campaignType,
-  isProjectQuote,
+  fixedTotals,
+  hasFixedLines,
+  hasConditionalLines,
   quoteLines,
   selectedTemplatePromise,
   selectedTemplateTitle,
   isGeneratingQuote,
   onGenerateQuote,
 }: DevisPreviewProps): ReactElement {
-  const projectTotalHt = quoteLines
-    .filter((line) => !line.included && line.amount_kind === 'currency')
-    .reduce((total, line) => total + line.amount, 0);
-
   return (
     <aside className="devisView__sidebar devisView__sidebar--sticky">
       <article className="devisView__panel">
@@ -47,9 +47,9 @@ export function DevisPreview({
         </div>
 
         <div className="devisView__preview-card">
-          <span className="devisView__preview-eyebrow">{isProjectQuote ? 'Proposition de projet' : 'Proposition commerciale'}</span>
-          <h3>{selectedTemplateTitle || 'Aucun modèle sélectionné'}</h3>
-          <p>{selectedTemplatePromise || 'Sélectionnez au moins un modèle pour construire la proposition.'}</p>
+          <span className="devisView__preview-eyebrow">Proposition commerciale</span>
+          <h3>{selectedTemplateTitle || 'Aucune prestation renseignée'}</h3>
+          <p>{selectedTemplatePromise || 'Renseignez au moins une prestation pour construire la proposition.'}</p>
         </div>
 
         <div className="devisView__preview-block">
@@ -74,21 +74,19 @@ export function DevisPreview({
         </div>
 
         <div className="devisView__pricing">
-          <div><span>{isProjectQuote ? 'Type de devis' : 'Type de campagne'}</span><strong>{isProjectQuote ? 'Projet digital' : QUOTE_CAMPAIGN_TYPE_LABELS[campaignType]}</strong></div>
+          <div><span>Périmètre</span><strong>{selectedTemplateTitle || QUOTE_CAMPAIGN_TYPE_LABELS[campaignType]}</strong></div>
           {quoteLines.map((line) => (
             <div key={`price-${line.id}`} className={line.included ? '' : 'is-total'}>
-              <span>{line.label}</span>
+              <span>{line.label}{line.pricing_basis === 'variable' ? ' · Prime variable' : line.pricing_basis === 'unit' ? ' · Tarif unitaire' : ''}</span>
               <strong>{line.included ? 'Inclus' : line.amount_kind === 'percentage' ? `${line.amount} %` : formatCurrency(line.amount)}</strong>
             </div>
           ))}
-          {isProjectQuote ? (
-            <>
-              <div className="is-total"><span>Total HT</span><strong>{formatCurrency(projectTotalHt)}</strong></div>
-              <div className="is-total"><span>Total TTC</span><strong>{formatCurrency(projectTotalHt * 1.2)}</strong></div>
-            </>
-          ) : (
-            <div><span>Engagement</span><strong>{ENGAGEMENT_LABELS[form.engagement]}</strong></div>
-          )}
+          {hasFixedLines && fixedTotals && <>
+            <div className="is-total"><span>Total fixe HT</span><strong>{formatCurrency(fixedTotals.ht)}</strong></div>
+            <div className="is-total"><span>Total fixe TTC</span><strong>{formatCurrency(fixedTotals.ttc)}</strong></div>
+          </>}
+          {hasConditionalLines && <p>Primes et tarifs unitaires en supplément, selon les conditions de chaque ligne.</p>}
+          <div><span>Engagement</span><strong>{ENGAGEMENT_LABELS[form.engagement]}</strong></div>
         </div>
 
         <div className="devisView__timeline">

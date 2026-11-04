@@ -5,6 +5,7 @@ import {
   BILLING_LABELS,
   ENGAGEMENT_LABELS,
   buildProjectQuoteSections,
+  validateQuoteComposition,
   getQuoteEngagementMonths,
   getQuoteTimelineLabel,
 } from '../utils/scripts/index.ts';
@@ -26,20 +27,20 @@ export function useDevisPage() {
   const generateQuote = useCallback(async (): Promise<void> => {
     const companyName = devis.formState.companyName.trim();
     const quoteLines = devis.quoteLines;
-    const projectSections = devis.isProjectQuote
-      ? buildProjectQuoteSections(devis.projectSections)
-      : undefined;
+    const projectSections = buildProjectQuoteSections(devis.projectSections);
     const conquestSections = devis.isConquestQuote ? [{
       id: 'conquete',
-      title: 'Conquête',
+      title: devis.conquestSectionTitle.trim() || 'Conquête',
+      show_title: Boolean(devis.conquestSectionTitle.trim()),
       lines: devis.conquestQuoteLines
-        .map(({ id, label, description, included, amount, amount_kind }) => ({
+        .map(({ id, label, description, included, amount, amount_kind, pricing_basis }) => ({
           id,
           label,
           description,
           included,
           amount,
           amount_kind,
+          ...(devis.flexibleQuoteLines.length ? { pricing_basis } : {}),
         })),
     }] : [];
 
@@ -48,11 +49,22 @@ export function useDevisPage() {
       return;
     }
 
-    if (devis.isProjectQuote && (!projectSections || projectSections.length === 0)) {
-      await showError('Renseignez l’intitulé de la phase qui contient chaque prestation retenue.', 'Projet incomplet');
+    if (devis.conquestQuoteLines.some((line) => !line.label.trim())) {
+      await showError('Renseignez l’intitulé de chaque prestation chiffrée.', 'Devis incomplet');
       return;
     }
-
+    const compositionError = validateQuoteComposition(devis.projectSections, devis.flexibleServices);
+    if (compositionError) {
+      await showError(compositionError, 'Devis incomplet');
+      return;
+    }
+    const flexibleSections = devis.flexibleQuoteLines.length ? [{
+      id: 'flexible-services', title: devis.flexibleSectionTitle.trim() || 'Prestations libres et primes',
+      show_title: Boolean(devis.flexibleSectionTitle.trim()), lines: devis.flexibleQuoteLines,
+    }] : [];
+    const documentLines = quoteLines.map(({ pricing_basis, ...line }) => (
+      devis.flexibleQuoteLines.length ? { ...line, pricing_basis } : line
+    ));
     const payload: QuotePdfPayload = {
       pricing_model: devis.isProjectQuote ? 'project_delivery' : devis.campaignType,
       client: {
@@ -73,9 +85,9 @@ export function useDevisPage() {
         billing_label: BILLING_LABELS[devis.formState.billingRhythm],
         conditions: devis.formState.commercialConditions.trim(),
       },
-      lines: quoteLines,
+      lines: documentLines,
       assumptions: devis.isProjectQuote ? [] : devis.selectedAssumptions.map((assumption) => assumption.label),
-      project_sections: [...conquestSections, ...(projectSections || [])],
+      project_sections: [...conquestSections, ...projectSections, ...flexibleSections],
       third_party_services: devis.isProjectQuote ? devis.thirdPartyServices
         .filter((service) => service.label.trim() && service.description.trim())
         .map(({ id, label, description }) => ({ id, label: label.trim(), description: description.trim() }))

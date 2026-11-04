@@ -27,7 +27,7 @@ export function DevisClientContext({ form, onFormChange }: DevisClientContextPro
       <div className="devisView__panel-header">
         <MdOutlineAddBusiness />
         <div>
-          <h2>2. Contexte client</h2>
+          <h2>1. Contexte client</h2>
           <p>Renseignez les coordonnées, le besoin et l’objectif de la proposition.</p>
         </div>
       </div>

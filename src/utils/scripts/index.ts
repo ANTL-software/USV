@@ -526,6 +526,10 @@ export {
   QUOTE_TEMPLATES,
   QUOTE_CAMPAIGN_TYPE_LABELS,
   QUOTE_UNIT_PRICING_LABELS,
+  QUOTE_SECTION_TITLE_SUGGESTIONS,
+  QUOTE_SECTION_TITLE_PLACEHOLDER,
+  DEFAULT_COMMISSION_DESCRIPTION,
+  getQuoteBaseLineLabel,
   PROJECT_QUOTE_SECTIONS,
   PROJECT_THIRD_PARTY_SERVICES,
   STATUS_LABELS,
@@ -690,3 +694,5 @@ export * from './prospectTargeting.ts';
 export * from './prospectTargetingGuided.ts';
 
 export { getMonthlyCommercialMonth, isMonthlyCommercialMonthValid, formatMonthlyCommercialMonth } from './monthlyCommercial.ts';
+
+export { buildFlexibleQuoteLines, getQuoteFixedTotals, validateQuoteComposition } from './quoteComposition.ts';

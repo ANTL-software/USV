@@ -505,6 +505,7 @@ export type {
   QuoteCampaignType,
   QuotePricingModel,
   QuoteCustomClause,
+  QuoteFlexibleService,
   QuoteFormChangeHandler,
   QuoteFormState,
   QuoteLine,

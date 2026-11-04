@@ -10,9 +10,14 @@ const form = (value: unknown): value is QuoteFormState => object(value)
   && ['1_mois_reconduction', '3_mois', '6_mois', 'mission_unique'].includes(String(value.engagement));
 export function isQuoteDraftSnapshot(value: unknown): value is QuoteDraftSnapshot {
   return object(value) && value.version === 1 && (value.draftName === undefined || (text(value.draftName) && value.draftName.length <= 255)) && form(value.formState)
+    && ['conquestSectionTitle', 'flexibleSectionTitle', 'conquestLineLabel'].every(key => value[key] === undefined || (text(value[key]) && value[key].length <= 255))
+    && (value.commercialCommissionDescription === undefined || (text(value.commercialCommissionDescription) && value.commercialCommissionDescription.length <= 2000))
     && list(value.selectedTemplateIds, text) && ['commercial', 'qualified_appointment', 'client_account'].includes(String(value.campaignType))
     && amount(value.commercialCommissionRate) && amount(value.appointmentRate) && text(value.appointmentDescription)
-    && list(value.customClauses, item => object(item) && text(item.id) && text(item.label) && typeof item.included === 'boolean' && amount(item.amount))
+    && (value.flexibleServices === undefined || list(value.flexibleServices, item => object(item) && text(item.id) && text(item.label) && text(item.description) && text(item.condition)
+      && ['fixed', 'variable'].includes(String(item.pricing)) && ['currency', 'percentage'].includes(String(item.amountKind))
+      && (item.pricing !== 'fixed' || item.amountKind === 'currency') && amount(item.amount)))
+    && list(value.customClauses, item => object(item) && text(item.id) && text(item.label) && (item.description === undefined || text(item.description)) && typeof item.included === 'boolean' && amount(item.amount))
     && list(value.projectSections, section => object(section) && text(section.id) && text(section.title)
       && list(section.lines, item => object(item) && text(item.id) && text(item.label) && text(item.description) && typeof item.included === 'boolean' && amount(item.amount)))
     && list(value.thirdPartyServices, item => object(item) && text(item.id) && text(item.label) && text(item.description));

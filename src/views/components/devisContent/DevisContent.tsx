@@ -14,7 +14,6 @@ export function DevisContent({ viewModel }: DevisContentProps): ReactElement {
     <div className="devisView__container">
       <DevisHeader
         isEditing={viewModel.drafts.mode === 'edit'}
-        campaignType={viewModel.campaignType}
         onBack={viewModel.navigateBack}
         progressPercent={viewModel.progressPercent}
         selectedTemplateTitle={viewModel.selectedTemplateTitle}
