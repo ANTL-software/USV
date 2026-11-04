@@ -235,12 +235,12 @@ export function DevisOfferComposition({
       </div>
 
       <section className="devisView__project-section">
-      <DevisSectionHeading label="Intitulé de la section Conquête" value={conquestSectionTitle}
+      <DevisSectionHeading label="Intitulé du bloc de prestations" value={conquestSectionTitle}
         lineCount={conquestLineCount} onChange={onConquestSectionTitleChange} />
       <p className="devisView__project-description-help">Le titre est libre. Seul un intitulé saisi sera repris dans le document.</p>
       <label className="devisView__field">
         <span>Intitulé de la prestation</span>
-        <input aria-label="Intitulé de la prestation Conquête" maxLength={255} value={conquestBaseLineLabel}
+        <input aria-label="Intitulé de la prestation tarifée" maxLength={255} value={conquestBaseLineLabel}
           onChange={(event) => onConquestLineLabelChange(event.target.value)} />
       </label>
       <label className="devisView__field devisView__campaign-type">

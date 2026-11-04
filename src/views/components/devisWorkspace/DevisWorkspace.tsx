@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { MdAdd, MdClose } from 'react-icons/md';
+import { Button } from '../button/index.ts';
 import type { ReactElement } from 'react';
 import type { DevisPageViewModel } from '../../../hooks/index.ts';
 import { DevisClientContext } from '../devisClientContext/index.ts';
@@ -57,18 +59,31 @@ export function DevisWorkspace({ viewModel }: DevisWorkspaceProps): ReactElement
           <p>Dépliez les sections utiles et renseignez vos prestations. Une section vide est ignorée dans le devis. Refermer une section conserve son contenu.</p>
         </article>
         <details className="devisView__accordion" open={openSections.conquete} onToggle={(event) => toggleSection('conquete', event.currentTarget.open)}>
-          <summary>Conquête <span>{viewModel.conquestQuoteLines.length} ligne(s) retenue(s)</span></summary>
+          <summary>Prestations <span>{viewModel.allConquestQuoteLines.length} ligne(s) retenue(s)</span></summary>
           <DevisOfferComposition {...offerProps} isProjectQuote={false} />
-        </details>
-        <details className="devisView__accordion" open={openSections.conception} onToggle={(event) => toggleSection('conception', event.currentTarget.open)}>
-          <summary>Conception <span>{viewModel.projectSections.length} phase(s) disponibles</span></summary>
-          <DevisOfferComposition {...offerProps} isProjectQuote />
+          {viewModel.additionalServiceBlocks.map((block) => (
+            <div key={block.id} className="devisView__service-block">
+              <DevisOfferComposition {...offerProps} {...block} isProjectQuote={false} />
+              <Button style="white" className="devisView__remove-service" onClick={block.onRemove}>
+                <MdClose aria-hidden="true" /><span>Supprimer ce bloc de prestations</span>
+              </Button>
+            </div>
+          ))}
+          <div className="devisView__section-actions devisView__service-block-actions">
+            <Button style="seaGreen" className="devisView__add-action" onClick={viewModel.addServiceBlock}>
+              <MdAdd aria-hidden="true" /><span>Ajouter un bloc de prestations</span>
+            </Button>
+          </div>
         </details>
         <details className="devisView__accordion" open={openSections.flexible} onToggle={(event) => toggleSection('flexible', event.currentTarget.open)}>
           <summary>Prestations libres et primes <span>{viewModel.flexibleQuoteLines.length} ligne(s) retenue(s)</span></summary>
           <DevisFlexibleServices sectionTitle={viewModel.flexibleSectionTitle} lineCount={viewModel.flexibleQuoteLines.length}
             onSectionTitleChange={viewModel.setFlexibleSectionTitle} services={viewModel.flexibleServices} onAdd={viewModel.addFlexibleService}
             onRemove={viewModel.removeFlexibleService} onUpdate={viewModel.updateFlexibleService} />
+        </details>
+        <details className="devisView__accordion" open={openSections.conception} onToggle={(event) => toggleSection('conception', event.currentTarget.open)}>
+          <summary>Conception <span>{viewModel.projectSections.length} phase(s) disponibles</span></summary>
+          <DevisOfferComposition {...offerProps} isProjectQuote />
         </details>
         <DevisCommercialTerms assumptions={viewModel.selectedAssumptions} form={viewModel.formState} onFormChange={viewModel.handleFormChange} />
       </div>

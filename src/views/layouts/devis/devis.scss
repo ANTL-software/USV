@@ -1052,3 +1052,19 @@
   color: inherit;
   fill: currentColor;
 }
+
+#devisView .devisView__service-block {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1em;
+  margin-top: 1.25em;
+}
+#devisView .devisView__service-block > .devisView__remove-service {
+  justify-self: end;
+  margin-right: 1em;
+}
+#devisView .devisView__service-block-actions {
+  margin: 1.25em 1em 0.5em;
+  padding-top: 1.25em;
+  border-top: 1px solid vars.$borderColor;
+}

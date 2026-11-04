@@ -28,9 +28,9 @@ export function useDevisPage() {
     const companyName = devis.formState.companyName.trim();
     const quoteLines = devis.quoteLines;
     const projectSections = buildProjectQuoteSections(devis.projectSections);
-    const conquestSections = devis.isConquestQuote ? [{
+    const conquestSections = devis.conquestQuoteLines.length ? [{
       id: 'conquete',
-      title: devis.conquestSectionTitle.trim() || 'Conquête',
+      title: devis.conquestSectionTitle.trim() || 'Prestations',
       show_title: Boolean(devis.conquestSectionTitle.trim()),
       lines: devis.conquestQuoteLines
         .map(({ id, label, description, included, amount, amount_kind, pricing_basis }) => ({
@@ -40,7 +40,7 @@ export function useDevisPage() {
           included,
           amount,
           amount_kind,
-          ...(devis.flexibleQuoteLines.length ? { pricing_basis } : {}),
+          ...(devis.flexibleQuoteLines.length || devis.additionalServiceGroups.some(group => group.lines.length > 0) ? { pricing_basis } : {}),
         })),
     }] : [];
 
@@ -49,7 +49,7 @@ export function useDevisPage() {
       return;
     }
 
-    if (devis.conquestQuoteLines.some((line) => !line.label.trim())) {
+    if (devis.allConquestQuoteLines.some((line) => !line.label.trim())) {
       await showError('Renseignez l’intitulé de chaque prestation chiffrée.', 'Devis incomplet');
       return;
     }
@@ -63,7 +63,7 @@ export function useDevisPage() {
       show_title: Boolean(devis.flexibleSectionTitle.trim()), lines: devis.flexibleQuoteLines,
     }] : [];
     const documentLines = quoteLines.map(({ pricing_basis, ...line }) => (
-      devis.flexibleQuoteLines.length ? { ...line, pricing_basis } : line
+      devis.flexibleQuoteLines.length || devis.additionalServiceGroups.some(group => group.lines.length > 0) ? { ...line, pricing_basis } : line
     ));
     const payload: QuotePdfPayload = {
       pricing_model: devis.isProjectQuote ? 'project_delivery' : devis.campaignType,
@@ -87,7 +87,7 @@ export function useDevisPage() {
       },
       lines: documentLines,
       assumptions: devis.isProjectQuote ? [] : devis.selectedAssumptions.map((assumption) => assumption.label),
-      project_sections: [...conquestSections, ...projectSections, ...flexibleSections],
+      project_sections: [...conquestSections, ...devis.additionalServiceGroups.filter(group => group.lines.length), ...flexibleSections, ...projectSections],
       third_party_services: devis.isProjectQuote ? devis.thirdPartyServices
         .filter((service) => service.label.trim() && service.description.trim())
         .map(({ id, label, description }) => ({ id, label: label.trim(), description: description.trim() }))

@@ -315,7 +315,7 @@ test('le devis libre combine forfait primes et conception sans famille et conser
   await page.getByRole('button', { name: 'Éditer le devis', exact: true }).click();
   await expect.poll(() => api.generated.length).toBe(2);
   expect(api.generated[1]).toMatchObject({ project_sections: [
-    expect.objectContaining({ id: 'conquete' }), expect.objectContaining({ title: 'Site web' }), expect.objectContaining({ id: 'flexible-services' }),
+    expect.objectContaining({ id: 'conquete' }), expect.objectContaining({ id: 'flexible-services' }), expect.objectContaining({ title: 'Site web' }),
   ] });
   const total = page.locator('.devisView__pricing > div').filter({ has: page.getByText('Total fixe HT', { exact: true }) });
   await expect(total).toContainText(/3[\s\u202f]000/);
@@ -335,14 +335,14 @@ test('les titres libres structurent Conquête et les prestations avec les mêmes
   await page.goto('/commercial/devis');
   await page.getByRole('button', { name: 'Nouveau devis', exact: true }).click();
   await page.getByLabel('Entreprise', { exact: true }).fill('Offre structurée');
-  const title = page.getByLabel('Intitulé de la section Conquête', { exact: true });
+  const title = page.getByLabel('Intitulé du bloc de prestations', { exact: true });
   await expect(title).toHaveValue('');
   await expect(title).toHaveAttribute('placeholder', /Conquête, Fidélisation, Rétention, Conception, Visibilité online, Branding/);
   const listId = await title.getAttribute('list');
   await expect(page.locator('datalist').filter({ has: page.locator('option[value="Conquête"]') })).toHaveCount(7);
   expect(listId).toBeTruthy();
   await title.fill('Développement des comptes professionnels');
-  await page.getByLabel('Intitulé de la prestation Conquête', { exact: true }).fill('Compte professionnel validé');
+  await page.getByLabel('Intitulé de la prestation tarifée', { exact: true }).fill('Compte professionnel validé');
   await page.getByRole('spinbutton', { name: /Rendez-vous/ }).fill('185');
   await page.getByLabel('Description du rendez-vous').fill('Qualification du décideur.\nRemise du compte rendu.');
   await page.getByRole('button', { name: 'Ajouter une clause', exact: true }).click();
@@ -358,8 +358,8 @@ test('les titres libres structurent Conquête et les prestations avec les mêmes
   await expect.poll(() => [...api.drafts.values()][0]?.snapshot.flexibleSectionTitle).toBe('Animation et fidélisation du portefeuille');
   await page.reload();
   await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
-  await expect(page.getByLabel('Intitulé de la section Conquête', { exact: true })).toHaveValue('Développement des comptes professionnels');
-  await expect(page.getByLabel('Intitulé de la prestation Conquête', { exact: true })).toHaveValue('Compte professionnel validé');
+  await expect(page.getByLabel('Intitulé du bloc de prestations', { exact: true })).toHaveValue('Développement des comptes professionnels');
+  await expect(page.getByLabel('Intitulé de la prestation tarifée', { exact: true })).toHaveValue('Compte professionnel validé');
   await expect(page.getByLabel('Description de la clause')).toHaveValue('Analyse de la base transmise.\nValidation des critères de ciblage.');
   await page.getByRole('button', { name: 'Éditer le devis', exact: true }).click();
   await expect.poll(() => api.generated.length).toBe(1);
@@ -372,7 +372,7 @@ test('les titres libres structurent Conquête et les prestations avec les mêmes
   ] });
   await page.locator('.devisView__campaign-type .react-select__control').click();
   await page.getByRole('option', { name: 'Commercial', exact: true }).click();
-  await page.getByLabel('Intitulé de la prestation Conquête', { exact: true }).fill('Apport commercial');
+  await page.getByLabel('Intitulé de la prestation tarifée', { exact: true }).fill('Apport commercial');
   await page.getByLabel('Description de la commission').fill('Commission appliquée au chiffre d’affaires HT encaissé.');
   await page.getByRole('spinbutton', { name: /Commission par vente/ }).fill('7.5');
   await page.getByRole('button', { name: 'Éditer le devis', exact: true }).click();
@@ -395,7 +395,7 @@ test('tous les champs du devis complet et le payload PDF survivent à une repris
   await expect(page.getByLabel('Nom du devis', { exact: true })).toHaveValue(original.snapshot.draftName!);
   await expect(page.getByLabel('Description de la clause').first()).toHaveValue(original.snapshot.customClauses[0].description!);
   await expect(page.getByLabel('Montant de la prestation libre').nth(2)).toHaveValue('5.25');
-  await page.getByLabel('Intitulé de la section Conquête', { exact: true }).fill('Acquisition — version finale');
+  await page.getByLabel('Intitulé du bloc de prestations', { exact: true }).fill('Acquisition — version finale');
   await page.getByLabel('Description de la clause').first().fill('Analyse du besoin complétée.\nNouvelle restitution.');
   await page.getByLabel('Montant de la prestation libre').nth(2).fill('6.75');
   await page.getByLabel('Condition commerciale').fill('Conditions finales.\nPrimes après encaissement effectif.');
@@ -412,7 +412,7 @@ test('tous les champs du devis complet et le payload PDF survivent à une repris
   await page.evaluate(() => localStorage.clear());
   await page.reload();
   await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
-  await expect(page.getByLabel('Intitulé de la section Conquête', { exact: true })).toHaveValue('Acquisition — version finale');
+  await expect(page.getByLabel('Intitulé du bloc de prestations', { exact: true })).toHaveValue('Acquisition — version finale');
   await expect(page.getByLabel('Intitulé de la phase').last()).toHaveValue('Accompagnement du lancement');
   await expect(page.getByLabel('Nom du service tiers').last()).toHaveValue('Service complémentaire');
   await expect(page.getByLabel('Montant de la prestation libre').nth(2)).toHaveValue('6.75');
@@ -428,7 +428,7 @@ test('tous les champs du devis complet et le payload PDF survivent à une repris
   await page.getByRole('button', { name: 'Changer de devis', exact: true }).click();
   await page.getByRole('button', { name: 'Nouveau devis', exact: true }).click();
   await expect(page.getByLabel('Nom du devis', { exact: true })).toHaveValue('');
-  await expect(page.getByLabel('Intitulé de la section Conquête', { exact: true })).toHaveValue('');
+  await expect(page.getByLabel('Intitulé du bloc de prestations', { exact: true })).toHaveValue('');
   await expect(page.getByLabel('Intitulé de la section prestations libres', { exact: true })).toHaveValue('');
   await expect(page.getByLabel('Montant de la prestation libre')).toHaveCount(0);
 });
@@ -476,8 +476,8 @@ test('un ancien brouillon sans les nouveaux champs se reprend et se sauvegarde s
   api.drafts.set(original.id, original);
   await page.goto('/commercial/devis');
   await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
-  await expect(page.getByLabel('Intitulé de la section Conquête', { exact: true })).toHaveValue('');
-  await expect(page.getByLabel('Intitulé de la prestation Conquête', { exact: true })).toHaveValue('Rendez-vous');
+  await expect(page.getByLabel('Intitulé du bloc de prestations', { exact: true })).toHaveValue('');
+  await expect(page.getByLabel('Intitulé de la prestation tarifée', { exact: true })).toHaveValue('Rendez-vous');
   await expect(page.getByLabel('Description de la clause').first()).toHaveValue('');
   await page.getByLabel('Entreprise', { exact: true }).fill('Entreprise historique corrigée');
   await expect.poll(() => api.drafts.get(original.id)?.snapshot.formState.companyName).toBe('Entreprise historique corrigée');
@@ -487,4 +487,80 @@ test('un ancien brouillon sans les nouveaux champs se reprend et se sauvegarde s
   expect(saved.customClauses).toEqual(JSON.parse(JSON.stringify(legacy.customClauses)));
   expect(saved.appointmentRate).toBe(legacy.appointmentRate);
   expect(saved.appointmentDescription).toBe(legacy.appointmentDescription);
+});
+
+test('plusieurs blocs de prestations indépendants se sauvegardent et composent le document dans le nouvel ordre', async ({ page }) => {
+  const api = await installDraftApi(page);
+  await page.goto('/commercial/devis');
+  await page.getByRole('button', { name: 'Nouveau devis', exact: true }).click();
+  await expect(page.locator('.devisView__accordion > summary')).toHaveText([
+    /Prestations\s+0 ligne/, /Prestations libres et primes/, /Conception/,
+  ]);
+  await page.getByLabel('Entreprise', { exact: true }).fill('Prestations combinées');
+  await page.getByLabel('Intitulé du bloc de prestations').fill('Rendez-vous partenaires');
+  await page.getByRole('spinbutton', { name: /Rendez-vous/ }).fill('125');
+  await page.getByRole('button', { name: 'Ajouter un bloc de prestations', exact: true }).click();
+  const account = page.locator('.devisView__service-block').nth(0);
+  await account.getByLabel('Intitulé du bloc de prestations').fill('Comptes professionnels');
+  await account.locator('.react-select__control').click();
+  await page.getByRole('option', { name: 'Compte client', exact: true }).click();
+  await expect(account.getByLabel('Intitulé de la prestation tarifée')).toHaveValue('Compte client');
+  await account.getByRole('spinbutton', { name: /Compte client/ }).fill('275');
+  await account.getByLabel('Description du compte client').fill('Compte validé et première commande encaissée.');
+  await account.getByRole('button', { name: 'Ajouter une clause', exact: true }).click();
+  await account.getByLabel('Intitulé de la clause').fill('Vérification complémentaire');
+  await account.getByLabel('Description de la clause').fill('Contrôle du dossier professionnel.');
+  await account.getByLabel('Montant de la clause').fill('35');
+  await page.getByRole('button', { name: 'Ajouter un bloc de prestations', exact: true }).click();
+  const commercial = page.locator('.devisView__service-block').nth(1);
+  await commercial.getByLabel('Intitulé du bloc de prestations').fill('Ventes partenaires');
+  await commercial.locator('.react-select__control').click();
+  await page.getByRole('option', { name: 'Commercial', exact: true }).click();
+  await commercial.getByRole('spinbutton', { name: 'Commission par vente' }).fill('7.5');
+  await commercial.getByLabel('Description de la commission').fill('Sur le CA HT encaissé.');
+  await page.getByRole('button', { name: 'Ajouter un bloc de prestations', exact: true }).click();
+  await expect(page.locator('.devisView__service-block')).toHaveCount(3);
+  // A deliberately empty block is saved, but omitted from the document.
+  await expect.poll(() => [...api.drafts.values()][0]?.snapshot.additionalServiceBlocks?.length).toBe(3);
+  const savedBlocks = [...api.drafts.values()][0].snapshot.additionalServiceBlocks;
+  await page.reload();
+  await page.evaluate(() => localStorage.clear());
+  await page.reload();
+  await page.getByRole('button', { name: 'Reprendre le devis', exact: true }).click();
+  await expect(account.getByRole('spinbutton', { name: /Compte client/ })).toHaveValue('275');
+  await expect(account.getByLabel('Montant de la clause')).toHaveValue('35');
+  await expect(commercial.getByRole('spinbutton', { name: 'Commission par vente' })).toHaveValue('7.5');
+  await expect(page.getByRole('spinbutton', { name: /Rendez-vous/ }).first()).toHaveValue('125');
+  await page.locator('summary').filter({ hasText: /^Prestations libres et primes/ }).click();
+  await page.getByRole('button', { name: 'Ajouter une prestation ou une prime' }).click();
+  await page.getByLabel('Intitulé de la prestation libre').fill('Lancement');
+  await page.getByLabel('Montant de la prestation libre').fill('950');
+  await page.locator('summary').filter({ hasText: /^Conception/ }).click();
+  await page.getByLabel('Intitulé de la phase').first().fill('Supports commerciaux');
+  await page.getByLabel('Intitulé de la prestation', { exact: true }).first().fill('Création des supports');
+  await page.getByRole('spinbutton', { name: /Montant HT/ }).first().fill('450');
+  await page.getByRole('button', { name: 'Éditer le devis', exact: true }).click();
+  await expect.poll(() => api.generated.length).toBe(1);
+  expect(api.generated[0]).toMatchObject({ project_sections: [
+    expect.objectContaining({ id: 'conquete', title: 'Rendez-vous partenaires', lines: [expect.objectContaining({ amount: 125, pricing_basis: 'unit' })] }),
+    expect.objectContaining({ title: 'Comptes professionnels', lines: [
+      expect.objectContaining({ amount: 275, description: 'Compte validé et première commande encaissée.' }),
+      expect.objectContaining({ amount: 35, description: 'Contrôle du dossier professionnel.' }),
+    ] }),
+    expect.objectContaining({ title: 'Ventes partenaires', lines: [expect.objectContaining({ amount: 7.5, amount_kind: 'percentage' })] }),
+    expect.objectContaining({ id: 'flexible-services' }),
+    expect.objectContaining({ title: 'Supports commerciaux' }),
+  ] });
+  const documentPayload = api.generated[0] as { lines: Array<{ id: string }> };
+  expect(new Set(documentPayload.lines.map(line => line.id)).size).toBe(documentPayload.lines.length);
+  expect([...api.drafts.values()][0].snapshot.additionalServiceBlocks).toEqual(savedBlocks);
+  await page.setViewportSize({ width: 390, height: 844 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await account.screenshot({ path: 'test-results/devis-blocs-prestations-mobile.png' });
+  await account.getByRole('button', { name: 'Supprimer ce bloc de prestations' }).click();
+  await expect(page.locator('.devisView__service-block')).toHaveCount(2);
+  await expect.poll(() => [...api.drafts.values()][0]?.snapshot.additionalServiceBlocks?.length).toBe(2);
+  await page.getByRole('button', { name: 'Changer de devis', exact: true }).click();
+  await page.getByRole('button', { name: 'Nouveau devis', exact: true }).click();
+  await expect(page.locator('.devisView__service-block')).toHaveCount(0);
 });

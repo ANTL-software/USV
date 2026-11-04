@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+import { useQuoteServiceBlocks } from './useQuoteServiceBlocks.ts';
 import {
   DEFAULT_FORM,
   DEFAULT_COMMISSION_DESCRIPTION,
@@ -27,6 +28,8 @@ import type {
 } from '../utils/types/index.ts';
 
 export function useDevisView() {
+  const serviceBlocks = useQuoteServiceBlocks();
+  const restoreServiceBlocks = serviceBlocks.restore;
   const [conquestSectionTitle, setConquestSectionTitle] = useState('');
   const [flexibleSectionTitle, setFlexibleSectionTitle] = useState('');
   const [conquestLineLabel, setConquestLineLabel] = useState<string | undefined>();
@@ -56,13 +59,14 @@ export function useDevisView() {
   const projectQuoteLines = useMemo(() => buildProjectQuotePricingLines(projectSections), [projectSections]);
   const flexibleQuoteLines = useMemo(() => buildFlexibleQuoteLines(flexibleServices), [flexibleServices]);
   const isProjectQuote = projectQuoteLines.length > 0;
-  const isConquestQuote = conquestQuoteLines.length > 0;
+  const allConquestQuoteLines = useMemo(() => [...conquestQuoteLines, ...serviceBlocks.groups.flatMap(group => group.lines)], [conquestQuoteLines, serviceBlocks.groups]);
+  const isConquestQuote = allConquestQuoteLines.length > 0;
   const selectedTemplateIds = useMemo(() => [
     ...(isConquestQuote ? ['conquete'] : []), ...(isProjectQuote ? ['conception'] : []),
   ], [isConquestQuote, isProjectQuote]);
   const selectedTemplates = useMemo(() => getSelectedQuoteTemplates(QUOTE_TEMPLATES, selectedTemplateIds), [selectedTemplateIds]);
-  const quoteLines = useMemo(() => [...conquestQuoteLines, ...projectQuoteLines, ...flexibleQuoteLines],
-    [conquestQuoteLines, projectQuoteLines, flexibleQuoteLines]);
+  const quoteLines = useMemo(() => [...allConquestQuoteLines, ...flexibleQuoteLines, ...projectQuoteLines],
+    [allConquestQuoteLines, projectQuoteLines, flexibleQuoteLines]);
   const fixedTotals = useMemo(() => getQuoteFixedTotals(quoteLines), [quoteLines]);
   const hasFixedLines = quoteLines.some((line) => !line.included && line.amount_kind === 'currency' && (!line.pricing_basis || line.pricing_basis === 'fixed'));
   const hasConditionalLines = quoteLines.some((line) => line.pricing_basis === 'variable' || line.pricing_basis === 'unit');
@@ -73,13 +77,15 @@ export function useDevisView() {
 
   const snapshot = useMemo<QuoteDraftSnapshot>(() => ({
     version: 1, selectedTemplateIds, formState, campaignType,
+    ...(serviceBlocks.blocks.length ? { additionalServiceBlocks: serviceBlocks.blocks } : {}),
     conquestSectionTitle, flexibleSectionTitle, conquestLineLabel, commercialCommissionDescription,
     commercialCommissionRate: commercialCommissionRate ?? null,
     appointmentRate: appointmentRate ?? null, appointmentDescription,
     customClauses, projectSections, thirdPartyServices, flexibleServices,
-  }), [selectedTemplateIds, formState, campaignType, commercialCommissionRate, appointmentRate,
+  }), [serviceBlocks.blocks, selectedTemplateIds, formState, campaignType, commercialCommissionRate, appointmentRate,
     appointmentDescription, customClauses, projectSections, thirdPartyServices, flexibleServices, conquestSectionTitle, flexibleSectionTitle, conquestLineLabel, commercialCommissionDescription]);
   const restoreSnapshot = useCallback((saved: QuoteDraftSnapshot): void => {
+    restoreServiceBlocks(saved.additionalServiceBlocks ?? []);
     setConquestSectionTitle(saved.conquestSectionTitle ?? '');
     setFlexibleSectionTitle(saved.flexibleSectionTitle ?? '');
     setConquestLineLabel(saved.conquestLineLabel);
@@ -93,7 +99,7 @@ export function useDevisView() {
     setProjectSections(saved.projectSections.map(section => ({ ...section, lines: section.lines.map(line => ({ ...line, amount: line.amount ?? undefined })) })));
     setThirdPartyServices(saved.thirdPartyServices.map(service => ({ ...service })));
     setFlexibleServices((saved.flexibleServices ?? []).map(service => ({ ...service, amount: service.amount ?? undefined })));
-  }, []);
+  }, [restoreServiceBlocks]);
 
   const addFlexibleService = (): void => {
     setFlexibleServices((previous) => [...previous, {
@@ -229,6 +235,10 @@ export function useDevisView() {
   };
 
   return {
+    additionalServiceBlocks: serviceBlocks.presentations,
+    additionalServiceGroups: serviceBlocks.groups,
+    addServiceBlock: serviceBlocks.add,
+    allConquestQuoteLines,
     snapshot,
     restoreSnapshot,
     conquestSectionTitle,

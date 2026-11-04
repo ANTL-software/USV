@@ -8,8 +8,18 @@ const form = (value: unknown): value is QuoteFormState => object(value)
   && ['<3k', '3k_8k', '8k_15k', '15k+'].includes(String(value.budgetBand))
   && ['mensuel', '50_50', 'acompte', 'commande', 'livraison', 'ponctuel'].includes(String(value.billingRhythm))
   && ['1_mois_reconduction', '3_mois', '6_mois', 'mission_unique'].includes(String(value.engagement));
+const serviceBlock = (value: unknown): boolean => object(value) && text(value.id)
+  && text(value.conquestSectionTitle) && value.conquestSectionTitle.length <= 255
+  && (value.conquestLineLabel === undefined || (text(value.conquestLineLabel) && value.conquestLineLabel.length <= 255))
+  && ['commercial', 'qualified_appointment', 'client_account'].includes(String(value.campaignType))
+  && text(value.commercialCommissionDescription) && value.commercialCommissionDescription.length <= 2000
+  && amount(value.commercialCommissionRate) && amount(value.appointmentRate) && text(value.appointmentDescription)
+  && list(value.customClauses, item => object(item) && text(item.id) && text(item.label)
+    && (item.description === undefined || text(item.description)) && typeof item.included === 'boolean' && amount(item.amount));
 export function isQuoteDraftSnapshot(value: unknown): value is QuoteDraftSnapshot {
-  return object(value) && value.version === 1 && (value.draftName === undefined || (text(value.draftName) && value.draftName.length <= 255)) && form(value.formState)
+  return object(value) && (value.additionalServiceBlocks === undefined || (Array.isArray(value.additionalServiceBlocks)
+    && value.additionalServiceBlocks.length <= 29 && list(value.additionalServiceBlocks, serviceBlock)
+    && new Set(value.additionalServiceBlocks.map(block => block.id)).size === value.additionalServiceBlocks.length)) && value.version === 1 && (value.draftName === undefined || (text(value.draftName) && value.draftName.length <= 255)) && form(value.formState)
     && ['conquestSectionTitle', 'flexibleSectionTitle', 'conquestLineLabel'].every(key => value[key] === undefined || (text(value[key]) && value[key].length <= 255))
     && (value.commercialCommissionDescription === undefined || (text(value.commercialCommissionDescription) && value.commercialCommissionDescription.length <= 2000))
     && list(value.selectedTemplateIds, text) && ['commercial', 'qualified_appointment', 'client_account'].includes(String(value.campaignType))

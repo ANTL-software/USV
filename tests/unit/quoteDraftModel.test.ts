@@ -37,3 +37,15 @@ test('les titres de sections et descriptions personnalisées sont optionnels pou
   assert.equal(isQuoteDraftSnapshot({ ...named, conquestSectionTitle: 'x'.repeat(256) }), false);
   assert.equal(isQuoteDraftSnapshot({ ...named, commercialCommissionDescription: 42 }), false);
 });
+
+test('les blocs de prestations additionnels sont optionnels, typés et conservés en stockage local', () => {
+  const block = { id: 'accounts', conquestSectionTitle: 'Comptes professionnels', campaignType: 'client_account',
+    commercialCommissionDescription: '', commercialCommissionRate: null, appointmentRate: 250.5,
+    appointmentDescription: 'Compte validé', customClauses: [{ id: 'control', label: 'Contrôle', description: 'Dossier', included: false, amount: 40 }] };
+  const combined = { ...snapshot, additionalServiceBlocks: [block] };
+  assert.equal(isQuoteDraftSnapshot(combined), true);
+  const [restored] = parseLocalQuoteDrafts(JSON.stringify([{ id: 'draft', title: 'Brouillon', revision: 1, dirty: false, created_at: '2026-11-04', updated_at: '2026-11-04', snapshot: combined }]));
+  assert.deepEqual(restored.snapshot.additionalServiceBlocks, [block]);
+  assert.equal(isQuoteDraftSnapshot({ ...combined, additionalServiceBlocks: [{ ...block, campaignType: 'unknown' }] }), false);
+  assert.equal(isQuoteDraftSnapshot({ ...combined, additionalServiceBlocks: [block, block] }), false);
+});
