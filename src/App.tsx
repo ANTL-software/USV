@@ -241,7 +241,7 @@ function App(): ReactElement {
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {import.meta.env.PROD && <Analytics />}
+      {import.meta.env.PROD && import.meta.env.VITE_HOSTING_PLATFORM !== "cloudflare" && <Analytics />}
 
       {/* Notification hors ligne globale */}
       <div className="offline-notice">
