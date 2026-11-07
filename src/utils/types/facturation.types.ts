@@ -58,7 +58,10 @@ export interface BillingAmounts {
   totalTtc: number;
 }
 
+export type ClientAccountBillingMode = 'validated' | 'manual';
+
 export interface CampaignInvoicePaStatus {
+  account_mode?: ClientAccountBillingMode | null;
   account_quantity?: number | null;
   id_campaign_invoice: number | null;
   campaign_id: number;

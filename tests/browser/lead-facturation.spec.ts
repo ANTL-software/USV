@@ -420,7 +420,7 @@ test('une campagne compte client enregistre le prix unitaire et facture les doss
   };
   let update: unknown = null;
   let facturXRequest: unknown = null;
-  const sales = [
+  let sales = [
     { ...sale, id_campagne: 18, montant_total: '0.00' },
     { ...sale, id_vente: 702, id_campagne: 18 },
   ];
@@ -466,5 +466,17 @@ test('une campagne compte client enregistre le prix unitaire et facture les doss
   await expect(page.getByText('61,25 €', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('122,50 €', { exact: true })).toHaveCount(0);
   await download.click();
-  await expect.poll(() => facturXRequest).toMatchObject({ account_quantity: 1 });
+  await expect.poll(() => facturXRequest).toMatchObject({ account_quantity: 1, account_mode: 'validated' });
+
+  sales = [];
+  facturXRequest = null;
+  await page.reload();
+  await expect(page.getByText('Aucun dossier validé sur la période.')).toBeVisible();
+  await expect(quantity).toBeDisabled();
+  await page.getByRole('combobox', { name: 'Mode de facturation des comptes clients' }).selectOption('manual');
+  await quantity.fill('5');
+  await expect(page.getByText('306,25 €', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('Comptes clients à réaliser', { exact: true })).toBeVisible();
+  await download.click();
+  await expect.poll(() => facturXRequest).toMatchObject({ account_quantity: 5, account_mode: 'manual' });
 });

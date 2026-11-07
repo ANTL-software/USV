@@ -311,6 +311,7 @@ export type {
   InvoiceRecipient,
   LeadBillingSettings,
   ResolvedBillingProfile,
+  ClientAccountBillingMode,
 } from './facturation.types.ts';
 
 export type {

@@ -20,23 +20,20 @@ interface FacturationPreviewProps {
 export function FacturationPreview({ state }: FacturationPreviewProps): ReactElement {
   const { preview } = state;
   let content: ReactElement;
-  if (state.previewLoading) content = <Loader />;
+  if (state.isManualAccountBilling) content = (
+    <div className="facturationView__kpis">
+      <div className="facturationView__kpi"><span>Comptes clients à réaliser</span><strong>{state.accountQuantity ?? '—'}</strong></div>
+      <div className="facturationView__kpi"><span>Tarif HT par compte</span><strong>{state.clientAccountUnitPriceHt === null ? 'Non renseigné' : formatBillingCurrency(state.clientAccountUnitPriceHt)}</strong></div>
+      <div className="facturationView__kpi"><span>Montant facturé</span><strong>{formatBillingCurrency(state.previewTotals.totalHt)} HT<br />{formatBillingCurrency(state.previewTotals.totalTtc)} TTC</strong></div>
+    </div>
+  );
+  else if (state.previewLoading) content = <Loader />;
   else if (!preview) content = <div className="facturationView__empty facturationView__empty--inline">Aucun aperçu disponible pour cette période.</div>;
   else if (preview.source === 'ventes') {
     const visibleRows = state.isClientAccountCampaign ? state.accountRows : preview.rows;
     content = (
       <>
         <div className="facturationView__warning facturationView__warning--spaced-bottom"><strong>{state.isClientAccountCampaign ? 'Facturation par compte client :' : 'Facturation des ventes :'}</strong> seuls les dossiers validés sur la période sont retenus.</div>
-        {state.isClientAccountCampaign && state.availableAccountCount > 0 && (
-          <label className="facturationView__kpi">
-            <span>Nombre de comptes clients à facturer</span>
-            <input type="number" min={1} max={state.availableAccountCount} step={1} value={state.accountCountValue}
-              disabled={state.issuedAccountQuantity !== null || state.isIssuingPaInvoice || state.isTestingPaInvoice || state.isGeneratingFacturX || state.isSendingInvoiceEmail}
-              aria-invalid={state.accountQuantity === undefined}
-              onChange={(event) => state.setAccountCountValue(event.target.value)} />
-            <small>{state.issuedAccountQuantity !== null ? 'Quantité de la facture déjà émise.' : `De 1 à ${state.availableAccountCount}. Les dossiers validés les plus anciens sont retenus en premier.`}</small>
-          </label>
-        )}
         <div className="facturationView__kpis">
           <div className="facturationView__kpi"><span>{state.isClientAccountCampaign ? 'Comptes clients validés' : 'Commandes validées'}</span><strong>{state.isClientAccountCampaign ? state.availableAccountCount : preview.rows.length}</strong></div>
           {state.isClientAccountCampaign ? <div className="facturationView__kpi"><span>Tarif HT par compte</span><strong>{state.clientAccountUnitPriceHt === null ? 'Non renseigné' : formatBillingCurrency(state.clientAccountUnitPriceHt)}</strong></div> : <>
@@ -85,6 +82,29 @@ export function FacturationPreview({ state }: FacturationPreviewProps): ReactEle
     <section className="facturationView__panel">
       <div className="facturationView__panel-header"><MdOutlineInsights /><div><h2>Aperçu de période</h2><p>Lecture directe des éléments facturables sur la période sélectionnée.</p></div></div>
       {state.previewError && <div className="facturationView__error facturationView__error--inline">{state.previewError}</div>}
+      {state.isClientAccountCampaign && (
+        <div className="facturationView__kpis">
+          <label className="facturationView__kpi">
+            <span>Mode de facturation des comptes clients</span>
+            <select value={state.accountBillingMode} disabled={state.accountSelectionLocked}
+              onChange={(event) => state.setAccountBillingMode(event.target.value === 'manual' ? 'manual' : 'validated')}>
+              <option value="validated">Comptes validés dans USV</option>
+              <option value="manual">Quantité manuelle · comptes à réaliser</option>
+            </select>
+          </label>
+          <label className="facturationView__kpi">
+            <span>Nombre de comptes clients à facturer</span>
+            <input type="number" min={1} max={state.accountQuantityLimit || undefined} step={1} value={state.accountCountValue}
+              disabled={state.accountSelectionLocked || state.accountQuantityLimit === 0}
+              aria-invalid={state.accountCountValue !== '' && state.accountQuantity === undefined}
+              onChange={(event) => state.setAccountCountValue(event.target.value)} />
+            <small>{state.issuedAccountQuantity !== null ? 'Quantité de la facture déjà émise.'
+              : state.isManualAccountBilling ? 'Saisissez la quantité vendue de comptes à réaliser.'
+                : state.availableAccountCount > 0 ? `De 1 à ${state.availableAccountCount}. Les dossiers les plus anciens sont retenus en premier.`
+                  : 'Aucun dossier validé sur la période.'}</small>
+          </label>
+        </div>
+      )}
       {content}
     </section>
   );
