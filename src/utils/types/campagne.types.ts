@@ -45,6 +45,7 @@ export interface ProspectOrderEmailConfig {
 export interface BonCommandeConfig {
   invoice_recipient?: BonCommandeInvoiceRecipient | null;
   lead_billing?: LeadBillingConfig | null;
+  client_account_billing?: { unit_price_ht?: number | null } | null;
   prime?: PrimeConfig | null;
   lead_booking?: LeadBookingConfig | null;
   creantl_booking?: { notify_external?: boolean } | null;

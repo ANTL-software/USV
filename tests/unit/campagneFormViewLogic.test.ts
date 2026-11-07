@@ -350,3 +350,11 @@ test('la variante Compte client est conservée en création et en édition', () 
   assert.equal(editedForm.type_campagne, 'client_account');
   assert.equal(buildCampagnePayload(editedForm).type_campagne, 'client_account');
 });
+
+test('le formulaire conserve le tarif HT par compte client dans la configuration de campagne', () => {
+  const form = buildCampagneFormState(createCampagne({ type_campagne: 'client_account',
+    bon_commande_config: { client_account_billing: { unit_price_ht: 52.75 } } }));
+  assert.equal(form.client_account_unit_price_ht, '52.75');
+  assert.deepEqual(buildCampagnePayload({ ...form, client_account_unit_price_ht: '61,25' }).bon_commande_config?.client_account_billing,
+    { unit_price_ht: 61.25 });
+});

@@ -39,6 +39,7 @@ export interface CampagneFormState {
   pays: string;
   footer_text: string;
   taux_commission_facturation: string;
+  client_account_unit_price_ht: string;
   modes_paiement: string;
   invoice_company_name: string;
   invoice_siret: string;
@@ -113,6 +114,7 @@ export const INITIAL_CAMPAGNE_FORM: CampagneFormState = {
   pays: 'France',
   footer_text: '',
   taux_commission_facturation: '',
+  client_account_unit_price_ht: '',
   modes_paiement: 'Prelevement,Cheque,Virement',
   invoice_company_name: '',
   invoice_siret: '',
@@ -199,6 +201,7 @@ export function buildCampagneFormState(campagne: Campagne): CampagneFormState {
     telephone: campagne.telephone || '',
     pays: campagne.pays || 'France',
     footer_text: campagne.footer_text || '',
+    client_account_unit_price_ht: String(campagne.bon_commande_config?.client_account_billing?.unit_price_ht ?? ''),
     taux_commission_facturation: campagne.taux_commission_facturation != null
       ? String(campagne.taux_commission_facturation)
       : '',
@@ -276,6 +279,11 @@ export function validateCampagneForm(form: CampagneFormState, campagneId: number
   if (form.code_postal_centre_prospection && !/^\d{5}$/.test(form.code_postal_centre_prospection.trim())) {
     return 'Le code postal du centre de prospection doit contenir 5 chiffres';
   }
+  const accountPrice = form.client_account_unit_price_ht.trim().replace(',', '.');
+  if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.client_account && accountPrice
+    && (!/^\d+(?:\.\d{1,2})?$/.test(accountPrice) || !Number.isFinite(Number(accountPrice)) || Number(accountPrice) <= 0)) {
+    return 'Le tarif HT par compte client doit être positif, avec deux décimales au maximum';
+  }
   if (normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b) {
     if (!parsePositivePrice(form.lead_prime_value_eur)) return 'La valeur de prime par lead doit être supérieure à 0';
     if (form.lead_booking_weekly_slots == null && form.lead_booking_open_weekdays.length === 0) return 'Sélectionnez au moins un jour ouvert pour les rendez-vous client';
@@ -340,6 +348,9 @@ export function buildCampagnePayload(form: CampagneFormState, campagneId: number
       ...(campagneId === 15 ? { creantl_booking: { notify_external: form.creantl_booking_notify_external } } : {}),
       invoice_recipient: buildInvoiceRecipientPayload(form),
       lead_billing: leadBilling,
+      ...(normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.client_account ? {
+        client_account_billing: { unit_price_ht: parsePositivePrice(form.client_account_unit_price_ht.replace(',', '.')) },
+      } : {}),
       prime: isLeadCampaign ? { lead_value_eur: parsePositivePrice(form.lead_prime_value_eur) } : null,
       lead_booking: isLeadCampaign ? {
         open_weekdays: form.lead_booking_open_weekdays,

@@ -5,6 +5,7 @@ import type { FacturationState } from '../../../hooks/index.ts';
 import {
   BILLING_FIELD_SOURCE_LABELS,
   formatBillingDate,
+  formatBillingCurrency,
   formatBillingPercent,
   getCampaignVariantLabel,
 } from '../../../utils/scripts/index.ts';
@@ -31,7 +32,7 @@ export function FacturationConfiguration({ state }: FacturationConfigurationProp
                 <span>{field.label}{field.required ? ' *' : ''}</span><strong>{field.value}</strong><small>{BILLING_FIELD_SOURCE_LABELS[field.source]}</small>
               </div>
             ))}
-            <div className="facturationView__document-item is-complete"><span>Commission antl</span><strong>{formatBillingPercent(state.selectedCampagne.taux_commission_facturation)}</strong></div>
+            <div className={`facturationView__document-item ${state.isClientAccountCampaign && state.clientAccountUnitPriceHt === null ? 'is-missing' : 'is-complete'}`}><span>{state.isClientAccountCampaign ? 'Tarif HT par compte client' : 'Commission antl'}</span><strong>{state.isClientAccountCampaign ? (state.clientAccountUnitPriceHt === null ? 'Non renseigné' : formatBillingCurrency(state.clientAccountUnitPriceHt)) : formatBillingPercent(state.selectedCampagne.taux_commission_facturation)}</strong></div>
           </div>
           {state.missingRequiredFields.length > 0 && <div className="facturationView__warning"><strong>Configuration incomplète :</strong> {state.missingRequiredFields.join(', ')}.</div>}
           {state.resolvedBillingProfile?.source === 'invoice_recipient' && <div className="facturationView__warning facturationView__warning--spaced-top"><strong>Adresse de facturation prioritaire :</strong> la facture utilisera d’abord le bloc de facturation tierce de la campagne, avec fallback automatique sur la fiche campagne pour les champs non renseignés.</div>}

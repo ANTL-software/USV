@@ -408,3 +408,49 @@ test('le retour des détails restaure filtres et pagination des commandes vente 
   await expect.poll(() => new URLSearchParams(latestSaleListSearch).get('agent')).toBe('9');
   expect(unhandledRequests).toEqual([]);
 });
+
+test('une campagne compte client enregistre le prix unitaire et facture les dossiers validés', async ({ page }) => {
+  const campaign = {
+    ...SALES_CAMPAIGN,
+    id_campagne: 18,
+    nom_campagne: 'Comptes clients démo',
+    type_campagne: 'client_account' as const,
+    taux_commission_facturation: 45,
+    bon_commande_config: { ...SALES_CAMPAIGN.bon_commande_config, client_account_billing: { unit_price_ht: 52.75 } },
+  };
+  let update: unknown = null;
+  const sales = [
+    { ...sale, id_campagne: 18, montant_total: '0.00' },
+    { ...sale, id_vente: 702, id_campagne: 18 },
+  ];
+  const unhandledRequests: string[] = [];
+  await installApiRoute(page, async (route, request) => {
+    if (request.path === '/campagnes/18' && request.method === 'PUT') {
+      update = route.request().postDataJSON();
+      campaign.bon_commande_config.client_account_billing.unit_price_ht = 61.25;
+      await fulfillJson(route, apiSuccess(campaign));
+    } else if (request.path === '/campagnes/18') {
+      await fulfillJson(route, apiSuccess(campaign));
+    } else if (request.path === '/campagnes') {
+      await fulfillJson(route, apiSuccess([campaign]));
+    } else if (request.path === '/ventes') {
+      await fulfillJson(route, { ...apiSuccess(sales), pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
+    } else if (request.path === '/campagnes/18/facturation/pa') {
+      await fulfillJson(route, apiSuccess(null));
+    } else return false;
+    return true;
+  }, unhandledRequests);
+
+  await page.goto('/campagnes/18');
+  const price = page.getByRole('spinbutton', { name: /Tarif HT par compte client/ });
+  await expect(price).toHaveValue('52.75');
+  await expect(page.getByText('Commission de facturation')).toHaveCount(0);
+  await price.fill('61.25');
+  await page.getByRole('button', { name: 'Mettre à jour' }).click();
+  await expect.poll(() => update).toMatchObject({ bon_commande_config: { client_account_billing: { unit_price_ht: 61.25 } } });
+
+  await page.goto('/commercial/facturation');
+  await expect(page.getByText('Comptes clients validés', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('122,50 €', { exact: true })).toBeVisible();
+  await expect(page.getByText('Taux de commission', { exact: true })).toHaveCount(0);
+});
