@@ -63,6 +63,8 @@ export function useFacturation() {
   const [customDateEnd, setCustomDateEnd] = useState(currentMonthBounds.end);
   const [previewLoading, setPreviewLoading] = useState(false);
   const [previewError, setPreviewError] = useState<string | null>(null);
+  const [loadedAccountPeriod, setLoadedAccountPeriod] = useState('');
+  const [accountCount, setAccountCount] = useState<{ key: string; value: string } | null>(null);
   const [preview, setPreview] = useState<BillingPreview | null>(null);
   const [isGeneratingFacturX, setIsGeneratingFacturX] = useState(false);
   const [isEmailModalOpen, setIsEmailModalOpen] = useState(false);
@@ -92,7 +94,6 @@ export function useFacturation() {
     ...(resolvedBillingProfile?.missingRequiredFields ?? []),
     ...(isClientAccountCampaign && clientAccountUnitPriceHt === null ? ['Tarif HT par compte client'] : []),
   ];
-  const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0;
 
   const resolvedPeriod = useMemo(() => {
     if (periodPreset === 'previous_month') return previousMonthBounds;
@@ -100,9 +101,37 @@ export function useFacturation() {
     return currentMonthBounds;
   }, [currentMonthBounds, customDateEnd, customDateStart, periodPreset, previousMonthBounds]);
 
+  const accountPeriod = `${selectedCampagneId}:${resolvedPeriod.start}:${resolvedPeriod.end}`;
+  const eligibleAccountRows = useMemo(() => {
+    if (!isClientAccountCampaign || loadedAccountPeriod !== accountPeriod || preview?.source !== 'ventes') return [];
+    const validatedAt = (vente: Vente) => Date.parse(vente.date_acceptation ?? '') || 0;
+    return preview.rows.filter((vente) => vente.statut_vente === 'validee')
+      .sort((a, b) => validatedAt(a) - validatedAt(b) || a.id_vente - b.id_vente).slice(0, 5000);
+  }, [accountPeriod, isClientAccountCampaign, loadedAccountPeriod, preview]);
+  const issuedAccountQuantity = paInvoice?.provider_invoice_id && paInvoice.campaign_id === selectedCampagneId
+    && paInvoice.period_start === resolvedPeriod.start && paInvoice.period_end === resolvedPeriod.end
+    ? paInvoice.account_quantity ?? null : null;
+  const accountCountValue = issuedAccountQuantity !== null ? String(issuedAccountQuantity)
+    : accountCount?.key === accountPeriod ? accountCount.value
+      : eligibleAccountRows.length ? String(eligibleAccountRows.length) : '';
+  const parsedAccountCount = Number(accountCountValue);
+  const accountQuantity = isClientAccountCampaign && /^[0-9]+$/.test(accountCountValue)
+    && Number.isSafeInteger(parsedAccountCount) && parsedAccountCount >= 1 && parsedAccountCount <= eligibleAccountRows.length
+    ? parsedAccountCount : undefined;
+  const setAccountCountValue = (value: string): void => {
+    setAccountCount({ key: accountPeriod, value });
+    setTestPaInvoice(null);
+  };
+  const accountRows = useMemo(() => eligibleAccountRows.slice(0, accountQuantity ?? 0), [eligibleAccountRows, accountQuantity]);
+  const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0
+    && (!isClientAccountCampaign || (!previewLoading && !isLoadingPaInvoice && accountQuantity !== undefined));
   const previewTotals = useMemo(
-    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null, leadBillingSettings, isClientAccountCampaign ? clientAccountUnitPriceHt : undefined),
-    [billingSettings, leadBillingSettings, preview, selectedCampagne?.taux_commission_facturation, isClientAccountCampaign, clientAccountUnitPriceHt],
+    () => computePreviewTotals(
+      isClientAccountCampaign && preview?.source === 'ventes' ? { ...preview, rows: accountRows } : preview,
+      billingSettings, selectedCampagne?.taux_commission_facturation ?? null, leadBillingSettings,
+      isClientAccountCampaign ? clientAccountUnitPriceHt : undefined,
+    ),
+    [accountRows, billingSettings, leadBillingSettings, preview, selectedCampagne?.taux_commission_facturation, isClientAccountCampaign, clientAccountUnitPriceHt],
   );
   const emailOptions = useMemo<InvoiceEmailOption[]>(
     () => buildInvoiceEmailOptions(selectedCampagne),
@@ -112,7 +141,8 @@ export function useFacturation() {
   const canSendInvoiceEmail = canGenerateInvoice && !isSendingInvoiceEmail && isValidEmail(resolvedRecipientEmail);
   const canIssueInvoiceThroughPa = canGenerateInvoice
     && previewTotals.totalHt > 0
-    && !isIssuingPaInvoice;
+    && !isIssuingPaInvoice
+    && !(isClientAccountCampaign && issuedAccountQuantity !== null);
   const canTestInvoiceThroughPa = canGenerateInvoice
     && previewTotals.totalHt > 0
     && !isTestingPaInvoice;
@@ -140,7 +170,10 @@ export function useFacturation() {
             date_fin: resolvedPeriod.end,
             date_field: 'acceptation',
           });
-          if (!isCancelled) setPreview({ source: 'ventes', rows: response.ventes, stats: response.stats ?? buildFallbackVenteStats(response.ventes) });
+          if (!isCancelled) {
+            setPreview({ source: 'ventes', rows: response.ventes, stats: response.stats ?? buildFallbackVenteStats(response.ventes) });
+            setLoadedAccountPeriod(accountPeriod);
+          }
         }
       } catch (loadError) {
         if (!isCancelled) {
@@ -153,7 +186,7 @@ export function useFacturation() {
     };
     void loadPreview();
     return () => { isCancelled = true; };
-  }, [resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
+  }, [accountPeriod, resolvedPeriod.end, resolvedPeriod.start, selectedCampagne, selectedVariant]);
 
   useEffect(() => {
     if (!selectedCampagne || !resolvedPeriod.start || !resolvedPeriod.end) {
@@ -192,6 +225,7 @@ export function useFacturation() {
       const blob = await downloadCampagneFacturXDocumentService(selectedCampagne.id_campagne, {
         date_debut: resolvedPeriod.start,
         date_fin: resolvedPeriod.end,
+        ...(accountQuantity !== undefined ? { account_quantity: accountQuantity } : {}),
       });
       triggerBlobDownload(blob, `factur-x_${sanitizeBillingFileSegment(selectedCampagne.nom_campagne)}_${resolvedPeriod.start}_${resolvedPeriod.end}.pdf`);
     } catch (generationError) {
@@ -199,7 +233,7 @@ export function useFacturation() {
     } finally {
       setIsGeneratingFacturX(false);
     }
-  }, [canGenerateInvoice, resolvedPeriod, selectedCampagne]);
+  }, [accountQuantity, canGenerateInvoice, resolvedPeriod, selectedCampagne]);
 
   const generateFacturXLot10Rdv = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canGenerateInvoice) return;
@@ -248,6 +282,7 @@ export function useFacturation() {
       const invoice = await issueCampagneFacturationThroughPaService(selectedCampagne.id_campagne, {
         date_debut: resolvedPeriod.start,
         date_fin: resolvedPeriod.end,
+        ...(accountQuantity !== undefined ? { account_quantity: accountQuantity } : {}),
       });
       setPaInvoice(invoice);
       await showSuccess(
@@ -262,7 +297,7 @@ export function useFacturation() {
     } finally {
       setIsIssuingPaInvoice(false);
     }
-  }, [canIssueInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
+  }, [accountQuantity, canIssueInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
 
   const testInvoiceThroughPa = useCallback(async (): Promise<void> => {
     if (!selectedCampagne || !canTestInvoiceThroughPa) return;
@@ -280,6 +315,7 @@ export function useFacturation() {
       const invoice = await testCampagneFacturationThroughPaService(selectedCampagne.id_campagne, {
         date_debut: resolvedPeriod.start,
         date_fin: resolvedPeriod.end,
+        ...(accountQuantity !== undefined ? { account_quantity: accountQuantity } : {}),
       });
       setTestPaInvoice(invoice);
       await showSuccess(
@@ -294,7 +330,7 @@ export function useFacturation() {
     } finally {
       setIsTestingPaInvoice(false);
     }
-  }, [canTestInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
+  }, [accountQuantity, canTestInvoiceThroughPa, previewTotals.totalHt, resolvedPeriod, selectedCampagne, showConfirm, showError, showSuccess]);
 
   const openEmailModal = useCallback((): void => {
     setPreviewError(null);
@@ -323,6 +359,7 @@ export function useFacturation() {
       const response = await sendCampagneFacturationEmailService(selectedCampagne.id_campagne, {
         date_debut: resolvedPeriod.start,
         date_fin: resolvedPeriod.end,
+        ...(accountQuantity !== undefined ? { account_quantity: accountQuantity } : {}),
         recipient_email: resolvedRecipientEmail,
       });
       setIsEmailModalOpen(false);
@@ -333,7 +370,7 @@ export function useFacturation() {
     } finally {
       setIsSendingInvoiceEmail(false);
     }
-  }, [canSendInvoiceEmail, previewTotals.totalHt, resolvedPeriod, resolvedRecipientEmail, selectedCampagne, showConfirm, showError, showSuccess]);
+  }, [accountQuantity, canSendInvoiceEmail, previewTotals.totalHt, resolvedPeriod, resolvedRecipientEmail, selectedCampagne, showConfirm, showError, showSuccess]);
 
   const summaryCards = useMemo<BillingSummaryCard[]>(() => {
     if (!selectedCampagne) return [];
@@ -411,6 +448,12 @@ export function useFacturation() {
     billingSettings,
     isClientAccountCampaign,
     clientAccountUnitPriceHt,
+    accountRows,
+    accountCountValue,
+    accountQuantity,
+    availableAccountCount: eligibleAccountRows.length,
+    issuedAccountQuantity,
+    setAccountCountValue,
     canGenerateInvoice,
     canIssueInvoiceThroughPa,
     canTestInvoiceThroughPa,
