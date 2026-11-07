@@ -59,6 +59,7 @@ export function useCampagneForm() {
 
   const campagneId = existing?.id_campagne ?? null;
   const isLeadCampaign = normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.lead_b2b;
+  const isClientAccountCampaign = normalizeCampaignVariant(form.type_campagne) === CAMPAIGN_VARIANTS.client_account;
   const usesEmployeeCountLeadPricing = campagneId === MMA_LEAD_PRICING_CAMPAIGN_ID;
 
   // Charger la campagne existante si édition
@@ -248,6 +249,7 @@ export function useCampagneForm() {
     error,
     success,
     isLeadCampaign,
+    isClientAccountCampaign,
     usesEmployeeCountLeadPricing,
     isCreantlCampaign: campagneId === 15,
     handleChange,

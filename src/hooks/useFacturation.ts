@@ -80,11 +80,18 @@ export function useFacturation() {
     ?? null;
   const selectedCampagneId = selectedCampagne?.id_campagne ?? null;
   const selectedVariant = normalizeCampaignVariant(selectedCampagne?.type_campagne);
+  const isClientAccountCampaign = selectedVariant === CAMPAIGN_VARIANTS.client_account;
+  const configuredAccountPrice = selectedCampagne?.bon_commande_config?.client_account_billing?.unit_price_ht;
+  const clientAccountUnitPriceHt = typeof configuredAccountPrice === 'number' && Number.isFinite(configuredAccountPrice) && configuredAccountPrice > 0
+    ? configuredAccountPrice : null;
   const usesEmployeeCountPricing = usesEmployeeCountLeadPricing(selectedCampagneId);
   const billingSettings = useMemo(() => getCampaignBillingSettings(selectedCampagne), [selectedCampagne]);
   const leadBillingSettings = useMemo(() => getLeadBillingSettings(selectedCampagne), [selectedCampagne]);
   const resolvedBillingProfile = useMemo(() => buildResolvedBillingProfile(selectedCampagne), [selectedCampagne]);
-  const missingRequiredFields = resolvedBillingProfile?.missingRequiredFields ?? [];
+  const missingRequiredFields = [
+    ...(resolvedBillingProfile?.missingRequiredFields ?? []),
+    ...(isClientAccountCampaign && clientAccountUnitPriceHt === null ? ['Tarif HT par compte client'] : []),
+  ];
   const canGenerateInvoice = Boolean(selectedCampagne) && missingRequiredFields.length === 0;
 
   const resolvedPeriod = useMemo(() => {
@@ -94,8 +101,8 @@ export function useFacturation() {
   }, [currentMonthBounds, customDateEnd, customDateStart, periodPreset, previousMonthBounds]);
 
   const previewTotals = useMemo(
-    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null, leadBillingSettings),
-    [billingSettings, leadBillingSettings, preview, selectedCampagne?.taux_commission_facturation],
+    () => computePreviewTotals(preview, billingSettings, selectedCampagne?.taux_commission_facturation ?? null, leadBillingSettings, isClientAccountCampaign ? clientAccountUnitPriceHt : undefined),
+    [billingSettings, leadBillingSettings, preview, selectedCampagne?.taux_commission_facturation, isClientAccountCampaign, clientAccountUnitPriceHt],
   );
   const emailOptions = useMemo<InvoiceEmailOption[]>(
     () => buildInvoiceEmailOptions(selectedCampagne),
@@ -347,13 +354,13 @@ export function useFacturation() {
     if (!preview) return cards;
     return preview.source === 'ventes'
       ? [...cards,
-        { label: 'Commandes validées', value: String(preview.rows.length), tone: 'primary' },
-        { label: 'Assiette ventes HT', value: formatBillingCurrency(previewTotals.assietteHt), tone: 'primary' },
+        { label: isClientAccountCampaign ? 'Comptes clients validés' : 'Commandes validées', value: String(preview.rows.length), tone: 'primary' },
+        ...(isClientAccountCampaign ? [] : [{ label: 'Assiette ventes HT', value: formatBillingCurrency(previewTotals.assietteHt), tone: 'primary' as const }]),
         { label: 'Montant facturé HT', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }]
       : [...cards,
         { label: 'RDV facturables', value: String(preview.rows.length), tone: 'primary' },
         { label: 'Montant facturé HT', value: formatBillingCurrency(previewTotals.totalHt), tone: 'success' }];
-  }, [missingRequiredFields.length, preview, previewTotals.assietteHt, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
+  }, [isClientAccountCampaign, missingRequiredFields.length, preview, previewTotals.assietteHt, previewTotals.totalHt, resolvedBillingProfile, resolvedPeriod, selectedCampagne]);
 
   const leadBillingSummary = useMemo(() => {
     const rows = preview?.source === 'leads' ? preview.rows : [];
@@ -371,6 +378,10 @@ export function useFacturation() {
   }, [leadBillingSettings, preview, selectedCampagne?.nom_campagne, usesEmployeeCountPricing]);
 
   const getVenteAmounts = useCallback((vente: Vente) => {
+    if (isClientAccountCampaign) {
+      const totalHt = clientAccountUnitPriceHt ?? 0;
+      return { assietteHt: totalHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
+    }
     const assietteHt = computeFacturableHt(vente);
     const rawCommissionRate = Number(selectedCampagne?.taux_commission_facturation ?? 0);
     const commissionMultiplier = Number.isFinite(rawCommissionRate) && rawCommissionRate > 0
@@ -378,7 +389,7 @@ export function useFacturation() {
       : 1;
     const totalHt = assietteHt * commissionMultiplier;
     return { assietteHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
-  }, [billingSettings, selectedCampagne?.taux_commission_facturation]);
+  }, [billingSettings, selectedCampagne?.taux_commission_facturation, isClientAccountCampaign, clientAccountUnitPriceHt]);
   const getLeadAmounts = useCallback((lead: LeadClient) => {
     const totalHt = computeFacturableLeadHt(lead, leadBillingSettings);
     return { assietteHt: totalHt, totalHt, totalTtc: computeTtcAmount(totalHt, billingSettings.vatRate) };
@@ -398,6 +409,8 @@ export function useFacturation() {
   return {
     activeCampagnes,
     billingSettings,
+    isClientAccountCampaign,
+    clientAccountUnitPriceHt,
     canGenerateInvoice,
     canIssueInvoiceThroughPa,
     canTestInvoiceThroughPa,

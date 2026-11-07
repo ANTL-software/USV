@@ -203,3 +203,14 @@ test('identifie les campagnes Swiss Life (12) et Swiss Life IND (14) pour le bou
   assert.equal(isSwissLife(10), false);
   assert.equal(isSwissLife(11), false);
 });
+
+test('la facturation compte client utilise le tarif unitaire et exclut les dossiers non validés', () => {
+  const settings = getCampaignBillingSettings(createCampagne({ type_campagne: 'client_account' }));
+  const rows = [createVente({ montant_total: 0 }), createVente({ id_vente: 2, montant_total: 500 }),
+    createVente({ id_vente: 3, statut_vente: 'annulee' })];
+  const preview = { source: 'ventes' as const, rows, stats: buildFallbackVenteStats(rows) };
+  assert.deepEqual(computePreviewTotals(preview, settings, 45, null, 52.75), {
+    assietteHt: 105.5, totalHt: 105.5, totalTtc: 126.6,
+  });
+  assert.deepEqual(computePreviewTotals(preview, settings, 45, null, null), { assietteHt: 0, totalHt: 0, totalTtc: 0 });
+});

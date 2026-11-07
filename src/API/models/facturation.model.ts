@@ -53,7 +53,10 @@ export function getCampaignBillingSettings(campagne: Campagne | null): CampaignB
   const rawFreeShippingThreshold = rawShipping && typeof rawShipping === 'object' && 'free_threshold_ht' in rawShipping
     ? rawShipping.free_threshold_ht
     : null;
-  const vatRate = typeof rawVatRate === 'number' ? rawVatRate : Number.parseFloat(String(rawVatRate ?? '0.2'));
+  const accountVatRate = Number(rawVatRate);
+  const vatRate = campagne?.type_campagne === 'client_account'
+    ? (Number.isFinite(accountVatRate) && accountVatRate > 0 ? accountVatRate : 0.2)
+    : (typeof rawVatRate === 'number' ? rawVatRate : Number.parseFloat(String(rawVatRate ?? '0.2')));
   const shippingFeeHt = typeof rawShippingFee === 'number' ? rawShippingFee : Number.parseFloat(String(rawShippingFee ?? '30'));
   const freeShippingThresholdHt = typeof rawFreeShippingThreshold === 'number'
     ? rawFreeShippingThreshold
@@ -102,8 +105,16 @@ export function computePreviewTotals(
   settings: CampaignBillingSettings,
   commissionRate: number | null = null,
   leadBillingSettings: LeadBillingSettings | null = null,
+  clientAccountUnitPriceHt?: number | null,
 ): BillingAmounts {
   if (!preview) return { assietteHt: 0, totalHt: 0, totalTtc: 0 };
+
+  if (preview.source === 'ventes' && clientAccountUnitPriceHt !== undefined) {
+    const quantity = preview.rows.filter((vente) => vente.statut_vente === 'validee').length;
+    const totalHt = roundCurrency(quantity * (clientAccountUnitPriceHt ?? 0));
+    const totalTva = roundCurrency(totalHt * settings.vatRate);
+    return { assietteHt: totalHt, totalHt, totalTtc: roundCurrency(totalHt + totalTva) };
+  }
 
   const assietteHt = roundCurrency(preview.source === 'ventes'
     ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente), 0)
