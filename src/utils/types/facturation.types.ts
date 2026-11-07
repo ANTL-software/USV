@@ -59,6 +59,7 @@ export interface BillingAmounts {
 }
 
 export interface CampaignInvoicePaStatus {
+  account_quantity?: number | null;
   id_campaign_invoice: number | null;
   campaign_id: number;
   period_start: string;

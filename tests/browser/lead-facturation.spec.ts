@@ -419,6 +419,7 @@ test('une campagne compte client enregistre le prix unitaire et facture les doss
     bon_commande_config: { ...SALES_CAMPAIGN.bon_commande_config, client_account_billing: { unit_price_ht: 52.75 } },
   };
   let update: unknown = null;
+  let facturXRequest: unknown = null;
   const sales = [
     { ...sale, id_campagne: 18, montant_total: '0.00' },
     { ...sale, id_vente: 702, id_campagne: 18 },
@@ -435,6 +436,9 @@ test('une campagne compte client enregistre le prix unitaire et facture les doss
       await fulfillJson(route, apiSuccess([campaign]));
     } else if (request.path === '/ventes') {
       await fulfillJson(route, { ...apiSuccess(sales), pagination: { page: 1, limit: 20, total: 2, totalPages: 1 } });
+    } else if (request.path === '/campagnes/18/facturation/factur-x' && request.method === 'POST') {
+      facturXRequest = route.request().postDataJSON();
+      await route.fulfill({ status: 200, contentType: 'application/pdf', body: '%PDF-1.4' });
     } else if (request.path === '/campagnes/18/facturation/pa') {
       await fulfillJson(route, apiSuccess(null));
     } else return false;
@@ -453,4 +457,14 @@ test('une campagne compte client enregistre le prix unitaire et facture les doss
   await expect(page.getByText('Comptes clients validés', { exact: true }).first()).toBeVisible();
   await expect(page.getByText('122,50 €', { exact: true })).toBeVisible();
   await expect(page.getByText('Taux de commission', { exact: true })).toHaveCount(0);
+  const quantity = page.getByRole('spinbutton', { name: /Nombre de comptes clients à facturer/ });
+  const download = page.getByRole('button', { name: /Télécharger la facture/ });
+  await expect(quantity).toHaveValue('2');
+  await quantity.fill('3');
+  await expect(download).toBeDisabled();
+  await quantity.fill('1');
+  await expect(page.getByText('61,25 €', { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('122,50 €', { exact: true })).toHaveCount(0);
+  await download.click();
+  await expect.poll(() => facturXRequest).toMatchObject({ account_quantity: 1 });
 });
