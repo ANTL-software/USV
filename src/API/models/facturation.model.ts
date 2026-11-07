@@ -106,15 +106,17 @@ export function computePreviewTotals(
   commissionRate: number | null = null,
   leadBillingSettings: LeadBillingSettings | null = null,
   clientAccountUnitPriceHt?: number | null,
+  clientAccountQuantity?: number,
 ): BillingAmounts {
-  if (!preview) return { assietteHt: 0, totalHt: 0, totalTtc: 0 };
-
-  if (preview.source === 'ventes' && clientAccountUnitPriceHt !== undefined) {
-    const quantity = preview.rows.filter((vente) => vente.statut_vente === 'validee').length;
+  if (clientAccountUnitPriceHt !== undefined && (preview?.source === 'ventes' || clientAccountQuantity !== undefined)) {
+    const quantity = clientAccountQuantity ?? (preview?.source === 'ventes'
+      ? preview.rows.filter((vente) => vente.statut_vente === 'validee').length : 0);
     const totalHt = roundCurrency(quantity * (clientAccountUnitPriceHt ?? 0));
     const totalTva = roundCurrency(totalHt * settings.vatRate);
     return { assietteHt: totalHt, totalHt, totalTtc: roundCurrency(totalHt + totalTva) };
   }
+
+  if (!preview) return { assietteHt: 0, totalHt: 0, totalTtc: 0 };
 
   const assietteHt = roundCurrency(preview.source === 'ventes'
     ? preview.rows.reduce((sum, vente) => sum + computeFacturableHt(vente), 0)
